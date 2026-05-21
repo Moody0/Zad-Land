@@ -55,6 +55,12 @@ const FeaturedCollection = ({ newArrivals, bundles, bestSellers }: FeaturedColle
 
     const activeProducts = tabs[activeTab]?.products || [];
 
+    React.useEffect(() => {
+        if (railRef.current) {
+            railRef.current.scrollTo({ left: 0, behavior: 'auto' });
+        }
+    }, [activeTab]);
+
     if (!newArrivals.length && !bundles.length && !bestSellers.length) {
         return null;
     }
@@ -102,7 +108,7 @@ const FeaturedCollection = ({ newArrivals, bundles, bestSellers }: FeaturedColle
                         {activeProducts.map((product) => (
                             <div
                                 key={product.id}
-                                className="w-[180px] md:w-[calc((100%-60px)/4)] lg:w-[calc((100%-80px)/5)] flex-none snap-start"
+                                className="w-[180px] md:w-[calc((100%-40px)/3)] xl:w-[calc((100%-60px)/4)] 2xl:w-[calc((100%-80px)/5)] flex-none snap-start"
                             >
                                 <ProductCard
                                     product={product}

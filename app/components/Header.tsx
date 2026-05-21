@@ -70,21 +70,11 @@ const Header = ({ initialCategories = [], dir }: HeaderProps) => {
                 return;
             }
 
-            // Only trigger if scrolled down past 50px
+            // Only trigger if scrolled past 50px
             if (currentScrollY > 50) {
-                if (currentScrollY > lastScrollY) {
-                    // Scrolling down -> hide navbar
-                    if (!isScrolledRef.current) {
-                        isScrolledRef.current = true;
-                        setIsScrolled(true);
-                    }
-                } else if (currentScrollY < lastScrollY - 15) {
-                    // Scrolling up (by at least 15px to prevent micro-jitters) -> show navbar
-                    if (isScrolledRef.current) {
-                        isScrolledRef.current = false;
-                        setIsScrolled(false);
-                        setManualToggle(false);
-                    }
+                if (!isScrolledRef.current) {
+                    isScrolledRef.current = true;
+                    setIsScrolled(true);
                 }
             }
 
@@ -98,6 +88,9 @@ const Header = ({ initialCategories = [], dir }: HeaderProps) => {
                 ticking = true;
             }
         };
+
+        // Initialize state on mount
+        updateScroll();
 
         window.addEventListener('scroll', handleScroll, { passive: true });
         return () => window.removeEventListener('scroll', handleScroll);

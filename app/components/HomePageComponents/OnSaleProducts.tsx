@@ -103,7 +103,7 @@ const OnSaleProducts = ({ products }: OnSaleProductsProps) => {
                         {products.map((product) => (
                             <div
                                 key={product.id}
-                                className="w-[180px] md:w-[calc((100%-60px)/4)] lg:w-[calc((100%-80px)/5)] flex-none snap-start"
+                                className="w-[180px] md:w-[calc((100%-40px)/3)] xl:w-[calc((100%-60px)/4)] 2xl:w-[calc((100%-80px)/5)] flex-none snap-start"
                             >
                                 <ProductCard product={product} variant="compact" />
                             </div>

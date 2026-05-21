@@ -142,25 +142,25 @@ const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
 
                     <div className="flex items-center justify-start mt-3 gap-3">
                         <span className="text-[15px] font-bold mr-2">{language === 'ar' ? 'مشاركة:' : 'Share:'}</span>
-                        <a 
-                            href="https://wa.me/963933254796" 
-                            target="_blank" 
+                        <a
+                            href="https://wa.me/963933254796"
+                            target="_blank"
                             rel="noopener noreferrer"
                             className="w-11 h-11 flex items-center justify-center rounded-full border border-gray-200 bg-white text-black hover:bg-black hover:border-black hover:text-white transition-all duration-300"
                         >
                             <FaWhatsapp className="text-xl" />
                         </a>
-                        <a 
-                            href="https://www.instagram.com/ruby.beauty.sy" 
-                            target="_blank" 
+                        <a
+                            href="https://www.instagram.com/ruby.beauty.sy"
+                            target="_blank"
                             rel="noopener noreferrer"
                             className="w-11 h-11 flex items-center justify-center rounded-full border border-gray-200 bg-white text-black hover:bg-black hover:border-black hover:text-white transition-all duration-300"
                         >
                             <FaInstagram className="text-xl" />
                         </a>
-                        <a 
-                            href="https://www.facebook.com/share/1HzXdo7sLG/?mibextid=wwXIfr" 
-                            target="_blank" 
+                        <a
+                            href="https://www.facebook.com/share/1HzXdo7sLG/?mibextid=wwXIfr"
+                            target="_blank"
                             rel="noopener noreferrer"
                             className="w-11 h-11 flex items-center justify-center rounded-full border border-gray-200 bg-white text-black hover:bg-black hover:border-black hover:text-white transition-all duration-300"
                         >
@@ -180,7 +180,7 @@ const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
                 updatedAt: p.updatedAt.toISOString(),
             }))} />
 
-            <ProductReviews 
+            <ProductReviews
                 productId={product.id}
                 productName={product.name}
                 productImage={(product.images as string).split(',').map((img: string) => img.trim()).filter(Boolean)[0]}

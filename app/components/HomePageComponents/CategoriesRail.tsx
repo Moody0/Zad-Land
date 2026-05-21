@@ -71,7 +71,7 @@ const CategoriesRail = () => {
                                             <img
                                                 src={category.image}
                                                 alt={category.name}
-                                                className="w-full h-full object-cover transition-transform duration-500 group-hover/card:scale-105"
+                                                className="w-full h-full object-cover"
                                                 loading="lazy"
                                             />
                                         </div>
@@ -98,17 +98,17 @@ const CategoriesRail = () => {
                     <button
                         onClick={handleLeftScroll}
                         disabled={isLeftDisabled}
-                        className="hidden md:flex absolute top-10 -translate-y-1/2 -left-5 z-10 w-12 h-12 bg-white rounded-full shadow-lg items-center justify-center text-gray-800 hover:bg-gray-50 hover:scale-105 transition-all disabled:opacity-0 disabled:pointer-events-none"
+                        className="hidden md:flex !absolute top-1/2 -translate-y-1/2 -left-5 z-10 w-[38px] h-[38px] rounded-full border border-gray-200 bg-white items-center justify-center text-black disabled:opacity-0 disabled:pointer-events-none btn-curved-fill shadow-md"
                     >
-                        <MdChevronLeft className="w-6 h-6" />
+                        <MdChevronLeft className="w-5 h-5" />
                     </button>
                     
                     <button
                         onClick={handleRightScroll}
                         disabled={isRightDisabled}
-                        className="hidden md:flex absolute top-10 -translate-y-1/2 -right-5 z-10 w-12 h-12 bg-white rounded-full shadow-lg items-center justify-center text-gray-800 hover:bg-gray-50 hover:scale-105 transition-all disabled:opacity-0 disabled:pointer-events-none"
+                        className="hidden md:flex !absolute top-1/2 -translate-y-1/2 -right-5 z-10 w-[38px] h-[38px] rounded-full border border-gray-200 bg-white items-center justify-center text-black disabled:opacity-0 disabled:pointer-events-none btn-curved-fill shadow-md"
                     >
-                        <MdChevronRight className="w-6 h-6" />
+                        <MdChevronRight className="w-5 h-5" />
                     </button>
                 </div>
             </div>

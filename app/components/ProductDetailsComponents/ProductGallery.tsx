@@ -49,7 +49,7 @@ const ProductGallery = ({ images, isTrending }: ProductGalleryProps) => {
                     className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/95 backdrop-blur-md p-4 md:p-8"
                     onClick={() => setSelectedImage(null)}
                 >
-                    <button 
+                    <button
                         className="absolute top-6 right-6 text-white hover:text-gray-300 transition-colors z-[100000] p-2 bg-black/20 rounded-full"
                         onClick={() => setSelectedImage(null)}
                     >
@@ -92,8 +92,8 @@ const ProductGallery = ({ images, isTrending }: ProductGalleryProps) => {
                     className="h-full w-full !bg-white"
                 >
                     {allImages.map((img, index) => (
-                        <SwiperSlide 
-                            key={`main-${index}`} 
+                        <SwiperSlide
+                            key={`main-${index}`}
                             className="!bg-white"
                             onClick={() => setSelectedImage(img)}
                         >
@@ -137,9 +137,8 @@ const ProductGallery = ({ images, isTrending }: ProductGalleryProps) => {
                     >
                         {allImages.map((img, index) => (
                             <SwiperSlide key={`thumb-${index}`}>
-                                <div className={`relative aspect-square cursor-pointer rounded-lg overflow-hidden border-2 transition-all duration-300 ${
-                                    activeIndex === index ? 'border-[#1C1C1C]' : 'border-transparent hover:border-gray-200'
-                                }`}>
+                                <div className={`relative aspect-square cursor-pointer rounded-lg overflow-hidden border-2 transition-all duration-300 ${activeIndex === index ? 'border-[#1C1C1C]' : 'border-transparent hover:border-gray-200'
+                                    }`}>
                                     <ResilientImage
                                         src={img}
                                         alt={`Thumbnail ${index + 1}`}
