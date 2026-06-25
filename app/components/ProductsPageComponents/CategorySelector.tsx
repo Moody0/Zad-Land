@@ -16,13 +16,14 @@ interface Category {
 interface CategorySelectorProps {
     categories: Category[];
     activeCategory?: Category | null;
+    activeMainCategory?: { id: string; name: string; slug: string } | null;
 }
 
 function getCategoryHref(slug?: string | null) {
     return slug ? `/categories/${slug}` : "/products";
 }
 
-const CategorySelector = ({ categories, activeCategory = null }: CategorySelectorProps) => {
+const CategorySelector = ({ categories, activeCategory = null, activeMainCategory = null }: CategorySelectorProps) => {
     const { t, dir } = useLanguage();
     const [isOpen, setIsOpen] = useState(false);
     const [search, setSearch] = useState("");
@@ -48,7 +49,7 @@ const CategorySelector = ({ categories, activeCategory = null }: CategorySelecto
         return category.name.toLowerCase().includes(search.toLowerCase());
     });
 
-    const activeLabel = activeCategory?.name || t("products.allProducts");
+    const activeLabel = activeCategory?.name || activeMainCategory?.name || t("products.allProducts");
 
     const pillClassName = (isActive: boolean) =>
         `inline-flex items-center rounded-full border px-4 py-2.5 text-sm font-semibold transition-all ${
@@ -56,6 +57,9 @@ const CategorySelector = ({ categories, activeCategory = null }: CategorySelecto
                 ? "border-primary bg-primary text-white"
                 : "border-[#e7dadd] bg-white text-[#2b1d21] hover:border-primary/35 hover:text-primary dark:border-white/10 dark:bg-white/5 dark:text-white dark:hover:border-primary/40"
         }`;
+
+    const defaultHref = activeMainCategory ? `/department/${activeMainCategory.slug}` : "/products";
+    const defaultText = activeMainCategory ? activeMainCategory.name : t("products.allProducts");
 
     return (
         <>
@@ -71,8 +75,8 @@ const CategorySelector = ({ categories, activeCategory = null }: CategorySelecto
                     </div>
 
                     <div className="flex flex-wrap gap-3">
-                        <Link href="/products" className={pillClassName(!activeCategory)}>
-                            {t("products.allProducts")}
+                        <Link href={defaultHref} className={pillClassName(!activeCategory)}>
+                            {defaultText}
                         </Link>
 
                         {categories.map((category) => (
@@ -164,7 +168,7 @@ const CategorySelector = ({ categories, activeCategory = null }: CategorySelecto
 
                     <div className="max-h-[55vh] space-y-2 overflow-y-auto pr-1">
                         <Link
-                            href="/products"
+                            href={defaultHref}
                             onClick={() => setIsOpen(false)}
                             className={`flex items-center justify-between rounded-2xl border px-4 py-4 transition-all ${
                                 !activeCategory
@@ -173,7 +177,7 @@ const CategorySelector = ({ categories, activeCategory = null }: CategorySelecto
                             }`}
                         >
                             <div>
-                                <p className="text-sm font-semibold">{t("products.allProducts")}</p>
+                                <p className="text-sm font-semibold">{defaultText}</p>
                                 <p className={`mt-1 text-xs ${!activeCategory ? "text-white/80" : "text-gray-500 dark:text-gray-400"}`}>
                                     {t("products.allProductsDescription")}
                                 </p>

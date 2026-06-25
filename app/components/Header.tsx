@@ -12,6 +12,7 @@ import ThemeToggle from './ThemeToggle';
 import LanguageToggle from './LanguageToggle';
 import CurrencyToggle from './CurrencyToggle';
 import MegaMenu, { type NavMainCategory } from './HeaderComponents/MegaMenu';
+import { AnimatePresence } from 'framer-motion';
 
 interface HeaderCategory {
     id: string;
@@ -301,19 +302,22 @@ const Header = ({ initialCategories = [], dir }: HeaderProps) => {
                 </div>
 
                 {/* Mega Menu Dropdown */}
-                {activeMegaMenu && activeNavData && (
-                    <MegaMenu
-                        data={activeNavData}
-                        onClose={handleMegaMenuClose}
-                        onMouseEnter={() => {
-                            if (closeTimeoutRef.current) {
-                                clearTimeout(closeTimeoutRef.current);
-                                closeTimeoutRef.current = null;
-                            }
-                        }}
-                        onMouseLeave={handleNavLeave}
-                    />
-                )}
+                <AnimatePresence>
+                    {activeMegaMenu && activeNavData && (
+                        <MegaMenu
+                            key={activeMegaMenu}
+                            data={activeNavData}
+                            onClose={handleMegaMenuClose}
+                            onMouseEnter={() => {
+                                if (closeTimeoutRef.current) {
+                                    clearTimeout(closeTimeoutRef.current);
+                                    closeTimeoutRef.current = null;
+                                }
+                            }}
+                            onMouseLeave={handleNavLeave}
+                        />
+                    )}
+                </AnimatePresence>
             </nav>
         </header>
     );

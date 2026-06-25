@@ -48,7 +48,7 @@ interface ProductsClientProps {
     initialTotal: number;
     activeCategory?: Category | null;
     activeBrand?: Brand | null;
-    activeMainCategoryId?: string | null;
+    activeMainCategory?: { id: string; name: string; slug: string } | null;
 }
 
 const ProductsClient = ({
@@ -57,7 +57,7 @@ const ProductsClient = ({
     initialTotal,
     activeCategory = null,
     activeBrand = null,
-    activeMainCategoryId = null,
+    activeMainCategory = null,
 }: ProductsClientProps) => {
     const { t, language } = useLanguage();
     const [products, setProducts] = useState<Product[]>(initialProducts);
@@ -75,7 +75,7 @@ const ProductsClient = ({
             const currentPage = reset ? 1 : page;
             const categoryQuery = activeCategory ? `&categoryIds=${activeCategory.id}` : "";
             const brandQuery = activeBrand ? `&brandIds=${activeBrand.id}` : "";
-            const mainCategoryQuery = activeMainCategoryId ? `&mainCategoryId=${activeMainCategoryId}` : "";
+            const mainCategoryQuery = activeMainCategory ? `&mainCategoryId=${activeMainCategory.id}` : "";
 
             let sortQuery = "";
             if (sort === "Price: Low to High") sortQuery = "&sort=price_asc";
@@ -132,7 +132,7 @@ const ProductsClient = ({
 
             <ProductsHeader sort={sort} setSort={setSort} activeCategory={activeCategory} activeBrand={activeBrand} />
 
-            <CategorySelector categories={initialCategories} activeCategory={activeCategory} />
+            <CategorySelector categories={initialCategories} activeCategory={activeCategory} activeMainCategory={activeMainCategory} />
 
             <div className="flex-1">
                 <p className="mb-6 text-sm text-gray-500 dark:text-gray-400">

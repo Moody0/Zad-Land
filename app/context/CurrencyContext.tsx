@@ -34,7 +34,7 @@ export function CurrencyProvider({ children, initialExchangeRate }: { children: 
 
     const formatPrice = (usdPrice: number) => {
         const symbol = language === 'ar' ? 'ل.س' : 'SYP';
-        const locale = language === 'ar' ? 'ar-SY' : 'en-US';
+        const locale = language === 'ar' ? 'ar-SY-u-nu-latn' : 'en-US';
         
         if (!mounted) {
             const price = Math.round(usdPrice * initialExchangeRate);

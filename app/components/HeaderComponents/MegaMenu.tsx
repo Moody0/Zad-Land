@@ -4,7 +4,11 @@ import React from "react";
 import Link from "next/link";
 import { useLanguage } from "@/app/context/LanguageContext";
 import { useCurrency } from "@/app/context/CurrencyContext";
+import { useCart } from "@/app/context/CartContext";
 import ResilientImage from "@/app/components/ResilientImage";
+import { motion } from "framer-motion";
+import { MdSearch } from "react-icons/md";
+import toast from "react-hot-toast";
 
 interface Brand {
     id: string;
@@ -51,18 +55,130 @@ interface MegaMenuProps {
     onMouseLeave?: () => void;
 }
 
-export default function MegaMenu({ data, onClose, onMouseEnter, onMouseLeave }: MegaMenuProps) {
-    const { dir, language } = useLanguage();
+// ─── Mini Product Card (matches ProductCard.tsx design exactly) ───────────────
+function MiniProductCard({ product, onClose }: { product: TrendingProduct; onClose: () => void }) {
     const { formatPrice } = useCurrency();
+    const { addItem } = useCart();
+    const { language, dir } = useLanguage();
 
-    const getFirstImage = (images: string) => {
+    const getImages = (images: string) => {
         try {
             const parsed = JSON.parse(images);
-            return Array.isArray(parsed) ? parsed[0] : images;
+            return Array.isArray(parsed) ? parsed : [images];
         } catch {
-            return images.split(",")[0]?.trim() || images;
+            return images.split(",").map(i => i.trim()).filter(Boolean);
         }
     };
+
+    const imgs = getImages(product.images);
+    const primaryImage = imgs[0] || "";
+    const secondaryImage = imgs.length > 1 && imgs[1] !== imgs[0] ? imgs[1] : null;
+
+    const handleAddToCart = (e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        addItem({
+            id: product.id,
+            name: product.name,
+            price: Number(product.discountPrice || product.price),
+            image: primaryImage,
+            slug: product.slug,
+            quantity: 1,
+        });
+        toast.success(language === "ar" ? `تمت إضافة ${product.name} إلى السلة` : `Added ${product.name} to cart`);
+    };
+
+    return (
+        <div className="group relative flex flex-col bg-[#F7F7F5] dark:bg-surface-dark rounded-[10px] overflow-hidden transition-transform duration-300 w-[177px] shrink-0">
+
+            {/* Quick View Icon */}
+            <button
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
+                className="absolute z-20 top-3 left-3 w-8 h-8 bg-white text-black hover:bg-black hover:text-white rounded-full shadow-md flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 scale-90 group-hover:scale-100"
+                aria-label="Quick View"
+            >
+                <MdSearch size={18} />
+            </button>
+
+            {/* Image Area — 177×177px */}
+            <div className="relative w-[177px] h-[177px] shrink-0 overflow-hidden">
+                <Link href={`/products/${product.slug}`} onClick={onClose} className="absolute inset-0 block w-full h-full" aria-label={product.name}>
+                    {/* Primary Image */}
+                    <div className={`absolute inset-0 transition-opacity duration-500 z-10 ${secondaryImage ? "group-hover:opacity-0" : ""}`}>
+                        <ResilientImage
+                            src={primaryImage}
+                            alt={product.name}
+                            className="w-full h-full object-cover mix-blend-multiply dark:mix-blend-normal"
+                            loading="lazy"
+                        />
+                    </div>
+                    {/* Secondary Image */}
+                    {secondaryImage && (
+                        <div className="absolute inset-0 transition-opacity duration-500 opacity-0 group-hover:opacity-100 z-0">
+                            <ResilientImage
+                                src={secondaryImage}
+                                alt={product.name}
+                                className="w-full h-full object-cover mix-blend-multiply dark:mix-blend-normal"
+                                loading="lazy"
+                            />
+                        </div>
+                    )}
+                </Link>
+
+                {/* Add to Cart — slides up on hover */}
+                <div className="absolute inset-x-2 bottom-3 z-20 translate-y-4 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+                    <button
+                        onClick={handleAddToCart}
+                        className="w-full bg-white hover:bg-black text-black hover:text-white h-[36px] rounded-full text-[12px] font-bold shadow-lg transition-all duration-300 flex items-center justify-center"
+                    >
+                        {language === "ar" ? "اضافة للعربة" : "Add to Cart"}
+                    </button>
+                </div>
+            </div>
+
+            {/* Product Info */}
+            <div className={`flex flex-col p-2.5 pt-2 ${dir === "rtl" ? "text-right" : "text-left"}`}>
+                {/* Brand */}
+                {product.brand && (
+                    <p className="text-[rgba(7,40,53,0.6)] dark:text-gray-400 text-[10px] font-bold uppercase tracking-widest mb-1 truncate">
+                        {product.brand.name}
+                    </p>
+                )}
+                {/* Title */}
+                <h3
+                    dir="ltr"
+                    className={`text-[rgb(7,40,53)] dark:text-white text-[12px] font-semibold leading-tight mb-1 line-clamp-2 ${dir === "rtl" ? "text-right" : "text-left"}`}
+                >
+                    <Link href={`/products/${product.slug}`} onClick={onClose}>
+                        {product.name}
+                    </Link>
+                </h3>
+                {/* Price */}
+                <div className="flex items-center gap-1.5 mt-auto">
+                    {product.discountPrice ? (
+                        <>
+                            <span className="text-[13px] font-bold text-[rgb(7,40,53)] dark:text-white">
+                                {formatPrice(product.discountPrice)}
+                            </span>
+                            <span className="text-[11px] text-gray-400 line-through font-normal">
+                                {formatPrice(product.price)}
+                            </span>
+                        </>
+                    ) : (
+                        <span className="text-[13px] font-bold text-[rgb(7,40,53)] dark:text-white">
+                            {formatPrice(product.price)}
+                        </span>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+}
+
+// ─── Mega Menu ────────────────────────────────────────────────────────────────
+export default function MegaMenu({ data, onClose, onMouseEnter, onMouseLeave }: MegaMenuProps) {
+    const { dir, language } = useLanguage();
+    const visibleTrending = data.trendingProducts.slice(0, 3);
 
     return (
         <div
@@ -70,30 +186,43 @@ export default function MegaMenu({ data, onClose, onMouseEnter, onMouseLeave }: 
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}
         >
-            {/* Smooth slide-down animation wrapper */}
-            <div className="animate-mega-menu-enter bg-white dark:bg-[#1a1a1a] border-b border-gray-200 dark:border-white/10 shadow-xl">
-                <div className="container-custom py-8">
-                    <div className={`grid grid-cols-4 gap-8 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
-
+            <motion.div
+                className="bg-white dark:bg-[#1a1a1a] border-b border-gray-200 dark:border-white/10 shadow-xl overflow-hidden origin-top"
+                initial={{ clipPath: "inset(0% 0% 100% 0%)" }}
+                animate={{ clipPath: "inset(0% 0% 0% 0%)" }}
+                exit={{ clipPath: "inset(0% 0% 100% 0%)" }}
+                transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+            >
+                <motion.div
+                    className="container-custom py-8"
+                    initial={{ opacity: 0, y: -15 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.7, delay: 0.35, ease: "easeOut" }}
+                >
+                    <div
+                        className={`grid gap-8 ${dir === "rtl" ? "text-right" : "text-left"}`}
+                        style={{ gridTemplateColumns: "1fr 1fr 1fr 2fr" }}
+                    >
                         {/* Column 1: Brands */}
                         <div>
-                            <h3 className="text-[13px] font-bold text-[#1C1C1C] dark:text-white uppercase tracking-wider mb-4 pb-2 border-b border-gray-100 dark:border-white/10">
-                                {language === 'ar' ? 'الماركات' : 'Brands'}
+                            <h3 className="text-[15px] font-medium text-[rgb(46,46,46)] dark:text-white uppercase tracking-wider mb-4 pb-2 border-b border-gray-100 dark:border-white/10">
+                                {language === "ar" ? "الماركات" : "Brands"}
                             </h3>
-                            <ul className="flex flex-col gap-1.5">
+                            <ul className="flex flex-col gap-2">
                                 {data.brands.length > 0 ? data.brands.map((brand) => (
                                     <li key={brand.id}>
                                         <Link
                                             href={`/brands/${brand.slug}`}
                                             onClick={onClose}
-                                            className="text-[14px] text-[rgb(46,46,46)] dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors leading-relaxed inline bg-gradient-to-r from-current to-current bg-no-repeat bg-[length:0%_1px] bg-[position:0_90%] hover:bg-[length:100%_1px] transition-[background-size] duration-300"
+                                            className="text-[15px] font-medium text-[rgb(46,46,46)] dark:text-gray-300 hover:text-black dark:hover:text-white leading-relaxed inline bg-gradient-to-r from-current to-current bg-no-repeat bg-[length:0%_1px] bg-[position:0_90%] hover:bg-[length:100%_1px] transition-[background-size,color] duration-300"
                                         >
                                             {brand.name}
                                         </Link>
                                     </li>
                                 )) : (
-                                    <li className="text-[13px] text-gray-400 italic">
-                                        {language === 'ar' ? 'لا توجد ماركات' : 'No brands yet'}
+                                    <li className="text-[15px] font-medium text-[rgb(46,46,46)]/50 dark:text-gray-500">
+                                        {language === "ar" ? "لا توجد ماركات" : "No brands yet"}
                                     </li>
                                 )}
                             </ul>
@@ -101,47 +230,47 @@ export default function MegaMenu({ data, onClose, onMouseEnter, onMouseLeave }: 
 
                         {/* Column 2: Categories */}
                         <div>
-                            <h3 className="text-[13px] font-bold text-[#1C1C1C] dark:text-white uppercase tracking-wider mb-4 pb-2 border-b border-gray-100 dark:border-white/10">
-                                {language === 'ar' ? 'الأقسام' : 'Categories'}
+                            <h3 className="text-[15px] font-medium text-[rgb(46,46,46)] dark:text-white uppercase tracking-wider mb-4 pb-2 border-b border-gray-100 dark:border-white/10">
+                                {language === "ar" ? "الأقسام" : "Categories"}
                             </h3>
-                            <ul className="flex flex-col gap-1.5">
+                            <ul className="flex flex-col gap-2">
                                 {data.categories.length > 0 ? data.categories.map((cat) => (
                                     <li key={cat.id}>
                                         <Link
                                             href={`/categories/${cat.slug}`}
                                             onClick={onClose}
-                                            className="text-[14px] text-[rgb(46,46,46)] dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors leading-relaxed inline bg-gradient-to-r from-current to-current bg-no-repeat bg-[length:0%_1px] bg-[position:0_90%] hover:bg-[length:100%_1px] transition-[background-size] duration-300"
+                                            className="text-[15px] font-medium text-[rgb(46,46,46)] dark:text-gray-300 hover:text-black dark:hover:text-white leading-relaxed inline bg-gradient-to-r from-current to-current bg-no-repeat bg-[length:0%_1px] bg-[position:0_90%] hover:bg-[length:100%_1px] transition-[background-size,color] duration-300"
                                         >
                                             {cat.name}
                                         </Link>
                                     </li>
                                 )) : (
-                                    <li className="text-[13px] text-gray-400 italic">
-                                        {language === 'ar' ? 'لا توجد أقسام' : 'No categories yet'}
+                                    <li className="text-[15px] font-medium text-[rgb(46,46,46)]/50 dark:text-gray-500">
+                                        {language === "ar" ? "لا توجد أقسام" : "No categories yet"}
                                     </li>
                                 )}
                             </ul>
                         </div>
 
-                        {/* Column 3: Top Products (text links) */}
+                        {/* Column 3: Top Products */}
                         <div>
-                            <h3 className="text-[13px] font-bold text-[#1C1C1C] dark:text-white uppercase tracking-wider mb-4 pb-2 border-b border-gray-100 dark:border-white/10">
-                                {language === 'ar' ? 'المنتجات' : 'Products'}
+                            <h3 className="text-[15px] font-medium text-[rgb(46,46,46)] dark:text-white uppercase tracking-wider mb-4 pb-2 border-b border-gray-100 dark:border-white/10">
+                                {language === "ar" ? "المنتجات" : "Products"}
                             </h3>
-                            <ul className="flex flex-col gap-1.5">
+                            <ul className="flex flex-col gap-2">
                                 {data.topProducts.length > 0 ? data.topProducts.map((product) => (
                                     <li key={product.id}>
                                         <Link
                                             href={`/products/${product.slug}`}
                                             onClick={onClose}
-                                            className="text-[14px] text-[rgb(46,46,46)] dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors leading-relaxed line-clamp-1 inline bg-gradient-to-r from-current to-current bg-no-repeat bg-[length:0%_1px] bg-[position:0_90%] hover:bg-[length:100%_1px] transition-[background-size] duration-300"
+                                            className="text-[15px] font-medium text-[rgb(46,46,46)] dark:text-gray-300 hover:text-black dark:hover:text-white leading-relaxed line-clamp-1 inline bg-gradient-to-r from-current to-current bg-no-repeat bg-[length:0%_1px] bg-[position:0_90%] hover:bg-[length:100%_1px] transition-[background-size,color] duration-300"
                                         >
                                             {product.name}
                                         </Link>
                                     </li>
                                 )) : (
-                                    <li className="text-[13px] text-gray-400 italic">
-                                        {language === 'ar' ? 'لا توجد منتجات' : 'No products yet'}
+                                    <li className="text-[15px] font-medium text-[rgb(46,46,46)]/50 dark:text-gray-500">
+                                        {language === "ar" ? "لا توجد منتجات" : "No products yet"}
                                     </li>
                                 )}
                                 {data.topProducts.length > 0 && (
@@ -149,76 +278,39 @@ export default function MegaMenu({ data, onClose, onMouseEnter, onMouseLeave }: 
                                         <Link
                                             href={`/department/${data.slug}`}
                                             onClick={onClose}
-                                            className="text-[13px] font-semibold text-[rgb(46,46,46)] dark:text-white inline bg-gradient-to-r from-current to-current bg-no-repeat bg-[length:0%_1px] bg-[position:0_90%] hover:bg-[length:100%_1px] transition-[background-size] duration-300"
+                                            className="text-[15px] font-medium text-[rgb(46,46,46)] dark:text-white inline bg-gradient-to-r from-current to-current bg-no-repeat bg-[length:0%_1px] bg-[position:0_90%] hover:bg-[length:100%_1px] transition-[background-size] duration-300"
                                         >
-                                            {language === 'ar' ? 'عرض كل المنتجات' : 'View All Products'}
+                                            {language === "ar" ? "عرض كل المنتجات ←" : "View All →"}
                                         </Link>
                                     </li>
                                 )}
                             </ul>
                         </div>
 
-                        {/* Column 4: Trending Products (visual cards) */}
+                        {/* Column 4: Best Sellers — mini product cards */}
                         <div>
-                            <h3 className="text-[13px] font-bold text-[#1C1C1C] dark:text-white uppercase tracking-wider mb-4 pb-2 border-b border-gray-100 dark:border-white/10">
-                                {language === 'ar' ? 'الأكثر مبيعاً' : 'Best Sellers'}
+                            <h3 className="text-[15px] font-medium text-[rgb(46,46,46)] dark:text-white uppercase tracking-wider mb-4 pb-2 border-b border-gray-100 dark:border-white/10">
+                                {language === "ar" ? "الأكثر مبيعاً" : "Best Sellers"}
                             </h3>
-                            <div className="flex flex-col gap-3">
-                                {data.trendingProducts.length > 0 ? data.trendingProducts.map((product) => (
-                                    <Link
-                                        key={product.id}
-                                        href={`/products/${product.slug}`}
-                                        onClick={onClose}
-                                        className="group flex items-center gap-3 rounded-lg p-2 transition-colors hover:bg-gray-50 dark:hover:bg-white/5"
-                                    >
-                                        <div className="w-[60px] h-[60px] shrink-0 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-800">
-                                            <ResilientImage
-                                                src={getFirstImage(product.images)}
-                                                alt={product.name}
-                                                className="w-full h-full object-cover"
-                                                loading="lazy"
-                                            />
-                                        </div>
-                                        <div className="flex-1 min-w-0">
-                                            {product.brand && (
-                                                <p className="text-[10px] uppercase text-gray-400 dark:text-gray-500 tracking-wider mb-0.5">
-                                                    {product.brand.name}
-                                                </p>
-                                            )}
-                                            <p className="text-[13px] font-semibold text-[rgb(46,46,46)] dark:text-white truncate transition-colors">
-                                                <span className="inline bg-gradient-to-r from-current to-current bg-no-repeat bg-[length:0%_1px] bg-[position:0_90%] group-hover:bg-[length:100%_1px] transition-[background-size] duration-300">
-                                                    {product.name}
-                                                </span>
-                                            </p>
-                                            <div className="flex items-center gap-2 mt-0.5">
-                                                {product.discountPrice ? (
-                                                    <>
-                                                        <span className="text-[12px] font-bold text-[rgb(46,46,46)] dark:text-white">
-                                                            {formatPrice(product.discountPrice)}
-                                                        </span>
-                                                        <span className="text-[11px] text-gray-400 line-through">
-                                                            {formatPrice(product.price)}
-                                                        </span>
-                                                    </>
-                                                ) : (
-                                                    <span className="text-[12px] font-bold text-[rgb(46,46,46)] dark:text-white">
-                                                        {formatPrice(product.price)}
-                                                    </span>
-                                                )}
-                                            </div>
-                                        </div>
-                                    </Link>
-                                )) : (
-                                    <p className="text-[13px] text-gray-400 italic">
-                                        {language === 'ar' ? 'لا توجد منتجات رائجة' : 'No trending products'}
-                                    </p>
-                                )}
-                            </div>
+                            {visibleTrending.length > 0 ? (
+                                <div className="flex flex-row gap-3">
+                                    {visibleTrending.map((product) => (
+                                        <MiniProductCard
+                                            key={product.id}
+                                            product={product}
+                                            onClose={onClose}
+                                        />
+                                    ))}
+                                </div>
+                            ) : (
+                                <p className="text-[15px] font-medium text-[rgb(46,46,46)]/50 dark:text-gray-500">
+                                    {language === "ar" ? "لا توجد منتجات رائجة" : "No trending products"}
+                                </p>
+                            )}
                         </div>
-
                     </div>
-                </div>
-            </div>
+                </motion.div>
+            </motion.div>
         </div>
     );
 }

@@ -53,7 +53,7 @@ export default async function DepartmentPage(props: { params: Promise<{ slug: st
                 initialTotal={totalProducts}
                 activeCategory={null}
                 activeBrand={null}
-                activeMainCategoryId={department.id}
+                activeMainCategory={department}
             />
         </Suspense>
     );
