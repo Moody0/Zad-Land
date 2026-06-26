@@ -428,9 +428,9 @@ export default function SiteContentClient({
             <div className="flex-1 overflow-y-auto bg-background-light dark:bg-background-dark p-8">
                 <div className="max-w-4xl mx-auto">
                     {/* Currency Settings Section - Now First */}
-                    <div className="bg-surface-light dark:bg-surface-dark rounded-2xl border border-[#e6dbdf] dark:border-gray-700 p-8 mb-8">
+                    <div className="bg-surface-light dark:bg-surface-dark rounded-2xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] p-8 mb-8">
                         <div className="mb-6">
-                            <h2 className="text-2xl font-bold text-text-main dark:text-white mb-2">
+                            <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-text-main dark:text-white mb-2">
                                 {t('admin.currencySettings')}
                             </h2>
                             <p className="text-text-sub dark:text-gray-400">
@@ -449,7 +449,7 @@ export default function SiteContentClient({
                                         step="0.01"
                                         value={exchangeRate}
                                         onChange={(e) => setExchangeRate(Number(e.target.value))}
-                                        className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                        className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
                                     />
                                 </div>
                             </div>
@@ -483,9 +483,9 @@ export default function SiteContentClient({
                             />
 
                             {/* Middle Banner 1 Section */}
-                            <div className="bg-surface-light dark:bg-surface-dark rounded-2xl border border-[#e6dbdf] dark:border-gray-700 p-8">
+                            <div className="bg-surface-light dark:bg-surface-dark rounded-2xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] p-8">
                                 <div className="mb-6">
-                                    <h2 className="text-2xl font-bold text-text-main dark:text-white mb-2">
+                                    <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-text-main dark:text-white mb-2">
                                         {t('admin.middleBanner1') || "Middle Banner 1 (After Trending)"}
                                     </h2>
                                     <p className="text-text-sub dark:text-gray-400">
@@ -505,7 +505,7 @@ export default function SiteContentClient({
                                                 type="text"
                                                 value={middleBanner1Image}
                                                 onChange={(e) => setMiddleBanner1Image(e.target.value)}
-                                                className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                                className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
                                                 placeholder="https://..."
                                             />
                                         </div>
@@ -517,13 +517,13 @@ export default function SiteContentClient({
                                                 type="text"
                                                 value={middleBanner1Link}
                                                 onChange={(e) => setMiddleBanner1Link(e.target.value)}
-                                                className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                                className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
                                                 placeholder="/products/..."
                                             />
                                         </div>
                                     </div>
                                     {middleBanner1Image && (
-                                        <div className="relative aspect-[21/9] md:aspect-[21/6] rounded-xl overflow-hidden border border-[#e6dbdf] dark:border-gray-700">
+                                        <div className="relative aspect-[21/9] md:aspect-[21/6] rounded-xl overflow-hidden border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04]">
                                             <img src={middleBanner1Image} alt="Preview" className="w-full h-full object-cover" />
                                         </div>
                                     )}
@@ -531,9 +531,9 @@ export default function SiteContentClient({
                             </div>
 
                             {/* Middle Banner 2 Section */}
-                            <div className="bg-surface-light dark:bg-surface-dark rounded-2xl border border-[#e6dbdf] dark:border-gray-700 p-8">
+                            <div className="bg-surface-light dark:bg-surface-dark rounded-2xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] p-8">
                                 <div className="mb-6">
-                                    <h2 className="text-2xl font-bold text-text-main dark:text-white mb-2">
+                                    <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-text-main dark:text-white mb-2">
                                         {t('admin.middleBanner2') || "Middle Banner 2 (After Brands)"}
                                     </h2>
                                     <p className="text-text-sub dark:text-gray-400">
@@ -553,7 +553,7 @@ export default function SiteContentClient({
                                                 type="text"
                                                 value={middleBanner2Image}
                                                 onChange={(e) => setMiddleBanner2Image(e.target.value)}
-                                                className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                                className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
                                                 placeholder="https://..."
                                             />
                                         </div>
@@ -565,7 +565,7 @@ export default function SiteContentClient({
                                                 type="text"
                                                 value={middleBanner2Link}
                                                 onChange={(e) => setMiddleBanner2Link(e.target.value)}
-                                                className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                                className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
                                                 placeholder="/products/..."
                                             />
                                         </div>
@@ -578,7 +578,7 @@ export default function SiteContentClient({
                                                 type="text"
                                                 value={middleBanner2Title}
                                                 onChange={(e) => setMiddleBanner2Title(e.target.value)}
-                                                className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                                className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
                                             />
                                         </div>
                                         <div className="space-y-2">
@@ -587,7 +587,7 @@ export default function SiteContentClient({
                                                 type="text"
                                                 value={middleBanner2TitleAr}
                                                 onChange={(e) => setMiddleBanner2TitleAr(e.target.value)}
-                                                className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                                className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
                                                 dir="rtl"
                                             />
                                         </div>
@@ -599,7 +599,7 @@ export default function SiteContentClient({
                                             <textarea
                                                 value={middleBanner2Subtitle}
                                                 onChange={(e) => setMiddleBanner2Subtitle(e.target.value)}
-                                                className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none min-h-[80px]"
+                                                className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none min-h-[80px]"
                                             />
                                         </div>
                                         <div className="space-y-2">
@@ -607,7 +607,7 @@ export default function SiteContentClient({
                                             <textarea
                                                 value={middleBanner2SubtitleAr}
                                                 onChange={(e) => setMiddleBanner2SubtitleAr(e.target.value)}
-                                                className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none min-h-[80px]"
+                                                className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none min-h-[80px]"
                                                 dir="rtl"
                                             />
                                         </div>
@@ -620,7 +620,7 @@ export default function SiteContentClient({
                                                 type="text"
                                                 value={middleBanner2ButtonText}
                                                 onChange={(e) => setMiddleBanner2ButtonText(e.target.value)}
-                                                className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                                className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
                                             />
                                         </div>
                                         <div className="space-y-2">
@@ -629,14 +629,14 @@ export default function SiteContentClient({
                                                 type="text"
                                                 value={middleBanner2ButtonTextAr}
                                                 onChange={(e) => setMiddleBanner2ButtonTextAr(e.target.value)}
-                                                className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                                className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
                                                 dir="rtl"
                                             />
                                         </div>
                                     </div>
 
                                     {middleBanner2Image && (
-                                        <div className="relative aspect-[21/9] md:aspect-[21/6] rounded-xl overflow-hidden border border-[#e6dbdf] dark:border-gray-700 group">
+                                        <div className="relative aspect-[21/9] md:aspect-[21/6] rounded-xl overflow-hidden border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] group">
                                             <img src={middleBanner2Image} alt="Preview" className="w-full h-full object-cover" />
                                             {(middleBanner2Title || middleBanner2Subtitle) && (
                                                 <div className="absolute inset-0 bg-black/40 flex flex-col justify-center px-8 text-white">
@@ -673,9 +673,9 @@ export default function SiteContentClient({
                         </form>
 
                         {/* Categories Page CTA */}
-                        <div className="bg-surface-light dark:bg-surface-dark rounded-2xl border border-[#e6dbdf] dark:border-gray-700 p-8">
+                        <div className="bg-surface-light dark:bg-surface-dark rounded-2xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] p-8">
                             <div className="mb-8">
-                                <h2 className="text-2xl font-bold text-text-main dark:text-white mb-2">
+                                <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-text-main dark:text-white mb-2">
                                     {t('admin.categoriesPageCta')}
                                 </h2>
                                 <p className="text-text-sub dark:text-gray-400">
@@ -697,7 +697,7 @@ export default function SiteContentClient({
                                                 type="text"
                                                 value={ctaTitle}
                                                 onChange={(e) => setCtaTitle(e.target.value)}
-                                                className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                                className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
                                             />
                                         </div>
                                         <div className="space-y-2">
@@ -706,7 +706,7 @@ export default function SiteContentClient({
                                                 rows={5}
                                                 value={ctaDesc}
                                                 onChange={(e) => setCtaDesc(e.target.value)}
-                                                className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
+                                                className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
                                             />
                                         </div>
                                     </div>
@@ -723,7 +723,7 @@ export default function SiteContentClient({
                                                 type="text"
                                                 value={ctaTitleAr}
                                                 onChange={(e) => setCtaTitleAr(e.target.value)}
-                                                className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                                className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
                                             />
                                         </div>
                                         <div className="space-y-2">
@@ -732,14 +732,14 @@ export default function SiteContentClient({
                                                 rows={5}
                                                 value={ctaDescAr}
                                                 onChange={(e) => setCtaDescAr(e.target.value)}
-                                                className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
+                                                className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
                                             />
                                         </div>
                                     </div>
                                 </div>
 
                                 {/* Image Settings */}
-                                <div className="border-t border-[#e6dbdf] dark:border-gray-700 pt-8 mt-8">
+                                <div className="border-t border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] pt-8 mt-8">
                                     <div className="flex items-center gap-2 mb-6">
                                         <MdImage className="text-primary text-xl" />
                                         <h3 className="font-bold text-text-main dark:text-white text-lg">{t('admin.ctaImage')}</h3>
@@ -759,7 +759,7 @@ export default function SiteContentClient({
                                                     value={ctaImage}
                                                     onChange={(e) => setCtaImage(e.target.value)}
                                                     placeholder="https://example.com/image.jpg"
-                                                    className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
                                                 />
                                                 <p className="text-xs text-text-sub dark:text-gray-400">
                                                     {t('admin.ctaImageDescription')}
@@ -769,7 +769,7 @@ export default function SiteContentClient({
 
                                         <div className="space-y-2">
                                             <label className="text-sm font-bold text-text-main dark:text-white">{t('admin.preview')}</label>
-                                            <div className="aspect-video rounded-2xl border-2 border-dashed border-[#e6dbdf] dark:border-gray-700 overflow-hidden bg-background-light dark:bg-gray-800 flex items-center justify-center">
+                                            <div className="aspect-video rounded-2xl border-2 border-dashed border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] overflow-hidden bg-background-light dark:bg-gray-800 flex items-center justify-center">
                                                 {ctaImage ? (
                                                     <img 
                                                         src={ctaImage} 
@@ -812,9 +812,9 @@ export default function SiteContentClient({
                         </div>
 
                         {/* Shipping & Returns Page Content */}
-                        <div className="bg-surface-light dark:bg-surface-dark rounded-2xl border border-[#e6dbdf] dark:border-gray-700 p-8">
+                        <div className="bg-surface-light dark:bg-surface-dark rounded-2xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] p-8">
                             <div className="mb-8">
-                                <h2 className="text-2xl font-bold text-text-main dark:text-white mb-2">
+                                <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-text-main dark:text-white mb-2">
                                     {t('admin.shippingReturnsContent')}
                                 </h2>
                                 <p className="text-text-sub dark:text-gray-400">
@@ -844,7 +844,7 @@ export default function SiteContentClient({
                                                     value={shippingReturnsImage}
                                                     onChange={(e) => setShippingReturnsImage(e.target.value)}
                                                     placeholder="https://example.com/image.jpg"
-                                                    className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
                                                 />
                                                 <p className="text-xs text-text-sub dark:text-gray-400">
                                                     {t('admin.shippingReturnsImageHint')}
@@ -854,7 +854,7 @@ export default function SiteContentClient({
 
                                         <div className="space-y-2">
                                             <label className="text-sm font-bold text-text-main dark:text-white">{t('admin.preview')}</label>
-                                            <div className="aspect-video rounded-2xl border-2 border-dashed border-[#e6dbdf] dark:border-gray-700 overflow-hidden bg-background-light dark:bg-gray-800 flex items-center justify-center">
+                                            <div className="aspect-video rounded-2xl border-2 border-dashed border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] overflow-hidden bg-background-light dark:bg-gray-800 flex items-center justify-center">
                                                 {shippingReturnsImage ? (
                                                     <img 
                                                         src={shippingReturnsImage} 
@@ -876,7 +876,7 @@ export default function SiteContentClient({
                                 </div>
 
                                 {/* 1. Verification Section */}
-                                <div className="space-y-6 border-t border-[#e6dbdf] dark:border-gray-700 pt-8">
+                                <div className="space-y-6 border-t border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] pt-8">
                                     <div className="flex items-center gap-2 mb-2">
                                         <MdVerified className="text-primary text-xl" />
                                         <h3 className="font-bold text-text-main dark:text-white text-lg">{t('admin.verificationSection')}</h3>
@@ -893,7 +893,7 @@ export default function SiteContentClient({
                                                     type="text"
                                                     value={verificationTitle}
                                                     onChange={(e) => setVerificationTitle(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
                                                 />
                                             </div>
                                             <div className="space-y-2">
@@ -902,7 +902,7 @@ export default function SiteContentClient({
                                                     rows={3}
                                                     value={verificationDesc}
                                                     onChange={(e) => setVerificationDesc(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
+                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
                                                 />
                                             </div>
                                         </div>
@@ -917,7 +917,7 @@ export default function SiteContentClient({
                                                     type="text"
                                                     value={verificationTitleAr}
                                                     onChange={(e) => setVerificationTitleAr(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
                                                 />
                                             </div>
                                             <div className="space-y-2">
@@ -926,7 +926,7 @@ export default function SiteContentClient({
                                                     rows={3}
                                                     value={verificationDescAr}
                                                     onChange={(e) => setVerificationDescAr(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
+                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
                                                 />
                                             </div>
                                         </div>
@@ -934,7 +934,7 @@ export default function SiteContentClient({
                                 </div>
 
                                 {/* 2. Shipping Times */}
-                                <div className="space-y-6 border-t border-[#e6dbdf] dark:border-gray-700 pt-8">
+                                <div className="space-y-6 border-t border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] pt-8">
                                     <div className="flex items-center gap-2 mb-2">
                                         <MdSchedule className="text-primary text-xl" />
                                         <h3 className="font-bold text-text-main dark:text-white text-lg">{t('admin.shippingTimes')}</h3>
@@ -947,7 +947,7 @@ export default function SiteContentClient({
                                                 value={standardShippingTime}
                                                 onChange={(e) => setStandardShippingTime(e.target.value)}
                                                 placeholder="e.g. 3-5 Business Days"
-                                                className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                                className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
                                             />
                                         </div>
                                         <div className="space-y-2">
@@ -957,14 +957,14 @@ export default function SiteContentClient({
                                                 value={expressShippingTime}
                                                 onChange={(e) => setExpressShippingTime(e.target.value)}
                                                 placeholder="e.g. 1-2 Business Days"
-                                                className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                                className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
                                             />
                                         </div>
                                     </div>
                                 </div>
 
                                 {/* 3. Shipping Section */}
-                                <div className="space-y-6 border-t border-[#e6dbdf] dark:border-gray-700 pt-8">
+                                <div className="space-y-6 border-t border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] pt-8">
                                     <div className="flex items-center gap-2 mb-2">
                                         <MdLocalShipping className="text-primary text-xl" />
                                         <h3 className="font-bold text-text-main dark:text-white text-lg">{t('admin.shippingSection')}</h3>
@@ -981,7 +981,7 @@ export default function SiteContentClient({
                                                     type="text"
                                                     value={shippingTitle}
                                                     onChange={(e) => setShippingTitle(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
                                                 />
                                             </div>
                                             <div className="space-y-2">
@@ -990,7 +990,7 @@ export default function SiteContentClient({
                                                     rows={3}
                                                     value={shippingDesc}
                                                     onChange={(e) => setShippingDesc(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
+                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
                                                 />
                                             </div>
                                         </div>
@@ -1005,7 +1005,7 @@ export default function SiteContentClient({
                                                     type="text"
                                                     value={shippingTitleAr}
                                                     onChange={(e) => setShippingTitleAr(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
                                                 />
                                             </div>
                                             <div className="space-y-2">
@@ -1014,7 +1014,7 @@ export default function SiteContentClient({
                                                     rows={3}
                                                     value={shippingDescAr}
                                                     onChange={(e) => setShippingDescAr(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
+                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
                                                 />
                                             </div>
                                         </div>
@@ -1022,7 +1022,7 @@ export default function SiteContentClient({
                                 </div>
 
                                 {/* 4. Final Sale Section */}
-                                <div className="space-y-6 border-t border-[#e6dbdf] dark:border-gray-700 pt-8">
+                                <div className="space-y-6 border-t border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] pt-8">
                                     <div className="flex items-center gap-2 mb-2">
                                         <MdWarning className="text-primary text-xl" />
                                         <h3 className="font-bold text-text-main dark:text-white text-lg">{t('admin.finalSaleSection')}</h3>
@@ -1039,7 +1039,7 @@ export default function SiteContentClient({
                                                     type="text"
                                                     value={finalSaleTitle}
                                                     onChange={(e) => setFinalSaleTitle(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
                                                 />
                                             </div>
                                             <div className="space-y-2">
@@ -1048,7 +1048,7 @@ export default function SiteContentClient({
                                                     rows={3}
                                                     value={finalSaleDesc}
                                                     onChange={(e) => setFinalSaleDesc(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
+                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
                                                 />
                                             </div>
                                         </div>
@@ -1063,7 +1063,7 @@ export default function SiteContentClient({
                                                     type="text"
                                                     value={finalSaleTitleAr}
                                                     onChange={(e) => setFinalSaleTitleAr(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
                                                 />
                                             </div>
                                             <div className="space-y-2">
@@ -1072,7 +1072,7 @@ export default function SiteContentClient({
                                                     rows={3}
                                                     value={finalSaleDescAr}
                                                     onChange={(e) => setFinalSaleDescAr(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
+                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
                                                 />
                                             </div>
                                         </div>
@@ -1080,7 +1080,7 @@ export default function SiteContentClient({
                                 </div>
 
                                 {/* 5. Hygiene Section */}
-                                <div className="space-y-6 border-t border-[#e6dbdf] dark:border-gray-700 pt-8">
+                                <div className="space-y-6 border-t border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] pt-8">
                                     <div className="flex items-center gap-2 mb-2">
                                         <MdCleanHands className="text-primary text-xl" />
                                         <h3 className="font-bold text-text-main dark:text-white text-lg">{t('admin.hygieneProtocols')}</h3>
@@ -1097,7 +1097,7 @@ export default function SiteContentClient({
                                                     type="text"
                                                     value={hygieneTitle}
                                                     onChange={(e) => setHygieneTitle(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
                                                 />
                                             </div>
                                             <div className="space-y-2">
@@ -1106,7 +1106,7 @@ export default function SiteContentClient({
                                                     rows={3}
                                                     value={hygieneDesc}
                                                     onChange={(e) => setHygieneDesc(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
+                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
                                                 />
                                             </div>
                                         </div>
@@ -1121,7 +1121,7 @@ export default function SiteContentClient({
                                                     type="text"
                                                     value={hygieneTitleAr}
                                                     onChange={(e) => setHygieneTitleAr(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
                                                 />
                                             </div>
                                             <div className="space-y-2">
@@ -1130,7 +1130,7 @@ export default function SiteContentClient({
                                                     rows={3}
                                                     value={hygieneDescAr}
                                                     onChange={(e) => setHygieneDescAr(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
+                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
                                                 />
                                             </div>
                                         </div>
@@ -1138,7 +1138,7 @@ export default function SiteContentClient({
                                 </div>
 
                                 {/* 6. Returns Section */}
-                                <div className="space-y-6 border-t border-[#e6dbdf] dark:border-gray-700 pt-8">
+                                <div className="space-y-6 border-t border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] pt-8">
                                     <div className="flex items-center gap-2 mb-2">
                                         <MdAssignmentReturn className="text-primary text-xl" />
                                         <h3 className="font-bold text-text-main dark:text-white text-lg">{t('admin.returnsSection')}</h3>
@@ -1155,7 +1155,7 @@ export default function SiteContentClient({
                                                     type="text"
                                                     value={returnsTitle}
                                                     onChange={(e) => setReturnsTitle(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
                                                 />
                                             </div>
                                             <div className="space-y-2">
@@ -1164,7 +1164,7 @@ export default function SiteContentClient({
                                                     rows={3}
                                                     value={returnsDesc}
                                                     onChange={(e) => setReturnsDesc(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
+                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
                                                 />
                                             </div>
                                         </div>
@@ -1179,7 +1179,7 @@ export default function SiteContentClient({
                                                     type="text"
                                                     value={returnsTitleAr}
                                                     onChange={(e) => setReturnsTitleAr(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
                                                 />
                                             </div>
                                             <div className="space-y-2">
@@ -1188,7 +1188,7 @@ export default function SiteContentClient({
                                                     rows={3}
                                                     value={returnsDescAr}
                                                     onChange={(e) => setReturnsDescAr(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
+                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
                                                 />
                                             </div>
                                         </div>
@@ -1215,9 +1215,9 @@ export default function SiteContentClient({
                         </div>
 
                         {/* About Us Page Content */}
-                        <div className="bg-surface-light dark:bg-surface-dark rounded-2xl border border-[#e6dbdf] dark:border-gray-700 p-8">
+                        <div className="bg-surface-light dark:bg-surface-dark rounded-2xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] p-8">
                             <div className="mb-8">
-                                <h2 className="text-2xl font-bold text-text-main dark:text-white mb-2">
+                                <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-text-main dark:text-white mb-2">
                                     {t('admin.aboutUsContent')}
                                 </h2>
                                 <p className="text-text-sub dark:text-gray-400">
@@ -1245,7 +1245,7 @@ export default function SiteContentClient({
                                                     type="text"
                                                     value={aboutHeroTitle}
                                                     onChange={(e) => setAboutHeroTitle(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
                                                 />
                                             </div>
                                             <div className="space-y-2">
@@ -1254,7 +1254,7 @@ export default function SiteContentClient({
                                                     rows={3}
                                                     value={aboutHeroSubtitle}
                                                     onChange={(e) => setAboutHeroSubtitle(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
+                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
                                                 />
                                             </div>
                                         </div>
@@ -1269,7 +1269,7 @@ export default function SiteContentClient({
                                                     type="text"
                                                     value={aboutHeroTitleAr}
                                                     onChange={(e) => setAboutHeroTitleAr(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
                                                 />
                                             </div>
                                             <div className="space-y-2">
@@ -1278,7 +1278,7 @@ export default function SiteContentClient({
                                                     rows={3}
                                                     value={aboutHeroSubtitleAr}
                                                     onChange={(e) => setAboutHeroSubtitleAr(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
+                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
                                                 />
                                             </div>
                                         </div>
@@ -1300,10 +1300,10 @@ export default function SiteContentClient({
                                                         value={aboutHeroImage}
                                                         onChange={(e) => setAboutHeroImage(e.target.value)}
                                                         placeholder="https://example.com/image.jpg"
-                                                        className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                                        className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
                                                     />
                                                 </div>
-                                                <div className="w-32 aspect-video rounded-xl border border-[#e6dbdf] dark:border-gray-700 overflow-hidden bg-background-light dark:bg-gray-800 flex items-center justify-center">
+                                                <div className="w-32 aspect-video rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] overflow-hidden bg-background-light dark:bg-gray-800 flex items-center justify-center">
                                                     {aboutHeroImage ? (
                                                         <img 
                                                             src={aboutHeroImage} 
@@ -1323,7 +1323,7 @@ export default function SiteContentClient({
                                 </div>
 
                                 {/* Narrative Section */}
-                                <div className="space-y-6 border-t border-[#e6dbdf] dark:border-gray-700 pt-8">
+                                <div className="space-y-6 border-t border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] pt-8">
                                     <div className="flex items-center gap-2 mb-6">
                                         <MdAssignmentReturn className="text-primary text-xl" />
                                         <h3 className="font-bold text-text-main dark:text-white text-lg">{t('admin.narrativeSection')}</h3>
@@ -1341,7 +1341,7 @@ export default function SiteContentClient({
                                                     type="text"
                                                     value={aboutNarrativeFounded}
                                                     onChange={(e) => setAboutNarrativeFounded(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
                                                 />
                                             </div>
                                             <div className="space-y-2">
@@ -1350,7 +1350,7 @@ export default function SiteContentClient({
                                                     type="text"
                                                     value={aboutNarrativeTitle}
                                                     onChange={(e) => setAboutNarrativeTitle(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
                                                 />
                                             </div>
                                             <div className="space-y-2">
@@ -1359,7 +1359,7 @@ export default function SiteContentClient({
                                                     rows={4}
                                                     value={aboutNarrativeDesc1}
                                                     onChange={(e) => setAboutNarrativeDesc1(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
+                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
                                                 />
                                             </div>
                                             <div className="space-y-2">
@@ -1368,7 +1368,7 @@ export default function SiteContentClient({
                                                     rows={4}
                                                     value={aboutNarrativeDesc2}
                                                     onChange={(e) => setAboutNarrativeDesc2(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
+                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
                                                 />
                                             </div>
                                             <div className="space-y-2">
@@ -1377,7 +1377,7 @@ export default function SiteContentClient({
                                                     type="text"
                                                     value={aboutNarrativeQuote}
                                                     onChange={(e) => setAboutNarrativeQuote(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
                                                 />
                                             </div>
                                         </div>
@@ -1392,7 +1392,7 @@ export default function SiteContentClient({
                                                     type="text"
                                                     value={aboutNarrativeFoundedAr}
                                                     onChange={(e) => setAboutNarrativeFoundedAr(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
                                                 />
                                             </div>
                                             <div className="space-y-2">
@@ -1401,7 +1401,7 @@ export default function SiteContentClient({
                                                     type="text"
                                                     value={aboutNarrativeTitleAr}
                                                     onChange={(e) => setAboutNarrativeTitleAr(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
                                                 />
                                             </div>
                                             <div className="space-y-2">
@@ -1410,7 +1410,7 @@ export default function SiteContentClient({
                                                     rows={4}
                                                     value={aboutNarrativeDesc1Ar}
                                                     onChange={(e) => setAboutNarrativeDesc1Ar(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
+                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
                                                 />
                                             </div>
                                             <div className="space-y-2">
@@ -1419,7 +1419,7 @@ export default function SiteContentClient({
                                                     rows={4}
                                                     value={aboutNarrativeDesc2Ar}
                                                     onChange={(e) => setAboutNarrativeDesc2Ar(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
+                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
                                                 />
                                             </div>
                                             <div className="space-y-2">
@@ -1428,7 +1428,7 @@ export default function SiteContentClient({
                                                     type="text"
                                                     value={aboutNarrativeQuoteAr}
                                                     onChange={(e) => setAboutNarrativeQuoteAr(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
                                                 />
                                             </div>
                                         </div>
@@ -1450,10 +1450,10 @@ export default function SiteContentClient({
                                                         value={aboutNarrativeImage}
                                                         onChange={(e) => setAboutNarrativeImage(e.target.value)}
                                                         placeholder="https://example.com/image.jpg"
-                                                        className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                                        className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
                                                     />
                                                 </div>
-                                                <div className="w-32 aspect-video rounded-xl border border-[#e6dbdf] dark:border-gray-700 overflow-hidden bg-background-light dark:bg-gray-800 flex items-center justify-center">
+                                                <div className="w-32 aspect-video rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] overflow-hidden bg-background-light dark:bg-gray-800 flex items-center justify-center">
                                                     {aboutNarrativeImage ? (
                                                         <img 
                                                             src={aboutNarrativeImage} 

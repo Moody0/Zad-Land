@@ -94,6 +94,60 @@
     display: none;
     /* Chrome, Safari and Opera */
   }
+
+  .hover-underline-animated {
+    background-image: linear-gradient(to right, currentColor, currentColor);
+    background-repeat: no-repeat;
+    background-position: 100% 100%;
+    background-size: 0% 1px;
+    transition: background-size 0.3s ease;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
+  
+  .hover-underline-animated:hover {
+    background-position: 0% 100%;
+    background-size: 100% 1px;
+  }
+
+  .rtl .hover-underline-animated,
+  [dir="rtl"] .hover-underline-animated,
+  .hover-underline-animated:dir(rtl) {
+    background-position: 0% 100%;
+  }
+
+  .rtl .hover-underline-animated:hover,
+  [dir="rtl"] .hover-underline-animated:hover,
+  .hover-underline-animated:dir(rtl):hover {
+    background-position: 100% 100%;
+  }
+
+  .group-hover-underline-animated {
+    background-image: linear-gradient(to right, currentColor, currentColor);
+    background-repeat: no-repeat;
+    background-position: 100% 100%;
+    background-size: 0% 1px;
+    transition: background-size 0.3s ease;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
+
+  .group:hover .group-hover-underline-animated {
+    background-position: 0% 100%;
+    background-size: 100% 1px;
+  }
+
+  .rtl .group-hover-underline-animated,
+  [dir="rtl"] .group-hover-underline-animated,
+  .group-hover-underline-animated:dir(rtl) {
+    background-position: 0% 100%;
+  }
+
+  .group:hover .rtl .group-hover-underline-animated,
+  [dir="rtl"] .group:hover .group-hover-underline-animated,
+  .group:hover .group-hover-underline-animated:dir(rtl) {
+    background-position: 100% 100%;
+  }
 }
 
 @layer base {

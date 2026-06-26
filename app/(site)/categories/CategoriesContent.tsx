@@ -38,7 +38,7 @@ export default function CategoriesContent({ categories, siteSettings }: Categori
         <main className="w-full pb-20">
             <nav className="container-custom pt-8 pb-4">
                 <ul className="flex items-center gap-2 text-xs font-medium text-text-muted-light dark:text-text-muted-dark uppercase tracking-widest">
-                    <li><Link className="hover:text-primary transition-colors" href="/">{t('common.home')}</Link></li>
+                    <li><Link className="hover-underline-animated transition-colors" href="/">{t('common.home')}</Link></li>
                     <li><MdChevronRight className="text-[14px] rtl:rotate-180" /></li>
                     <li className="text-text-main-light dark:text-text-main-dark">{t('categoriesPage.allCategories')}</li>
                 </ul>
@@ -83,3 +83,4 @@ export default function CategoriesContent({ categories, siteSettings }: Categori
         </main>
     );
 }
+

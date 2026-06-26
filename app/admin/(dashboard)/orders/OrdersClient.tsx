@@ -101,7 +101,7 @@ export default function OrdersClient({ orders }: { orders: Order[] }) {
 
     const SortIcon = ({ column }: { column: string }) => {
         return (
-            <span className={`inline-flex flex-col ml-1 ${sortConfig.key === column ? 'text-primary' : 'text-gray-300'}`}>
+            <span className={`inline-flex flex-col ms-1 ${sortConfig.key === column ? 'text-primary' : 'text-gray-300'}`}>
                 <MdArrowUpward className={`w-3 h-3 -mb-1 ${sortConfig.key === column && sortConfig.direction === 'asc' ? 'text-primary' : 'text-gray-300'}`} />
                 <MdArrowDownward className={`w-3 h-3 ${sortConfig.key === column && sortConfig.direction === 'desc' ? 'text-primary' : 'text-gray-300'}`} />
             </span>
@@ -170,44 +170,44 @@ export default function OrdersClient({ orders }: { orders: Order[] }) {
 
                     {/* Stats Grid */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        <div className="bg-surface-light dark:bg-surface-dark p-6 rounded-xl border border-[#e6dbdf] dark:border-gray-700 shadow-sm">
+                        <div className="bg-surface-light dark:bg-surface-dark p-6 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] shadow-sm">
                             <div className="flex justify-between items-start mb-4">
                                 <div className="p-3 bg-amber-50 dark:bg-amber-900/20 text-amber-600 rounded-lg">
                                     <MdPendingActions className="text-2xl" />
                                 </div>
                             </div>
                             <p className="text-text-sub dark:text-gray-400 text-sm font-medium">{t('admin.pendingOrders')}</p>
-                            <h3 className="text-text-main dark:text-white text-2xl font-bold mt-1">{stats.pending}</h3>
+                            <h3 className="text-text-main dark:text-white text-2xl md:text-3xl font-bold tracking-tight mt-1">{stats.pending}</h3>
                         </div>
 
-                        <div className="bg-surface-light dark:bg-surface-dark p-6 rounded-xl border border-[#e6dbdf] dark:border-gray-700 shadow-sm">
+                        <div className="bg-surface-light dark:bg-surface-dark p-6 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] shadow-sm">
                             <div className="flex justify-between items-start mb-4">
                                 <div className="p-3 bg-blue-50 dark:bg-blue-900/20 text-blue-600 rounded-lg">
                                     <MdLocalShipping className="text-2xl" />
                                 </div>
                             </div>
                             <p className="text-text-sub dark:text-gray-400 text-sm font-medium">{t('admin.shippedToday')}</p>
-                            <h3 className="text-text-main dark:text-white text-2xl font-bold mt-1">{stats.shippedToday}</h3>
+                            <h3 className="text-text-main dark:text-white text-2xl md:text-3xl font-bold tracking-tight mt-1">{stats.shippedToday}</h3>
                         </div>
 
-                        <div className="bg-surface-light dark:bg-surface-dark p-6 rounded-xl border border-[#e6dbdf] dark:border-gray-700 shadow-sm">
+                        <div className="bg-surface-light dark:bg-surface-dark p-6 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] shadow-sm">
                             <div className="flex justify-between items-start mb-4">
                                 <div className="p-3 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 rounded-lg">
                                     <MdTaskAlt className="text-2xl" />
                                 </div>
                             </div>
                             <p className="text-text-sub dark:text-gray-400 text-sm font-medium">{t('admin.deliveredMtd')}</p>
-                            <h3 className="text-text-main dark:text-white text-2xl font-bold mt-1">{stats.deliveredMTD}</h3>
+                            <h3 className="text-text-main dark:text-white text-2xl md:text-3xl font-bold tracking-tight mt-1">{stats.deliveredMTD}</h3>
                         </div>
 
-                        <div className="bg-surface-light dark:bg-surface-dark p-6 rounded-xl border border-[#e6dbdf] dark:border-gray-700 shadow-sm">
+                        <div className="bg-surface-light dark:bg-surface-dark p-6 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] shadow-sm">
                             <div className="flex justify-between items-start mb-4">
                                 <div className="p-3 bg-primary/10 text-primary rounded-lg">
                                     <MdPayments className="text-2xl" />
                                 </div>
                             </div>
                             <p className="text-text-sub dark:text-gray-400 text-sm font-medium">{t('admin.totalRevenue')}</p>
-                            <h3 className="text-text-main dark:text-white text-2xl font-bold mt-1">
+                            <h3 className="text-text-main dark:text-white text-2xl md:text-3xl font-bold tracking-tight mt-1">
                                 ${stats.totalRevenue.toLocaleString(undefined, { minimumFractionDigits: 2 })}
                             </h3>
                         </div>
@@ -217,7 +217,7 @@ export default function OrdersClient({ orders }: { orders: Order[] }) {
                         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                             <div className="flex items-center gap-4">
                                 <h3 className="text-text-main dark:text-white text-lg font-bold">{t('admin.allOrders')} ({filteredOrders.length})</h3>
-                                <div className="flex bg-white dark:bg-surface-dark rounded-lg p-1 border border-[#e6dbdf] dark:border-gray-700">
+                                <div className="flex bg-white dark:bg-surface-dark rounded-lg p-1 border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04]">
                                     <button
                                         onClick={() => setFilter("ALL")}
                                         className={`px-3 py-1 text-xs font-bold rounded-md transition-all ${filter === "ALL" ? "bg-primary text-white shadow-sm" : "text-text-sub hover:text-text-main"}`}
@@ -258,65 +258,65 @@ export default function OrdersClient({ orders }: { orders: Order[] }) {
                             isDeleting={selectedOrder ? deletingId === selectedOrder.id : false}
                         />
 
-                        <div className="bg-surface-light dark:bg-surface-dark rounded-xl border border-[#e6dbdf] dark:border-gray-700 shadow-sm overflow-hidden">
+                        <div className="bg-surface-light dark:bg-surface-dark rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] shadow-sm overflow-hidden">
                             <div className="overflow-x-auto">
-                                <table className={`w-full border-collapse ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
+                                <table className={`w-full border-collapse ${dir === 'rtl' ? 'text-end' : 'text-start'}`}>
                                     <thead>
-                                        <tr className="border-b border-[#e6dbdf] dark:border-gray-700 bg-background-light/50 dark:bg-gray-800/50">
-                                            <th className={`p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400 cursor-pointer select-none group`} onClick={() => handleSort('id')}>
+                                        <tr className="border-b border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-gray-50/50 dark:bg-gray-800/20">
+                                            <th className={`p-4 text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400 cursor-pointer select-none group`} onClick={() => handleSort('id')}>
                                                 <div className="flex items-center">
                                                     {t('admin.orderId')}
-                                                    <span className={`flex flex-col ml-1 ${dir === 'rtl' ? 'mr-1 ml-0' : 'ml-1'}`}>
+                                                    <span className={`flex flex-col ms-1 ${dir === 'rtl' ? 'me-1 ms-0' : 'ms-1'}`}>
                                                         <MdArrowUpward className={`w-2.5 h-2.5 -mb-0.5 ${sortConfig.key === 'id' && sortConfig.direction === 'asc' ? 'text-primary' : 'text-gray-300'}`} />
                                                         <MdArrowDownward className={`w-2.5 h-2.5 ${sortConfig.key === 'id' && sortConfig.direction === 'desc' ? 'text-primary' : 'text-gray-300'}`} />
                                                     </span>
                                                 </div>
                                             </th>
-                                            <th className={`p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400 cursor-pointer select-none group`} onClick={() => handleSort('Name')}>
+                                            <th className={`p-4 text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400 cursor-pointer select-none group`} onClick={() => handleSort('Name')}>
                                                 <div className="flex items-center">
                                                     {t('admin.customerName')}
-                                                    <span className={`flex flex-col ml-1 ${dir === 'rtl' ? 'mr-1 ml-0' : 'ml-1'}`}>
+                                                    <span className={`flex flex-col ms-1 ${dir === 'rtl' ? 'me-1 ms-0' : 'ms-1'}`}>
                                                         <MdArrowUpward className={`w-2.5 h-2.5 -mb-0.5 ${sortConfig.key === 'Name' && sortConfig.direction === 'asc' ? 'text-primary' : 'text-gray-300'}`} />
                                                         <MdArrowDownward className={`w-2.5 h-2.5 ${sortConfig.key === 'Name' && sortConfig.direction === 'desc' ? 'text-primary' : 'text-gray-300'}`} />
                                                     </span>
                                                 </div>
                                             </th>
-                                            <th className={`p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400 cursor-pointer select-none group`} onClick={() => handleSort('createdAt')}>
+                                            <th className={`p-4 text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400 cursor-pointer select-none group`} onClick={() => handleSort('createdAt')}>
                                                 <div className="flex items-center">
                                                     {t('admin.date')}
-                                                    <span className={`flex flex-col ml-1 ${dir === 'rtl' ? 'mr-1 ml-0' : 'ml-1'}`}>
+                                                    <span className={`flex flex-col ms-1 ${dir === 'rtl' ? 'me-1 ms-0' : 'ms-1'}`}>
                                                         <MdArrowUpward className={`w-2.5 h-2.5 -mb-0.5 ${sortConfig.key === 'createdAt' && sortConfig.direction === 'asc' ? 'text-primary' : 'text-gray-300'}`} />
                                                         <MdArrowDownward className={`w-2.5 h-2.5 ${sortConfig.key === 'createdAt' && sortConfig.direction === 'desc' ? 'text-primary' : 'text-gray-300'}`} />
                                                     </span>
                                                 </div>
                                             </th>
-                                            <th className={`p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400 cursor-pointer select-none group`} onClick={() => handleSort('totalAmount')}>
+                                            <th className={`p-4 text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400 cursor-pointer select-none group`} onClick={() => handleSort('totalAmount')}>
                                                 <div className="flex items-center">
                                                     {t('admin.totalAmount')}
-                                                    <span className={`flex flex-col ml-1 ${dir === 'rtl' ? 'mr-1 ml-0' : 'ml-1'}`}>
+                                                    <span className={`flex flex-col ms-1 ${dir === 'rtl' ? 'me-1 ms-0' : 'ms-1'}`}>
                                                         <MdArrowUpward className={`w-2.5 h-2.5 -mb-0.5 ${sortConfig.key === 'totalAmount' && sortConfig.direction === 'asc' ? 'text-primary' : 'text-gray-300'}`} />
                                                         <MdArrowDownward className={`w-2.5 h-2.5 ${sortConfig.key === 'totalAmount' && sortConfig.direction === 'desc' ? 'text-primary' : 'text-gray-300'}`} />
                                                     </span>
                                                 </div>
                                             </th>
-                                            <th className={`p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400`}>{t('admin.products')}</th>
-                                            <th className={`p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400 cursor-pointer select-none group`} onClick={() => handleSort('status')}>
+                                            <th className={`p-4 text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400`}>{t('admin.products')}</th>
+                                            <th className={`p-4 text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400 cursor-pointer select-none group`} onClick={() => handleSort('status')}>
                                                 <div className="flex items-center">
                                                     {t('admin.orderStatus')}
-                                                    <span className={`flex flex-col ml-1 ${dir === 'rtl' ? 'mr-1 ml-0' : 'ml-1'}`}>
+                                                    <span className={`flex flex-col ms-1 ${dir === 'rtl' ? 'me-1 ms-0' : 'ms-1'}`}>
                                                         <MdArrowUpward className={`w-2.5 h-2.5 -mb-0.5 ${sortConfig.key === 'status' && sortConfig.direction === 'asc' ? 'text-primary' : 'text-gray-300'}`} />
                                                         <MdArrowDownward className={`w-2.5 h-2.5 ${sortConfig.key === 'status' && sortConfig.direction === 'desc' ? 'text-primary' : 'text-gray-300'}`} />
                                                     </span>
                                                 </div>
                                             </th>
-                                            <th className={`p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400 ${dir === 'rtl' ? 'text-left' : 'text-right'}`}>{t('admin.actions')}</th>
+                                            <th className={`p-4 text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400 ${dir === 'rtl' ? 'text-start' : 'text-end'}`}>{t('admin.actions')}</th>
                                         </tr>
                                     </thead>
-                                    <tbody className="divide-y divide-[#e6dbdf] dark:divide-gray-700">
+                                    <tbody className="divide-y divide-black/[0.04] dark:divide-white/[0.04] dark:divide-gray-700">
                                         {filteredOrders.map((order) => {
                                             const statusColor = getStatusColor(order.status);
                                             return (
-                                                <tr key={order.id} className="hover:bg-background-light dark:hover:bg-gray-800/50 transition-colors">
+                                                <tr key={order.id} className="hover:bg-gray-50/50 dark:hover:bg-white/[0.02]/50 transition-colors">
                                                     <td className="p-4 text-sm font-bold text-text-main dark:text-white">#{order.id.slice(-6).toUpperCase()}</td>
                                                     <td className="p-4">
                                                         <div className="flex flex-col gap-0.5">
@@ -326,7 +326,7 @@ export default function OrdersClient({ orders }: { orders: Order[] }) {
                                                     <td className="p-4 text-sm text-text-sub dark:text-gray-400">{new Date(order.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}</td>
                                                     <td className="p-4 text-sm font-bold text-text-main dark:text-white">${Number(order.totalAmount).toFixed(2)}</td>
                                                     <td className="p-4">
-                                                        <span className="text-xs font-medium text-text-sub bg-background-light dark:bg-gray-800 px-2.5 py-1 rounded-lg border border-[#e6dbdf] dark:border-gray-700 max-w-[150px] truncate block">
+                                                        <span className="text-xs font-medium text-text-sub bg-background-light dark:bg-gray-800 px-2.5 py-1 rounded-lg border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] max-w-[150px] truncate block">
                                                             {order.items.map(i => i.product?.name).join(', ') || t('admin.unknown')}
                                                         </span>
                                                     </td>
@@ -336,12 +336,12 @@ export default function OrdersClient({ orders }: { orders: Order[] }) {
                                                                 value={order.status}
                                                                 disabled={updatingId === order.id || !canManage}
                                                                 onChange={(e) => handleStatusUpdate(order.id, e.target.value)}
-                                                                className={`appearance-none pl-11 pr-12 py-3.5 rounded-2xl text-xs font-bold transition-all outline-none border shadow-sm hover:shadow-md cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${statusColor === "blue" ? "text-blue-600 bg-blue-50/50 border-blue-100 dark:text-blue-300 dark:bg-blue-900/20 dark:border-blue-800" :
+                                                                className={`appearance-none ps-11 pe-12 py-3.5 rounded-2xl text-xs font-bold transition-all outline-none border shadow-sm hover:shadow-md cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed ${statusColor === "blue" ? "text-blue-600 bg-blue-50/50 border-blue-100 dark:text-blue-300 dark:bg-blue-900/20 dark:border-blue-800" :
                                                                     statusColor === "amber" ? "text-amber-600 bg-amber-50/50 border-amber-100 dark:text-amber-300 dark:bg-amber-900/20 dark:border-amber-800" :
                                                                         statusColor === "emerald" ? "text-emerald-600 bg-emerald-50/50 border-emerald-100 dark:text-emerald-300 dark:bg-emerald-900/20 dark:border-emerald-800" :
                                                                             statusColor === "red" ? "text-red-600 bg-red-50/50 border-red-100 dark:text-red-300 dark:bg-red-900/20 dark:border-red-800" :
                                                                                 statusColor === "purple" ? "text-purple-600 bg-purple-50/50 border-purple-100 dark:text-purple-300 dark:bg-purple-900/20 dark:border-purple-800" :
-                                                                                    "text-gray-600 bg-gray-50/50 border-gray-100 dark:text-gray-300 dark:bg-gray-800 dark:border-gray-700"
+                                                                                    "text-gray-600 bg-gray-50/50 border-gray-100 dark:text-gray-300 dark:bg-gray-800 dark:border-white/[0.04]"
                                                                     }`}
                                                             >
                                                                 <option value="PENDING" className="bg-white dark:bg-surface-dark text-amber-600">{t('admin.pending')}</option>
@@ -352,7 +352,7 @@ export default function OrdersClient({ orders }: { orders: Order[] }) {
                                                             </select>
                                                             
                                                             {/* Status Dot */}
-                                                            <div className={`absolute ${dir === 'rtl' ? 'right-5' : 'left-5'} top-1/2 -translate-y-1/2 flex items-center pointer-events-none`}>
+                                                            <div className={`absolute ${dir === 'rtl' ? 'end-5' : 'start-5'} top-1/2 -translate-y-1/2 flex items-center pointer-events-none`}>
                                                                 <span className={`size-2.5 rounded-full ${statusColor === "blue" ? "bg-blue-500 animate-pulse" :
                                                                     statusColor === "amber" ? "bg-amber-500" :
                                                                         statusColor === "emerald" ? "bg-emerald-500" :
@@ -362,7 +362,7 @@ export default function OrdersClient({ orders }: { orders: Order[] }) {
                                                             </div>
 
                                                             {/* Arrow Icon */}
-                                                            <div className={`absolute ${dir === 'rtl' ? 'left-3' : 'right-3'} top-1/2 -translate-y-1/2 flex items-center pointer-events-none transition-transform group-hover:translate-y-[-40%] duration-200`}>
+                                                            <div className={`absolute ${dir === 'rtl' ? 'start-3' : 'end-3'} top-1/2 -translate-y-1/2 flex items-center pointer-events-none transition-transform group-hover:translate-y-[-40%] duration-200`}>
                                                                 {updatingId === order.id ? (
                                                                     <MdSync className="text-[18px] text-current opacity-70 animate-spin" />
                                                                 ) : (
@@ -371,7 +371,7 @@ export default function OrdersClient({ orders }: { orders: Order[] }) {
                                                             </div>
                                                         </div>
                                                     </td>
-                                                    <td className={`p-4 ${dir === 'rtl' ? 'text-left' : 'text-right'}`}>
+                                                    <td className={`p-4 ${dir === 'rtl' ? 'text-start' : 'text-end'}`}>
                                                         <div className={`flex items-center gap-2 ${dir === 'rtl' ? 'justify-start' : 'justify-end'}`}>
                                                             <button
                                                                 onClick={() => handleViewDetails(order)}
@@ -408,16 +408,16 @@ export default function OrdersClient({ orders }: { orders: Order[] }) {
                                     </tbody>
                                 </table>
                             </div>
-                            <div className="p-4 border-t border-[#e6dbdf] dark:border-gray-700 bg-background-light/30 dark:bg-gray-800/30 flex items-center justify-between">
+                            <div className="p-4 border-t border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-background-light/30 dark:bg-gray-800/30 flex items-center justify-between">
                                 <p className="text-xs text-text-sub dark:text-gray-400 font-medium">
                                     {t('admin.showingEntries').replace('{count}', filteredOrders.length.toString()).replace('{total}', orders.length.toString())}
                                 </p>
                                 <div className="flex items-center gap-2">
-                                    <button className="size-8 flex items-center justify-center rounded-lg border border-[#e6dbdf] dark:border-gray-700 text-text-sub hover:bg-white dark:hover:bg-gray-800 transition-colors">
+                                    <button className="size-8 flex items-center justify-center rounded-lg border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] text-text-sub hover:bg-white dark:hover:bg-gray-800 transition-colors">
                                         <MdChevronLeft className={`text-[18px] ${dir === 'rtl' ? 'rotate-180' : ''}`} />
                                     </button>
                                     <button className="size-8 flex items-center justify-center rounded-lg bg-primary text-white text-xs font-bold">1</button>
-                                    <button className="size-8 flex items-center justify-center rounded-lg border border-[#e6dbdf] dark:border-gray-700 text-text-sub hover:bg-white dark:hover:bg-gray-800 transition-colors">
+                                    <button className="size-8 flex items-center justify-center rounded-lg border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] text-text-sub hover:bg-white dark:hover:bg-gray-800 transition-colors">
                                         <MdChevronRight className={`text-[18px] ${dir === 'rtl' ? 'rotate-180' : ''}`} />
                                     </button>
                                 </div>

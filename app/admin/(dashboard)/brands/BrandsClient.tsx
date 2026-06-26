@@ -89,27 +89,27 @@ export default function BrandsClient({ brands }: { brands: Brand[] }) {
         <div className="flex flex-1 flex-col overflow-hidden">
             <AdminHeader title={t("admin.brands")} onMenuClick={openSidebar} />
 
-            <div className="flex-1 overflow-y-auto bg-background-light p-8 dark:bg-background-dark">
-                <div className="mx-auto max-w-[1200px]">
+            <div className="flex-1 overflow-y-auto bg-[#fafafa] dark:bg-[#111111] p-6 md:p-10">
+                <div className="mx-auto max-w-[1400px]">
                     <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                         <div>
-                            <h2 className="text-2xl font-bold text-text-main dark:text-white">{t("admin.brandManagement")}</h2>
+                            <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-text-main dark:text-white">{t("admin.brandManagement")}</h2>
                             <p className="mt-1 text-text-sub dark:text-gray-400">{t("admin.manageBrands")}</p>
                         </div>
                         <div className="flex flex-col gap-3 sm:flex-row">
                             <div className="relative">
-                                <MdSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-xl text-text-sub/60" />
+                                <MdSearch className="absolute start-3 top-1/2 -translate-y-1/2 text-xl text-text-sub/60" />
                                 <input
                                     value={searchQuery}
                                     onChange={(event) => setSearchQuery(event.target.value)}
                                     placeholder={t("admin.searchBrands")}
-                                    className="h-11 w-full rounded-xl border border-[#e6dbdf] bg-white pl-10 pr-4 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary dark:border-gray-700 dark:bg-surface-dark dark:text-white sm:w-64"
+                                    className="h-11 w-full rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-white dark:bg-surface-dark ps-10 pe-4 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary dark:border-white/[0.04] dark:bg-surface-dark dark:text-white sm:w-64"
                                 />
                             </div>
                             <select
                                 value={groupFilter}
                                 onChange={(event) => setGroupFilter(event.target.value)}
-                                className="h-11 rounded-xl border border-[#e6dbdf] bg-white px-4 text-sm font-medium outline-none focus:border-primary focus:ring-1 focus:ring-primary dark:border-gray-700 dark:bg-surface-dark dark:text-white"
+                                className="h-11 rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-white px-4 text-sm font-medium outline-none focus:border-primary focus:ring-1 focus:ring-primary dark:border-white/[0.04] dark:bg-surface-dark dark:text-white"
                             >
                                 <option value="ALL">{t("admin.allBrands")}</option>
                                 <option value="MAIN">{t("brands.mainBrands")}</option>
@@ -132,7 +132,7 @@ export default function BrandsClient({ brands }: { brands: Brand[] }) {
 
                     <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
                         {filteredBrands.map((brand) => (
-                            <article key={brand.id} className="overflow-hidden rounded-xl border border-[#e6dbdf] bg-white shadow-sm transition-all hover:shadow-lg dark:border-gray-700 dark:bg-surface-dark">
+                            <article key={brand.id} className="overflow-hidden rounded-2xl border border-black/[0.04] dark:border-white/[0.04] bg-white dark:bg-surface-dark shadow-[0_4px_20px_-4px_rgba(0,0,0,0.02)] transition-all duration-300 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.04)]">
                                 <div className="flex h-36 items-center justify-center bg-gray-50 dark:bg-gray-800">
                                     {brand.image ? (
                                         <img src={brand.image} alt={brand.name} className="h-full w-full object-contain" />
@@ -160,7 +160,7 @@ export default function BrandsClient({ brands }: { brands: Brand[] }) {
                                         <span className="rounded-full bg-gray-100 px-3 py-1 dark:bg-gray-800">{brand._count.categories} {t("admin.categories")}</span>
                                     </div>
 
-                                    <div className="flex items-center justify-end gap-2 border-t border-[#e6dbdf] pt-4 dark:border-gray-700">
+                                    <div className="flex items-center justify-end gap-2 border-t border-black/[0.04] dark:border-white/[0.04] pt-4 dark:border-white/[0.04]">
                                         {canManage && (
                                             <button onClick={() => handleToggleActive(brand)} className="rounded-lg p-2 text-text-sub transition-colors hover:bg-primary/10 hover:text-primary" title={t("admin.active")}>
                                                 {loadingMap[`active:${brand.id}`] ? <MdSync className="animate-spin text-xl" /> : brand.isActive ? <MdToggleOn className="text-2xl text-emerald-500" /> : <MdToggleOff className="text-2xl" />}

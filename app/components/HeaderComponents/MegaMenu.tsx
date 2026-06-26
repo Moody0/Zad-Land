@@ -212,10 +212,10 @@ export default function MegaMenu({ data, onClose, onMouseEnter, onMouseLeave }: 
                             <ul className="flex flex-col gap-2">
                                 {data.brands.length > 0 ? data.brands.map((brand) => (
                                     <li key={brand.id}>
-                                        <Link
-                                            href={`/brands/${brand.slug}`}
+                                        <Link 
+                                            href={`/brands/${brand.slug}`} 
                                             onClick={onClose}
-                                            className="text-[15px] font-medium text-[rgb(46,46,46)] dark:text-gray-300 hover:text-black dark:hover:text-white leading-relaxed inline bg-gradient-to-r from-current to-current bg-no-repeat bg-[length:0%_1px] bg-[position:0_90%] hover:bg-[length:100%_1px] transition-[background-size,color] duration-300"
+                                            className="text-[15px] font-medium text-[rgb(46,46,46)] dark:text-gray-300 hover:text-black dark:hover:text-white leading-relaxed inline hover-underline-animated"
                                         >
                                             {brand.name}
                                         </Link>
@@ -236,10 +236,10 @@ export default function MegaMenu({ data, onClose, onMouseEnter, onMouseLeave }: 
                             <ul className="flex flex-col gap-2">
                                 {data.categories.length > 0 ? data.categories.map((cat) => (
                                     <li key={cat.id}>
-                                        <Link
-                                            href={`/categories/${cat.slug}`}
+                                        <Link 
+                                            href={`/department/${data.slug}?category=${cat.slug}`} 
                                             onClick={onClose}
-                                            className="text-[15px] font-medium text-[rgb(46,46,46)] dark:text-gray-300 hover:text-black dark:hover:text-white leading-relaxed inline bg-gradient-to-r from-current to-current bg-no-repeat bg-[length:0%_1px] bg-[position:0_90%] hover:bg-[length:100%_1px] transition-[background-size,color] duration-300"
+                                            className="text-[15px] font-medium text-[rgb(46,46,46)] dark:text-gray-300 hover:text-black dark:hover:text-white leading-relaxed inline hover-underline-animated"
                                         >
                                             {cat.name}
                                         </Link>
@@ -260,10 +260,10 @@ export default function MegaMenu({ data, onClose, onMouseEnter, onMouseLeave }: 
                             <ul className="flex flex-col gap-2">
                                 {data.topProducts.length > 0 ? data.topProducts.map((product) => (
                                     <li key={product.id}>
-                                        <Link
-                                            href={`/products/${product.slug}`}
+                                        <Link 
+                                            href={`/products/${product.slug}`} 
                                             onClick={onClose}
-                                            className="text-[15px] font-medium text-[rgb(46,46,46)] dark:text-gray-300 hover:text-black dark:hover:text-white leading-relaxed line-clamp-1 inline bg-gradient-to-r from-current to-current bg-no-repeat bg-[length:0%_1px] bg-[position:0_90%] hover:bg-[length:100%_1px] transition-[background-size,color] duration-300"
+                                            className="text-[15px] font-medium text-[rgb(46,46,46)] dark:text-gray-300 hover:text-black dark:hover:text-white leading-relaxed line-clamp-1 inline hover-underline-animated"
                                         >
                                             {product.name}
                                         </Link>
@@ -275,10 +275,10 @@ export default function MegaMenu({ data, onClose, onMouseEnter, onMouseLeave }: 
                                 )}
                                 {data.topProducts.length > 0 && (
                                     <li className="mt-2">
-                                        <Link
-                                            href={`/department/${data.slug}`}
+                                        <Link 
+                                            href={`/department/${data.slug}`} 
                                             onClick={onClose}
-                                            className="text-[15px] font-medium text-[rgb(46,46,46)] dark:text-white inline bg-gradient-to-r from-current to-current bg-no-repeat bg-[length:0%_1px] bg-[position:0_90%] hover:bg-[length:100%_1px] transition-[background-size] duration-300"
+                                            className="text-[15px] font-medium text-[rgb(46,46,46)] dark:text-white inline hover-underline-animated"
                                         >
                                             {language === "ar" ? "عرض كل المنتجات ←" : "View All →"}
                                         </Link>

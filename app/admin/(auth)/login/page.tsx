@@ -43,34 +43,39 @@ export default function AdminLoginPage() {
     };
 
     const isRtl = dir === "rtl";
-    const inputPadding = isRtl ? "pr-11 pl-4" : "pl-11 pr-4";
+    const inputPadding = isRtl ? "pe-11 ps-4" : "ps-11 pe-4";
 
     return (
         <div
-            className="bg-background-light dark:bg-background-dark min-h-screen flex items-center justify-center p-6 relative overflow-hidden"
+            className="min-h-screen flex items-center justify-center p-6 relative overflow-hidden bg-[#fafafa] dark:bg-[#111111]"
             dir={dir}
         >
-            <div className="absolute top-6 right-6 z-20">
+            <div className="absolute top-8 end-8 z-20">
                 <LanguageToggle />
             </div>
-            <div className="w-full max-w-[440px] z-10">
-                <div className="bg-surface-light dark:bg-surface-dark rounded-2xl border border-[#e6dbdf] dark:border-white/10 p-10 md:p-12">
+            <div className="w-full max-w-[420px] z-10">
+                <div className="bg-white dark:bg-surface-dark rounded-[24px] border border-black/[0.04] dark:border-white/[0.04] shadow-[0_8px_30px_-4px_rgba(0,0,0,0.04)] dark:shadow-none p-10 md:p-12 transition-all">
                     {/* Header */}
-                    <div className="flex flex-col items-center mb-10">
-                        <img
-                            src="/Ruby-Beauty-Logo.jpeg"
-                            alt="Ruby Beauty"
-                            className="h-24 w-24 object-cover rounded-full mb-4"
-                        />
-                        <h1 className="text-text-main dark:text-white text-2xl font-extrabold tracking-tight">
-                            {t("admin.login.title")}
+                    <div className="flex flex-col items-center mb-10 text-center">
+                        <div className="w-16 h-16 bg-black/5 dark:bg-white/5 rounded-2xl mb-6 p-2 flex items-center justify-center shadow-inner">
+                            <img
+                                src="/Ruby-Beauty-Logo.jpeg"
+                                alt="Ruby Beauty"
+                                className="h-full w-full object-contain rounded-xl"
+                            />
+                        </div>
+                        <h1 className="text-text-main dark:text-white text-2xl font-bold tracking-tight">
+                            {t("admin.login.welcomeBack")}
                         </h1>
+                        <p className="text-text-sub dark:text-gray-400 text-sm mt-2 font-medium">
+                            {t("admin.login.subtitle")}
+                        </p>
                     </div>
 
                     {/* Form */}
                     <form onSubmit={handleSubmit} className="space-y-6">
                         {error && (
-                            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 text-red-600 dark:text-red-400 px-4 py-3 rounded-xl text-sm">
+                            <div className="bg-red-50/80 dark:bg-red-900/10 border border-red-100 dark:border-red-900/30 text-red-600 dark:text-red-400 px-4 py-3 rounded-xl text-sm font-medium">
                                 {error}
                             </div>
                         )}
@@ -78,17 +83,17 @@ export default function AdminLoginPage() {
                         {/* Username Field */}
                         <div className="space-y-2">
                             <label
-                                className={`text-xs font-bold uppercase tracking-widest text-text-sub dark:text-white/60 ${isRtl ? "mr-1" : "ml-1"}`}
+                                className={`text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400 ${isRtl ? "me-1" : "ms-1"}`}
                                 htmlFor="username"
                             >
                                 {t("admin.login.username")}
                             </label>
-                            <div className="relative">
-                                <span className={`absolute inset-y-0 ${isRtl ? "right-0" : "left-0"} flex items-center ${isRtl ? "pr-4" : "pl-4"} text-text-sub/60 dark:text-white/40`}>
+                            <div className="relative group">
+                                <span className={`absolute inset-y-0 ${isRtl ? "end-0" : "start-0"} flex items-center ${isRtl ? "pe-4" : "ps-4"} text-gray-400 group-focus-within:text-primary transition-colors`}>
                                     <MdPerson className="text-[20px]" />
                                 </span>
                                 <input
-                                    className={`w-full ${inputPadding} py-3.5 bg-background-light dark:bg-background-dark border border-[#e6dbdf] dark:border-white/10 rounded-xl focus:ring-4 focus:ring-primary/10 focus:border-primary text-text-main dark:text-white placeholder:text-text-sub/40 dark:placeholder:text-white/30 transition-all outline-none`}
+                                    className={`w-full ${inputPadding} py-3.5 bg-gray-50/50 dark:bg-black/20 border border-black/[0.04] dark:border-white/[0.04] rounded-xl focus:bg-white dark:focus:bg-surface-dark focus:ring-4 focus:ring-primary/10 focus:border-primary text-text-main dark:text-white placeholder:text-gray-400 transition-all outline-none font-medium`}
                                     id="username"
                                     placeholder={t("admin.login.usernamePlaceholder")}
                                     type="text"
@@ -103,18 +108,18 @@ export default function AdminLoginPage() {
                         <div className="space-y-2">
                             <div className="flex justify-between items-center px-1">
                                 <label
-                                    className="text-xs font-bold uppercase tracking-widest text-text-sub dark:text-white/60"
+                                    className="text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400"
                                     htmlFor="password"
                                 >
                                     {t("admin.login.password")}
                                 </label>
                             </div>
-                            <div className="relative">
-                                <span className={`absolute inset-y-0 ${isRtl ? "right-0" : "left-0"} flex items-center ${isRtl ? "pr-4" : "pl-4"} text-text-sub/60 dark:text-white/40`}>
+                            <div className="relative group">
+                                <span className={`absolute inset-y-0 ${isRtl ? "end-0" : "start-0"} flex items-center ${isRtl ? "pe-4" : "ps-4"} text-gray-400 group-focus-within:text-primary transition-colors`}>
                                     <MdLock className="text-[20px]" />
                                 </span>
                                 <input
-                                    className={`w-full ${inputPadding} py-3.5 bg-background-light dark:bg-background-dark border border-[#e6dbdf] dark:border-white/10 rounded-xl focus:ring-4 focus:ring-primary/10 focus:border-primary text-text-main dark:text-white placeholder:text-text-sub/40 dark:placeholder:text-white/30 transition-all outline-none`}
+                                    className={`w-full ${inputPadding} py-3.5 bg-gray-50/50 dark:bg-black/20 border border-black/[0.04] dark:border-white/[0.04] rounded-xl focus:bg-white dark:focus:bg-surface-dark focus:ring-4 focus:ring-primary/10 focus:border-primary text-text-main dark:text-white placeholder:text-gray-400 transition-all outline-none font-medium`}
                                     id="password"
                                     placeholder={t("admin.login.passwordPlaceholder")}
                                     type="password"
@@ -126,15 +131,15 @@ export default function AdminLoginPage() {
                         </div>
 
                         {/* Remember Me */}
-                        <div className="flex items-center justify-between">
+                        <div className="flex items-center justify-between pt-1">
                             <label className="flex items-center gap-2 cursor-pointer group">
                                 <input
-                                    className="w-4 h-4 rounded border-[#e6dbdf] dark:border-white/20 text-primary focus:ring-primary/20 transition-all"
+                                    className="w-4 h-4 rounded border-black/10 dark:border-white/10 text-primary focus:ring-primary/20 transition-all"
                                     type="checkbox"
                                     checked={rememberMe}
                                     onChange={(e) => setRememberMe(e.target.checked)}
                                 />
-                                <span className="text-sm text-text-sub dark:text-white/60 group-hover:text-text-main dark:group-hover:text-white transition-colors">
+                                <span className="text-sm font-medium text-text-sub dark:text-gray-400 group-hover:text-text-main dark:group-hover:text-gray-200 transition-colors">
                                     {t("admin.login.rememberMe")}
                                 </span>
                             </label>
@@ -142,7 +147,7 @@ export default function AdminLoginPage() {
 
                         {/* Submit Button */}
                         <button
-                            className="w-full bg-primary hover:bg-primary-hover text-white font-bold py-4 rounded-xl transition-all transform active:scale-[0.98] mt-4 disabled:opacity-50 disabled:cursor-not-allowed"
+                            className="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-xl transition-all transform active:scale-[0.98] mt-4 disabled:opacity-50 disabled:cursor-not-allowed"
                             type="submit"
                             disabled={loading}
                         >

@@ -28,7 +28,7 @@ const CurrencyToggle = () => {
         <div className="relative inline-block text-left" ref={dropdownRef}>
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="flex items-center gap-1 px-2 py-1.5 rounded-lg text-sm font-medium text-text-main-light dark:text-white hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+                className="flex items-center gap-1 px-2 py-1.5 rounded-lg text-[13px] font-bold text-[#072835] dark:text-white hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
                 aria-haspopup="true"
                 aria-expanded={isOpen}
             >
@@ -39,27 +39,37 @@ const CurrencyToggle = () => {
             </button>
 
             {isOpen && (
-                <div className="absolute right-0 mt-2 w-24 rounded-md shadow-lg bg-white dark:bg-[#2d161e] ring-1 ring-black ring-opacity-5 z-50">
-                    <div className="py-1" role="menu" aria-orientation="vertical">
+                <div className="absolute right-0 mt-2 w-28 rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-gray-100 bg-white dark:bg-[#1a1517] dark:border-white/10 z-50 p-1.5 origin-top-right transition-all">
+                    <div className="flex flex-col gap-1" role="menu" aria-orientation="vertical">
                         <button
                             onClick={() => {
                                 setCurrency('SYP');
                                 setIsOpen(false);
                             }}
-                            className={`block w-full text-left px-4 py-2 text-sm ${currency === 'SYP' ? 'bg-primary/10 text-primary font-bold' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10'}`}
+                            className={`flex items-center justify-between w-full px-3 py-2.5 rounded-lg text-[13px] transition-all ${currency === 'SYP' ? 'bg-[#FAFAFA] dark:bg-white/10 text-[#072835] dark:text-white font-bold' : 'text-gray-600 dark:text-gray-400 hover:bg-[#FAFAFA] dark:hover:bg-white/5 hover-underline-animated dark:hover:text-white font-medium'}`}
                             role="menuitem"
                         >
-                            {language === 'ar' ? 'ل.س' : 'SYP'}
+                            <span>{language === 'ar' ? 'ل.س' : 'SYP'}</span>
+                            {currency === 'SYP' && (
+                                <svg className="w-3.5 h-3.5" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M11.6666 3.5L5.24992 9.91667L2.33325 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                </svg>
+                            )}
                         </button>
                         <button
                             onClick={() => {
                                 setCurrency('USD');
                                 setIsOpen(false);
                             }}
-                            className={`block w-full text-left px-4 py-2 text-sm ${currency === 'USD' ? 'bg-primary/10 text-primary font-bold' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-white/10'}`}
+                            className={`flex items-center justify-between w-full px-3 py-2.5 rounded-lg text-[13px] transition-all ${currency === 'USD' ? 'bg-[#FAFAFA] dark:bg-white/10 text-[#072835] dark:text-white font-bold' : 'text-gray-600 dark:text-gray-400 hover:bg-[#FAFAFA] dark:hover:bg-white/5 hover-underline-animated dark:hover:text-white font-medium'}`}
                             role="menuitem"
                         >
-                            USD
+                            <span>USD</span>
+                            {currency === 'USD' && (
+                                <svg className="w-3.5 h-3.5" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M11.6666 3.5L5.24992 9.91667L2.33325 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                </svg>
+                            )}
                         </button>
                     </div>
                 </div>
@@ -69,3 +79,4 @@ const CurrencyToggle = () => {
 };
 
 export default CurrencyToggle;
+

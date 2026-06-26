@@ -160,7 +160,7 @@ export default function AddProductModal({ isOpen, onClose, categories, brands, p
             <div className="relative bg-white dark:bg-surface-dark w-full max-w-3xl rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
 
                 {/* Header */}
-                <div className="px-8 py-6 border-b border-[#e6dbdf] dark:border-gray-700 flex items-center justify-between">
+                <div className="px-8 py-6 border-b border-black/[0.04] dark:border-white/[0.04] flex items-center justify-between">
                     <div>
                         <h3 className="text-2xl font-extrabold text-text-main dark:text-white tracking-tight">
                             {product ? t("admin.addProductModal.titleEdit") : t("admin.addProductModal.titleAdd")}
@@ -182,7 +182,7 @@ export default function AddProductModal({ isOpen, onClose, categories, brands, p
 
                     {/* Images Section */}
                     <div className="space-y-4">
-                        <label className="text-sm font-bold text-text-main dark:text-white">
+                        <label className="text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400">
                             {t("admin.addProductModal.productImages")}
                             <span className="block text-[10px] text-primary/70 font-normal">
                                 {t('admin.recommendedResolution')}: {t('admin.resProduct')}
@@ -193,12 +193,12 @@ export default function AddProductModal({ isOpen, onClose, categories, brands, p
                         {formData.images && (
                             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-4">
                                 {formData.images.split(',').filter(Boolean).map((url, index) => (
-                                    <div key={index} className="relative aspect-square rounded-xl border border-[#e6dbdf] dark:border-gray-700 overflow-hidden group">
+                                    <div key={index} className="relative aspect-square rounded-xl border border-black/[0.04] dark:border-white/[0.04] overflow-hidden group">
                                         <img src={url} alt={`${t("admin.addProductModal.imagePreviewAlt")} ${index}`} className="w-full h-full object-cover" />
                                         
                                         {/* Main Image Badge */}
                                         {index === 0 && (
-                                            <div className="absolute top-2 left-2 bg-primary text-white text-[10px] font-bold px-2 py-1 rounded-full shadow-sm z-10">
+                                            <div className="absolute top-2 start-2 bg-primary text-white text-[10px] font-bold px-2 py-1 rounded-full shadow-sm z-10">
                                                 {language === 'ar' ? 'الرئيسية' : 'Main'}
                                             </div>
                                         )}
@@ -206,7 +206,7 @@ export default function AddProductModal({ isOpen, onClose, categories, brands, p
                                         <button
                                             type="button"
                                             onClick={() => removeImage(url)}
-                                            className="absolute top-1 right-1 size-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                                            className="absolute top-1 end-1 size-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10"
                                         >
                                             <MdClose className="text-xs" />
                                         </button>
@@ -219,7 +219,7 @@ export default function AddProductModal({ isOpen, onClose, categories, brands, p
                             {/* Image Link Input */}
                             <div className="flex gap-2">
                                 <input
-                                    className="flex-1 h-12 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-background-light dark:bg-gray-800 focus:bg-white dark:focus:bg-gray-900 focus:ring-1 focus:ring-primary focus:border-primary transition-all px-4 text-sm font-medium dark:text-white outline-none"
+                                    className="flex-1 h-12 rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-gray-50/50 dark:bg-black/20 focus:bg-white dark:focus:bg-surface-dark focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all px-4 text-sm font-medium dark:text-white outline-none"
                                     placeholder={t("admin.addProductModal.pasteImageUrlPlaceholder")}
                                     type="text"
                                     value={imageLink}
@@ -240,11 +240,11 @@ export default function AddProductModal({ isOpen, onClose, categories, brands, p
                     {/* Product Basic Info */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="md:col-span-2 space-y-2">
-                            <label className="text-sm font-bold text-text-main dark:text-white flex items-center gap-1">
+                            <label className="text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400 flex items-center gap-1">
                                 {t("admin.addProductModal.productName")} <span className="text-primary">*</span>
                             </label>
                             <input
-                                className="w-full h-12 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-background-light dark:bg-gray-800 focus:bg-white dark:focus:bg-gray-900 focus:ring-1 focus:ring-primary focus:border-primary transition-all px-4 text-sm font-medium dark:text-white outline-none"
+                                className="w-full h-12 rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-gray-50/50 dark:bg-black/20 focus:bg-white dark:focus:bg-surface-dark focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all px-4 text-sm font-medium dark:text-white outline-none"
                                 placeholder={t("admin.addProductModal.productNamePlaceholder")}
                                 type="text"
                                 required
@@ -254,9 +254,9 @@ export default function AddProductModal({ isOpen, onClose, categories, brands, p
                         </div>
 
                         <div className="md:col-span-2 space-y-2">
-                            <label className="text-sm font-bold text-text-main dark:text-white">{t("admin.addProductModal.description")}</label>
+                            <label className="text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400">{t("admin.addProductModal.description")}</label>
                             <textarea
-                                className="w-full rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-background-light dark:bg-gray-800 focus:bg-white dark:focus:bg-gray-900 focus:ring-1 focus:ring-primary focus:border-primary transition-all px-4 py-3 text-sm font-medium leading-relaxed dark:text-white outline-none"
+                                className="w-full rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-gray-50/50 dark:bg-black/20 focus:bg-white dark:focus:bg-surface-dark focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all px-4 py-3 text-sm font-medium leading-relaxed dark:text-white outline-none"
                                 placeholder={t("admin.addProductModal.descriptionPlaceholder")}
                                 rows={4}
                                 value={formData.description}
@@ -265,10 +265,10 @@ export default function AddProductModal({ isOpen, onClose, categories, brands, p
                         </div>
 
                         <div className="space-y-2">
-                            <label className="text-sm font-bold text-text-main dark:text-white">{t("admin.brands")} <span className="text-primary">*</span></label>
+                            <label className="text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400">{t("admin.brands")} <span className="text-primary">*</span></label>
                             <div className="relative">
                                 <select
-                                    className="w-full h-12 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-background-light dark:bg-gray-800 focus:bg-white dark:focus:bg-gray-900 focus:ring-1 focus:ring-primary focus:border-primary transition-all px-4 text-sm font-medium dark:text-white appearance-none outline-none cursor-pointer"
+                                    className="w-full h-12 rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-gray-50/50 dark:bg-black/20 focus:bg-white dark:focus:bg-surface-dark focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all px-4 text-sm font-medium dark:text-white appearance-none outline-none cursor-pointer"
                                     required
                                     value={formData.brandId}
                                     onChange={(e) => setFormData({ ...formData, brandId: e.target.value, categoryId: "" })}
@@ -278,15 +278,15 @@ export default function AddProductModal({ isOpen, onClose, categories, brands, p
                                         <option key={brand.id} value={brand.id}>{brand.name}</option>
                                     ))}
                                 </select>
-                                <MdExpandMore className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-text-sub text-[20px]" />
+                                <MdExpandMore className="absolute end-3 top-1/2 -translate-y-1/2 pointer-events-none text-text-sub text-[20px]" />
                             </div>
                         </div>
 
                         <div className="space-y-2">
-                            <label className="text-sm font-bold text-text-main dark:text-white">{t("admin.addProductModal.category")} <span className="text-primary">*</span></label>
+                            <label className="text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400">{t("admin.addProductModal.category")} <span className="text-primary">*</span></label>
                             <div className="relative">
                                 <select
-                                    className="w-full h-12 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-background-light dark:bg-gray-800 focus:bg-white dark:focus:bg-gray-900 focus:ring-1 focus:ring-primary focus:border-primary transition-all px-4 text-sm font-medium dark:text-white appearance-none outline-none cursor-pointer"
+                                    className="w-full h-12 rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-gray-50/50 dark:bg-black/20 focus:bg-white dark:focus:bg-surface-dark focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all px-4 text-sm font-medium dark:text-white appearance-none outline-none cursor-pointer"
                                     required
                                     value={formData.categoryId}
                                     onChange={(e) => setFormData({ ...formData, categoryId: e.target.value })}
@@ -296,16 +296,16 @@ export default function AddProductModal({ isOpen, onClose, categories, brands, p
                                         <option key={cat.id} value={cat.id}>{cat.name}</option>
                                     ))}
                                 </select>
-                                <MdExpandMore className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-text-sub text-[20px]" />
+                                <MdExpandMore className="absolute end-3 top-1/2 -translate-y-1/2 pointer-events-none text-text-sub text-[20px]" />
                             </div>
                         </div>
 
                         <div className="space-y-2">
-                            <label className="text-sm font-bold text-text-main dark:text-white">{t("admin.addProductModal.price")} <span className="text-primary">*</span></label>
+                            <label className="text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400">{t("admin.addProductModal.price")} <span className="text-primary">*</span></label>
                             <div className="relative">
-                                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-text-sub font-bold text-sm">$</span>
+                                <span className="absolute start-4 top-1/2 -translate-y-1/2 text-text-sub font-bold text-sm">$</span>
                                 <input
-                                    className="w-full h-12 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-background-light dark:bg-gray-800 focus:bg-white dark:focus:bg-gray-900 focus:ring-1 focus:ring-primary focus:border-primary transition-all pl-8 pr-4 text-sm font-bold dark:text-white outline-none"
+                                    className="w-full h-12 rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-gray-50/50 dark:bg-black/20 focus:bg-white dark:focus:bg-surface-dark focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all ps-8 pe-4 text-sm font-bold dark:text-white outline-none"
                                     placeholder={t("admin.addProductModal.pricePlaceholder")}
                                     step="0.01"
                                     type="number"
@@ -318,8 +318,8 @@ export default function AddProductModal({ isOpen, onClose, categories, brands, p
 
                         <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6 p-6 rounded-2xl bg-primary/5 dark:bg-primary/10 border border-primary/10">
                             <div className="space-y-2">
-                                <label className="text-sm font-bold text-text-main dark:text-white">{t("admin.addProductModal.discountType")}</label>
-                                <div className="flex bg-white dark:bg-gray-800 p-1 rounded-xl border border-[#e6dbdf] dark:border-gray-700">
+                                <label className="text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400">{t("admin.addProductModal.discountType")}</label>
+                                <div className="flex bg-white dark:bg-gray-800 p-1 rounded-xl border border-black/[0.04] dark:border-white/[0.04]">
                                     {(["NONE", "PERCENTAGE", "FIXED"] as const).map((type) => (
                                         <button
                                             key={type}
@@ -340,15 +340,15 @@ export default function AddProductModal({ isOpen, onClose, categories, brands, p
 
                             {formData.discountType !== "NONE" && (
                                 <div className="space-y-2 animate-in fade-in slide-in-from-top-2">
-                                    <label className="text-sm font-bold text-text-main dark:text-white">
+                                    <label className="text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400">
                                         {formData.discountType === "PERCENTAGE" ? t("admin.addProductModal.percentageDiscount") : t("admin.addProductModal.discountPrice")}
                                     </label>
                                     <div className="relative">
-                                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-text-sub font-bold text-sm">
+                                        <span className="absolute start-4 top-1/2 -translate-y-1/2 text-text-sub font-bold text-sm">
                                             {formData.discountType === "PERCENTAGE" ? "%" : "$"}
                                         </span>
                                         <input
-                                            className="w-full h-12 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-background-light dark:bg-gray-800 focus:bg-white dark:focus:bg-gray-900 focus:ring-1 focus:ring-primary focus:border-primary transition-all pl-8 pr-4 text-sm font-bold dark:text-white outline-none"
+                                            className="w-full h-12 rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-gray-50/50 dark:bg-black/20 focus:bg-white dark:focus:bg-surface-dark focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all ps-8 pe-4 text-sm font-bold dark:text-white outline-none"
                                             placeholder={formData.discountType === "PERCENTAGE" ? t("admin.addProductModal.percentagePlaceholder") : t("admin.addProductModal.discountPricePlaceholder")}
                                             step="0.01"
                                             type="number"
@@ -366,9 +366,9 @@ export default function AddProductModal({ isOpen, onClose, categories, brands, p
                         </div>
 
                         <div className="space-y-2">
-                            <label className="text-sm font-bold text-text-main dark:text-white">{t("admin.addProductModal.stockQuantity")}</label>
+                            <label className="text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400">{t("admin.addProductModal.stockQuantity")}</label>
                             <input
-                                className="w-full h-12 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-background-light dark:bg-gray-800 focus:bg-white dark:focus:bg-gray-900 focus:ring-1 focus:ring-primary focus:border-primary transition-all px-4 text-sm font-medium dark:text-white outline-none"
+                                className="w-full h-12 rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-gray-50/50 dark:bg-black/20 focus:bg-white dark:focus:bg-surface-dark focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all px-4 text-sm font-medium dark:text-white outline-none"
                                 placeholder={t("admin.addProductModal.stockPlaceholder")}
                                 type="number"
                                 value={formData.stock}
@@ -377,9 +377,9 @@ export default function AddProductModal({ isOpen, onClose, categories, brands, p
                         </div>
 
                         <div className="space-y-2">
-                            <label className="text-sm font-bold text-text-main dark:text-white">{t("admin.addProductModal.skuNumber")}</label>
+                            <label className="text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400">{t("admin.addProductModal.skuNumber")}</label>
                             <input
-                                className="w-full h-12 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-background-light dark:bg-gray-800 focus:bg-white dark:focus:bg-gray-900 focus:ring-1 focus:ring-primary focus:border-primary transition-all px-4 text-sm font-medium dark:text-white outline-none"
+                                className="w-full h-12 rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-gray-50/50 dark:bg-black/20 focus:bg-white dark:focus:bg-surface-dark focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all px-4 text-sm font-medium dark:text-white outline-none"
                                 placeholder={t("admin.addProductModal.skuPlaceholder")}
                                 type="text"
                                 value={formData.sku}
@@ -390,18 +390,18 @@ export default function AddProductModal({ isOpen, onClose, categories, brands, p
                 </form>
 
                 {/* Footer */}
-                <div className="px-8 py-6 bg-background-light dark:bg-gray-800/50 border-t border-[#e6dbdf] dark:border-gray-700 flex items-center justify-end gap-4">
+                <div className="px-8 py-6 bg-gray-50/50 dark:bg-black/20 border-t border-black/[0.04] dark:border-white/[0.04] flex items-center justify-end gap-4">
                     <button
                         type="button"
                         onClick={onClose}
-                        className="px-6 h-12 rounded-xl text-sm font-bold text-text-main dark:text-white hover:bg-white dark:hover:bg-gray-800 border border-transparent hover:border-[#e6dbdf] dark:hover:border-gray-700 transition-all"
+                        className="px-6 h-12 rounded-xl text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400 hover:bg-black/5 dark:hover:bg-white/5 border border-transparent hover:border-black/[0.04] dark:border-white/[0.04] dark:hover:border-gray-700 transition-all"
                     >
                         {t("admin.addProductModal.cancel")}
                     </button>
                     <button
                         onClick={handleSubmit}
                         disabled={isLoading}
-                        className="bg-primary hover:bg-primary/90 disabled:opacity-50 text-white h-12 px-8 rounded-xl font-bold text-sm flex items-center gap-2 transition-all transform hover:-translate-y-0.5 active:translate-y-0"
+                        className="bg-primary hover:bg-primary/90 disabled:opacity-50 text-white h-12 px-8 rounded-xl font-bold text-sm flex items-center gap-2 transition-all transform active:scale-[0.98]"
                     >
                         {isLoading ? (
                             <MdSync className="animate-spin text-[20px]" />

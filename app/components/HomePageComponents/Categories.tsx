@@ -49,8 +49,8 @@ const Categories = ({ categories, t, dir }: CategoriesProps) => {
                                 />
                             </div>
                             <div className="flex flex-col items-center text-center px-1">
-                                <h4 className="text-sm font-bold text-text-main-light dark:text-text-main-dark group-hover:text-primary transition-colors">
-                                    {category.name}
+                                <h4 className="text-sm font-bold text-text-main-light dark:text-text-main-dark transition-colors">
+                                    <span className="group-hover-underline-animated">{category.name}</span>
                                 </h4>
                                 <p className="text-[10px] text-text-muted-light dark:text-text-muted-dark line-clamp-1">
                                     {category.description || t('home.bestSeller')}
@@ -65,3 +65,4 @@ const Categories = ({ categories, t, dir }: CategoriesProps) => {
 }
 
 export default Categories
+

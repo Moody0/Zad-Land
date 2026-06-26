@@ -83,8 +83,8 @@ const ProductCard = ({ product, variant = 'default', badge, showBadge = true }: 
 
                 {/* Trending Badge or Custom Badge */}
                 {showBadge && (product.isTrending || badge) && (
-                    <div className="absolute top-1.5 right-1.5 md:top-4 md:right-4 z-20 pointer-events-none">
-                        <span className="bg-[#E676AE] text-white px-1 py-0 md:px-2.5 md:py-1 rounded-[2px] text-[8px] md:text-[11px] font-bold uppercase tracking-wide leading-none">
+                    <div className="absolute top-2 right-3 md:top-3 md:right-5 z-20 pointer-events-none">
+                        <span className="inline-block bg-[#C20059] text-white px-2 py-0.5 md:px-3 md:py-1 rounded text-[9px] md:text-[10px] font-medium tracking-wider uppercase shadow-md leading-tight">
                             {product.isTrending ? (language === 'ar' ? 'Trending' : 'Trending') : badge}
                         </span>
                     </div>
@@ -155,12 +155,11 @@ const ProductCard = ({ product, variant = 'default', badge, showBadge = true }: 
                         dir="ltr"
                         className={`text-[rgb(7,40,53)] dark:text-white text-[13px] md:text-[15px] font-semibold leading-tight mb-1 md:mb-2 line-clamp-2 font-sans tracking-normal ${dir === 'rtl' ? 'text-right' : 'text-left'}`}
                     >
-                        <Link
-                            href={`/products/${product.slug}`}
-                            className="inline bg-gradient-to-r from-current to-current bg-no-repeat bg-[length:0%_1px] bg-[position:0_100%] hover:bg-[length:100%_1px] transition-[background-size] duration-300"
-                        >
-                            {product.name}
-                        </Link>
+                        <span>
+                            <Link href={`/products/${product.slug}`} className="hover-underline-animated">
+                                {product.name}
+                            </Link>
+                        </span>
                     </h3>
 
                     {/* Price */}

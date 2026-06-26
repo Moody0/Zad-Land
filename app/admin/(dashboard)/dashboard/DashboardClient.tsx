@@ -6,7 +6,7 @@ import { useAdminSidebar } from "../../context/AdminSidebarContext";
 import { useState } from "react";
 import OrderDetailsModal from "../orders/OrderDetailsModal";
 import { useLanguage } from "@/app/context/LanguageContext";
-import { MdAttachMoney, MdShoppingBag, MdCheckroom, MdCategory, MdChevronRight, MdChevronLeft } from "react-icons/md";
+import { MdAttachMoney, MdShoppingBag, MdCheckroom, MdCategory, MdChevronRight, MdChevronLeft, MdTrendingUp, MdOutlineDateRange } from "react-icons/md";
 
 interface RecentOrder {
     id: string;
@@ -53,94 +53,116 @@ export default function DashboardClient({ stats }: { stats: DashboardStats }) {
     };
 
     return (
-        <div className="flex-1 flex flex-col overflow-hidden">
+        <div className="flex-1 flex flex-col overflow-hidden bg-[#fafafa] dark:bg-[#111111]">
             <AdminHeader title={t('admin.overview')} onMenuClick={openSidebar} />
 
             {/* Scrollable Dashboard Content */}
-            <div className="flex-1 overflow-y-auto bg-background-light dark:bg-background-dark p-4 md:p-8">
-                <div className="max-w-[1200px] mx-auto flex flex-col gap-6 md:gap-8">
+            <div className="flex-1 overflow-y-auto p-6 md:p-10">
+                <div className="max-w-[1400px] mx-auto flex flex-col gap-10">
+                    
+                    {/* Header Section */}
+                    <div className="flex flex-col gap-1">
+                        <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-text-main dark:text-white">{t("admin.dashboard")}</h1>
+                        <p className="text-sm text-text-sub dark:text-gray-400 font-medium">{t("admin.dashboardSubtitle")}</p>
+                    </div>
+
                     {/* Stats Cards */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
                         {/* Revenue Card */}
-                        <div className="flex flex-col gap-4 rounded-xl p-5 md:p-6 bg-surface-light dark:bg-surface-dark shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] dark:shadow-none border border-[#e6dbdf]/50 dark:border-gray-700">
-                            <div className="flex justify-between items-start">
-                                <div className="p-3 bg-primary/10 rounded-lg text-primary">
-                                    <MdAttachMoney className="text-[24px]" />
-                                </div>
-                            </div>
-                            <div>
-                                <p className="text-text-sub dark:text-gray-400 text-sm font-medium">
+                        <div className="flex flex-col gap-4 rounded-2xl p-6 bg-white dark:bg-surface-dark border border-black/[0.04] dark:border-white/[0.04] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.02)] dark:shadow-none group transition-all duration-300 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.04)]">
+                            <div className="flex justify-between items-center">
+                                <p className="text-text-sub dark:text-gray-400 text-xs font-bold uppercase tracking-widest">
                                     {t('admin.totalRevenue')}
                                 </p>
-                                <h3 className="text-text-main dark:text-white text-xl md:text-2xl font-bold mt-1">
+                                <div className="p-2 bg-gray-50 dark:bg-gray-800/50 rounded-lg text-gray-400 group-hover:text-primary transition-colors">
+                                    <MdAttachMoney className="text-[20px]" />
+                                </div>
+                            </div>
+                            <div className="mt-1">
+                                <h3 className="text-text-main dark:text-white text-3xl font-bold tracking-tight">
                                     ${stats.totalRevenue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                 </h3>
+                                <div className="flex items-center gap-1.5 mt-2 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+                                    <MdTrendingUp className="textsm" />
+                                    <span>{t("admin.allTime")}</span>
+                                </div>
                             </div>
                         </div>
 
                         {/* Orders Card */}
-                        <div className="flex flex-col gap-4 rounded-xl p-5 md:p-6 bg-surface-light dark:bg-surface-dark shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] dark:shadow-none border border-[#e6dbdf]/50 dark:border-gray-700">
-                            <div className="flex justify-between items-start">
-                                <div className="p-3 bg-primary/10 rounded-lg text-primary">
-                                    <MdShoppingBag className="text-[24px]" />
-                                </div>
-                            </div>
-                            <div>
-                                <p className="text-text-sub dark:text-gray-400 text-sm font-medium">
+                        <div className="flex flex-col gap-4 rounded-2xl p-6 bg-white dark:bg-surface-dark border border-black/[0.04] dark:border-white/[0.04] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.02)] dark:shadow-none group transition-all duration-300 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.04)]">
+                            <div className="flex justify-between items-center">
+                                <p className="text-text-sub dark:text-gray-400 text-xs font-bold uppercase tracking-widest">
                                     {t('admin.totalOrders')}
                                 </p>
-                                <h3 className="text-text-main dark:text-white text-xl md:text-2xl font-bold mt-1">
+                                <div className="p-2 bg-gray-50 dark:bg-gray-800/50 rounded-lg text-gray-400 group-hover:text-primary transition-colors">
+                                    <MdShoppingBag className="text-[20px]" />
+                                </div>
+                            </div>
+                            <div className="mt-1">
+                                <h3 className="text-text-main dark:text-white text-3xl font-bold tracking-tight">
                                     {stats.totalOrders}
                                 </h3>
+                                <div className="flex items-center gap-1.5 mt-2 text-xs font-semibold text-text-sub dark:text-gray-500">
+                                    <MdOutlineDateRange className="text-sm" />
+                                    <span>{t("admin.totalProcessed")}</span>
+                                </div>
                             </div>
                         </div>
 
                         {/* Products Card */}
-                        <div className="flex flex-col gap-4 rounded-xl p-5 md:p-6 bg-surface-light dark:bg-surface-dark shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] dark:shadow-none border border-[#e6dbdf]/50 dark:border-gray-700">
-                            <div className="flex justify-between items-start">
-                                <div className="p-3 bg-primary/10 rounded-lg text-primary">
-                                    <MdCheckroom className="text-[24px]" />
-                                </div>
-                            </div>
-                            <div>
-                                <p className="text-text-sub dark:text-gray-400 text-sm font-medium">
+                        <div className="flex flex-col gap-4 rounded-2xl p-6 bg-white dark:bg-surface-dark border border-black/[0.04] dark:border-white/[0.04] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.02)] dark:shadow-none group transition-all duration-300 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.04)]">
+                            <div className="flex justify-between items-center">
+                                <p className="text-text-sub dark:text-gray-400 text-xs font-bold uppercase tracking-widest">
                                     {t('admin.activeProducts')}
                                 </p>
-                                <h3 className="text-text-main dark:text-white text-xl md:text-2xl font-bold mt-1">
+                                <div className="p-2 bg-gray-50 dark:bg-gray-800/50 rounded-lg text-gray-400 group-hover:text-primary transition-colors">
+                                    <MdCheckroom className="text-[20px]" />
+                                </div>
+                            </div>
+                            <div className="mt-1">
+                                <h3 className="text-text-main dark:text-white text-3xl font-bold tracking-tight">
                                     {stats.totalProducts}
                                 </h3>
+                                <div className="flex items-center gap-1.5 mt-2 text-xs font-semibold text-text-sub dark:text-gray-500">
+                                    <span>{t("admin.inCatalog")}</span>
+                                </div>
                             </div>
                         </div>
 
                         {/* Categories Card */}
-                        <div className="flex flex-col gap-4 rounded-xl p-5 md:p-6 bg-surface-light dark:bg-surface-dark shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] dark:shadow-none border border-[#e6dbdf]/50 dark:border-gray-700">
-                            <div className="flex justify-between items-start">
-                                <div className="p-3 bg-primary/10 rounded-lg text-primary">
-                                    <MdCategory className="text-[24px]" />
-                                </div>
-                            </div>
-                            <div>
-                                <p className="text-text-sub dark:text-gray-400 text-sm font-medium">
+                        <div className="flex flex-col gap-4 rounded-2xl p-6 bg-white dark:bg-surface-dark border border-black/[0.04] dark:border-white/[0.04] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.02)] dark:shadow-none group transition-all duration-300 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.04)]">
+                            <div className="flex justify-between items-center">
+                                <p className="text-text-sub dark:text-gray-400 text-xs font-bold uppercase tracking-widest">
                                     {t('admin.categories')}
                                 </p>
-                                <h3 className="text-text-main dark:text-white text-xl md:text-2xl font-bold mt-1">
+                                <div className="p-2 bg-gray-50 dark:bg-gray-800/50 rounded-lg text-gray-400 group-hover:text-primary transition-colors">
+                                    <MdCategory className="text-[20px]" />
+                                </div>
+                            </div>
+                            <div className="mt-1">
+                                <h3 className="text-text-main dark:text-white text-3xl font-bold tracking-tight">
                                     {stats.totalCategories}
                                 </h3>
+                                <div className="flex items-center gap-1.5 mt-2 text-xs font-semibold text-text-sub dark:text-gray-500">
+                                    <span>{t("admin.activeSections")}</span>
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     {/* Recent Orders Section */}
-                    <div className="flex flex-col gap-4">
+                    <div className="flex flex-col gap-5">
                         <div className="flex items-center justify-between">
-                            <h3 className="text-text-main dark:text-white text-base md:text-lg font-bold leading-tight tracking-tight">
+                            <h3 className="text-text-main dark:text-white text-lg font-bold tracking-tight">
                                 {t('admin.recentOrders')}
                             </h3>
                             <Link
                                 href="/admin/orders"
-                                className="text-primary hover:text-primary-hover text-sm font-bold transition-colors"
+                                className="text-primary hover:text-primary/80 text-sm font-semibold transition-colors flex items-center gap-1"
                             >
                                 {t('admin.viewAll')}
+                                {dir === 'rtl' ? <MdChevronLeft /> : <MdChevronRight />}
                             </Link>
                         </div>
 
@@ -153,98 +175,86 @@ export default function DashboardClient({ stats }: { stats: DashboardStats }) {
                             order={selectedOrder as any}
                         />
 
-                        <div className="rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-surface-light dark:bg-surface-dark overflow-hidden shadow-sm">
+                        <div className="rounded-2xl border border-black/[0.04] dark:border-white/[0.04] bg-white dark:bg-surface-dark overflow-hidden shadow-[0_4px_20px_-4px_rgba(0,0,0,0.02)] dark:shadow-none">
                             <div className="overflow-x-auto">
-                                <table className={`w-full border-collapse min-w-[640px] ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
+                                <table className={`w-full min-w-[800px] ${dir === 'rtl' ? 'text-end' : 'text-start'}`}>
                                     <thead>
-                                        <tr className="border-b border-[#e6dbdf] dark:border-gray-700 bg-background-light/50 dark:bg-gray-800/50">
-                                            <th className={`p-3 md:p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400`}>
+                                        <tr className="border-b border-black/[0.04] dark:border-white/[0.04] bg-gray-50/50 dark:bg-gray-800/20">
+                                            <th className={`px-6 py-4 text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400`}>
                                                 {t('admin.orderId')}
                                             </th>
-                                            <th className={`p-3 md:p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400`}>
+                                            <th className={`px-6 py-4 text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400`}>
                                                 {t('admin.customer')}
                                             </th>
-                                            <th className={`p-3 md:p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400`}>
+                                            <th className={`px-6 py-4 text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400`}>
                                                 {t('admin.product')}
                                             </th>
-                                            <th className={`p-3 md:p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400`}>
+                                            <th className={`px-6 py-4 text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400`}>
                                                 {t('admin.date')}
                                             </th>
-                                            <th className={`p-3 md:p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400`}>
+                                            <th className={`px-6 py-4 text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400`}>
                                                 {t('admin.amount')}
                                             </th>
-                                            <th className={`p-3 md:p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400`}>
+                                            <th className={`px-6 py-4 text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400`}>
                                                 {t('admin.status')}
                                             </th>
-                                            <th className={`p-3 md:p-4 text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400`}></th>
+                                            <th className={`px-6 py-4`}></th>
                                         </tr>
                                     </thead>
-                                    <tbody className="divide-y divide-[#e6dbdf] dark:divide-gray-700">
+                                    <tbody className="divide-y divide-black/[0.04] dark:divide-white/[0.04]">
                                         {stats.recentOrders.length > 0 ? (
                                             stats.recentOrders.map((order) => (
                                                 <tr
                                                     key={order.id}
-                                                    className="hover:bg-background-light dark:hover:bg-gray-800 transition-colors"
+                                                    className="hover:bg-gray-50/50 dark:hover:bg-white/[0.02] transition-colors group"
                                                 >
-                                                    <td className="p-3 md:p-4 text-sm font-bold text-text-main dark:text-white">
+                                                    <td className="px-6 py-4 text-sm font-semibold text-text-main dark:text-gray-200">
                                                         #{order.id.slice(-6).toUpperCase()}
                                                     </td>
-                                                    <td className="p-3 md:p-4 text-sm text-text-main dark:text-white">
+                                                    <td className="px-6 py-4 text-sm font-medium text-text-main dark:text-gray-200">
                                                         {order.customer}
                                                     </td>
-                                                    <td className="p-3 md:p-4 text-sm text-text-sub dark:text-gray-400">
+                                                    <td className="px-6 py-4 text-sm text-text-sub dark:text-gray-400">
                                                         {order.items.length > 0
                                                             ? (order.items[0]?.product?.name || t('admin.unknown')) + (order.items.length > 1 ? ` + ${order.items.length - 1} ${t('common.more')}` : '')
                                                             : t('admin.unknown')}
                                                     </td>
-                                                    <td className="p-3 md:p-4 text-sm text-text-sub dark:text-gray-400">
+                                                    <td className="px-6 py-4 text-sm text-text-sub dark:text-gray-400">
                                                         {new Date(order.createdAt).toLocaleDateString(dir === 'rtl' ? 'ar-EG' : 'en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                                                     </td>
-                                                    <td className="p-3 md:p-4 text-sm font-bold text-text-main dark:text-white">
+                                                    <td className="px-6 py-4 text-sm font-bold text-text-main dark:text-white">
                                                         {order.amount}
                                                     </td>
-                                                    <td className="p-3 md:p-4">
+                                                    <td className="px-6 py-4">
                                                         <span
-                                                            className={`inline-flex items-center gap-1.5 px-2.5 md:px-3 py-1 rounded-full text-xs font-bold ${order.statusColor === "blue"
-                                                                ? "bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-300"
+                                                            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-bold uppercase tracking-wider ${order.statusColor === "blue"
+                                                                ? "bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400"
                                                                 : order.statusColor === "amber"
-                                                                    ? "bg-amber-50 text-amber-600 dark:bg-amber-900/20 dark:text-amber-300"
+                                                                    ? "bg-amber-50 text-amber-600 dark:bg-amber-900/20 dark:text-amber-400"
                                                                     : order.statusColor === "emerald"
-                                                                        ? "bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-300"
+                                                                        ? "bg-emerald-50 text-emerald-600 dark:bg-emerald-900/20 dark:text-emerald-400"
                                                                         : order.statusColor === "red"
-                                                                            ? "bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-300"
-                                                                            : "bg-gray-50 text-gray-600 dark:bg-gray-900/20 dark:text-gray-300"
+                                                                            ? "bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400"
+                                                                            : "bg-gray-100 text-gray-600 dark:bg-white/10 dark:text-gray-300"
                                                                 }`}
                                                         >
-                                                            <span
-                                                                className={`size-1.5 rounded-full ${order.statusColor === "blue"
-                                                                    ? "bg-blue-500"
-                                                                    : order.statusColor === "amber"
-                                                                        ? "bg-amber-500"
-                                                                        : order.statusColor === "emerald"
-                                                                            ? "bg-emerald-500"
-                                                                            : order.statusColor === "red"
-                                                                                ? "bg-red-500"
-                                                                                : "bg-gray-500"
-                                                                    }`}
-                                                            ></span>
                                                             {t(`admin.${order.status.toLowerCase()}`)}
                                                         </span>
                                                     </td>
-                                                    <td className={`p-3 md:p-4 ${dir === 'rtl' ? 'text-left' : 'text-right'}`}>
+                                                    <td className={`px-6 py-4 ${dir === 'rtl' ? 'text-start' : 'text-end'}`}>
                                                         <button
                                                             onClick={() => handleViewDetails(order)}
-                                                            className={`flex items-center gap-1 text-primary hover:text-primary-hover font-bold transition-colors ${dir === 'rtl' ? 'mr-auto' : 'ml-auto'}`}
+                                                            className={`opacity-0 group-hover:opacity-100 flex items-center justify-center w-8 h-8 rounded-full hover:bg-black/5 dark:hover:bg-white/10 text-text-sub dark:text-gray-400 transition-all ${dir === 'rtl' ? 'me-auto' : 'ms-auto'}`}
+                                                            title={t('admin.details')}
                                                         >
-                                                            <span>{t('admin.details')}</span>
-                                                            {dir === 'rtl' ? <MdChevronLeft className="text-lg" /> : <MdChevronRight className="text-lg" />}
+                                                            {dir === 'rtl' ? <MdChevronLeft className="text-xl" /> : <MdChevronRight className="text-xl" />}
                                                         </button>
                                                     </td>
                                                 </tr>
                                             ))
                                         ) : (
                                             <tr>
-                                                <td colSpan={7} className="p-8 text-center text-text-sub dark:text-gray-500 italic">
+                                                <td colSpan={7} className="px-6 py-12 text-center text-text-sub dark:text-gray-500 text-sm">
                                                     {t('admin.noRecentOrders')}
                                                 </td>
                                             </tr>

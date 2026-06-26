@@ -108,8 +108,8 @@ export default function BannerModal({ isOpen, onClose, banner }: BannerModalProp
                 onClick={onClose}
             />
 
-            <div className="relative w-full max-w-lg bg-white dark:bg-surface-dark rounded-2xl shadow-2xl overflow-hidden border border-[#e6dbdf] dark:border-gray-700">
-                <div className="p-6 border-b border-[#e6dbdf] dark:border-gray-700 flex items-center justify-between">
+            <div className="relative w-full max-w-lg bg-white dark:bg-surface-dark rounded-2xl shadow-2xl overflow-hidden border border-black/[0.04] dark:border-white/[0.04]">
+                <div className="p-6 border-b border-black/[0.04] dark:border-white/[0.04] flex items-center justify-between">
                     <h2 className="text-xl font-bold text-text-main dark:text-white">
                         {banner ? t('admin.editBanner') : t('admin.addNewBanner')}
                     </h2>
@@ -124,7 +124,7 @@ export default function BannerModal({ isOpen, onClose, banner }: BannerModalProp
                 <form onSubmit={handleSubmit} className="p-6 flex flex-col gap-4 overflow-y-auto max-h-[80vh]">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="flex flex-col gap-2">
-                            <label className={`text-sm font-bold text-text-main dark:text-white ${dir === 'rtl' ? 'mr-1' : 'ml-1'}`}>
+                            <label className={`text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400 ${dir === 'rtl' ? 'me-1' : 'ms-1'}`}>
                                 {t('admin.badge')}
                             </label>
                             <input
@@ -132,12 +132,12 @@ export default function BannerModal({ isOpen, onClose, banner }: BannerModalProp
                                 value={badge}
                                 onChange={(e) => setBadge(e.target.value)}
                                 placeholder="e.g. New Collection"
-                                className="w-full px-4 py-2.5 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                className="w-full px-4 py-2.5 rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
                             />
 
                         </div>
                         <div className="flex flex-col gap-2">
-                            <label className={`text-sm font-bold text-text-main dark:text-white ${dir === 'rtl' ? 'mr-1' : 'ml-1'}`}>
+                            <label className={`text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400 ${dir === 'rtl' ? 'me-1' : 'ms-1'}`}>
                                 {t('admin.status')}
                             </label>
                             <div className="flex items-center gap-3 h-[46px]">
@@ -158,7 +158,7 @@ export default function BannerModal({ isOpen, onClose, banner }: BannerModalProp
                     </div>
 
                     <div className="flex flex-col gap-2">
-                        <label className={`text-sm font-bold text-text-main dark:text-white ${dir === 'rtl' ? 'mr-1' : 'ml-1'}`}>
+                        <label className={`text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400 ${dir === 'rtl' ? 'me-1' : 'ms-1'}`}>
                             {t('admin.title')} (English)
                         </label>
                         <input
@@ -166,12 +166,12 @@ export default function BannerModal({ isOpen, onClose, banner }: BannerModalProp
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
                             placeholder="e.g. Radiance Redefined"
-                            className="w-full px-4 py-2.5 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                            className="w-full px-4 py-2.5 rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
                         />
                     </div>
 
                     <div className="flex flex-col gap-2">
-                        <label className={`text-sm font-bold text-text-main dark:text-white ${dir === 'rtl' ? 'mr-1' : 'ml-1'}`}>
+                        <label className={`text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400 ${dir === 'rtl' ? 'me-1' : 'ms-1'}`}>
                             {t('admin.subtitle')} (English)
                         </label>
                         <textarea
@@ -179,12 +179,12 @@ export default function BannerModal({ isOpen, onClose, banner }: BannerModalProp
                             onChange={(e) => setSubtitle(e.target.value)}
                             placeholder="Discover our new botanical collection..."
                             rows={2}
-                            className="w-full px-4 py-2.5 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
+                            className="w-full px-4 py-2.5 rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
                         />
                     </div>
 
                     <div className="flex flex-col gap-2">
-                        <label className={`text-sm font-bold text-text-main dark:text-white ${dir === 'rtl' ? 'mr-1' : 'ml-1'}`}>
+                        <label className={`text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400 ${dir === 'rtl' ? 'me-1' : 'ms-1'}`}>
                             {t('admin.title')} (العربية)
                         </label>
                         <input
@@ -192,13 +192,13 @@ export default function BannerModal({ isOpen, onClose, banner }: BannerModalProp
                             value={titleAr}
                             onChange={(e) => setTitleAr(e.target.value)}
                             placeholder="مثال: إشراقة معاد تعريفها"
-                            className="w-full px-4 py-2.5 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                            className="w-full px-4 py-2.5 rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
                             dir="rtl"
                         />
                     </div>
 
                     <div className="flex flex-col gap-2">
-                        <label className={`text-sm font-bold text-text-main dark:text-white ${dir === 'rtl' ? 'mr-1' : 'ml-1'}`}>
+                        <label className={`text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400 ${dir === 'rtl' ? 'me-1' : 'ms-1'}`}>
                             {t('admin.subtitle')} (العربية)
                         </label>
                         <textarea
@@ -206,13 +206,13 @@ export default function BannerModal({ isOpen, onClose, banner }: BannerModalProp
                             onChange={(e) => setSubtitleAr(e.target.value)}
                             placeholder="اكتشف مجموعتنا النباتية الجديدة..."
                             rows={2}
-                            className="w-full px-4 py-2.5 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
+                            className="w-full px-4 py-2.5 rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
                             dir="rtl"
                         />
                     </div>
 
                     <div className="flex flex-col gap-2">
-                        <label className={`text-sm font-bold text-text-main dark:text-white ${dir === 'rtl' ? 'mr-1' : 'ml-1'}`}>
+                        <label className={`text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400 ${dir === 'rtl' ? 'me-1' : 'ms-1'}`}>
                             {t('admin.imageUrl')}
                             <span className="block text-[10px] text-primary/70 font-normal">
                                 {t('admin.recommendedResolution')}: {t('admin.resHero')}
@@ -224,10 +224,10 @@ export default function BannerModal({ isOpen, onClose, banner }: BannerModalProp
                             onChange={(e) => setImage(e.target.value)}
                             placeholder="https://example.com/image.jpg"
                             required
-                            className="w-full px-4 py-2.5 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                            className="w-full px-4 py-2.5 rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
                         />
                         {image && (
-                            <div className="relative aspect-21/9 w-full bg-gray-100 dark:bg-gray-800 rounded-xl overflow-hidden border-2 border-dashed border-gray-300 dark:border-gray-700 hover:border-primary dark:hover:border-primary transition-colors cursor-pointer group">
+                            <div className="relative aspect-21/9 w-full bg-gray-100 dark:bg-gray-800 rounded-xl overflow-hidden border-2 border-dashed border-gray-300 dark:border-white/[0.04] hover:border-primary dark:hover:border-primary transition-colors cursor-pointer group">
                                 <img
                                     src={image}
                                     alt={t('admin.preview')}
@@ -242,7 +242,7 @@ export default function BannerModal({ isOpen, onClose, banner }: BannerModalProp
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="flex flex-col gap-2">
-                            <label className={`text-sm font-bold text-text-main dark:text-white ${dir === 'rtl' ? 'mr-1' : 'ml-1'}`}>
+                            <label className={`text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400 ${dir === 'rtl' ? 'me-1' : 'ms-1'}`}>
                                 {t('admin.buttonText')}
                             </label>
                             <input
@@ -250,11 +250,11 @@ export default function BannerModal({ isOpen, onClose, banner }: BannerModalProp
                                 value={buttonText}
                                 onChange={(e) => setButtonText(e.target.value)}
                                 placeholder="e.g. Shop Now"
-                                className="w-full px-4 py-2.5 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                className="w-full px-4 py-2.5 rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
                             />
                         </div>
                         <div className="flex flex-col gap-2">
-                            <label className={`text-sm font-bold text-text-main dark:text-white ${dir === 'rtl' ? 'mr-1' : 'ml-1'}`}>
+                            <label className={`text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400 ${dir === 'rtl' ? 'me-1' : 'ms-1'}`}>
                                 {t('admin.linkUrl')}
                             </label>
                             <input
@@ -262,7 +262,7 @@ export default function BannerModal({ isOpen, onClose, banner }: BannerModalProp
                                 value={link}
                                 onChange={(e) => setLink(e.target.value)}
                                 placeholder="e.g. /products"
-                                className="w-full px-4 py-2.5 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                className="w-full px-4 py-2.5 rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
                             />
                         </div>
                     </div>
@@ -271,7 +271,7 @@ export default function BannerModal({ isOpen, onClose, banner }: BannerModalProp
                         <button
                             type="button"
                             onClick={onClose}
-                            className="flex-1 px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 text-text-main dark:text-white font-bold hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                            className="flex-1 px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] text-text-main dark:text-white font-bold hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                         >
                             {t('admin.cancel')}
                         </button>

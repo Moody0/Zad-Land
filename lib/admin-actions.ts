@@ -354,12 +354,14 @@ interface MainCategoryInput {
     image?: string;
     isActive?: boolean;
     isFeatured?: boolean;
+    showInNav?: boolean;
+    navOrder?: number;
 }
 
 export async function getAdminMainCategories() {
     try {
         const mainCategories = await prisma.mainCategory.findMany({
-            orderBy: { name: "asc" },
+            orderBy: { navOrder: "asc" },
             include: {
                 _count: {
                     select: {
@@ -403,6 +405,8 @@ export async function createMainCategory(data: MainCategoryInput) {
                 image: data.image,
                 isActive: data.isActive ?? true,
                 isFeatured: data.isFeatured ?? false,
+                showInNav: data.showInNav ?? true,
+                navOrder: data.navOrder ?? 0,
             },
         });
 
@@ -446,6 +450,8 @@ export async function updateMainCategory(id: string, data: MainCategoryInput) {
                 image: data.image,
                 isActive: data.isActive ?? true,
                 isFeatured: data.isFeatured ?? false,
+                showInNav: data.showInNav ?? true,
+                navOrder: data.navOrder ?? 0,
             },
         });
 

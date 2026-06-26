@@ -82,8 +82,8 @@ export default function PromoCodeModal({ isOpen, onClose, promoCode }: PromoCode
                 onClick={onClose}
             />
 
-            <div className="relative w-full max-w-md bg-white dark:bg-surface-dark rounded-2xl shadow-2xl overflow-hidden border border-[#e6dbdf] dark:border-gray-700">
-                <div className="p-6 border-b border-[#e6dbdf] dark:border-gray-700 flex items-center justify-between">
+            <div className="relative w-full max-w-md bg-white dark:bg-surface-dark rounded-2xl shadow-2xl overflow-hidden border border-black/[0.04] dark:border-white/[0.04]">
+                <div className="p-6 border-b border-black/[0.04] dark:border-white/[0.04] flex items-center justify-between">
                     <h2 className="text-xl font-bold text-text-main dark:text-white">
                         {promoCode ? t('admin.editPromoCode') : t('admin.addNewPromoCode')}
                     </h2>
@@ -97,7 +97,7 @@ export default function PromoCodeModal({ isOpen, onClose, promoCode }: PromoCode
 
                 <form onSubmit={handleSubmit} className="p-6 flex flex-col gap-5 overflow-y-auto max-h-[80vh]">
                     <div className="flex flex-col gap-2">
-                        <label className={`text-sm font-bold text-text-main dark:text-white ${dir === 'rtl' ? 'mr-1' : 'ml-1'}`}>
+                        <label className={`text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400 ${dir === 'rtl' ? 'me-1' : 'ms-1'}`}>
                             {t('admin.code')}
                         </label>
                         <input
@@ -106,13 +106,13 @@ export default function PromoCodeModal({ isOpen, onClose, promoCode }: PromoCode
                             onChange={(e) => setCode(e.target.value.toUpperCase().replace(/\s/g, ''))}
                             placeholder="e.g. SALE20, AHMED10"
                             required
-                            className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none uppercase font-mono"
+                            className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none uppercase font-mono"
                         />
                     </div>
 
                     <div className="flex gap-4">
                         <div className="flex-2">
-                            <label className={`text-sm font-bold text-text-main dark:text-white mb-2 block ${dir === 'rtl' ? 'mr-1' : 'ml-1'}`}>
+                            <label className={`text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400 mb-2 block ${dir === 'rtl' ? 'me-1' : 'ms-1'}`}>
                                 {t('admin.discountPercentage')}
                             </label>
                             <div className="relative">
@@ -124,9 +124,9 @@ export default function PromoCodeModal({ isOpen, onClose, promoCode }: PromoCode
                                     onChange={(e) => setDiscountPercentage(e.target.value)}
                                     placeholder="e.g. 10"
                                     required
-                                    className={`w-full py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none ${dir === 'rtl' ? 'pr-4 pl-8' : 'pl-4 pr-8'}`}
+                                    className={`w-full py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none ${dir === 'rtl' ? 'pe-4 ps-8' : 'ps-4 pe-8'}`}
                                 />
-                                <span className={`absolute top-1/2 -translate-y-1/2 text-text-sub dark:text-gray-400 font-bold ${dir === 'rtl' ? 'left-4' : 'right-4'}`}>
+                                <span className={`absolute top-1/2 -translate-y-1/2 text-text-sub dark:text-gray-400 font-bold ${dir === 'rtl' ? 'start-4' : 'end-4'}`}>
                                     %
                                 </span>
                             </div>
@@ -134,7 +134,7 @@ export default function PromoCodeModal({ isOpen, onClose, promoCode }: PromoCode
                     </div>
 
                     <div className="flex flex-col gap-2">
-                        <label className={`text-sm font-bold text-text-main dark:text-white ${dir === 'rtl' ? 'mr-1' : 'ml-1'}`}>
+                        <label className={`text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400 ${dir === 'rtl' ? 'me-1' : 'ms-1'}`}>
                             {t('admin.delegateName')}
                         </label>
                         <input
@@ -142,18 +142,18 @@ export default function PromoCodeModal({ isOpen, onClose, promoCode }: PromoCode
                             value={delegateName}
                             onChange={(e) => setDelegateName(e.target.value)}
                             placeholder="e.g. Ahmed, Instagram Ad"
-                            className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                            className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
                         />
                     </div>
 
                     <div className="flex flex-col gap-2">
-                        <label className={`text-sm font-bold text-text-main dark:text-white ${dir === 'rtl' ? 'mr-1' : 'ml-1'}`}>
+                        <label className={`text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400 ${dir === 'rtl' ? 'me-1' : 'ms-1'}`}>
                             {t('admin.status')}
                         </label>
                         <button
                             type="button"
                             onClick={() => setIsActive(!isActive)}
-                            className={`flex items-center justify-between w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 transition-all ${isActive ? 'ring-2 ring-primary/20 border-primary' : ''}`}
+                            className={`flex items-center justify-between w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 transition-all ${isActive ? 'ring-2 ring-primary/20 border-primary' : ''}`}
                         >
                             <span className="text-sm text-text-main dark:text-white font-medium">
                                 {isActive ? t('admin.active') : t('admin.inactive')}
@@ -170,7 +170,7 @@ export default function PromoCodeModal({ isOpen, onClose, promoCode }: PromoCode
                         <button
                             type="button"
                             onClick={onClose}
-                            className="flex-1 px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 text-text-main dark:text-white font-bold hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                            className="flex-1 px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] text-text-main dark:text-white font-bold hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                         >
                             {t('admin.cancel')}
                         </button>

@@ -153,7 +153,7 @@ const CategoryHighlightCards = ({ mainBrands }: CategoryHighlightCardsProps) => 
                             className="flex-none w-[220px] md:flex-1 min-w-0 snap-start"
                         >
                             <Link
-                                href={slug === 'ruby-beauty' ? `/brands/${slug}` : `/department/${slug}`}
+                                href={slug === 'ruby-beauty' ? `/brands/${slug}` : `/categories/${slug}`}
                                 className="group relative block w-full bg-[#FDFCF8] dark:bg-[#1a1a1a] rounded-[10px] overflow-hidden border border-black/5 dark:border-white/5"
                             >
                                 {/* Image Container */}

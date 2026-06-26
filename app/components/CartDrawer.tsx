@@ -94,9 +94,9 @@ const CartDrawer = () => {
                                             href={`/${item.slug}`} 
                                             onClick={closeDrawer}
                                             dir="ltr"
-                                            className={`font-bold text-sm text-text-main dark:text-white hover:text-primary line-clamp-2 leading-tight font-sans tracking-normal block ${dir === 'rtl' ? 'text-right' : 'text-left'}`}
+                                            className={`font-bold text-sm text-text-main dark:text-white line-clamp-2 leading-tight font-sans tracking-normal block ${dir === 'rtl' ? 'text-right' : 'text-left'}`}
                                         >
-                                            {item.name}
+                                            <span className="hover-underline-animated">{item.name}</span>
                                         </Link>
                                         <p className="text-primary font-bold text-sm mt-1" dir="ltr">
                                             {formatPrice(item.price)}
@@ -157,3 +157,4 @@ const CartDrawer = () => {
 };
 
 export default CartDrawer;
+

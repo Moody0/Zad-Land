@@ -6,8 +6,8 @@ export const dynamic = "force-dynamic";
 export async function GET() {
     try {
         const mainCategories = await prisma.mainCategory.findMany({
-            where: { isActive: true },
-            orderBy: { name: "asc" },
+            where: { isActive: true, showInNav: true },
+            orderBy: { navOrder: "asc" },
             select: {
                 id: true,
                 name: true,

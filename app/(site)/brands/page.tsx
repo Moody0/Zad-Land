@@ -35,8 +35,8 @@ export default async function BrandsPage() {
                         />
                     </div>
                     <div className="pt-3">
-                        <p className="line-clamp-2 text-sm font-bold text-text-main-light transition-colors group-hover:text-primary dark:text-white">
-                            {brand.name}
+                        <p className="line-clamp-2 text-sm font-bold text-text-main-light transition-colors dark:text-white">
+                            <span className="group-hover-underline-animated">{brand.name}</span>
                         </p>
                     </div>
                 </Link>
@@ -75,3 +75,4 @@ export default async function BrandsPage() {
         </main>
     );
 }
+

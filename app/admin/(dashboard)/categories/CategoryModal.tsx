@@ -85,8 +85,8 @@ export default function CategoryModal({ isOpen, onClose, category, brands }: Cat
                 onClick={onClose}
             />
 
-            <div className="relative w-full max-w-md bg-white dark:bg-surface-dark rounded-2xl shadow-2xl overflow-hidden border border-[#e6dbdf] dark:border-gray-700">
-                <div className="p-6 border-b border-[#e6dbdf] dark:border-gray-700 flex items-center justify-between">
+            <div className="relative w-full max-w-md bg-white dark:bg-surface-dark rounded-2xl shadow-2xl overflow-hidden border border-black/[0.04] dark:border-white/[0.04]">
+                <div className="p-6 border-b border-black/[0.04] dark:border-white/[0.04] flex items-center justify-between">
                     <h2 className="text-xl font-bold text-text-main dark:text-white">
                         {category ? t('admin.editCategory') : t('admin.addNewCategory')}
                     </h2>
@@ -100,7 +100,7 @@ export default function CategoryModal({ isOpen, onClose, category, brands }: Cat
 
                 <form onSubmit={handleSubmit} className="p-6 flex flex-col gap-5 overflow-y-auto max-h-[80vh]">
                     <div className="flex flex-col gap-2">
-                        <label className={`text-sm font-bold text-text-main dark:text-white ${dir === 'rtl' ? 'mr-1' : 'ml-1'}`}>
+                        <label className={`text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400 ${dir === 'rtl' ? 'me-1' : 'ms-1'}`}>
                             {t('admin.categoryName')}
                         </label>
                         <input
@@ -109,19 +109,19 @@ export default function CategoryModal({ isOpen, onClose, category, brands }: Cat
                             onChange={(e) => setName(e.target.value)}
                             placeholder="e.g. Skincare, Makeup"
                             required
-                            className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                            className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
                         />
                     </div>
 
                     <div className="flex flex-col gap-2">
-                        <label className={`text-sm font-bold text-text-main dark:text-white ${dir === 'rtl' ? 'mr-1' : 'ml-1'}`}>
+                        <label className={`text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400 ${dir === 'rtl' ? 'me-1' : 'ms-1'}`}>
                             {t('admin.brands')}
                         </label>
                         <select
                             value={brandId}
                             onChange={(e) => setBrandId(e.target.value)}
                             required
-                            className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                            className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
                         >
                             <option value="">{t('admin.selectBrand')}</option>
                             {brands.map((brand) => (
@@ -131,7 +131,7 @@ export default function CategoryModal({ isOpen, onClose, category, brands }: Cat
                     </div>
 
                     <div className="flex flex-col gap-2">
-                        <label className={`text-sm font-bold text-text-main dark:text-white ${dir === 'rtl' ? 'mr-1' : 'ml-1'}`}>
+                        <label className={`text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400 ${dir === 'rtl' ? 'me-1' : 'ms-1'}`}>
                             {t('admin.imageUrl')}
                         </label>
                         <input
@@ -139,10 +139,10 @@ export default function CategoryModal({ isOpen, onClose, category, brands }: Cat
                             value={image}
                             onChange={(e) => setImage(e.target.value)}
                             placeholder="https://example.com/image.jpg"
-                            className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                            className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
                         />
                         {image && (
-                            <div className="mt-2 relative aspect-video w-full rounded-xl overflow-hidden border border-[#e6dbdf] dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+                            <div className="mt-2 relative aspect-video w-full rounded-xl overflow-hidden border border-black/[0.04] dark:border-white/[0.04] bg-gray-50/50 dark:bg-black/20">
                                 <img
                                     src={image}
                                     alt={t('admin.preview')}
@@ -156,7 +156,7 @@ export default function CategoryModal({ isOpen, onClose, category, brands }: Cat
                     </div>
 
                     <div className="flex flex-col gap-2">
-                        <label className={`text-sm font-bold text-text-main dark:text-white ${dir === 'rtl' ? 'mr-1' : 'ml-1'}`}>
+                        <label className={`text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400 ${dir === 'rtl' ? 'me-1' : 'ms-1'}`}>
                             {t('admin.featuredOnHomepage')}
                         </label>
                         <div className="flex items-center gap-3 h-[46px]">
@@ -176,7 +176,7 @@ export default function CategoryModal({ isOpen, onClose, category, brands }: Cat
                     </div>
 
                     <div className="flex flex-col gap-2">
-                        <label className={`text-sm font-bold text-text-main dark:text-white ${dir === 'rtl' ? 'mr-1' : 'ml-1'}`}>
+                        <label className={`text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400 ${dir === 'rtl' ? 'me-1' : 'ms-1'}`}>
                             {t('admin.description')}
                         </label>
                         <textarea
@@ -184,7 +184,7 @@ export default function CategoryModal({ isOpen, onClose, category, brands }: Cat
                             onChange={(e) => setDescription(e.target.value)}
                             placeholder={t('admin.describeCategory')}
                             rows={3}
-                            className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
+                            className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
                         />
                     </div>
 
@@ -192,7 +192,7 @@ export default function CategoryModal({ isOpen, onClose, category, brands }: Cat
                         <button
                             type="button"
                             onClick={onClose}
-                            className="flex-1 px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 text-text-main dark:text-white font-bold hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                            className="flex-1 px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] text-text-main dark:text-white font-bold hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                         >
                             {t('admin.cancel')}
                         </button>

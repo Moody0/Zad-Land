@@ -212,10 +212,10 @@ export default function CategoriesClient({ categories, brands }: { categories: C
             <AdminHeader title={t('admin.categories')} onMenuClick={openSidebar} />
 
             <div className="flex-1 overflow-y-auto bg-background-light dark:bg-background-dark p-8">
-                <div className="max-w-[1200px] mx-auto">
+                <div className="max-w-[1400px] mx-auto">
                     <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-4">
                         <div className="">
-                            <h3 className="text-2xl font-bold text-text-main dark:text-white">
+                            <h3 className="text-2xl md:text-3xl font-bold tracking-tight text-text-main dark:text-white">
                                 {t('admin.productCategories')}
                             </h3>
                             <p className="text-text-sub dark:text-gray-400 mt-1">
@@ -225,7 +225,7 @@ export default function CategoriesClient({ categories, brands }: { categories: C
                         <div className="w-full md:w-auto flex flex-col md:flex-row flex-wrap gap-4 items-center justify-end">
                             {/* Selection Info and Actions */}
                             {selectedIds.size > 0 && (
-                                <div className={`flex items-center gap-4 animate-in fade-in slide-in-from-top-2 duration-300 ${dir === 'rtl' ? 'ml-2' : 'mr-2'}`}>
+                                <div className={`flex items-center gap-4 animate-in fade-in slide-in-from-top-2 duration-300 ${dir === 'rtl' ? 'ms-2' : 'me-2'}`}>
                                     <span className="text-sm font-medium text-text-sub dark:text-gray-400 whitespace-nowrap">
                                         {selectedIds.size} {t('admin.selected')}
                                     </span>
@@ -250,7 +250,7 @@ export default function CategoriesClient({ categories, brands }: { categories: C
                             {filteredCategories.length > 0 && (
                                 <button
                                     onClick={toggleSelectAll}
-                                    className="flex items-center gap-2 px-4 py-2 bg-surface-light dark:bg-surface-dark border border-border-color/50 dark:border-gray-700 rounded-lg text-xs font-bold text-text-main dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 transition-all whitespace-nowrap"
+                                    className="flex items-center gap-2 px-4 py-2 bg-surface-light dark:bg-surface-dark border border-border-color/50 dark:border-white/[0.04] rounded-lg text-xs font-bold text-text-main dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 transition-all whitespace-nowrap"
                                 >
                                     {selectedIds.size === filteredCategories.length ? (
                                         <MdCheckBox className="text-[18px]" />
@@ -262,19 +262,19 @@ export default function CategoriesClient({ categories, brands }: { categories: C
                             )}
 
                             {/* Featured Count Indicator */}
-                            <div className={`hidden md:flex flex-col items-end ${dir === 'rtl' ? 'ml-2' : 'mr-2'} whitespace-nowrap`}>
-                                <span className="text-xs font-bold uppercase tracking-wider text-text-sub dark:text-gray-400">{t('admin.featured')}</span>
+                            <div className={`hidden md:flex flex-col items-end ${dir === 'rtl' ? 'ms-2' : 'me-2'} whitespace-nowrap`}>
+                                <span className="text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400">{t('admin.featured')}</span>
                                 <span className="text-sm font-bold text-primary">
                                     {categories.filter(c => c.isFeatured).length} / 8 {t('admin.active')}
                                 </span>
                             </div>
 
                             <div className="relative w-full md:w-64">
-                                <MdSearch className={`absolute ${dir === 'rtl' ? 'right-3' : 'left-3'} top-1/2 -translate-y-1/2 text-text-sub/50 dark:text-gray-400/50 text-xl`} />
+                                <MdSearch className={`absolute ${dir === 'rtl' ? 'end-3' : 'start-3'} top-1/2 -translate-y-1/2 text-text-sub/50 dark:text-gray-400/50 text-xl`} />
                                 <input
                                     type="text"
                                     placeholder={t('admin.searchCategories')}
-                                    className={`w-full ${dir === 'rtl' ? 'pr-10 pl-4' : 'pl-10 pr-4'} py-3 bg-surface-light dark:bg-surface-dark border border-border-color/50 dark:border-gray-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all text-text-main dark:text-white`}
+                                    className={`w-full ${dir === 'rtl' ? 'pe-10 ps-4' : 'ps-10 pe-4'} py-3 bg-surface-light dark:bg-surface-dark border border-border-color/50 dark:border-white/[0.04] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all text-text-main dark:text-white`}
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
                                 />
@@ -282,7 +282,7 @@ export default function CategoriesClient({ categories, brands }: { categories: C
                             <select
                                 value={selectedBrand}
                                 onChange={(e) => setSelectedBrand(e.target.value)}
-                                className="w-full md:w-52 px-4 py-3 bg-surface-light dark:bg-surface-dark border border-border-color/50 dark:border-gray-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all text-text-main dark:text-white"
+                                className="w-full md:w-52 px-4 py-3 bg-surface-light dark:bg-surface-dark border border-border-color/50 dark:border-white/[0.04] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all text-text-main dark:text-white"
                             >
                                 <option value="ALL">{t('admin.allBrands')}</option>
                                 {brands.map((brand) => (
@@ -312,12 +312,12 @@ export default function CategoriesClient({ categories, brands }: { categories: C
                         {filteredCategories.map((category) => (
                             <div 
                                 key={category.id} 
-                                className={`bg-surface-light dark:bg-surface-dark rounded-xl border ${selectedIds.has(category.id) ? 'border-primary' : 'border-border-color/50 dark:border-gray-700 shadow-sm'} hover:shadow-lg transition-all overflow-hidden group relative`}
+                                className={`bg-surface-light dark:bg-surface-dark rounded-xl border ${selectedIds.has(category.id) ? 'border-primary' : 'border-border-color/50 dark:border-white/[0.04] shadow-sm'} hover:shadow-lg transition-all overflow-hidden group relative`}
                             >
                                 {/* Selection Checkbox */}
                                 <button
                                     onClick={() => toggleSelect(category.id)}
-                                    className={`absolute top-4 left-4 z-10 w-6 h-6 rounded-md border flex items-center justify-center transition-all ${selectedIds.has(category.id) ? 'bg-primary border-primary text-white' : 'bg-white/80 dark:bg-black/20 border-white/50 text-transparent hover:border-primary'}`}
+                                    className={`absolute top-4 start-4 z-10 w-6 h-6 rounded-md border flex items-center justify-center transition-all ${selectedIds.has(category.id) ? 'bg-primary border-primary text-white' : 'bg-white/80 dark:bg-black/20 border-white/50 text-transparent hover:border-primary'}`}
                                 >
                                     <MdCheck className="text-[18px]" />
                                 </button>
@@ -341,7 +341,7 @@ export default function CategoriesClient({ categories, brands }: { categories: C
                                     <p className="text-sm text-text-sub dark:text-gray-400 line-clamp-2 mb-4">
                                         {category.description || t('admin.noDescription')}
                                     </p>
-                                    <div className="w-full flex items-center justify-between pt-4 border-t border-border-color/30 dark:border-gray-700">
+                                    <div className="w-full flex items-center justify-between pt-4 border-t border-border-color/30 dark:border-white/[0.04]">
                                         <span className="bg-primary-light dark:bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-bold">
                                             {category._count.products} {t('admin.products')}
                                         </span>
@@ -386,7 +386,7 @@ export default function CategoriesClient({ categories, brands }: { categories: C
                     </div>
 
                     {filteredCategories.length === 0 && (
-                        <div className="text-center py-20 bg-surface-light dark:bg-surface-dark rounded-2xl border border-dashed border-border-color dark:border-gray-700">
+                        <div className="text-center py-20 bg-surface-light dark:bg-surface-dark rounded-2xl border border-dashed border-border-color dark:border-white/[0.04]">
                             <MdSearchOff className="text-5xl text-text-sub/30 mb-4 mx-auto" />
                             <p className="text-text-sub italic">
                                 {searchQuery ? t('admin.noCategoriesFound') : t('admin.noCategoriesCreated')}

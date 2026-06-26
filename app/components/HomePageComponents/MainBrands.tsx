@@ -54,7 +54,7 @@ export default function MainBrands({ brands }: MainBrandsProps) {
                                     />
                                 </div>
                                 <div className="flex flex-col items-center justify-end w-full mt-2">
-                                    <p className="text-sm font-bold text-text-main-light transition-colors group-hover:text-primary dark:text-white truncate w-full text-center">
+                                    <p className="text-sm font-bold text-text-main-light transition-colors group-hover-underline-animated dark:text-white truncate w-full text-center">
                                         {brand.name}
                                     </p>
                                     <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-1">
@@ -90,4 +90,5 @@ export default function MainBrands({ brands }: MainBrandsProps) {
         </section>
     );
 }
+
 

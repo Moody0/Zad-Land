@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { prisma } from "@/lib/prisma";
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
@@ -95,8 +95,18 @@ const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
         take: 4,
     });
 
+    // Fetch review statistics
+    const reviewStats = await prisma.review.aggregate({
+        where: { productId: product.id, isApproved: true },
+        _avg: { rating: true },
+        _count: { id: true },
+    });
+    
+    const averageRating = reviewStats._avg.rating || 0;
+    const totalReviews = reviewStats._count.id || 0;
+
     return (
-        <div className="grow w-full mx-auto px-4 md:px-8 lg:px-12 xl:px-16 2xl:px-24 py-4 lg:py-8 max-w-[1730px]">
+        <div className="grow w-full mx-auto container-custom py-4 lg:py-8">
             <Breadcrumbs
                 productName={product.name}
                 categoryName={product.category?.name}
@@ -113,12 +123,14 @@ const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
                 </div>
 
                 {/* Product Details (Right) */}
-                <div className="w-full lg:w-[41.5%] lg:sticky lg:top-32 flex flex-col gap-1">
+                <div className="w-full lg:w-[41.5%] lg:sticky lg:top-[168px] self-start flex flex-col gap-1">
                     <div className="block">
                         <ProductHeader
                             name={product.name}
                             brandName={product.brand?.name}
                             categoryName={product.category?.name}
+                            averageRating={averageRating}
+                            totalReviews={totalReviews}
                         />
                     </div>
 
@@ -140,35 +152,38 @@ const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
 
                     <ProductAccordions description={product.description} />
 
-                    <div className="flex items-center justify-start mt-3 gap-3">
-                        <span className="text-[15px] font-bold mr-2">{language === 'ar' ? 'مشاركة:' : 'Share:'}</span>
+                    <div className="flex items-center justify-start mt-6 pt-6 border-t border-gray-100 dark:border-white/5 gap-3">
+                        <span className="text-[13px] font-bold tracking-widest uppercase text-gray-400 mr-2">{language === 'ar' ? 'مشاركة:' : 'Share:'}</span>
                         <a
                             href="https://wa.me/963933254796"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="w-11 h-11 flex items-center justify-center rounded-full border border-gray-200 bg-white text-black hover:bg-black hover:border-black hover:text-white transition-all duration-300"
+                            className="w-10 h-10 flex items-center justify-center rounded-full bg-[#FAFAFA] text-[#072835] hover:bg-[#072835] hover:text-white transition-all duration-300 shadow-sm border border-gray-100 dark:bg-white/5 dark:border-white/10 dark:text-gray-300 dark:hover:bg-white dark:hover-underline-animated"
                         >
-                            <FaWhatsapp className="text-xl" />
+                            <FaWhatsapp className="text-lg" />
                         </a>
                         <a
                             href="https://www.instagram.com/ruby.beauty.sy"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="w-11 h-11 flex items-center justify-center rounded-full border border-gray-200 bg-white text-black hover:bg-black hover:border-black hover:text-white transition-all duration-300"
+                            className="w-10 h-10 flex items-center justify-center rounded-full bg-[#FAFAFA] text-[#072835] hover:bg-[#072835] hover:text-white transition-all duration-300 shadow-sm border border-gray-100 dark:bg-white/5 dark:border-white/10 dark:text-gray-300 dark:hover:bg-white dark:hover-underline-animated"
                         >
-                            <FaInstagram className="text-xl" />
+                            <FaInstagram className="text-lg" />
                         </a>
                         <a
                             href="https://www.facebook.com/share/1HzXdo7sLG/?mibextid=wwXIfr"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="w-11 h-11 flex items-center justify-center rounded-full border border-gray-200 bg-white text-black hover:bg-black hover:border-black hover:text-white transition-all duration-300"
+                            className="w-10 h-10 flex items-center justify-center rounded-full bg-[#FAFAFA] text-[#072835] hover:bg-[#072835] hover:text-white transition-all duration-300 shadow-sm border border-gray-100 dark:bg-white/5 dark:border-white/10 dark:text-gray-300 dark:hover:bg-white dark:hover-underline-animated"
                         >
-                            <FaFacebook className="text-xl" />
+                            <FaFacebook className="text-lg" />
                         </a>
                     </div>
                 </div>
             </div>
+
+            {/* Product Reviews Anchor */}
+            <div id="product-reviews" className="scroll-mt-32">
 
             <RelatedProducts products={relatedProducts.map(p => ({
                 ...p,
@@ -185,6 +200,7 @@ const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
                 productName={product.name}
                 productImage={(product.images as string).split(',').map((img: string) => img.trim()).filter(Boolean)[0]}
             />
+            </div>
         </div>
     );
 }

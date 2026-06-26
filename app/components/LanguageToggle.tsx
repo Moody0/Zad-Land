@@ -13,7 +13,7 @@ const LanguageToggle = () => {
     return (
         <button
             onClick={toggleLanguage}
-            className="p-2 rounded-full hover:bg-background-light dark:hover:bg-background-dark transition-all duration-300 text-text-main-light dark:text-text-main-dark group relative"
+            className="p-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-all duration-300 text-[#072835] dark:text-white group relative"
             aria-label={t('language.switchTo')}
             title={language === 'en' ? 'العربية' : 'English'}
         >

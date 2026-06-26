@@ -75,7 +75,7 @@ const ProductGallery = ({ images, isTrending }: ProductGalleryProps) => {
     );
 
     return (
-        <div className="flex flex-col gap-4 lg:sticky lg:top-28 self-start h-fit w-full">
+        <div className="flex flex-col gap-4 self-start h-fit w-full">
             {/* Main Image Slider */}
             <div className="relative w-full aspect-square max-w-[882px] mx-auto overflow-hidden rounded-[10px] !bg-white group border border-[#e6dbdf] dark:border-gray-800/50 shadow-sm cursor-zoom-in">
                 <Swiper
@@ -110,9 +110,9 @@ const ProductGallery = ({ images, isTrending }: ProductGalleryProps) => {
                 </Swiper>
 
                 {/* Trending Badge */}
-                <div className="absolute top-4 right-4 z-20 pointer-events-none">
+                <div className="absolute top-4 right-6 z-20 pointer-events-none">
                     {isTrending && (
-                        <span className="bg-[#E676AE] text-white px-2.5 py-1 rounded-[3px] text-[11px] font-bold uppercase tracking-wide leading-none">
+                        <span className="inline-block bg-[#C20059] text-white px-3 py-1 rounded text-[10px] font-medium tracking-wider uppercase shadow-md leading-tight">
                             Trending
                         </span>
                     )}

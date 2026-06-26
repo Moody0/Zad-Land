@@ -86,12 +86,11 @@ export async function getBrandBySlug(slug: string) {
     });
 }
 
-export async function getCatalogCategories(brandId?: string, mainCategoryId?: string) {
+export async function getCatalogCategories(brandId?: string) {
     return prisma.category.findMany({
         where: {
             brand: { isActive: true },
             ...(brandId ? { brandId } : {}),
-            ...(mainCategoryId ? { mainCategoryId } : {}),
         },
         orderBy: [
             { isFeatured: "desc" },
@@ -180,7 +179,7 @@ export async function getCatalogInitialData(categoryId?: string, brandId?: strin
     }
 
     const [categories, products, totalProducts] = await Promise.all([
-        getCatalogCategories(brandId, mainCategoryId),
+        getCatalogCategories(brandId),
         prisma.product.findMany({
             where: whereClause,
             take: 12,

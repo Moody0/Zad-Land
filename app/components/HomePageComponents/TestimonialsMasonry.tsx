@@ -161,7 +161,7 @@ const TestimonialsMasonry = ({ products }: { products?: Product[] }) => {
                                                 />
                                             </div>
                                             <span className="text-sm font-bold text-[#1a1a1a] line-clamp-2 text-right flex-1">
-                                                <span className="inline bg-gradient-to-r from-current to-current bg-no-repeat bg-[length:0%_1px] bg-[position:0_100%] group-hover:bg-[length:100%_1px] transition-[background-size] duration-300">
+                                                <span className="inline group-hover-underline-animated">
                                                     {productName}
                                                 </span>
                                             </span>

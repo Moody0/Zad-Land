@@ -1,9 +1,11 @@
 "use client";
 
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useCart } from "@/app/context/CartContext";
 import { useLanguage } from "@/app/context/LanguageContext";
 import { MdRemove, MdAdd } from "react-icons/md";
+import { FaShieldAlt, FaShippingFast, FaLock } from "react-icons/fa";
 import toast from "react-hot-toast";
 
 interface ProductActionsProps {
@@ -20,6 +22,7 @@ interface ProductActionsProps {
 const ProductActions = ({ product, stock }: ProductActionsProps) => {
     const { addItem } = useCart();
     const { language } = useLanguage();
+    const router = useRouter();
     const [quantity, setQuantity] = useState(1);
 
     const handleIncrement = () => setQuantity(prev => prev + 1);
@@ -38,6 +41,18 @@ const ProductActions = ({ product, stock }: ProductActionsProps) => {
             ? `تمت إضافة ${quantity} ${product.name} إلى السلة`
             : `Added ${quantity} ${product.name} to cart`
         );
+    };
+
+    const handleBuyNow = () => {
+        addItem({
+            id: product.id,
+            name: product.name,
+            price: Number(product.price),
+            image: product.image,
+            slug: product.slug,
+            quantity: quantity,
+        });
+        router.push("/place-order");
     };
 
     // Simulated stock for visual parity if not provided
@@ -75,7 +90,7 @@ const ProductActions = ({ product, stock }: ProductActionsProps) => {
             <div className="flex flex-row-reverse md:flex-row items-center gap-4">
                 <button
                     onClick={handleAddToCart}
-                    className="flex-1 h-[48px] bg-[#FF395A] hover:bg-black text-white rounded-full font-bold text-[15px] transition-all duration-300 active:scale-[0.98]"
+                    className="flex-1 h-[48px] bg-[#072835] hover:bg-[#051e28] text-white rounded-full font-bold text-[15px] transition-all duration-300 active:scale-[0.98] shadow-md shadow-[#072835]/20"
                 >
                     {language === 'ar' ? 'اضافة للعربة' : 'Add to Cart'}
                 </button>
@@ -97,9 +112,9 @@ const ProductActions = ({ product, stock }: ProductActionsProps) => {
                 </div>
             </div>
 
-            {/* Buy Now Button */}
             <button
-                className="w-full h-[48px] bg-black text-white rounded-full font-bold text-[15px] active:scale-[0.98]"
+                onClick={handleBuyNow}
+                className="w-full h-[48px] bg-[#C20059] hover:bg-[#a1004a] text-white rounded-full font-bold text-[15px] active:scale-[0.98] transition-all duration-300 shadow-md shadow-[#C20059]/20"
             >
                 {language === 'ar' ? 'اشتري الان' : 'Buy it now'}
             </button>

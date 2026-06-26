@@ -78,7 +78,7 @@ const TrendingWeekly = ({ products }: TrendingWeeklyProps) => {
                     href="/products"
                     className="flex items-center gap-1 text-sm font-medium text-[rgb(46,46,46)] text-opacity-80 dark:text-white transition-colors group whitespace-nowrap"
                 >
-                    <span className="relative inline-block after:content-[''] after:absolute after:bottom-0 after:right-0 after:w-full after:h-[1px] after:bg-current after:transition-transform after:duration-300 after:scale-x-0 group-hover:after:scale-x-100 after:origin-left group-hover:after:origin-right">
+                    <span className="group-hover-underline-animated">
                         {language === 'ar' ? 'تسوق كل المنتجات' : 'Shop All Products'}
                     </span>
                     <MdChevronRight className={`text-lg transition-transform group-hover:translate-x-0.5 ${dir === 'rtl' ? 'rotate-180 group-hover:-translate-x-0.5' : ''}`} />
@@ -130,7 +130,7 @@ const TrendingWeekly = ({ products }: TrendingWeeklyProps) => {
                                 <h3 dir="ltr" className={`text-[12px] md:text-[15px] font-semibold text-[rgb(7,40,53)] dark:text-white truncate leading-tight mb-1 font-sans tracking-normal ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
                                     <Link
                                         href={`/products/${product.slug}`}
-                                        className="relative inline-block after:content-[''] after:absolute after:bottom-0 after:right-0 after:w-full after:h-[1px] after:bg-current after:transition-transform after:duration-300 after:scale-x-0 hover:after:scale-x-100 after:origin-left hover:after:origin-right"
+                                        className="hover-underline-animated"
                                     >
                                         {product.name}
                                     </Link>

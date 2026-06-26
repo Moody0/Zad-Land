@@ -6,7 +6,7 @@ import { useLanguage } from '@/app/context/LanguageContext';
 import { useCurrency } from '@/app/context/CurrencyContext';
 import ResilientImage from './ResilientImage';
 import { getPrimaryImage } from '@/lib/image-utils';
-import { MdArrowForward } from 'react-icons/md';
+import { MdArrowForward, MdSearch } from 'react-icons/md';
 
 interface HeaderSearchProps {
     onSearchSelect?: () => void;
@@ -141,9 +141,9 @@ const HeaderSearch = ({ onSearchSelect, onClose, placeholder, autoFocus = false,
                         onFocus={() => {
                             if (query.trim().length > 0) setShowResults(true);
                         }}
-                        className="w-full bg-[#f2f2f2] md:bg-white dark:bg-white/5 border border-transparent md:border-gray-300 dark:md:border-white/20 rounded-full text-sm text-[#1a1a1a] dark:text-white placeholder-[#888] dark:placeholder-gray-500 focus:outline-none focus:border-[#003049] dark:focus:border-white transition-colors h-12 [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden [&::-webkit-search-results-button]:hidden [&::-webkit-search-results-decoration]:hidden"
+                        className="w-full bg-[#EDEDED] dark:bg-white/5 border border-transparent rounded-full text-[15px] font-medium text-[#1a1a1a] dark:text-white placeholder-[#888] dark:placeholder-gray-500 focus:outline-none focus:bg-[#FFFFFF] dark:focus:bg-white/10 focus:border-[rgb(46,46,46)] dark:focus:border-white focus:placeholder-[rgb(46,46,46)] transition-all h-12 [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden [&::-webkit-search-results-button]:hidden [&::-webkit-search-results-decoration]:hidden"
                         style={{
-                            padding: isArabic ? '0 16px 0 60px' : '0 60px 0 16px',
+                            padding: isArabic ? '0 16px 0 80px' : '0 80px 0 16px',
                             direction: dir,
                         }}
                         placeholder={searchPlaceholder}
@@ -162,7 +162,7 @@ const HeaderSearch = ({ onSearchSelect, onClose, placeholder, autoFocus = false,
                             onClick={handleReset}
                             className="absolute flex items-center justify-center text-xs font-bold text-[#555] dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors"
                             style={{
-                                [isArabic ? 'left' : 'right']: '16px',
+                                [isArabic ? 'left' : 'right']: '48px',
                             }}
                             aria-label={isArabic ? "مسح" : "Clear"}
                         >
@@ -170,7 +170,17 @@ const HeaderSearch = ({ onSearchSelect, onClose, placeholder, autoFocus = false,
                         </button>
                     )}
 
-                    {/* Optional: We can add the search icon if needed, but it's not very prominent in the user's reference. We'll leave it out to match the clean input look from the image, or keep it hidden when typing. */}
+                    {/* Search Icon */}
+                    <button 
+                        type="submit"
+                        className="absolute flex items-center justify-center text-[22px] text-[#555] dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors"
+                        style={{
+                            [isArabic ? 'left' : 'right']: '16px',
+                        }}
+                        aria-label="Search"
+                    >
+                        <MdSearch />
+                    </button>
                 </div>
             </form>
 

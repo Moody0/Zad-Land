@@ -107,9 +107,9 @@ export default function SettingsClient({
 
             <div className="flex-1 overflow-y-auto bg-background-light dark:bg-background-dark p-8">
                 <div className="max-w-2xl mx-auto">
-                    <div className="bg-surface-light dark:bg-surface-dark rounded-2xl border border-[#e6dbdf] dark:border-gray-700 p-8">
+                    <div className="bg-surface-light dark:bg-surface-dark rounded-2xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] p-8">
                         <div className="mb-8">
-                            <h2 className="text-2xl font-bold text-text-main dark:text-white mb-2">
+                            <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-text-main dark:text-white mb-2">
                                 {t('admin.adminAccountSettings')}
                             </h2>
                             <p className="text-text-sub dark:text-gray-400">
@@ -129,14 +129,14 @@ export default function SettingsClient({
                                     onChange={(e) => setCurrentPassword(e.target.value)}
                                     placeholder={t('admin.enterCurrentPassword')}
                                     required
-                                    className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
                                 />
                                 <p className="text-xs text-text-sub dark:text-gray-400">
                                     {t('admin.requiredToVerify')}
                                 </p>
                             </div>
 
-                            <div className="border-t border-[#e6dbdf] dark:border-gray-700 pt-6">
+                            <div className="border-t border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] pt-6">
                                 <h3 className="text-lg font-bold text-text-main dark:text-white mb-4">
                                     {t('admin.changeCredentials')}
                                 </h3>
@@ -151,7 +151,7 @@ export default function SettingsClient({
                                         value={newUsername}
                                         onChange={(e) => setNewUsername(e.target.value)}
                                         placeholder={t('admin.enterNewUsername')}
-                                        className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                        className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
                                     />
                                 </div>
 
@@ -165,7 +165,7 @@ export default function SettingsClient({
                                         value={newPassword}
                                         onChange={(e) => setNewPassword(e.target.value)}
                                         placeholder={t('admin.leaveBlank')}
-                                        className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                        className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
                                     />
                                     <p className="text-xs text-text-sub dark:text-gray-400">
                                         {t('admin.minChars')}
@@ -183,7 +183,7 @@ export default function SettingsClient({
                                             value={confirmPassword}
                                             onChange={(e) => setConfirmPassword(e.target.value)}
                                             placeholder={t('admin.reEnterNewPassword')}
-                                            className="w-full px-4 py-3 rounded-xl border border-[#e6dbdf] dark:border-gray-700 bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                                            className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
                                         />
                                     </div>
                                 )}

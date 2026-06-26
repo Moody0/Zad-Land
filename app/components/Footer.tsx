@@ -88,14 +88,14 @@ const Footer = async ({ t, language }: FooterProps) => {
     const renderNavLink = (label: string, href: string) => {
         if (isExternalUrl(href)) {
             return (
-                <a className="hover:text-primary transition-colors" href={href} target="_blank" rel="noopener noreferrer">
+                <a className="hover-underline-animated transition-colors" href={href} target="_blank" rel="noopener noreferrer">
                     {label}
                 </a>
             );
         }
 
         return (
-            <Link className="hover:text-primary transition-colors" href={href}>
+            <Link className="hover-underline-animated transition-colors" href={href}>
                 {label}
             </Link>
         );
@@ -120,7 +120,7 @@ const Footer = async ({ t, language }: FooterProps) => {
                                 return (
                                     <a
                                         key={social.label}
-                                        className="text-text-muted-light dark:text-text-muted-dark hover:text-primary transition-colors"
+                                        className="text-text-muted-light dark:text-text-muted-dark hover-underline-animated transition-colors"
                                         href={social.href}
                                         target="_blank"
                                         rel="noopener noreferrer"
@@ -139,14 +139,14 @@ const Footer = async ({ t, language }: FooterProps) => {
                             {footerCategories.length > 0 ? (
                                 footerCategories.map((category) => (
                                     <li key={category.id}>
-                                        <Link className="hover:text-primary transition-colors" href={`/categories/${category.slug}`}>
+                                        <Link className="hover-underline-animated transition-colors" href={`/categories/${category.slug}`}>
                                             {category.name}
                                         </Link>
                                     </li>
                                 ))
                             ) : (
                                 <li>
-                                    <Link className="hover:text-primary transition-colors" href="/products">
+                                    <Link className="hover-underline-animated transition-colors" href="/products">
                                         {t('products.allProducts')}
                                     </Link>
                                 </li>
@@ -187,3 +187,4 @@ const Footer = async ({ t, language }: FooterProps) => {
 };
 
 export default Footer;
+

@@ -37,6 +37,8 @@ model MainCategory {
   description String?
   image       String?
   isActive    Boolean    @default(true)
+  showInNav   Boolean    @default(true)
+  navOrder    Int        @default(0)
   isFeatured  Boolean    @default(false)
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt

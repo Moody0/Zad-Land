@@ -18,54 +18,63 @@ const CartItem = ({ item, removeItem, updateQuantity }: CartItemProps) => {
     const { t } = useLanguage();
 
     return (
-        <div className="flex flex-col sm:flex-row gap-6 bg-white dark:bg-[#2a161d] p-5 rounded-xl shadow-sm border border-transparent hover:border-[#f4f0f2] dark:hover:border-[#3a2228] transition-all">
+        <div className="flex items-center gap-4 md:gap-6 py-6 transition-all hover:bg-gray-50/50 dark:hover:bg-white/[0.02]">
+            {/* Remove Button */}
+            <button
+                onClick={() => removeItem(item.id)}
+                className="cursor-pointer text-gray-400 hover:text-black dark:hover:text-white transition-colors p-2 shrink-0 flex items-center justify-center"
+            >
+                <span className="text-[32px] font-light leading-none mb-1">×</span>
+            </button>
+
+            {/* Image */}
             <div className="shrink-0">
-                <div className="relative w-24 h-24 !bg-white rounded-lg border border-[#e6dbdf] dark:border-gray-800/50 overflow-hidden">
+                <div className="relative w-[120px] h-[120px] !bg-white rounded-xl border border-[#E6E9EB] dark:border-gray-800/50 overflow-hidden shadow-sm">
                     <img
                         src={getSafeImageUrl(item.image.split(',')[0])}
                         alt={item.name}
-                        className="w-full h-full object-contain p-1"
+                        className="w-full h-full object-contain p-2"
                         loading="lazy"
                     />
                 </div>
             </div>
-            <div className="flex flex-col flex-1 justify-between py-1">
-                <div>
-                    <div className="flex justify-between items-start">
-                        <h3 dir="ltr" className="text-lg font-bold text-[#181113] dark:text-white font-sans tracking-normal text-left rtl:text-right">
-                            <Link href={`/${item.slug}`} className="hover:text-primary transition-colors">
-                                {item.name}
-                            </Link>
-                        </h3>
-                        <p className="font-bold text-lg">${item.price.toFixed(2)}</p>
-                    </div>
-                    {/* Description hidden per request */}
-                    {/* {item.description && <p className="text-[#89616f] text-sm mt-1">{item.description}</p>} */}
+
+            {/* Content (Title/Price Left, Controls Right) */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between flex-1 min-w-0 gap-4 md:gap-8">
+                {/* Product Info */}
+                <div className="flex flex-col gap-2 min-w-0">
+                    <Link href={`/${item.slug}`} className="text-[16px] font-bold text-[#072835] dark:text-white transition-colors hover-underline-animated">
+                        {item.name}
+                    </Link>
+                    <p dir="ltr" className="text-[15px] font-bold text-gray-500 dark:text-gray-400 text-right rtl:text-right md:text-left md:rtl:text-right w-fit">${item.price.toFixed(2)}</p>
                 </div>
-                <div className="flex items-center justify-between mt-4">
-                    <div className="flex items-center bg-[#FFFFFF] dark:bg-[#341a22] rounded-lg p-1 border border-gray-100">
+
+                {/* Controls and Total */}
+                <div className="flex items-center justify-between md:justify-end gap-6 shrink-0 w-full md:w-auto mt-2 md:mt-0">
+                    {/* Pill Quantity */}
+                    <div className="flex items-center border border-[#E6E9EB] dark:border-white/10 rounded-full h-12 px-1 w-[120px] bg-white dark:bg-white/5 shrink-0">
                         <button
                             onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                            className="w-8 h-8 flex items-center justify-center text-[#181113] dark:text-white hover:bg-white dark:hover:bg-[#4a2e36] rounded-md transition-colors font-bold text-lg"
-                        >-</button>
+                            className="w-12 h-full flex items-center justify-center text-gray-500 hover:text-black dark:hover:text-white transition-colors text-lg"
+                        >−</button>
                         <input
-                            className="w-10 bg-transparent border-none text-center font-semibold focus:ring-0 p-0 text-sm dark:text-white"
+                            className="flex-1 bg-transparent border-0 border-none text-center font-bold text-[15px] text-[#072835] dark:text-white focus:ring-0 focus:border-0 p-0 m-0 shadow-none outline-none ring-0 w-full"
                             readOnly
                             type="text"
                             value={item.quantity}
                         />
                         <button
                             onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                            className="w-8 h-8 flex items-center justify-center text-[#181113] dark:text-white hover:bg-white dark:hover:bg-[#4a2e36] rounded-md transition-colors font-bold text-lg"
+                            className="w-12 h-full flex items-center justify-center text-gray-500 hover:text-black dark:hover:text-white transition-colors text-lg"
                         >+</button>
                     </div>
-                    <button
-                        onClick={() => removeItem(item.id)}
-                        className="text-[#89616f] hover:text-primary transition-colors flex items-center gap-1 text-sm font-medium"
-                    >
-                        <MdDelete className="text-[18px]" />
-                        <span className="hidden sm:inline">{t('cart.remove')}</span>
-                    </button>
+
+                    {/* Total */}
+                    <div className="text-right rtl:text-left min-w-[80px] shrink-0">
+                        <p dir="ltr" className="font-bold text-[16px] text-[#072835] dark:text-white">
+                            ${(item.price * item.quantity).toFixed(2)}
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>

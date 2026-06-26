@@ -50,10 +50,7 @@ const PlaceOrderPage = () => {
         // Prevent non-numeric input for phone
         if (name === 'phone') {
             const numericValue = value.replace(/[^0-9]/g, '');
-            // Limit to 10 digits (Syrian mobile format 09xxxxxxxx)
-            if (numericValue.length <= 10) {
-                setFormData(prev => ({ ...prev, [name]: numericValue }));
-            }
+            setFormData(prev => ({ ...prev, [name]: numericValue }));
             return;
         }
         
@@ -134,7 +131,7 @@ const PlaceOrderPage = () => {
     };
 
     return (
-        <main className="flex-grow w-full mx-auto px-6 py-10 md:px-20 lg:px-32 xl:px-48 2xl:px-64">
+        <main className="grow w-full mx-auto container-custom py-4 lg:py-8">
             <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-12 gap-10">
                 <div className="lg:col-span-7">
                     <CheckoutSteps />

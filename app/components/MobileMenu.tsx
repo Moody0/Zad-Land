@@ -122,18 +122,7 @@ const MobileMenu = ({
                     {/* Main Menu View */}
                     <div className={`absolute inset-0 transition-transform duration-300 ease-in-out ${activeMainCatSlug ? '-translate-x-full' : 'translate-x-0'}`}>
                         <div className="flex flex-col h-full overflow-y-auto px-2 pt-4">
-                            {/* Home */}
-                            <div className="border-b border-gray-50/50 dark:border-white/5">
-                                <Link
-                                    href="/"
-                                    onClick={() => setIsMobileMenuOpen(false)}
-                                    className="flex items-center justify-between py-4 px-4 group"
-                                >
-                                    <span className="text-[16px] font-semibold text-[rgb(46,46,46)] dark:text-white">
-                                        {language === 'ar' ? 'الرئيسية' : 'Home'}
-                                    </span>
-                                </Link>
-                            </div>
+
 
                             {/* Dynamic Main Categories */}
                             {navData.map((mc) => (
@@ -150,31 +139,7 @@ const MobileMenu = ({
                                 </div>
                             ))}
 
-                            {/* Offers */}
-                            <div className="border-b border-gray-50/50 dark:border-white/5">
-                                <Link
-                                    href="/products"
-                                    onClick={() => setIsMobileMenuOpen(false)}
-                                    className="flex items-center justify-between py-4 px-4 group"
-                                >
-                                    <span className="text-[16px] font-semibold text-[rgb(46,46,46)] dark:text-white">
-                                        {language === 'ar' ? 'العروض' : 'Offers'}
-                                    </span>
-                                </Link>
-                            </div>
 
-                            {/* New Arrivals */}
-                            <div className="border-b border-gray-50/50 dark:border-white/5">
-                                <Link
-                                    href="/products?sort=newest"
-                                    onClick={() => setIsMobileMenuOpen(false)}
-                                    className="flex items-center justify-between py-4 px-4 group"
-                                >
-                                    <span className="text-[16px] font-semibold text-[rgb(46,46,46)] dark:text-white">
-                                        {language === 'ar' ? 'وصل حديثاً' : 'New Arrivals'}
-                                    </span>
-                                </Link>
-                            </div>
 
                             {/* About Us */}
                             <div className="border-b border-gray-50/50 dark:border-white/5">

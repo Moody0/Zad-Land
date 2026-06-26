@@ -89,7 +89,7 @@ export default function UsersClient({ users }: { users: User[] }) {
             <AdminHeader title={t('admin.userManagement')} onMenuClick={openSidebar} />
 
             <div className="flex-1 overflow-y-auto p-3 sm:p-5 md:p-8">
-                <div className="max-w-[1200px] mx-auto flex flex-col gap-6 md:gap-8 pb-10">
+                <div className="max-w-[1400px] mx-auto flex flex-col gap-6 md:gap-8 pb-10">
 
                     {/* Page Heading & Breadcrumbs */}
                     <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
@@ -124,15 +124,15 @@ export default function UsersClient({ users }: { users: User[] }) {
                         user={selectedUser}
                     />
 
-                    <div className="bg-surface-light dark:bg-surface-dark border border-[#e6dbdf] dark:border-gray-700 rounded-2xl shadow-sm overflow-hidden">
+                    <div className="bg-surface-light dark:bg-surface-dark border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] rounded-2xl shadow-sm overflow-hidden">
                         <div className="overflow-x-auto">
-                            <table className={`w-full border-collapse min-w-[800px] ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
+                            <table className={`w-full border-collapse min-w-[800px] ${dir === 'rtl' ? 'text-end' : 'text-start'}`}>
                                 <thead>
-                                    <tr className="bg-background-light dark:bg-gray-800/50 border-b border-[#e6dbdf] dark:border-gray-700 text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">
+                                    <tr className="bg-background-light dark:bg-gray-800/50 border-b border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">
                                         <th className={`p-5 cursor-pointer select-none group`} onClick={() => handleSort('username')}>
                                             <div className="flex items-center">
                                                 {t('admin.username')}
-                                                <span className={`flex flex-col ml-1 ${dir === 'rtl' ? 'mr-1 ml-0' : 'ml-1'}`}>
+                                                <span className={`flex flex-col ms-1 ${dir === 'rtl' ? 'me-1 ms-0' : 'ms-1'}`}>
                                                     <MdArrowUpward className={`w-2.5 h-2.5 -mb-0.5 ${sortConfig.key === 'username' && sortConfig.direction === 'asc' ? 'text-primary' : 'text-gray-300'}`} />
                                                     <MdArrowDownward className={`w-2.5 h-2.5 ${sortConfig.key === 'username' && sortConfig.direction === 'desc' ? 'text-primary' : 'text-gray-300'}`} />
                                                 </span>
@@ -141,7 +141,7 @@ export default function UsersClient({ users }: { users: User[] }) {
                                         <th className={`p-5 cursor-pointer select-none group`} onClick={() => handleSort('role')}>
                                             <div className="flex items-center">
                                                 {t('admin.role')}
-                                                <span className={`flex flex-col ml-1 ${dir === 'rtl' ? 'mr-1 ml-0' : 'ml-1'}`}>
+                                                <span className={`flex flex-col ms-1 ${dir === 'rtl' ? 'me-1 ms-0' : 'ms-1'}`}>
                                                     <MdArrowUpward className={`w-2.5 h-2.5 -mb-0.5 ${sortConfig.key === 'role' && sortConfig.direction === 'asc' ? 'text-primary' : 'text-gray-300'}`} />
                                                     <MdArrowDownward className={`w-2.5 h-2.5 ${sortConfig.key === 'role' && sortConfig.direction === 'desc' ? 'text-primary' : 'text-gray-300'}`} />
                                                 </span>
@@ -151,16 +151,16 @@ export default function UsersClient({ users }: { users: User[] }) {
                                         <th className={`p-5 cursor-pointer select-none group`} onClick={() => handleSort('createdAt')}>
                                             <div className="flex items-center">
                                                 {t('admin.createdAt')}
-                                                <span className={`flex flex-col ml-1 ${dir === 'rtl' ? 'mr-1 ml-0' : 'ml-1'}`}>
+                                                <span className={`flex flex-col ms-1 ${dir === 'rtl' ? 'me-1 ms-0' : 'ms-1'}`}>
                                                     <MdArrowUpward className={`w-2.5 h-2.5 -mb-0.5 ${sortConfig.key === 'createdAt' && sortConfig.direction === 'asc' ? 'text-primary' : 'text-gray-300'}`} />
                                                     <MdArrowDownward className={`w-2.5 h-2.5 ${sortConfig.key === 'createdAt' && sortConfig.direction === 'desc' ? 'text-primary' : 'text-gray-300'}`} />
                                                 </span>
                                             </div>
                                         </th>
-                                        <th className={`p-5 ${dir === 'rtl' ? 'text-left' : 'text-right'}`}>{t('admin.actions')}</th>
+                                        <th className={`p-5 ${dir === 'rtl' ? 'text-start' : 'text-end'}`}>{t('admin.actions')}</th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-[#e6dbdf] dark:divide-gray-700">
+                                <tbody className="divide-y divide-black/[0.04] dark:divide-white/[0.04] dark:divide-gray-700">
                                     {sortedUsers.map((user) => (
                                         <tr key={user.id} className="group hover:bg-primary/5 dark:hover:bg-primary/10 transition-colors">
                                             <td className="p-5">
@@ -197,7 +197,7 @@ export default function UsersClient({ users }: { users: User[] }) {
                                             <td className="p-5 text-sm text-text-sub dark:text-gray-400">
                                                 {new Date(user.createdAt).toLocaleDateString()}
                                             </td>
-                                            <td className={`p-5 ${dir === 'rtl' ? 'text-left' : 'text-right'}`}>
+                                            <td className={`p-5 ${dir === 'rtl' ? 'text-start' : 'text-end'}`}>
                                                 <div className={`flex items-center ${dir === 'rtl' ? 'justify-start' : 'justify-end'} gap-2`}>
                                                     <button
                                                         onClick={() => handleEdit(user)}

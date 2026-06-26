@@ -92,10 +92,10 @@ export default function BannersClient({ banners }: { banners: Banner[] }) {
             <AdminHeader title={t('admin.homeBanners')} onMenuClick={openSidebar} />
 
             <div className="flex-1 overflow-y-auto bg-background-light dark:bg-background-dark p-8">
-                <div className="max-w-[1200px] mx-auto">
+                <div className="max-w-[1400px] mx-auto">
                     <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-4">
                         <div>
-                            <h3 className="text-2xl font-bold text-text-main dark:text-white">
+                            <h3 className="text-2xl md:text-3xl font-bold tracking-tight text-text-main dark:text-white">
                                 {t('admin.heroBanners')}
                             </h3>
                             <p className="text-text-sub dark:text-gray-400 mt-1">
@@ -121,7 +121,7 @@ export default function BannersClient({ banners }: { banners: Banner[] }) {
 
                     <div className="grid grid-cols-1 gap-8">
                         {banners.map((banner) => (
-                            <div key={banner.id} className="bg-surface-light dark:bg-surface-dark rounded-2xl border border-border-color/50 dark:border-gray-700 shadow-sm hover:shadow-lg transition-all overflow-hidden flex flex-col lg:flex-row">
+                            <div key={banner.id} className="bg-surface-light dark:bg-surface-dark rounded-2xl border border-border-color/50 dark:border-white/[0.04] shadow-sm hover:shadow-lg transition-all overflow-hidden flex flex-col lg:flex-row">
                                 <div className="lg:w-1/3 aspect-21/9 lg:aspect-auto overflow-hidden bg-gray-100 dark:bg-gray-800">
                                     <img
                                         alt={banner.title || "Banner"}
@@ -147,8 +147,8 @@ export default function BannersClient({ banners }: { banners: Banner[] }) {
                                         </p>
                                         {banner.titleAr && (
                                             <>
-                                                <h3 className="text-lg font-bold text-text-main dark:text-white mt-3 text-right" dir="rtl">{banner.titleAr}</h3>
-                                                <p className="text-sm text-text-sub dark:text-gray-400 line-clamp-2 text-right" dir="rtl">
+                                                <h3 className="text-lg font-bold text-text-main dark:text-white mt-3 text-end" dir="rtl">{banner.titleAr}</h3>
+                                                <p className="text-sm text-text-sub dark:text-gray-400 line-clamp-2 text-end" dir="rtl">
                                                     {banner.subtitleAr || t('admin.noSubtitle')}
                                                 </p>
                                             </>
@@ -165,7 +165,7 @@ export default function BannersClient({ banners }: { banners: Banner[] }) {
                                         </div>
                                     </div>
 
-                                    <div className="flex items-center justify-between pt-6 mt-6 border-t border-border-color/30 dark:border-gray-700">
+                                    <div className="flex items-center justify-between pt-6 mt-6 border-t border-border-color/30 dark:border-white/[0.04]">
                                         <div className="flex items-center gap-4">
                                             <button
                                                 onClick={() => handleToggleStatus(banner.id, banner.isActive)}
@@ -210,7 +210,7 @@ export default function BannersClient({ banners }: { banners: Banner[] }) {
                     </div>
 
                     {banners.length === 0 && (
-                        <div className="text-center py-20 bg-surface-light dark:bg-surface-dark rounded-2xl border border-dashed border-border-color dark:border-gray-700">
+                        <div className="text-center py-20 bg-surface-light dark:bg-surface-dark rounded-2xl border border-dashed border-border-color dark:border-white/[0.04]">
                             <MdViewCarousel className="text-5xl text-text-sub/30 mb-4 mx-auto" />
                             <p className="text-text-sub italic">
                                 {t('admin.noBanners')}

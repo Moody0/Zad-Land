@@ -86,8 +86,8 @@ const ShopByCategory = async ({ mainBrands }: ShopByCategoryProps) => {
 
                             {/* Category Name & Shop Now CTA */}
                             <div className="flex flex-col items-center text-center gap-1">
-                                <h4 className="text-sm md:text-base font-bold text-text-main-light dark:text-text-main-dark group-hover:text-primary transition-colors">
-                                    {category.name}
+                                <h4 className="text-sm md:text-base font-bold text-text-main-light dark:text-text-main-dark transition-colors">
+                                    <span className="group-hover-underline-animated">{category.name}</span>
                                 </h4>
                                 <span className="text-xs text-primary font-medium">
                                     {t('home.shopNowCta')}
@@ -102,3 +102,4 @@ const ShopByCategory = async ({ mainBrands }: ShopByCategoryProps) => {
 };
 
 export default ShopByCategory;
+

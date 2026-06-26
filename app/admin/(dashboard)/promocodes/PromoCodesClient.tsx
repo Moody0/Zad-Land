@@ -87,10 +87,10 @@ export default function PromoCodesClient({ promoCodes }: { promoCodes: PromoCode
             <AdminHeader title={t('admin.promoCodes')} onMenuClick={openSidebar} />
 
             <div className="flex-1 overflow-y-auto bg-background-light dark:bg-background-dark p-8">
-                <div className="max-w-[1200px] mx-auto">
+                <div className="max-w-[1400px] mx-auto">
                     <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-4">
                         <div className="">
-                            <h3 className="text-2xl font-bold text-text-main dark:text-white">
+                            <h3 className="text-2xl md:text-3xl font-bold tracking-tight text-text-main dark:text-white">
                                 {t('admin.codesAndDelegates')}
                             </h3>
                             <p className="text-text-sub dark:text-gray-400 mt-1">
@@ -99,11 +99,11 @@ export default function PromoCodesClient({ promoCodes }: { promoCodes: PromoCode
                         </div>
                         <div className="w-full md:w-auto flex flex-col md:flex-row gap-4 items-center">
                             <div className="relative w-full md:w-72">
-                                <MdSearch className={`absolute top-1/2 -translate-y-1/2 text-text-sub/50 dark:text-gray-400/50 text-xl ${dir === 'rtl' ? 'right-3' : 'left-3'}`} />
+                                <MdSearch className={`absolute top-1/2 -translate-y-1/2 text-text-sub/50 dark:text-gray-400/50 text-xl ${dir === 'rtl' ? 'end-3' : 'start-3'}`} />
                                 <input
                                     type="text"
                                     placeholder={t('admin.searchCodes')}
-                                    className={`w-full py-3 bg-surface-light dark:bg-surface-dark border border-border-color/50 dark:border-gray-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all text-text-main dark:text-white ${dir === 'rtl' ? 'pr-10 pl-4' : 'pl-10 pr-4'}`}
+                                    className={`w-full py-3 bg-surface-light dark:bg-surface-dark border border-border-color/50 dark:border-white/[0.04] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all text-text-main dark:text-white ${dir === 'rtl' ? 'pe-10 ps-4' : 'ps-10 pe-4'}`}
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
                                 />
@@ -128,33 +128,33 @@ export default function PromoCodesClient({ promoCodes }: { promoCodes: PromoCode
 
                     {/* Stats Summary */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-8">
-                        <div className="bg-surface-light dark:bg-surface-dark p-5 rounded-xl border border-[#e6dbdf] dark:border-gray-700 shadow-sm flex flex-col gap-1">
-                            <p className="text-text-sub dark:text-gray-400 text-xs font-bold uppercase tracking-wider">{t('admin.totalSales')}</p>
-                            <p className="text-2xl font-bold text-text-main dark:text-white">
+                        <div className="bg-white dark:bg-surface-dark p-5 rounded-2xl border border-black/[0.04] dark:border-white/[0.04] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.02)] transition-all duration-300 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.04)] flex flex-col gap-1">
+                            <p className="text-text-sub dark:text-gray-400 text-[11px] font-bold uppercase tracking-widest">{t('admin.totalSales')}</p>
+                            <p className="text-2xl md:text-3xl font-bold tracking-tight text-text-main dark:text-white">
                                 ${promoCodes.reduce((sum, pc) => sum + pc.totalSales, 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
                             </p>
                         </div>
-                        <div className="bg-surface-light dark:bg-surface-dark p-5 rounded-xl border border-[#e6dbdf] dark:border-gray-700 shadow-sm flex flex-col gap-1">
-                            <p className="text-text-sub dark:text-gray-400 text-xs font-bold uppercase tracking-wider">{t('admin.activeCodes')}</p>
-                            <p className="text-2xl font-bold text-emerald-500">
+                        <div className="bg-white dark:bg-surface-dark p-5 rounded-2xl border border-black/[0.04] dark:border-white/[0.04] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.02)] transition-all duration-300 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.04)] flex flex-col gap-1">
+                            <p className="text-text-sub dark:text-gray-400 text-[11px] font-bold uppercase tracking-widest">{t('admin.activeCodes')}</p>
+                            <p className="text-2xl md:text-3xl font-bold tracking-tight text-emerald-500">
                                 {promoCodes.filter(pc => pc.isActive).length}
                             </p>
                         </div>
                     </div>
 
-                    <div className="bg-surface-light dark:bg-surface-dark rounded-xl border border-border-color/50 dark:border-gray-700 shadow-sm overflow-hidden">
+                    <div className="bg-surface-light dark:bg-surface-dark rounded-xl border border-border-color/50 dark:border-white/[0.04] shadow-sm overflow-hidden">
                         <div className="overflow-x-auto">
-                            <table className={`w-full text-left border-collapse ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
+                            <table className={`w-full text-start border-collapse ${dir === 'rtl' ? 'text-end' : 'text-start'}`}>
                                 <thead>
-                                    <tr className="border-b border-border-color/50 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/50">
-                                        <th className={`p-5 text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>{t('admin.code')}</th>
-                                        <th className={`p-5 text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>{t('admin.discount')}</th>
-                                        <th className={`p-5 text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>{t('admin.delegate')}</th>
-                                        <th className={`p-5 text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>{t('admin.totalSales')}</th>
-                                        <th className={`p-5 text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>{t('admin.thisMonth')}</th>
-                                        <th className={`p-5 text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>{t('admin.usage')}</th>
-                                        <th className={`p-5 text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>{t('admin.status')}</th>
-                                        <th className={`p-5 text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider ${dir === 'rtl' ? 'text-left' : 'text-right'}`}>{t('admin.actions')}</th>
+                                    <tr className="border-b border-border-color/50 dark:border-white/[0.04] bg-gray-50/50 dark:bg-gray-800/50">
+                                        <th className={`p-5 text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider ${dir === 'rtl' ? 'text-end' : 'text-start'}`}>{t('admin.code')}</th>
+                                        <th className={`p-5 text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider ${dir === 'rtl' ? 'text-end' : 'text-start'}`}>{t('admin.discount')}</th>
+                                        <th className={`p-5 text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider ${dir === 'rtl' ? 'text-end' : 'text-start'}`}>{t('admin.delegate')}</th>
+                                        <th className={`p-5 text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider ${dir === 'rtl' ? 'text-end' : 'text-start'}`}>{t('admin.totalSales')}</th>
+                                        <th className={`p-5 text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider ${dir === 'rtl' ? 'text-end' : 'text-start'}`}>{t('admin.thisMonth')}</th>
+                                        <th className={`p-5 text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider ${dir === 'rtl' ? 'text-end' : 'text-start'}`}>{t('admin.usage')}</th>
+                                        <th className={`p-5 text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider ${dir === 'rtl' ? 'text-end' : 'text-start'}`}>{t('admin.status')}</th>
+                                        <th className={`p-5 text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider ${dir === 'rtl' ? 'text-start' : 'text-end'}`}>{t('admin.actions')}</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-border-color/50 dark:divide-gray-700">
@@ -189,7 +189,7 @@ export default function PromoCodesClient({ promoCodes }: { promoCodes: PromoCode
                                                 </span>
                                             </td>
                                             <td className="p-5">
-                                                <div className={`flex gap-2 ${dir === 'rtl' ? 'justify-end' : 'justify-end'}`}>
+                                                <div className={`flex gap-2 justify-end`}>
                                                     {canManage && (
                                                         <button
                                                             onClick={() => handleToggleStatus(pc.id, pc.isActive)}

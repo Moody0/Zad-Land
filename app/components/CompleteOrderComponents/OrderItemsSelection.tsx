@@ -36,7 +36,7 @@ const OrderItemsSelection = ({ items }: OrderItemsSelectionProps) => {
                             className="w-full h-full object-contain p-1"
                             loading="lazy"
                         />
-                        <span className="absolute -top-1 ltr:-right-1 rtl:-left-1 bg-primary text-white text-[9px] font-bold w-4 h-4 flex items-center justify-center rounded-full shadow-sm z-10">
+                        <span className="absolute -top-1.5 ltr:-right-1.5 rtl:-left-1.5 bg-primary text-white text-[10px] font-black w-5 h-5 flex items-center justify-center rounded-full shadow-[0_2px_8px_rgba(230,118,174,0.4)] z-10 border border-white dark:border-[#2a161d]">
                             {item.quantity}
                         </span>
                     </div>

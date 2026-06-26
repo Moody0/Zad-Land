@@ -55,7 +55,7 @@ export default function OrderDetailsModal({ isOpen, onClose, order, canDelete, o
             <div className="relative bg-white dark:bg-surface-dark w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
 
                 {/* Header */}
-                <div className="px-6 py-5 border-b border-[#e6dbdf] dark:border-gray-700 flex items-center justify-between bg-background-light/50 dark:bg-gray-800/50">
+                <div className="px-6 py-5 border-b border-black/[0.04] dark:border-white/[0.04] flex items-center justify-between bg-gray-50/50 dark:bg-gray-800/20">
                     <div>
                         <h3 className="text-xl font-extrabold text-text-main dark:text-white tracking-tight">
                             {t('admin.orderDetails')}
@@ -76,19 +76,19 @@ export default function OrderDetailsModal({ isOpen, onClose, order, canDelete, o
                 <div className="flex-1 overflow-y-auto p-6 space-y-8">
 
                     {/* Status & Total */}
-                    <div className="flex flex-wrap items-center justify-between gap-4 p-4 rounded-2xl bg-background-light dark:bg-gray-800/50 border border-[#e6dbdf] dark:border-gray-700">
+                    <div className="flex flex-wrap items-center justify-between gap-4 p-4 rounded-2xl bg-background-light dark:bg-gray-800/50 border border-black/[0.04] dark:border-white/[0.04]">
                         <div className="space-y-1">
                             <p className="text-[10px] font-bold uppercase tracking-wider text-text-sub dark:text-gray-500">{t('admin.currentStatus')}</p>
                             <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold border ${statusColor === "blue" ? "bg-blue-50 text-blue-600 border-blue-100 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800/50" :
                                 statusColor === "amber" ? "bg-amber-50 text-amber-600 border-amber-100 dark:bg-amber-900/20 dark:text-amber-400 dark:border-amber-800/50" :
                                     statusColor === "emerald" ? "bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-800/50" :
                                         statusColor === "red" ? "bg-red-50 text-red-600 border-red-100 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800/50" :
-                                            "bg-gray-50 text-gray-600 border-gray-100 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-700"
+                                            "bg-gray-50 text-gray-600 border-gray-100 dark:bg-gray-800 dark:text-gray-400 dark:border-white/[0.04]"
                                 }`}>
                                 {order.status}
                             </span>
                         </div>
-                        <div className={`space-y-1 ${dir === 'rtl' ? 'text-left' : 'text-right'}`}>
+                        <div className={`space-y-1 ${dir === 'rtl' ? 'text-start' : 'text-end'}`}>
                             <p className="text-[10px] font-bold uppercase tracking-wider text-text-sub dark:text-gray-500">{t('admin.totalAmount')}</p>
                             <p className="text-2xl font-black text-primary" dir="ltr">${order.totalAmount.toFixed(2)}</p>
                         </div>
@@ -97,21 +97,21 @@ export default function OrderDetailsModal({ isOpen, onClose, order, canDelete, o
                     {/* Customer Info */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-3">
-                            <h4 className="text-sm font-bold text-text-main dark:text-white flex items-center gap-2">
+                            <h4 className="text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400 flex items-center gap-2">
                                 <MdPerson className="text-primary text-[18px]" />
                                 {t('admin.customerInformation')}
                             </h4>
-                            <div className={`space-y-1 ${dir === 'rtl' ? 'mr-6' : 'ml-6'}`}>
-                                <p className="text-sm font-bold text-text-main dark:text-white">{order.Name}</p>
+                            <div className={`space-y-1 ${dir === 'rtl' ? 'me-6' : 'ms-6'}`}>
+                                <p className="text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400">{order.Name}</p>
                                 <p className="text-sm text-text-sub dark:text-gray-400" dir="ltr">{order.phone}</p>
                             </div>
                         </div>
                         <div className="space-y-3">
-                            <h4 className="text-sm font-bold text-text-main dark:text-white flex items-center gap-2">
+                            <h4 className="text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400 flex items-center gap-2">
                                 <MdLocationOn className="text-primary text-[18px]" />
                                 {t('admin.shippingAddress')}
                             </h4>
-                            <div className={`space-y-1 ${dir === 'rtl' ? 'mr-6' : 'ml-6'}`}>
+                            <div className={`space-y-1 ${dir === 'rtl' ? 'me-6' : 'ms-6'}`}>
                                 <p className="text-sm text-text-sub dark:text-gray-400 leading-relaxed">
                                     {order.streetAddress}<br />
                                     {order.city}
@@ -122,26 +122,26 @@ export default function OrderDetailsModal({ isOpen, onClose, order, canDelete, o
 
                     {/* Order Items */}
                     <div className="space-y-4">
-                        <h4 className="text-sm font-bold text-text-main dark:text-white flex items-center gap-2">
+                        <h4 className="text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400 flex items-center gap-2">
                             <MdInventory2 className="text-primary text-[18px]" />
                             {t('admin.itemsCount').replace('{count}', order.items.length.toString())}
                         </h4>
-                        <div className="border border-[#e6dbdf] dark:border-gray-700 rounded-2xl overflow-hidden">
-                            <table className="w-full text-left border-collapse">
+                        <div className="border border-black/[0.04] dark:border-white/[0.04] rounded-2xl overflow-hidden">
+                            <table className="w-full text-start border-collapse">
                                 <thead>
-                                    <tr className="bg-background-light/50 dark:bg-gray-800/50 border-b border-[#e6dbdf] dark:border-gray-700">
-                                        <th className={`p-3 text-[10px] font-bold uppercase tracking-wider text-text-sub dark:text-gray-500 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>{t('admin.product')}</th>
+                                    <tr className="bg-gray-50/50 dark:bg-gray-800/20 border-b border-black/[0.04] dark:border-white/[0.04]">
+                                        <th className={`p-3 text-[10px] font-bold uppercase tracking-wider text-text-sub dark:text-gray-500 ${dir === 'rtl' ? 'text-end' : 'text-start'}`}>{t('admin.product')}</th>
                                         <th className="p-3 text-[10px] font-bold uppercase tracking-wider text-text-sub dark:text-gray-500 text-center">{t('admin.qty')}</th>
-                                        <th className={`p-3 text-[10px] font-bold uppercase tracking-wider text-text-sub dark:text-gray-500 ${dir === 'rtl' ? 'text-left' : 'text-right'}`}>{t('admin.price')}</th>
-                                        <th className={`p-3 text-[10px] font-bold uppercase tracking-wider text-text-sub dark:text-gray-500 ${dir === 'rtl' ? 'text-left' : 'text-right'}`}>{t('admin.total')}</th>
+                                        <th className={`p-3 text-[10px] font-bold uppercase tracking-wider text-text-sub dark:text-gray-500 ${dir === 'rtl' ? 'text-start' : 'text-end'}`}>{t('admin.price')}</th>
+                                        <th className={`p-3 text-[10px] font-bold uppercase tracking-wider text-text-sub dark:text-gray-500 ${dir === 'rtl' ? 'text-start' : 'text-end'}`}>{t('admin.total')}</th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-[#e6dbdf] dark:divide-gray-700">
+                                <tbody className="divide-y divide-black/[0.04] dark:divide-white/[0.04] dark:divide-gray-700">
                                     {order.items.map((item, idx) => (
                                         <tr key={idx} className="hover:bg-primary/5 dark:hover:bg-primary/10 transition-colors">
                                             <td className="p-3">
                                                 <div className="flex items-center gap-3">
-                                                    <div className="size-10 rounded-lg bg-gray-100 dark:bg-gray-800 border border-[#e6dbdf] dark:border-gray-700 overflow-hidden shrink-0">
+                                                    <div className="size-10 rounded-lg bg-gray-100 dark:bg-gray-800 border border-black/[0.04] dark:border-white/[0.04] overflow-hidden shrink-0">
                                                         <img
                                                             src={item.product?.images ? item.product.images.split(',').map((img: string) => img.trim()).filter(Boolean)[0] : '/placeholder.jpg'}
                                                             alt={item.product?.name}
@@ -156,10 +156,10 @@ export default function OrderDetailsModal({ isOpen, onClose, order, canDelete, o
                                             <td className="p-3 text-center text-xs font-bold text-text-sub dark:text-gray-400">
                                                 {item.quantity}
                                             </td>
-                                            <td className={`p-3 text-xs font-medium text-text-sub dark:text-gray-400 ${dir === 'rtl' ? 'text-left' : 'text-right'}`}>
+                                            <td className={`p-3 text-xs font-medium text-text-sub dark:text-gray-400 ${dir === 'rtl' ? 'text-start' : 'text-end'}`}>
                                                 ${Number(item.price).toFixed(2)}
                                             </td>
-                                            <td className={`p-3 text-xs font-black text-text-main dark:text-white ${dir === 'rtl' ? 'text-left' : 'text-right'}`}>
+                                            <td className={`p-3 text-xs font-black text-text-main dark:text-white ${dir === 'rtl' ? 'text-start' : 'text-end'}`}>
                                                 ${(Number(item.price) * item.quantity).toFixed(2)}
                                             </td>
                                         </tr>
@@ -171,7 +171,7 @@ export default function OrderDetailsModal({ isOpen, onClose, order, canDelete, o
                 </div>
 
                 {/* Footer */}
-                <div className={`px-6 py-4 bg-background-light dark:bg-gray-800/50 border-t border-[#e6dbdf] dark:border-gray-700 flex items-center gap-3 ${dir === 'rtl' ? 'justify-start' : 'justify-end'}`}>
+                <div className={`px-6 py-4 bg-gray-50/50 dark:bg-black/20 border-t border-black/[0.04] dark:border-white/[0.04] flex items-center gap-3 ${dir === 'rtl' ? 'justify-start' : 'justify-end'}`}>
                     {canDelete && onDelete && (
                         <button
                             type="button"

@@ -52,7 +52,7 @@ function TextField({
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
                 placeholder={placeholder}
-                className="w-full rounded-xl border border-[#e6dbdf] bg-white px-4 py-3 text-text-main outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-gray-700 dark:bg-gray-900 dark:text-white"
+                className="w-full rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-white px-4 py-3 text-text-main outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-white/[0.04] dark:bg-gray-900 dark:text-white"
             />
         </div>
     );
@@ -76,7 +76,7 @@ function TextAreaField({
                 rows={rows}
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
-                className="w-full resize-none rounded-xl border border-[#e6dbdf] bg-white px-4 py-3 text-text-main outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-gray-700 dark:bg-gray-900 dark:text-white"
+                className="w-full resize-none rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-white px-4 py-3 text-text-main outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-white/[0.04] dark:bg-gray-900 dark:text-white"
             />
         </div>
     );
@@ -99,7 +99,7 @@ function SelectField({
             <select
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
-                className="w-full rounded-xl border border-[#e6dbdf] bg-white px-4 py-3 text-text-main outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-gray-700 dark:bg-gray-900 dark:text-white"
+                className="w-full rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-white px-4 py-3 text-text-main outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-white/[0.04] dark:bg-gray-900 dark:text-white"
             >
                 <option value="">{label}</option>
                 {options.map((option) => (
@@ -134,7 +134,7 @@ function LinkEditor({
     t: (key: string) => string;
 }) {
     return (
-        <div className="rounded-2xl border border-[#e6dbdf] bg-white/70 p-5 dark:border-gray-700 dark:bg-gray-900/60">
+        <div className="rounded-2xl border border-black/[0.04] dark:border-white/[0.04] bg-white/70 p-5 dark:border-white/[0.04] dark:bg-gray-900/60">
             <p className="mb-4 text-sm font-bold text-text-main dark:text-white">{title}</p>
             <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                 <TextField
@@ -165,9 +165,9 @@ export default function FooterContentSection({
     t,
 }: FooterContentSectionProps) {
     return (
-        <div className="rounded-2xl border border-[#e6dbdf] bg-surface-light p-8 dark:border-gray-700 dark:bg-surface-dark">
+        <div className="rounded-2xl border border-black/[0.04] dark:border-white/[0.04] bg-surface-light p-8 dark:border-white/[0.04] dark:bg-surface-dark">
             <div className="mb-8">
-                <h2 className="text-2xl font-bold text-text-main dark:text-white">
+                <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-text-main dark:text-white">
                     {t('admin.footerContent') || 'Footer Content'}
                 </h2>
                 <p className="text-text-sub dark:text-gray-400">
@@ -238,7 +238,7 @@ export default function FooterContentSection({
                     />
 
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                        <div className="rounded-2xl border border-[#e6dbdf] p-5 dark:border-gray-700">
+                        <div className="rounded-2xl border border-black/[0.04] dark:border-white/[0.04] p-5 dark:border-white/[0.04]">
                             <div className="mb-3 flex items-center gap-2 text-text-main dark:text-white">
                                 <FaInstagram className="text-xl text-primary" />
                                 <span className="font-bold">Instagram</span>
@@ -250,7 +250,7 @@ export default function FooterContentSection({
                                 placeholder="https://instagram.com/your-brand"
                             />
                         </div>
-                        <div className="rounded-2xl border border-[#e6dbdf] p-5 dark:border-gray-700">
+                        <div className="rounded-2xl border border-black/[0.04] dark:border-white/[0.04] p-5 dark:border-white/[0.04]">
                             <div className="mb-3 flex items-center gap-2 text-text-main dark:text-white">
                                 <FaFacebook className="text-xl text-primary" />
                                 <span className="font-bold">Facebook</span>
@@ -262,7 +262,7 @@ export default function FooterContentSection({
                                 placeholder="https://facebook.com/your-brand"
                             />
                         </div>
-                        <div className="rounded-2xl border border-[#e6dbdf] p-5 dark:border-gray-700">
+                        <div className="rounded-2xl border border-black/[0.04] dark:border-white/[0.04] p-5 dark:border-white/[0.04]">
                             <div className="mb-3 flex items-center gap-2 text-text-main dark:text-white">
                                 <FaWhatsapp className="text-xl text-primary" />
                                 <span className="font-bold">WhatsApp</span>
