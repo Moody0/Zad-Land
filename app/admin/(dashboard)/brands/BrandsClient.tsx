@@ -9,6 +9,7 @@ import { toast } from "react-hot-toast";
 import { useSession } from "next-auth/react";
 import { useLanguage } from "@/app/context/LanguageContext";
 import { MdAdd, MdDelete, MdEdit, MdImage, MdSearch, MdStar, MdStarBorder, MdSync, MdToggleOff, MdToggleOn } from "react-icons/md";
+import RelatedItemsModal from "../components/RelatedItemsModal";
 
 interface Brand {
     id: string;
@@ -37,6 +38,18 @@ export default function BrandsClient({ brands }: { brands: Brand[] }) {
     const [searchQuery, setSearchQuery] = useState("");
     const [groupFilter, setGroupFilter] = useState("ALL");
     const [loadingMap, setLoadingMap] = useState<Record<string, boolean>>({});
+
+    const [relatedModalInfo, setRelatedModalInfo] = useState<{
+        isOpen: boolean;
+        type: "products" | "categories";
+        entityId: string;
+        entityName: string;
+    }>({
+        isOpen: false,
+        type: "products",
+        entityId: "",
+        entityName: ""
+    });
 
     const filteredBrands = useMemo(() => {
         return brands.filter((brand) => {
@@ -130,6 +143,15 @@ export default function BrandsClient({ brands }: { brands: Brand[] }) {
                         brand={selectedBrand}
                     />
 
+                    <RelatedItemsModal
+                        isOpen={relatedModalInfo.isOpen}
+                        onClose={() => setRelatedModalInfo(prev => ({ ...prev, isOpen: false }))}
+                        type={relatedModalInfo.type}
+                        entityType="brandId"
+                        entityId={relatedModalInfo.entityId}
+                        entityName={relatedModalInfo.entityName}
+                    />
+
                     <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
                         {filteredBrands.map((brand) => (
                             <article key={brand.id} className="overflow-hidden rounded-2xl border border-black/[0.04] dark:border-white/[0.04] bg-white dark:bg-surface-dark shadow-[0_4px_20px_-4px_rgba(0,0,0,0.02)] transition-all duration-300 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.04)]">
@@ -156,8 +178,18 @@ export default function BrandsClient({ brands }: { brands: Brand[] }) {
                                     </p>
 
                                     <div className="mb-4 flex gap-2 text-xs font-bold text-text-sub dark:text-gray-400">
-                                        <span className="rounded-full bg-primary/10 px-3 py-1 text-primary">{brand._count.products} {t("admin.products")}</span>
-                                        <span className="rounded-full bg-gray-100 px-3 py-1 dark:bg-gray-800">{brand._count.categories} {t("admin.categories")}</span>
+                                        <button 
+                                            onClick={() => setRelatedModalInfo({ isOpen: true, type: "products", entityId: brand.id, entityName: brand.name })}
+                                            className="cursor-pointer rounded-full bg-primary/10 px-3 py-1 text-primary hover:bg-primary/20 transition-colors"
+                                        >
+                                            {brand._count.products} {t("admin.products")}
+                                        </button>
+                                        <button 
+                                            onClick={() => setRelatedModalInfo({ isOpen: true, type: "categories", entityId: brand.id, entityName: brand.name })}
+                                            className="cursor-pointer rounded-full bg-gray-100 px-3 py-1 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                                        >
+                                            {brand._count.categories} {t("admin.categories")}
+                                        </button>
                                     </div>
 
                                     <div className="flex items-center justify-end gap-2 border-t border-black/[0.04] dark:border-white/[0.04] pt-4 dark:border-white/[0.04]">

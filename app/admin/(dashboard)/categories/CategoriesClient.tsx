@@ -19,6 +19,7 @@ import {
 } from "react-icons/md";
 import CategoryModal from "./CategoryModal";
 import { deleteCategory, toggleCategoryFeatured, bulkFixCategoryNames, bulkDeleteCategories } from "../../../../lib/admin-actions";
+import RelatedItemsModal from "../components/RelatedItemsModal";
 import { toast } from "react-hot-toast";
 import { useSession } from "next-auth/react";
 import { useLanguage } from "@/app/context/LanguageContext";
@@ -61,6 +62,18 @@ export default function CategoriesClient({ categories, brands }: { categories: C
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedBrand, setSelectedBrand] = useState("ALL");
     const [loadingMap, setLoadingMap] = useState<Record<string, boolean>>({});
+
+    const [relatedModalInfo, setRelatedModalInfo] = useState<{
+        isOpen: boolean;
+        type: "products" | "categories";
+        entityId: string;
+        entityName: string;
+    }>({
+        isOpen: false,
+        type: "products",
+        entityId: "",
+        entityName: ""
+    });
 
     const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
     const [isSubmittingBulk, setIsSubmittingBulk] = useState(false);
@@ -308,6 +321,15 @@ export default function CategoriesClient({ categories, brands }: { categories: C
                         brands={brands}
                     />
 
+                    <RelatedItemsModal
+                        isOpen={relatedModalInfo.isOpen}
+                        onClose={() => setRelatedModalInfo(prev => ({ ...prev, isOpen: false }))}
+                        type={relatedModalInfo.type}
+                        entityType="categoryId"
+                        entityId={relatedModalInfo.entityId}
+                        entityName={relatedModalInfo.entityName}
+                    />
+
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {filteredCategories.map((category) => (
                             <div 
@@ -342,9 +364,12 @@ export default function CategoriesClient({ categories, brands }: { categories: C
                                         {category.description || t('admin.noDescription')}
                                     </p>
                                     <div className="w-full flex items-center justify-between pt-4 border-t border-border-color/30 dark:border-white/[0.04]">
-                                        <span className="bg-primary-light dark:bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-bold">
+                                        <button 
+                                            onClick={() => setRelatedModalInfo({ isOpen: true, type: "products", entityId: category.id, entityName: category.name })}
+                                            className="cursor-pointer bg-primary-light dark:bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-bold hover:bg-primary-light/80 dark:hover:bg-primary/20 transition-colors"
+                                        >
                                             {category._count.products} {t('admin.products')}
-                                        </span>
+                                        </button>
                                         <div className="flex items-center flex-wrap justify-end gap-2">
                                             {canManage && (
                                                 <button

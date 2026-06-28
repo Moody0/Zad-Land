@@ -9,6 +9,7 @@ import { toast } from "react-hot-toast";
 import { useSession } from "next-auth/react";
 import { useLanguage } from "@/app/context/LanguageContext";
 import { MdAdd, MdDelete, MdEdit, MdImage, MdSearch, MdSync, MdToggleOff, MdToggleOn } from "react-icons/md";
+import RelatedItemsModal from "../components/RelatedItemsModal";
 
 interface MainCategory {
     id: string;
@@ -36,6 +37,18 @@ export default function MainCategoriesClient({ mainCategories }: { mainCategorie
     const [selected, setSelected] = useState<MainCategory | null>(null);
     const [searchQuery, setSearchQuery] = useState("");
     const [loadingMap, setLoadingMap] = useState<Record<string, boolean>>({});
+
+    const [relatedModalInfo, setRelatedModalInfo] = useState<{
+        isOpen: boolean;
+        type: "products" | "categories" | "brands";
+        entityId: string;
+        entityName: string;
+    }>({
+        isOpen: false,
+        type: "products",
+        entityId: "",
+        entityName: ""
+    });
 
     const filtered = useMemo(() => {
         return mainCategories.filter((mc) =>
@@ -106,6 +119,15 @@ export default function MainCategoriesClient({ mainCategories }: { mainCategorie
                         mainCategory={selected}
                     />
 
+                    <RelatedItemsModal
+                        isOpen={relatedModalInfo.isOpen}
+                        onClose={() => setRelatedModalInfo(prev => ({ ...prev, isOpen: false }))}
+                        type={relatedModalInfo.type}
+                        entityType="mainCategoryId"
+                        entityId={relatedModalInfo.entityId}
+                        entityName={relatedModalInfo.entityName}
+                    />
+
                     <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
                         {filtered.map((mc) => (
                             <article key={mc.id} className="overflow-hidden rounded-2xl border border-black/[0.04] dark:border-white/[0.04] bg-white dark:bg-surface-dark shadow-[0_4px_20px_-4px_rgba(0,0,0,0.02)] transition-all duration-300 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.04)]">
@@ -132,9 +154,24 @@ export default function MainCategoriesClient({ mainCategories }: { mainCategorie
                                     </p>
 
                                     <div className="mb-4 flex flex-wrap gap-2 text-xs font-bold text-text-sub dark:text-gray-400">
-                                        <span className="rounded-full bg-primary/10 px-3 py-1 text-primary">{mc._count.brands} Brands</span>
-                                        <span className="rounded-full bg-blue-50 px-3 py-1 text-blue-600 dark:bg-blue-900/20 dark:text-blue-300">{mc._count.categories} Categories</span>
-                                        <span className="rounded-full bg-gray-100 px-3 py-1 dark:bg-gray-800">{mc._count.products} Products</span>
+                                        <button 
+                                            onClick={() => setRelatedModalInfo({ isOpen: true, type: "brands", entityId: mc.id, entityName: mc.name })}
+                                            className="cursor-pointer rounded-full bg-primary/10 px-3 py-1 text-primary hover:bg-primary/20 transition-colors"
+                                        >
+                                            {mc._count.brands} Brands
+                                        </button>
+                                        <button 
+                                            onClick={() => setRelatedModalInfo({ isOpen: true, type: "categories", entityId: mc.id, entityName: mc.name })}
+                                            className="cursor-pointer rounded-full bg-blue-50 px-3 py-1 text-blue-600 dark:bg-blue-900/20 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors"
+                                        >
+                                            {mc._count.categories} Categories
+                                        </button>
+                                        <button 
+                                            onClick={() => setRelatedModalInfo({ isOpen: true, type: "products", entityId: mc.id, entityName: mc.name })}
+                                            className="cursor-pointer rounded-full bg-gray-100 px-3 py-1 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                                        >
+                                            {mc._count.products} Products
+                                        </button>
                                         {mc.showInNav && (
                                             <span className="rounded-full bg-amber-50 px-3 py-1 text-amber-600 dark:bg-amber-900/20 dark:text-amber-300">
                                                 Navbar: #{mc.navOrder}

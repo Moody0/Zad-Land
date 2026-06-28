@@ -8,7 +8,7 @@ import ProductCard from "@/app/components/ProductsPageComponents/ProductCard";
 
 import LoadMoreButton from "@/app/components/ProductsPageComponents/LoadMoreButton";
 import { useLanguage } from "@/app/context/LanguageContext";
-import { MdSearchOff } from "react-icons/md";
+import { MdSearchOff, MdKeyboardArrowDown } from "react-icons/md";
 
 interface Category {
     id: string;
@@ -130,14 +130,34 @@ const ProductsClient = ({
         <div className="flex-1 container-custom py-8 md:py-10">
             <ProductsBreadcrumbs activeCategory={activeCategory} />
 
-            <ProductsHeader sort={sort} setSort={setSort} activeCategory={activeCategory} activeBrand={activeBrand} />
+            <ProductsHeader activeCategory={activeCategory} activeBrand={activeBrand} />
 
             <CategorySelector categories={initialCategories} activeCategory={activeCategory} activeMainCategory={activeMainCategory} />
 
             <div className="flex-1">
-                <p className="mb-6 text-sm text-gray-500 dark:text-gray-400">
-                    {t("products.showing")} {products.length} {t("products.of")} {totalProducts} {t("products.results")}
-                </p>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
+                        {t("products.showing")} {products.length} {t("products.of")} {totalProducts} {t("products.results")}
+                    </p>
+                    <div className="flex items-center gap-3">
+                        <span className="text-sm font-bold tracking-wide text-[#7b676f] dark:text-white/55 uppercase whitespace-nowrap hidden sm:block">
+                            {t('products.sortBy')}
+                        </span>
+                        <div className="relative">
+                            <select
+                                value={sort}
+                                onChange={(e) => setSort(e.target.value)}
+                                className={`w-full sm:w-auto min-w-[200px] cursor-pointer appearance-none rounded-xl border border-[#ddd2d6] bg-white px-4 py-2.5 text-sm font-semibold text-[#181113] focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 shadow-sm transition-all ${language === 'ar' ? 'pl-10 pr-4' : 'pr-10 pl-4'} dark:border-white/10 dark:bg-[#221d20] dark:text-white hover:border-[#c5b8bd] dark:hover:border-white/20`}
+                            >
+                                <option value="best_sellers">{t('products.bestSellers')}</option>
+                                <option value="Price: Low to High">{t('products.priceLowHigh')}</option>
+                                <option value="Price: High to Low">{t('products.priceHighLow')}</option>
+                                <option value="Newest Arrivals">{t('products.newestArrivals')}</option>
+                            </select>
+                            <MdKeyboardArrowDown className={`absolute top-1/2 -translate-y-1/2 pointer-events-none text-xl text-primary ${language === 'ar' ? 'left-3' : 'right-3'}`} />
+                        </div>
+                    </div>
+                </div>
 
                 {products.length === 0 && !loading && (
                     <div className="flex flex-col items-center justify-center rounded-[28px] border border-dashed border-[#eadfe2] bg-[#fff8fa] px-6 py-20 text-center dark:border-white/10 dark:bg-white/5">
