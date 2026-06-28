@@ -13,6 +13,7 @@ interface ProductsHeaderProps {
     activeBrand?: {
         name: string;
         description: string | null;
+        image?: string | null;
         group: string;
     } | null;
 }
