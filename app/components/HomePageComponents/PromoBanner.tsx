@@ -18,6 +18,7 @@ const PromoBanner = () => {
                         src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=1200" 
                         alt="Promo Background" 
                         fill
+                        priority
                         sizes="(max-width: 768px) 100vw, 100vw"
                         className="object-cover opacity-60"
                     />

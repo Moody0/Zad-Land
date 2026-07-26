@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useProductRail } from './useProductRail';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
 import { MdChevronLeft, MdChevronRight } from 'react-icons/md';
 
 const STATIC_CATEGORIES = [
@@ -41,40 +40,26 @@ const CategoriesRail = () => {
         <section className="w-full bg-white dark:bg-[#121212] pt-2 pb-2 md:pt-3 md:pb-3 border-b border-gray-100 dark:border-white/5">
             <div className="container-custom">
                 <div className="relative group">
-                    <motion.div
-                        initial="hidden"
-                        whileInView="visible"
-                        viewport={{ once: true, margin: "-20px" }}
-                        variants={{
-                            visible: {
-                                transition: {
-                                    staggerChildren: 0.05,
-                                },
-                            },
-                        }}
+                    <div
                         ref={railRef}
                         className="-mx-4 overflow-x-auto px-4 scrollbar-hide sm:mx-0 sm:px-0"
                     >
                         <div className="flex snap-x snap-mandatory gap-6 md:gap-10 pb-2">
-                            {STATIC_CATEGORIES.map((category) => (
-                                <motion.div
-                                    key={category.slug}
-                                    variants={{
-                                        hidden: { opacity: 0, scale: 0.8, y: 20 },
-                                        visible: { opacity: 1, scale: 1, y: 0, transition: { type: "spring", stiffness: 200, damping: 20 } }
-                                    }}
-                                >
+                            {STATIC_CATEGORIES.map((category, index) => (
+                                <div key={category.slug}>
                                     <Link
                                         href={`/products?category=${category.slug}`}
-                                        className="flex flex-col items-center gap-2 w-[100px] md:w-[120px] flex-none snap-start group/card"
+                                        className="flex flex-col items-center gap-2 w-[100px] md:w-[120px] flex-none snap-start group/card animate-fadeIn"
+                                        style={{ animationDelay: `${index * 0.05}s` }}
                                     >
                                         <div className="w-[60px] h-[60px] md:w-20 md:h-20 rounded-full overflow-hidden relative bg-gray-100 shrink-0">
                                             <Image
                                                 src={category.image}
                                                 alt={category.name}
                                                 fill
+                                                quality={60}
                                                 sizes="(max-width: 768px) 60px, 80px"
-                                                className="object-cover"
+                                                className="object-cover transition-transform duration-300 group-hover/card:scale-110"
                                             />
                                         </div>
                                         <h3 className="text-[15px] font-medium text-center text-[rgb(46,46,46)] dark:text-white flex items-center gap-1">
@@ -89,12 +74,12 @@ const CategoriesRail = () => {
                                             </svg>
                                         </h3>
                                     </Link>
-                                </motion.div>
+                                </div>
                             ))}
                             {/* Spacer for mobile */}
                             <div className="w-[1px] shrink-0 sm:hidden"></div>
                         </div>
-                    </motion.div>
+                    </div>
 
                     {/* Desktop Navigation Arrows (Centred on circular images, top-10) */}
                     <button

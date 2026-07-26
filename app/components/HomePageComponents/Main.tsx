@@ -81,15 +81,11 @@ const Main = async ({ banners, mainBrands, featuredNewArrivals, featuredBundles,
                 <HeroCarousel banners={banners} />
 
                 {/* 2. Categories Rail (12 Custom Circular Items) */}
-                <ScrollReveal delay={0.1}>
-                    <CategoriesRail />
-                </ScrollReveal>
+                <CategoriesRail />
             </div>
 
             {/* 3. First Ad - Placed above CategoryHighlightCards */}
-            <ScrollReveal>
-                <PromoBanner />
-            </ScrollReveal>
+            <PromoBanner />
 
             {/* 4. Main Categories (4 highlight cards - تسوق حسب الفئة) */}
             <ScrollReveal>
