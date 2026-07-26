@@ -2,10 +2,23 @@ export const IMAGE_PLACEHOLDER_SRC = "/placeholder.svg";
 
 const isRemoteImageUrl = (url: string) => /^https?:\/\//i.test(url);
 
-const getProxyImageUrl = (url: string) => `/api/image-proxy?url=${encodeURIComponent(url)}`;
+const getProxyImageUrl = (url: string) => `/_next/image?url=${encodeURIComponent(url)}&w=1080&q=75`;
 
 const appendRetryParam = (url: string, attempt: number) =>
     `${url}${url.includes("?") ? "&" : "?"}retry=${attempt}`;
+
+const cleanUrl = (url: string): string => {
+    let cleaned = url.trim();
+    if (cleaned.includes('/api/image-proxy?url=')) {
+        try {
+            const urlParam = cleaned.split('url=')[1].split('&')[0];
+            cleaned = decodeURIComponent(urlParam);
+        } catch (e) {
+            // ignore
+        }
+    }
+    return cleaned;
+};
 
 /**
  * Checks if an image URL needs to be proxied to bypass regional blocks (e.g., Shopify CDN in Syria).
@@ -13,7 +26,7 @@ const appendRetryParam = (url: string, attempt: number) =>
 export const getSafeImageUrl = (url: string | null | undefined): string => {
     if (!url) return IMAGE_PLACEHOLDER_SRC;
 
-    const trimmedUrl = url.trim();
+    const trimmedUrl = cleanUrl(url);
 
     // Shopify CDN is blocked in some regions (e.g., Syria)
     if (trimmedUrl.includes("cdn.shopify.com")) {
@@ -45,24 +58,17 @@ export const getImageSourceCandidates = (
         return [fallbackSrc];
     }
 
-    const trimmedUrl = url.trim();
+    const trimmedUrl = cleanUrl(url);
 
     if (!trimmedUrl) {
         return [fallbackSrc];
     }
 
-    const safeUrl = getSafeImageUrl(trimmedUrl);
-    const candidates = [safeUrl];
+    const candidates = [trimmedUrl];
     const isRemote = isRemoteImageUrl(trimmedUrl);
 
     if (isRemote) {
-        const proxyUrl = getProxyImageUrl(trimmedUrl);
-
-        if (proxyUrl !== safeUrl) {
-            candidates.push(proxyUrl);
-        }
-
-        candidates.push(appendRetryParam(proxyUrl, 1));
+        candidates.push(appendRetryParam(trimmedUrl, 1));
     }
 
     candidates.push(fallbackSrc);

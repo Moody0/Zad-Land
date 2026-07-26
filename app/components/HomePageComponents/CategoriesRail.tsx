@@ -4,6 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useProductRail } from './useProductRail';
+import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { MdChevronLeft, MdChevronRight } from 'react-icons/md';
 
@@ -67,12 +68,13 @@ const CategoriesRail = () => {
                                         href={`/products?category=${category.slug}`}
                                         className="flex flex-col items-center gap-2 w-[100px] md:w-[120px] flex-none snap-start group/card"
                                     >
-                                        <div className="w-[60px] h-[60px] md:w-20 md:h-20 rounded-full overflow-hidden relative bg-gray-100">
-                                            <img
+                                        <div className="w-[60px] h-[60px] md:w-20 md:h-20 rounded-full overflow-hidden relative bg-gray-100 shrink-0">
+                                            <Image
                                                 src={category.image}
                                                 alt={category.name}
-                                                className="w-full h-full object-cover"
-                                                loading="lazy"
+                                                fill
+                                                sizes="(max-width: 768px) 60px, 80px"
+                                                className="object-cover"
                                             />
                                         </div>
                                         <h3 className="text-[15px] font-medium text-center text-[rgb(46,46,46)] dark:text-white flex items-center gap-1">

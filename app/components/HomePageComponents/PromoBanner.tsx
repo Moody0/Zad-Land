@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useLanguage } from '@/app/context/LanguageContext';
 
 const PromoBanner = () => {
@@ -13,10 +14,12 @@ const PromoBanner = () => {
                 
                 {/* Background Image */}
                 <div className="absolute inset-0 z-0">
-                    <img 
+                    <Image
                         src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=1200" 
                         alt="Promo Background" 
-                        className="w-full h-full object-cover opacity-60"
+                        fill
+                        sizes="(max-width: 768px) 100vw, 100vw"
+                        className="object-cover opacity-60"
                     />
                     <div className="absolute inset-0 bg-[#fce7ed]/80 dark:bg-[#2d161e]/80" />
                 </div>

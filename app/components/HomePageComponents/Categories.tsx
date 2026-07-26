@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import React from 'react'
 import { MdChevronRight } from 'react-icons/md';
-import { getSafeImageUrl } from '@/lib/image-utils';
+import Image from 'next/image';
 
 interface Category {
     id: string;
@@ -41,11 +41,12 @@ const Categories = ({ categories, t, dir }: CategoriesProps) => {
                             className="group flex flex-col gap-3 p-2 rounded-2xl transition-all duration-300 hover:bg-white dark:hover:bg-white/5 premium-shadow-hover"
                         >
                             <div className="relative aspect-4/4 w-full overflow-hidden rounded-xl bg-gray-100 dark:bg-white/5">
-                                <img
-                                    src={getSafeImageUrl((category.image || defaultImage))}
+                                <Image
+                                    src={category.image || defaultImage}
                                     alt={category.name}
-                                    className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-110"
-                                    loading="lazy"
+                                    fill
+                                    sizes="(max-width: 768px) 50vw, 25vw"
+                                    className="object-contain transition-transform duration-500 group-hover:scale-110"
                                 />
                             </div>
                             <div className="flex flex-col items-center text-center px-1">

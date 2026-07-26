@@ -2,7 +2,7 @@ import Link from 'next/link';
 import React from 'react';
 import { getI18n } from '@/lib/i18n';
 import type { HomeBrand } from '@/lib/admin-actions';
-import { getSafeImageUrl } from '@/lib/image-utils';
+import Image from 'next/image';
 
 interface ShopByCategoryProps {
     mainBrands: HomeBrand[];
@@ -48,7 +48,7 @@ const ShopByCategory = async ({ mainBrands }: ShopByCategoryProps) => {
     const displayCategories: DisplayCategory[] = categoryOrder.map(slug => {
         const brand = mainBrands.find(b => b.slug === slug);
         const image = brand?.image
-            ? getSafeImageUrl(brand.image)
+            ? brand.image
             : defaultImages[slug] || 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=400';
 
         return {
@@ -74,11 +74,12 @@ const ShopByCategory = async ({ mainBrands }: ShopByCategoryProps) => {
                         >
                             {/* Card Image Container - Rectangular like the design */}
                             <div className="relative w-full aspect-square overflow-hidden rounded-2xl bg-gray-50 dark:bg-white/5 shadow-sm group-hover:shadow-lg transition-shadow duration-300">
-                                <img
+                                <Image
                                     src={category.image}
                                     alt={category.name}
-                                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                                    loading="lazy"
+                                    fill
+                                    sizes="(max-width: 768px) 50vw, 25vw"
+                                    className="object-cover transition-transform duration-500 group-hover:scale-105"
                                 />
                                 {/* Subtle gradient overlay on hover */}
                                 <div className="absolute inset-x-0 bottom-0 h-1/4 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />

@@ -1,13 +1,15 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import React, { useMemo, useRef, useState } from "react";
+import React, { useMemo, useState } from "react";
+import Image, { ImageProps } from "next/image";
 import { getImageSourceCandidates, IMAGE_PLACEHOLDER_SRC } from "@/lib/image-utils";
 
-interface ResilientImageProps extends Omit<React.ImgHTMLAttributes<HTMLImageElement>, "src"> {
+interface ResilientImageProps extends Omit<ImageProps, "src" | "alt"> {
     src: string | null | undefined;
     fallbackSrc?: string;
     skeletonClassName?: string;
+    alt?: string;
 }
 
 const ResilientImage = ({
@@ -44,11 +46,11 @@ interface ResilientImageInnerProps {
     candidates: string[];
     fallbackSrc: string;
     alt?: string;
-    onError?: React.ImgHTMLAttributes<HTMLImageElement>["onError"];
-    onLoad?: React.ImgHTMLAttributes<HTMLImageElement>["onLoad"];
+    onError?: ImageProps["onError"];
+    onLoad?: ImageProps["onLoad"];
     className?: string;
     skeletonClassName?: string;
-    imgProps: Omit<React.ImgHTMLAttributes<HTMLImageElement>, "src">;
+    imgProps: Omit<ImageProps, "src" | "alt">;
 }
 
 const ResilientImageInner = ({
@@ -61,18 +63,10 @@ const ResilientImageInner = ({
     skeletonClassName,
     imgProps,
 }: ResilientImageInnerProps) => {
-    const imageRef = useRef<HTMLImageElement | null>(null);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isLoaded, setIsLoaded] = useState(false);
 
     const currentSrc = candidates[currentIndex] || fallbackSrc;
-    const setImageRef = (node: HTMLImageElement | null) => {
-        imageRef.current = node;
-
-        if (node?.complete && node.naturalWidth > 0) {
-            setIsLoaded(true);
-        }
-    };
 
     return (
         <span className="relative block h-full w-full overflow-hidden">
@@ -82,11 +76,12 @@ const ResilientImageInner = ({
             >
                 <span className="image-shimmer absolute inset-0" />
             </span>
-            <img
-                ref={setImageRef}
+            <Image
                 {...imgProps}
-                alt={alt}
+                alt={alt || ""}
                 src={currentSrc}
+                fill
+                sizes={imgProps.sizes || "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"}
                 className={`${className || ""} block transition-opacity duration-500 ${isLoaded ? "opacity-100" : "opacity-0"}`}
                 onLoad={(event) => {
                     setIsLoaded(true);

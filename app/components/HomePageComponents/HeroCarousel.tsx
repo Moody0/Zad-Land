@@ -7,6 +7,7 @@ import { useLanguage } from '@/app/context/LanguageContext';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation, Pagination } from 'swiper/modules';
 import { getSafeImageUrl } from '@/lib/image-utils';
+import Image from 'next/image';
 
 // Import Swiper styles
 import 'swiper/css';
@@ -109,11 +110,13 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                                         href={banner.link || "/products"} 
                                         className="w-full h-full md:w-1/2 relative shrink-0 block group/mobile overflow-hidden active:scale-[0.98] md:active:scale-100 transition-transform duration-300"
                                     >
-                                        <img
-                                            src={getSafeImageUrl(banner.image)}
+                                        <Image
+                                            src={banner.image}
                                             alt={getBannerTitle(banner)}
-                                            className="w-full h-full object-cover object-center transition-transform duration-700 md:group-hover/mobile:scale-105"
-                                            loading={index === 0 ? "eager" : "lazy"}
+                                            fill
+                                            priority={index === 0}
+                                            sizes="100vw"
+                                            className="object-cover object-center transition-transform duration-700 md:group-hover/mobile:scale-105"
                                         />
                                         
                                         {/* Mobile Click Indicator - Hidden on Desktop */}
