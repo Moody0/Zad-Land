@@ -8,18 +8,18 @@ import Image from 'next/image';
 import { MdChevronLeft, MdChevronRight } from 'react-icons/md';
 
 const STATIC_CATEGORIES = [
-    { name: 'BodyCare', nameAr: 'العناية بالجسم', slug: 'bodycare', image: 'https://i.postimg.cc/VkWt3Vdx/images-(7)-Nero-AI-Image-Upscaler-Photo-Face.jpg' },
-    { name: 'Eyes', nameAr: 'العيون', slug: 'eyes', image: 'https://i.postimg.cc/Hnn85Y2P/photo-2026-02-09-19-57-13.jpg' },
-    { name: 'Sunscreen SPF', nameAr: 'واقي شمس', slug: 'sunscreen-spf', image: 'https://i.postimg.cc/mkBT98yJ/Designer-(5).png' },
-    { name: 'Skincare', nameAr: 'العناية بالبشرة', slug: 'skincare', image: 'https://i.postimg.cc/J4pjGJ4c/photo-2026-02-09-19-59-57.jpg' },
-    { name: 'Haircare', nameAr: 'العناية بالشعر', slug: 'haircare', image: 'https://i.postimg.cc/rpZ4QRPt/Designer-(4).png' },
-    { name: 'Face Makeup', nameAr: 'مكياج الوجه', slug: 'face-makeup', image: 'https://i.postimg.cc/ZnRDXNbR/Designer-(6).png' },
-    { name: 'False Nails', nameAr: 'أظافر صناعية', slug: 'false-nails', image: 'https://i.postimg.cc/L5xBKQCM/images-(6)-Nero-AI-Image-Upscaler-Photo-Face.jpg' },
-    { name: 'False Lashes', nameAr: 'رموش صناعية', slug: 'false-lashes', image: 'https://i.postimg.cc/VLNdHkXV/images-(5)-Nero-AI-Image-Upscaler-Photo-Face.jpg' },
-    { name: 'Lenses', nameAr: 'عدسات لاصقة', slug: 'lenses', image: 'https://i.postimg.cc/TYkQZ1FD/Designer-(7).png' },
-    { name: 'Nails Tools', nameAr: 'أدوات الأظافر', slug: 'nails-tools', image: 'https://i.postimg.cc/fTzgGxr3/Ruby-Face-Professional-Beauty-Tools-Manicure-set-5pcs-Mauve.jpg' },
-    { name: 'Nails', nameAr: 'طلاء الأظافر', slug: 'nails', image: 'https://i.postimg.cc/v80m9wCr/CAT-EYE-RUBY-315x315-Nero-AI-Image-Upscaler-Photo-Face.jpg' },
-    { name: 'Lips', nameAr: 'الشفاه', slug: 'lips', image: 'https://i.postimg.cc/C5QLVFSn/Designer-(3).png' },
+    { name: 'BodyCare', nameAr: 'العناية بالجسم', slug: 'bodycare', image: '/images/categories/images-(7)-Nero-AI-Image-Upscaler-Photo-Face.jpg' },
+    { name: 'Eyes', nameAr: 'العيون', slug: 'eyes', image: '/images/categories/photo-2026-02-09-19-57-13.jpg' },
+    { name: 'Sunscreen SPF', nameAr: 'واقي شمس', slug: 'sunscreen-spf', image: '/images/categories/Designer-(5).png' },
+    { name: 'Skincare', nameAr: 'العناية بالبشرة', slug: 'skincare', image: '/images/categories/photo-2026-02-09-19-59-57.jpg' },
+    { name: 'Haircare', nameAr: 'العناية بالشعر', slug: 'haircare', image: '/images/categories/Designer-(4).png' },
+    { name: 'Face Makeup', nameAr: 'مكياج الوجه', slug: 'face-makeup', image: '/images/categories/Designer-(6).png' },
+    { name: 'False Nails', nameAr: 'أظافر صناعية', slug: 'false-nails', image: '/images/categories/images-(6)-Nero-AI-Image-Upscaler-Photo-Face.jpg' },
+    { name: 'False Lashes', nameAr: 'رموش صناعية', slug: 'false-lashes', image: '/images/categories/images-(5)-Nero-AI-Image-Upscaler-Photo-Face.jpg' },
+    { name: 'Lenses', nameAr: 'عدسات لاصقة', slug: 'lenses', image: '/images/categories/Designer-(7).png' },
+    { name: 'Nails Tools', nameAr: 'أدوات الأظافر', slug: 'nails-tools', image: '/images/categories/Ruby-Face-Professional-Beauty-Tools-Manicure-set-5pcs-Mauve.jpg' },
+    { name: 'Nails', nameAr: 'طلاء الأظافر', slug: 'nails', image: '/images/categories/CAT-EYE-RUBY-315x315-Nero-AI-Image-Upscaler-Photo-Face.jpg' },
+    { name: 'Lips', nameAr: 'الشفاه', slug: 'lips', image: '/images/categories/Designer-(3).png' },
 ];
 
 const CategoriesRail = () => {
@@ -49,8 +49,7 @@ const CategoriesRail = () => {
                                 <div key={category.slug}>
                                     <Link
                                         href={`/products?category=${category.slug}`}
-                                        className="flex flex-col items-center gap-2 w-[100px] md:w-[120px] flex-none snap-start group/card animate-fadeIn"
-                                        style={{ animationDelay: `${index * 0.05}s` }}
+                                        className="flex flex-col items-center gap-2 w-[100px] md:w-[120px] flex-none snap-start group/card"
                                     >
                                         <div className="w-[60px] h-[60px] md:w-20 md:h-20 rounded-full overflow-hidden relative bg-gray-100 shrink-0">
                                             <Image
@@ -58,6 +57,7 @@ const CategoriesRail = () => {
                                                 alt={category.name}
                                                 fill
                                                 quality={60}
+                                                priority={index < 4}
                                                 sizes="(max-width: 768px) 60px, 80px"
                                                 className="object-cover transition-transform duration-300 group-hover/card:scale-110"
                                             />
