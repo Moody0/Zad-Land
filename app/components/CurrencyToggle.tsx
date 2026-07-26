@@ -28,25 +28,25 @@ const CurrencyToggle = () => {
         <div className="relative inline-block text-left" ref={dropdownRef}>
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="flex items-center gap-1 px-2 py-1.5 rounded-lg text-[13px] font-bold text-[#072835] dark:text-white hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
+                className="flex items-center gap-1 px-2 py-1 rounded-lg text-xs font-bold text-zinc-900 dark:text-white hover:bg-black/5 dark:hover:bg-white/10 transition-colors"
                 aria-haspopup="true"
                 aria-expanded={isOpen}
             >
                 <span>{currency === 'USD' ? '$' : (language === 'ar' ? 'ل.س' : 'SYP')}</span>
-                <svg className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <svg className={`w-3.5 h-3.5 transition-transform ${isOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
             </button>
 
             {isOpen && (
-                <div className="absolute right-0 mt-2 w-28 rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-gray-100 bg-white dark:bg-[#1a1517] dark:border-white/10 z-50 p-1.5 origin-top-right transition-all">
-                    <div className="flex flex-col gap-1" role="menu" aria-orientation="vertical">
+                <div className="absolute right-0 mt-2 w-28 rounded-xl shadow-xl border border-gray-100 bg-white dark:bg-zinc-900 dark:border-white/10 z-50 p-1.5 origin-top-right transition-all">
+                    <div className="flex flex-col gap-0.5" role="menu" aria-orientation="vertical">
                         <button
                             onClick={() => {
                                 setCurrency('SYP');
                                 setIsOpen(false);
                             }}
-                            className={`flex items-center justify-between w-full px-3 py-2.5 rounded-lg text-[13px] transition-all ${currency === 'SYP' ? 'bg-[#FAFAFA] dark:bg-white/10 text-[#072835] dark:text-white font-bold' : 'text-gray-600 dark:text-gray-400 hover:bg-[#FAFAFA] dark:hover:bg-white/5 hover-underline-animated dark:hover:text-white font-medium'}`}
+                            className={`flex items-center justify-between w-full px-3 py-2 rounded-lg text-xs transition-all ${currency === 'SYP' ? 'bg-gray-100 dark:bg-white/10 text-zinc-900 dark:text-white font-bold' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 dark:hover:text-white font-medium'}`}
                             role="menuitem"
                         >
                             <span>{language === 'ar' ? 'ل.س' : 'SYP'}</span>
@@ -61,7 +61,7 @@ const CurrencyToggle = () => {
                                 setCurrency('USD');
                                 setIsOpen(false);
                             }}
-                            className={`flex items-center justify-between w-full px-3 py-2.5 rounded-lg text-[13px] transition-all ${currency === 'USD' ? 'bg-[#FAFAFA] dark:bg-white/10 text-[#072835] dark:text-white font-bold' : 'text-gray-600 dark:text-gray-400 hover:bg-[#FAFAFA] dark:hover:bg-white/5 hover-underline-animated dark:hover:text-white font-medium'}`}
+                            className={`flex items-center justify-between w-full px-3 py-2 rounded-lg text-xs transition-all ${currency === 'USD' ? 'bg-gray-100 dark:bg-white/10 text-zinc-900 dark:text-white font-bold' : 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/5 dark:hover:text-white font-medium'}`}
                             role="menuitem"
                         >
                             <span>USD</span>
@@ -79,4 +79,3 @@ const CurrencyToggle = () => {
 };
 
 export default CurrencyToggle;
-

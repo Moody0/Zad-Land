@@ -69,17 +69,17 @@ const Footer = async ({ t, language }: FooterProps) => {
 
     const socialLinks = [
         {
-            href: settings?.footerInstagramUrl || "",
+            href: settings?.footerInstagramUrl || "https://www.instagram.com/ruby.beauty.sy",
             icon: FaInstagram,
             label: "Instagram",
         },
         {
-            href: settings?.footerFacebookUrl || "",
+            href: settings?.footerFacebookUrl || "https://www.facebook.com/share/1HzXdo7sLG/?mibextid=wwXIfr",
             icon: FaFacebook,
             label: "Facebook",
         },
         {
-            href: settings?.footerWhatsappUrl || "",
+            href: settings?.footerWhatsappUrl || "https://wa.me/963933254796",
             icon: FaWhatsapp,
             label: "WhatsApp",
         },
@@ -88,44 +88,41 @@ const Footer = async ({ t, language }: FooterProps) => {
     const renderNavLink = (label: string, href: string) => {
         if (isExternalUrl(href)) {
             return (
-                <a className="hover-underline-animated transition-colors" href={href} target="_blank" rel="noopener noreferrer">
+                <a className="hover:text-zinc-900 dark:hover:text-white transition-colors" href={href} target="_blank" rel="noopener noreferrer">
                     {label}
                 </a>
             );
         }
 
         return (
-            <Link className="hover-underline-animated transition-colors" href={href}>
+            <Link className="hover:text-zinc-900 dark:hover:text-white transition-colors" href={href}>
                 {label}
             </Link>
         );
     };
 
     return (
-        <footer
-            className="bg-surface-light dark:bg-surface-dark border-t border-[#f4f0f2] dark:border-[#3a1d26] pt-16 pb-8"
-        >
+        <footer className="bg-white dark:bg-zinc-900 border-t border-gray-200 dark:border-white/10 pt-14 pb-8">
             <div className="container-custom">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 mb-12">
+                    {/* Brand Column */}
                     <div className="lg:col-span-2 flex flex-col gap-4">
-                        <div className="flex items-center gap-3">
-                            <h4 className="text-xl font-bold text-text-main-light dark:text-text-main-dark">{brandTitle}</h4>
-                        </div>
-                        <p className="text-text-muted-light dark:text-text-muted-dark max-w-xs leading-relaxed">
+                        <h4 className="text-xl font-extrabold text-zinc-900 dark:text-white tracking-tight">{brandTitle}</h4>
+                        <p className="text-sm text-gray-500 dark:text-gray-400 max-w-xs leading-relaxed">
                             {brandDescription}
                         </p>
-                        <div className="flex gap-4 text-2xl mt-2">
+                        <div className="flex items-center gap-3 mt-2">
                             {socialLinks.map((social) => {
                                 const Icon = social.icon;
                                 return (
                                     <a
                                         key={social.label}
-                                        className="text-text-muted-light dark:text-text-muted-dark hover-underline-animated transition-colors"
+                                        className="w-9 h-9 rounded-full bg-gray-100 dark:bg-zinc-800 text-zinc-900 dark:text-gray-300 hover:bg-zinc-900 hover:text-white dark:hover:bg-white dark:hover:text-black transition-all flex items-center justify-center text-sm"
                                         href={social.href}
                                         target="_blank"
                                         rel="noopener noreferrer"
+                                        aria-label={social.label}
                                     >
-                                        <span className="sr-only">{social.label}</span>
                                         <Icon />
                                     </a>
                                 );
@@ -133,20 +130,21 @@ const Footer = async ({ t, language }: FooterProps) => {
                         </div>
                     </div>
 
+                    {/* Shop Links */}
                     <div className="flex flex-col gap-4">
-                        <h5 className="font-bold text-text-main-light dark:text-text-main-dark">{shopTitle}</h5>
-                        <ul className="flex flex-col gap-2.5 text-sm text-text-muted-light dark:text-text-muted-dark">
+                        <h5 className="font-extrabold text-sm text-zinc-900 dark:text-white uppercase tracking-wider">{shopTitle}</h5>
+                        <ul className="flex flex-col gap-2.5 text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400">
                             {footerCategories.length > 0 ? (
                                 footerCategories.map((category) => (
                                     <li key={category.id}>
-                                        <Link className="hover-underline-animated transition-colors" href={`/categories/${category.slug}`}>
+                                        <Link className="hover:text-zinc-900 dark:hover:text-white transition-colors" href={`/categories/${category.slug}`}>
                                             {category.name}
                                         </Link>
                                     </li>
                                 ))
                             ) : (
                                 <li>
-                                    <Link className="hover-underline-animated transition-colors" href="/products">
+                                    <Link className="hover:text-zinc-900 dark:hover:text-white transition-colors" href="/products">
                                         {t('products.allProducts')}
                                     </Link>
                                 </li>
@@ -154,9 +152,10 @@ const Footer = async ({ t, language }: FooterProps) => {
                         </ul>
                     </div>
 
+                    {/* Support Links */}
                     <div className="flex flex-col gap-4">
-                        <h5 className="font-bold text-text-main-light dark:text-text-main-dark">{supportTitle}</h5>
-                        <ul className="flex flex-col gap-2.5 text-sm text-text-muted-light dark:text-text-muted-dark">
+                        <h5 className="font-extrabold text-sm text-zinc-900 dark:text-white uppercase tracking-wider">{supportTitle}</h5>
+                        <ul className="flex flex-col gap-2.5 text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400">
                             {supportLinks.map((link) => (
                                 <li key={`${link.label}-${link.url}`}>
                                     {renderNavLink(link.label, link.url)}
@@ -165,9 +164,10 @@ const Footer = async ({ t, language }: FooterProps) => {
                         </ul>
                     </div>
 
+                    {/* Company Links */}
                     <div className="flex flex-col gap-4">
-                        <h5 className="font-bold text-text-main-light dark:text-text-main-dark">{companyTitle}</h5>
-                        <ul className="flex flex-col gap-2.5 text-sm text-text-muted-light dark:text-text-muted-dark">
+                        <h5 className="font-extrabold text-sm text-zinc-900 dark:text-white uppercase tracking-wider">{companyTitle}</h5>
+                        <ul className="flex flex-col gap-2.5 text-xs sm:text-sm font-medium text-gray-500 dark:text-gray-400">
                             {companyLinks.map((link) => (
                                 <li key={`${link.label}-${link.url}`}>
                                     {renderNavLink(link.label, link.url)}
@@ -177,9 +177,9 @@ const Footer = async ({ t, language }: FooterProps) => {
                     </div>
                 </div>
 
-                <div className="border-t border-[#f4f0f2] dark:border-[#3a1d26] pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-text-muted-light dark:text-text-muted-dark">
+                {/* Bottom Line */}
+                <div className="border-t border-gray-200 dark:border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs font-medium text-gray-400">
                     <p>{copyright}</p>
-
                 </div>
             </div>
         </footer>
@@ -187,4 +187,3 @@ const Footer = async ({ t, language }: FooterProps) => {
 };
 
 export default Footer;
-

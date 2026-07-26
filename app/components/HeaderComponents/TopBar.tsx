@@ -10,7 +10,7 @@ interface TopBarProps {
 const TopBar = ({ isVisible }: TopBarProps) => {
     return (
         <div 
-            className={`hidden lg:block w-full bg-[#FAFAFA] dark:bg-[#1a1517] border-b border-[#E6E9EB] dark:border-white/5 transition-all duration-300 ${
+            className={`hidden lg:block w-full bg-gray-50 dark:bg-zinc-900 border-b border-gray-100 dark:border-white/5 transition-all duration-300 ${
                 isVisible ? 'max-h-[32px] opacity-100 overflow-visible' : 'max-h-0 opacity-0 border-transparent overflow-hidden'
             }`}
         >
@@ -31,14 +31,14 @@ const TopBar = ({ isVisible }: TopBarProps) => {
 
                     {/* Socials */}
                     <div className="flex items-center gap-3">
-                        <a href="https://www.facebook.com/share/1HzXdo7sLG/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer" className="text-[#072835] hover:opacity-75 dark:text-gray-400 dark:hover:text-white transition-opacity" aria-label="Facebook">
-                            <FaFacebook className="text-[17px]" />
+                        <a href="https://www.facebook.com/share/1HzXdo7sLG/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer" className="text-zinc-900 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors" aria-label="Facebook">
+                            <FaFacebook className="text-base" />
                         </a>
-                        <a href="https://www.instagram.com/ruby.beauty.sy" target="_blank" rel="noopener noreferrer" className="text-[#072835] hover:opacity-75 dark:text-gray-400 dark:hover:text-white transition-opacity" aria-label="Instagram">
-                            <FaInstagram className="text-[17px]" />
+                        <a href="https://www.instagram.com/ruby.beauty.sy" target="_blank" rel="noopener noreferrer" className="text-zinc-900 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors" aria-label="Instagram">
+                            <FaInstagram className="text-base" />
                         </a>
-                        <a href="https://wa.me/963933254796" target="_blank" rel="noopener noreferrer" className="text-[#072835] hover:opacity-75 dark:text-gray-400 dark:hover:text-white transition-opacity" aria-label="WhatsApp">
-                            <FaWhatsapp className="text-[17px]" />
+                        <a href="https://wa.me/963933254796" target="_blank" rel="noopener noreferrer" className="text-zinc-900 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors" aria-label="WhatsApp">
+                            <FaWhatsapp className="text-base" />
                         </a>
                     </div>
                 </div>

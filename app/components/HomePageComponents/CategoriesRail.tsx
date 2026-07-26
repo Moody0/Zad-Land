@@ -51,18 +51,20 @@ const CategoriesRail = () => {
                                         href={`/products?category=${category.slug}`}
                                         className="flex flex-col items-center gap-2 w-[100px] md:w-[120px] flex-none snap-start group/card"
                                     >
-                                        <div className="w-[60px] h-[60px] md:w-20 md:h-20 rounded-full overflow-hidden relative bg-gray-100 shrink-0">
-                                            <Image
-                                                src={category.image}
-                                                alt={category.name}
-                                                fill
-                                                quality={60}
-                                                priority={index < 4}
-                                                sizes="(max-width: 768px) 60px, 80px"
-                                                className="object-cover transition-transform duration-300 group-hover/card:scale-110"
-                                            />
+                                        <div className="w-[64px] h-[64px] md:w-[84px] md:h-[84px] rounded-full p-0.5 transition-all duration-300 border border-gray-200 dark:border-white/10 group-hover/card:border-zinc-900 dark:group-hover/card:border-white shrink-0">
+                                            <div className="w-full h-full rounded-full overflow-hidden relative bg-gray-50 dark:bg-zinc-900">
+                                                <Image
+                                                    src={category.image}
+                                                    alt={category.name}
+                                                    fill
+                                                    quality={60}
+                                                    priority={index < 4}
+                                                    sizes="(max-width: 768px) 60px, 80px"
+                                                    className="object-cover transition-transform duration-500 group-hover/card:scale-110"
+                                                />
+                                            </div>
                                         </div>
-                                        <h3 className="text-[15px] font-medium text-center text-[rgb(46,46,46)] dark:text-white flex items-center gap-1">
+                                        <h3 className="text-[15px] font-medium text-center text-gray-700 dark:text-gray-300 group-hover/card:text-zinc-900 dark:group-hover/card:text-white transition-colors duration-200 flex items-center gap-1">
                                             <span>{language === 'ar' ? category.nameAr : category.name}</span>
                                             <svg 
                                                 className={`w-3.5 h-3.5 opacity-0 -translate-x-1.5 group-hover/card:opacity-100 group-hover/card:translate-x-0 transition-all duration-500 ease-out ${dir === 'rtl' ? 'rotate-180' : ''}`} 
@@ -85,17 +87,17 @@ const CategoriesRail = () => {
                     <button
                         onClick={handleLeftScroll}
                         disabled={isLeftDisabled}
-                        className="hidden md:flex !absolute top-1/2 -translate-y-1/2 -left-5 z-10 w-[38px] h-[38px] rounded-full border border-gray-200 bg-white items-center justify-center text-black disabled:opacity-0 disabled:pointer-events-none btn-curved-fill shadow-md"
+                        className="hidden md:flex !absolute top-1/2 -translate-y-1/2 -left-5 z-20 w-9 h-9 rounded-full bg-white dark:bg-zinc-800 border border-gray-200 dark:border-white/10 text-zinc-900 dark:text-white hover:bg-zinc-900 hover:text-white dark:hover:bg-white dark:hover:text-black shadow-md items-center justify-center transition-all cursor-pointer disabled:opacity-0 disabled:pointer-events-none"
                     >
-                        <MdChevronLeft className="w-5 h-5" />
+                        <MdChevronLeft className="text-2xl" />
                     </button>
                     
                     <button
                         onClick={handleRightScroll}
                         disabled={isRightDisabled}
-                        className="hidden md:flex !absolute top-1/2 -translate-y-1/2 -right-5 z-10 w-[38px] h-[38px] rounded-full border border-gray-200 bg-white items-center justify-center text-black disabled:opacity-0 disabled:pointer-events-none btn-curved-fill shadow-md"
+                        className="hidden md:flex !absolute top-1/2 -translate-y-1/2 -right-5 z-20 w-9 h-9 rounded-full bg-white dark:bg-zinc-800 border border-gray-200 dark:border-white/10 text-zinc-900 dark:text-white hover:bg-zinc-900 hover:text-white dark:hover:bg-white dark:hover:text-black shadow-md items-center justify-center transition-all cursor-pointer disabled:opacity-0 disabled:pointer-events-none"
                     >
-                        <MdChevronRight className="w-5 h-5" />
+                        <MdChevronRight className="text-2xl" />
                     </button>
                 </div>
             </div>

@@ -1,9 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { useLanguage } from "@/app/context/LanguageContext";
-import { MdGridView } from "react-icons/md";
+import { MdGridView, MdChevronLeft, MdChevronRight } from "react-icons/md";
 import ResilientImage from "@/app/components/ResilientImage";
 
 interface Category {
@@ -25,8 +25,53 @@ function getCategoryHref(slug?: string | null) {
 }
 
 const CategorySelector = ({ categories, activeCategory = null }: CategorySelectorProps) => {
-    const { t } = useLanguage();
+    const { t, dir } = useLanguage();
     const scrollContainerRef = useRef<HTMLDivElement>(null);
+    const [showLeftArrow, setShowLeftArrow] = useState(false);
+    const [showRightArrow, setShowRightArrow] = useState(false);
+
+    const isRtl = dir === 'rtl';
+
+    const updateArrowVisibility = () => {
+        if (scrollContainerRef.current) {
+            const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
+            
+            // Check if scrollable
+            const isScrollable = scrollWidth > clientWidth;
+            if (!isScrollable) {
+                setShowLeftArrow(false);
+                setShowRightArrow(false);
+                return;
+            }
+
+            const maxScroll = scrollWidth - clientWidth;
+            const currentScroll = Math.abs(scrollLeft);
+
+            if (isRtl) {
+                setShowLeftArrow(currentScroll < maxScroll - 5);
+                setShowRightArrow(currentScroll > 5);
+            } else {
+                setShowLeftArrow(currentScroll > 5);
+                setShowRightArrow(currentScroll < maxScroll - 5);
+            }
+        }
+    };
+
+    useEffect(() => {
+        updateArrowVisibility();
+        const container = scrollContainerRef.current;
+        if (container) {
+            container.addEventListener('scroll', updateArrowVisibility);
+            window.addEventListener('resize', updateArrowVisibility);
+        }
+
+        return () => {
+            if (container) {
+                container.removeEventListener('scroll', updateArrowVisibility);
+            }
+            window.removeEventListener('resize', updateArrowVisibility);
+        };
+    }, [categories, isRtl]);
 
     useEffect(() => {
         if (activeCategory && scrollContainerRef.current) {
@@ -39,8 +84,32 @@ const CategorySelector = ({ categories, activeCategory = null }: CategorySelecto
         }
     }, [activeCategory]);
 
+    const handleScroll = (direction: 'left' | 'right') => {
+        if (scrollContainerRef.current) {
+            const distance = 320;
+            const multiplier = direction === 'left' ? -1 : 1;
+            scrollContainerRef.current.scrollBy({
+                left: multiplier * distance * (isRtl ? -1 : 1),
+                behavior: 'smooth'
+            });
+        }
+    };
+
     return (
-        <div className="mb-6">
+        <div className="relative mb-6 group">
+            {/* Scroll Left Arrow (Desktop) */}
+            {showLeftArrow && (
+                <button
+                    type="button"
+                    onClick={() => handleScroll('left')}
+                    aria-label="Scroll left"
+                    className="hidden sm:flex absolute left-0 top-1/2 -translate-y-1/2 -translate-x-3 w-9 h-9 rounded-full bg-white dark:bg-zinc-800 border border-gray-200 dark:border-white/10 text-zinc-900 dark:text-white hover:bg-zinc-900 hover:text-white dark:hover:bg-white dark:hover:text-black shadow-md items-center justify-center transition-all cursor-pointer z-20"
+                >
+                    <MdChevronLeft className="text-2xl" />
+                </button>
+            )}
+
+            {/* Scroll Container */}
             <div 
                 ref={scrollContainerRef}
                 className="flex items-center gap-4 sm:gap-5 overflow-x-auto hide-scrollbar py-1 px-0.5 scroll-smooth"
@@ -49,17 +118,17 @@ const CategorySelector = ({ categories, activeCategory = null }: CategorySelecto
                 {/* All Products Circle */}
                 <Link
                     href="/products"
-                    className="shrink-0 flex flex-col items-center gap-2 group transition-transform duration-200 active:scale-95"
+                    className="shrink-0 flex flex-col items-center gap-2 group/item transition-transform duration-200 active:scale-95"
                 >
                     <div className={`w-[64px] h-[64px] sm:w-[72px] sm:h-[72px] rounded-full p-0.5 transition-all duration-300 ${
                         !activeCategory 
                         ? 'border-2 border-zinc-900 dark:border-white' 
-                        : 'border border-gray-200 dark:border-white/10 group-hover:border-zinc-900 dark:group-hover:border-white'
+                        : 'border border-gray-200 dark:border-white/10 group-hover/item:border-zinc-900 dark:group-hover/item:border-white'
                     }`}>
                         <div className={`w-full h-full rounded-full flex items-center justify-center transition-all duration-300 ${
                             !activeCategory
                             ? 'bg-zinc-900 text-white dark:bg-white dark:text-black'
-                            : 'bg-gray-50 dark:bg-zinc-800 text-gray-700 dark:text-gray-300 group-hover:text-black dark:group-hover:text-white'
+                            : 'bg-gray-50 dark:bg-zinc-800 text-gray-700 dark:text-gray-300 group-hover/item:text-black dark:group-hover/item:text-white'
                         }`}>
                             <MdGridView className="text-2xl sm:text-3xl" />
                         </div>
@@ -67,7 +136,7 @@ const CategorySelector = ({ categories, activeCategory = null }: CategorySelecto
 
                     <div className="flex flex-col items-center">
                         <span className={`text-[11px] sm:text-xs font-semibold text-center leading-tight line-clamp-1 ${
-                            !activeCategory ? 'text-zinc-900 dark:text-white font-bold' : 'text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white'
+                            !activeCategory ? 'text-zinc-900 dark:text-white font-bold' : 'text-gray-600 dark:text-gray-400 group-hover/item:text-gray-900 dark:group-hover/item:text-white'
                         }`}>
                             {t("products.allProducts")}
                         </span>
@@ -85,19 +154,18 @@ const CategorySelector = ({ categories, activeCategory = null }: CategorySelecto
                             key={category.id}
                             id={`category-item-${category.slug}`}
                             href={getCategoryHref(category.slug)}
-                            className="shrink-0 flex flex-col items-center gap-2 group transition-transform duration-200 active:scale-95"
+                            className="shrink-0 flex flex-col items-center gap-2 group/item transition-transform duration-200 active:scale-95"
                         >
-                            {/* Matching Homepage Charcoal/Black Border Style */}
                             <div className={`w-[64px] h-[64px] sm:w-[72px] sm:h-[72px] rounded-full p-0.5 transition-all duration-300 ${
                                 isActive 
                                 ? 'border-2 border-zinc-900 dark:border-white' 
-                                : 'border border-gray-200 dark:border-white/10 group-hover:border-zinc-900 dark:group-hover:border-white'
+                                : 'border border-gray-200 dark:border-white/10 group-hover/item:border-zinc-900 dark:group-hover/item:border-white'
                             }`}>
                                 <div className="w-full h-full rounded-full overflow-hidden bg-gray-50 dark:bg-zinc-900">
                                     <ResilientImage 
                                         src={imageToUse} 
                                         alt={category.name} 
-                                        className="w-full h-full object-cover rounded-full transition-transform duration-500 group-hover:scale-110"
+                                        className="w-full h-full object-cover rounded-full transition-transform duration-500 group-hover/item:scale-110"
                                     />
                                 </div>
                             </div>
@@ -107,7 +175,7 @@ const CategorySelector = ({ categories, activeCategory = null }: CategorySelecto
                                 <span className={`text-[11px] sm:text-xs font-semibold text-center leading-tight line-clamp-1 transition-colors duration-200 ${
                                     isActive 
                                     ? 'text-zinc-900 dark:text-white font-bold' 
-                                    : 'text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white'
+                                    : 'text-gray-600 dark:text-gray-400 group-hover/item:text-gray-900 dark:group-hover/item:text-white'
                                 }`}>
                                     {category.name}
                                 </span>
@@ -116,6 +184,18 @@ const CategorySelector = ({ categories, activeCategory = null }: CategorySelecto
                     );
                 })}
             </div>
+
+            {/* Scroll Right Arrow (Desktop) */}
+            {showRightArrow && (
+                <button
+                    type="button"
+                    onClick={() => handleScroll('right')}
+                    aria-label="Scroll right"
+                    className="hidden sm:flex absolute right-0 top-1/2 -translate-y-1/2 translate-x-3 w-9 h-9 rounded-full bg-white dark:bg-zinc-800 border border-gray-200 dark:border-white/10 text-zinc-900 dark:text-white hover:bg-zinc-900 hover:text-white dark:hover:bg-white dark:hover:text-black shadow-md items-center justify-center transition-all cursor-pointer z-20"
+                >
+                    <MdChevronRight className="text-2xl" />
+                </button>
+            )}
         </div>
     );
 };

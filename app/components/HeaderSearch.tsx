@@ -16,6 +16,9 @@ interface HeaderSearchProps {
     locale?: 'en' | 'ar';
 }
 
+const wordsEn = ["Perfumes", "Accessories", "Skincare", "Lipsticks", "Serums", "Moisturizers", "Sunscreen"];
+const wordsAr = ["العطور", "المكياج", "العناية بالبشرة", "أحمر الشفاه", "السيروم", "المرطبات"];
+
 const HeaderSearch = ({ onSearchSelect, onClose, placeholder, autoFocus = false, locale }: HeaderSearchProps) => {
     const { t, dir, language } = useLanguage();
     const { formatPrice } = useCurrency();
@@ -31,7 +34,44 @@ const HeaderSearch = ({ onSearchSelect, onClose, placeholder, autoFocus = false,
     const inputRef = useRef<HTMLInputElement>(null);
 
     const isArabic = currentLocale === 'ar';
-    const searchPlaceholder = placeholder || (isArabic ? "عن ماذا تبحثين؟" : "What are you looking for?");
+
+    // Typewriter effect state for dynamic placeholder
+    const [wordIndex, setWordIndex] = useState(0);
+    const [subIndex, setSubIndex] = useState(0);
+    const [isDeleting, setIsDeleting] = useState(false);
+
+    useEffect(() => {
+        const words = isArabic ? wordsAr : wordsEn;
+        const currentWord = words[wordIndex % words.length];
+
+        if (!isDeleting && subIndex === currentWord.length) {
+            const timeout = setTimeout(() => {
+                setIsDeleting(true);
+            }, 1800);
+            return () => clearTimeout(timeout);
+        }
+
+        if (isDeleting && subIndex === 0) {
+            const timeout = setTimeout(() => {
+                setIsDeleting(false);
+                setWordIndex((prev) => (prev + 1) % words.length);
+            }, 300);
+            return () => clearTimeout(timeout);
+        }
+
+        const speed = isDeleting ? 40 : 80;
+        const timeout = setTimeout(() => {
+            setSubIndex((prev) => prev + (isDeleting ? -1 : 1));
+        }, speed);
+
+        return () => clearTimeout(timeout);
+    }, [subIndex, isDeleting, wordIndex, isArabic]);
+
+    const activeWords = isArabic ? wordsAr : wordsEn;
+    const currentWord = activeWords[wordIndex % activeWords.length] || "";
+    const typedWord = currentWord.substring(0, subIndex);
+    const staticPrefix = isArabic ? "البحث عن " : "Search for ";
+    const searchPlaceholder = placeholder || `${staticPrefix}${typedWord}`;
 
     // Click outside to close
     useEffect(() => {
@@ -57,12 +97,8 @@ const HeaderSearch = ({ onSearchSelect, onClose, placeholder, autoFocus = false,
                         setTotalCount(data.total || data.products?.length || 0);
                         setShowResults(true);
 
-                        // Generate suggestions from product names or use defaults for exact visual match
-                        // The reference image shows: s, d, rs, hydrates strands
                         setSuggestions(['s', 'd', 'rs', 'hydrates strands']);
 
-                        // Extract categories or use defaults for exact visual match
-                        // The reference image shows: Superkids, Ponds, جولدز أند بييز
                         setCategories([
                             { id: '1', name: 'Superkids', slug: 'superkids' },
                             { id: '2', name: 'Ponds', slug: 'ponds' },
@@ -131,7 +167,7 @@ const HeaderSearch = ({ onSearchSelect, onClose, placeholder, autoFocus = false,
             >
                 <input type="hidden" name="options[prefix]" value="last" />
                 <div className="search__field relative flex items-center w-full">
-                    {/* Search Input - Match exactly with the image: white bg, thin border */}
+                    {/* Search Input */}
                     <input
                         ref={inputRef}
                         id="HeaderSearchInput"
@@ -141,7 +177,7 @@ const HeaderSearch = ({ onSearchSelect, onClose, placeholder, autoFocus = false,
                         onFocus={() => {
                             if (query.trim().length > 0) setShowResults(true);
                         }}
-                        className="w-full bg-[#EDEDED] dark:bg-white/5 border border-transparent rounded-full text-[15px] font-medium text-[#1a1a1a] dark:text-white placeholder-[#888] dark:placeholder-gray-500 focus:outline-none focus:bg-[#FFFFFF] dark:focus:bg-white/10 focus:border-[rgb(46,46,46)] dark:focus:border-white focus:placeholder-[rgb(46,46,46)] transition-all h-12 [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden [&::-webkit-search-results-button]:hidden [&::-webkit-search-results-decoration]:hidden"
+                        className="w-full bg-[#EDEDED] dark:bg-white/5 border border-transparent rounded-full text-[15px] font-medium text-[#1a1a1a] dark:text-white placeholder-[#888] dark:placeholder-gray-400 focus:outline-none focus:bg-[#FFFFFF] dark:focus:bg-white/10 focus:border-zinc-900 dark:focus:border-white focus:placeholder-gray-400 transition-all h-12 [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden [&::-webkit-search-results-button]:hidden [&::-webkit-search-results-decoration]:hidden"
                         style={{
                             padding: isArabic ? '0 16px 0 80px' : '0 80px 0 16px',
                             direction: dir,
@@ -155,7 +191,7 @@ const HeaderSearch = ({ onSearchSelect, onClose, placeholder, autoFocus = false,
                         spellCheck="false"
                     />
 
-                    {/* Clear Button ("مسح") on the left side in RTL, right in LTR */}
+                    {/* Clear Button */}
                     {query && (
                         <button
                             type="button"
@@ -187,7 +223,7 @@ const HeaderSearch = ({ onSearchSelect, onClose, placeholder, autoFocus = false,
             {/* ========== Predictive Search Results Dropdown ========== */}
             {showResults && (
                 <div
-                    className="absolute top-full mt-1 bg-white dark:bg-[#1a1a2e] rounded-lg shadow-xl border border-gray-100 dark:border-white/10 z-50 overflow-y-auto max-h-[70vh] md:max-h-[unset] md:overflow-visible"
+                    className="absolute top-full mt-1 bg-white dark:bg-zinc-900 rounded-2xl shadow-xl border border-gray-100 dark:border-white/10 z-50 overflow-y-auto max-h-[70vh] md:max-h-[unset] md:overflow-visible"
                     style={{
                         width: '100%',
                         direction: dir,
@@ -195,7 +231,7 @@ const HeaderSearch = ({ onSearchSelect, onClose, placeholder, autoFocus = false,
                 >
                     {loading && results.length === 0 ? (
                         <div className="p-8 text-center">
-                            <svg aria-hidden="true" className="animate-spin h-6 w-6 mx-auto text-[#003049] dark:text-white" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
+                            <svg aria-hidden="true" className="animate-spin h-6 w-6 mx-auto text-zinc-900 dark:text-white" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
                                 <circle className="opacity-25" fill="none" strokeWidth="5" cx="33" cy="33" r="30" stroke="currentColor" />
                                 <circle fill="none" strokeWidth="5" cx="33" cy="33" r="30" stroke="currentColor" strokeDasharray="50, 138" strokeLinecap="round" />
                             </svg>
@@ -203,13 +239,12 @@ const HeaderSearch = ({ onSearchSelect, onClose, placeholder, autoFocus = false,
                     ) : (
                         <div className="flex flex-col md:flex-row p-6 gap-6 md:gap-0">
                             
-                            {/* Suggestions & Categories Section (Right side in RTL, Left in LTR) */}
+                            {/* Suggestions & Categories Section */}
                             <div className="w-full md:w-[260px] shrink-0 md:border-e border-gray-100 dark:border-white/5 md:pe-6 pb-6 md:pb-0 mb-6 md:mb-0 border-b md:border-b-0">
                                 
                                 {/* Suggestions */}
                                 {suggestions.length > 0 && (
                                     <div className="mb-8">
-                                        {/* Section Header: Text + Line */}
                                         <div className="flex items-center gap-3 mb-4">
                                             <span className="text-[11px] font-bold text-[#888] dark:text-gray-400 uppercase tracking-wide">
                                                 {isArabic ? "مرشحات مجربة" : "Suggestions"}
@@ -236,7 +271,6 @@ const HeaderSearch = ({ onSearchSelect, onClose, placeholder, autoFocus = false,
                                 {/* Categories */}
                                 {categories.length > 0 && (
                                     <div>
-                                        {/* Section Header: Text + Line */}
                                         <div className="flex items-center gap-3 mb-4">
                                             <span className="text-[11px] font-bold text-[#888] dark:text-gray-400 uppercase tracking-wide">
                                                 {isArabic ? "اهتمامات" : "Categories"}
@@ -258,7 +292,6 @@ const HeaderSearch = ({ onSearchSelect, onClose, placeholder, autoFocus = false,
                                             ))}
                                         </ul>
                                         
-                                        {/* View More Link */}
                                         <button
                                             onClick={handleViewAll}
                                             className="flex items-center justify-end md:justify-start gap-2 text-[13px] font-bold text-[#444] dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors mt-2 w-full"
@@ -270,9 +303,8 @@ const HeaderSearch = ({ onSearchSelect, onClose, placeholder, autoFocus = false,
                                 )}
                             </div>
 
-                            {/* Products Section (Left side in RTL, Right in LTR) */}
+                            {/* Products Section */}
                             <div className="flex-1 md:ps-6">
-                                {/* Section Header: Text + Line */}
                                 <div className="flex items-center gap-3 mb-6">
                                     <span className="text-[11px] font-bold text-[#888] dark:text-gray-400 uppercase tracking-wide">
                                         {isArabic ? "منتجات" : "Products"}
@@ -280,7 +312,6 @@ const HeaderSearch = ({ onSearchSelect, onClose, placeholder, autoFocus = false,
                                     <div className="h-px bg-gray-100 dark:bg-white/5 flex-1"></div>
                                 </div>
 
-                                {/* Product Grid: 3 columns */}
                                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-x-4 gap-y-8">
                                     {results.map((product) => (
                                         <Link
@@ -289,7 +320,6 @@ const HeaderSearch = ({ onSearchSelect, onClose, placeholder, autoFocus = false,
                                             onClick={handleProductClick}
                                             className="flex flex-col items-center group text-center"
                                         >
-                                            {/* Product Image */}
                                             <div className="w-24 h-24 mb-4 relative flex items-center justify-center">
                                                 <ResilientImage
                                                     src={getPrimaryImage(product.images)}
@@ -298,25 +328,21 @@ const HeaderSearch = ({ onSearchSelect, onClose, placeholder, autoFocus = false,
                                                 />
                                             </div>
                                             
-                                            {/* Product Brand */}
                                             <span className="text-[10px] text-[#888] dark:text-gray-400 uppercase tracking-[0.1em] mb-1.5 font-medium line-clamp-1">
                                                 {product.brand?.name || 'THE BATH LAND'}
                                             </span>
                                             
-                                            {/* Product Title */}
-                                            <h4 dir="ltr" className="text-[13px] font-medium text-[#333] dark:text-gray-200 group-hover:text-[#003049] dark:group-hover:text-white transition-colors leading-tight mb-1.5 line-clamp-2 px-2 font-sans tracking-normal">
+                                            <h4 dir="ltr" className="text-[13px] font-medium text-[#333] dark:text-gray-200 group-hover:text-zinc-900 dark:group-hover:text-white transition-colors leading-tight mb-1.5 line-clamp-2 px-2 font-sans tracking-normal">
                                                 {product.name}
                                             </h4>
                                             
-                                            {/* Product Price */}
-                                            <div className="text-[13px] font-extrabold text-[#111] dark:text-white" dir="ltr">
+                                            <div className="text-[13px] font-extrabold text-zinc-900 dark:text-white" dir="ltr">
                                                 {formatPrice(Number(product.discountPrice || product.price))}
                                             </div>
                                         </Link>
                                     ))}
                                 </div>
 
-                                {/* View All Link - Aligned appropriately */}
                                 {totalCount > 0 && (
                                     <div className="mt-8 flex justify-center">
                                         <button
