@@ -19,11 +19,11 @@ const CartItemsList = ({ items, cartCount, removeItem, updateQuantity }: CartIte
 
     return (
         <div className="lg:col-span-8 flex flex-col gap-8">
-            <div className="flex flex-col gap-2 pb-4 border-b border-[#E6E9EB] dark:border-white/10">
-                <h1 className="text-3xl font-black tracking-tight text-[#072835] dark:text-white">{t('cart.yourCart')}</h1>
-                <p className="text-[14px] font-medium text-gray-500 dark:text-gray-400">{cartCount} {t('orderComplete.items')}</p>
+            <div className="flex flex-col gap-1 pb-4 border-b border-gray-200 dark:border-white/10">
+                <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight text-zinc-900 dark:text-white">{t('cart.yourCart')}</h1>
+                <p className="text-xs font-semibold text-gray-400">{cartCount} {t('orderComplete.items')}</p>
             </div>
-            <div className="flex flex-col border-y border-[#E6E9EB] dark:border-white/10 divide-y divide-[#E6E9EB] dark:divide-white/10">
+            <div className="flex flex-col border-y border-gray-200 dark:border-white/10 divide-y divide-gray-200 dark:divide-white/10">
                 {items.map(item => (
                     <CartItem
                         key={item.id}
@@ -33,9 +33,9 @@ const CartItemsList = ({ items, cartCount, removeItem, updateQuantity }: CartIte
                     />
                 ))}
             </div>
-            <div className="mt-4">
-                <Link href="/products" className="relative inline-flex items-center gap-2 text-[14px] font-bold text-gray-500 transition-colors hover-underline-animated">
-                    <MdArrowBack className={`text-sm ${dir === 'rtl' ? 'rotate-180' : ''}`} />
+            <div className="mt-2">
+                <Link href="/products" className="relative inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-gray-500 hover:text-zinc-900 dark:hover:text-white transition-colors">
+                    <MdArrowBack className={`text-base ${dir === 'rtl' ? 'rotate-180' : ''}`} />
                     {t('cart.continueShopping')}
                 </Link>
             </div>

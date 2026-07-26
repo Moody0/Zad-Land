@@ -66,7 +66,7 @@ const ProductGallery = ({ images, isTrending }: ProductGalleryProps) => {
                         <img
                             src={selectedImage}
                             alt="Expanded product view"
-                            className="max-w-full max-h-full object-contain rounded-lg shadow-2xl pointer-events-none select-none"
+                            className="max-w-full max-h-full object-contain rounded-xl shadow-2xl pointer-events-none select-none"
                         />
                     </motion.div>
                 </motion.div>
@@ -77,31 +77,31 @@ const ProductGallery = ({ images, isTrending }: ProductGalleryProps) => {
     return (
         <div className="flex flex-col gap-4 self-start h-fit w-full">
             {/* Main Image Slider */}
-            <div className="relative w-full aspect-square max-w-[882px] mx-auto overflow-hidden rounded-[10px] !bg-white group border border-[#e6dbdf] dark:border-gray-800/50 shadow-sm cursor-zoom-in">
+            <div className="relative w-full aspect-square max-w-[882px] mx-auto overflow-hidden rounded-2xl bg-white dark:bg-zinc-900 border border-gray-200 dark:border-white/10 cursor-zoom-in">
                 <Swiper
                     spaceBetween={10}
                     thumbs={{ swiper: thumbsSwiper && !thumbsSwiper.destroyed ? thumbsSwiper : null }}
                     modules={[FreeMode, Thumbs, Autoplay]}
                     onSlideChange={(swiper) => setActiveIndex(swiper.realIndex)}
                     autoplay={{
-                        delay: 3000,
+                        delay: 3500,
                         disableOnInteraction: false,
                         pauseOnMouseEnter: true,
                     }}
                     loop={allImages.length > 1}
-                    className="h-full w-full !bg-white"
+                    className="h-full w-full bg-white dark:bg-zinc-900"
                 >
                     {allImages.map((img, index) => (
                         <SwiperSlide
                             key={`main-${index}`}
-                            className="!bg-white"
+                            className="bg-white dark:bg-zinc-900"
                             onClick={() => setSelectedImage(img)}
                         >
-                            <div className="relative w-full h-full flex items-center justify-center !bg-white">
+                            <div className="relative w-full h-full flex items-center justify-center bg-white dark:bg-zinc-900 p-4">
                                 <ResilientImage
                                     src={img}
                                     alt={`Product image ${index + 1}`}
-                                    className="w-full h-full object-cover transition-opacity duration-500"
+                                    className="w-full h-full object-contain transition-opacity duration-500"
                                     loading={index === 0 ? "eager" : "lazy"}
                                 />
                             </div>
@@ -110,13 +110,13 @@ const ProductGallery = ({ images, isTrending }: ProductGalleryProps) => {
                 </Swiper>
 
                 {/* Trending Badge */}
-                <div className="absolute top-4 right-6 z-20 pointer-events-none">
-                    {isTrending && (
-                        <span className="inline-block bg-[#C20059] text-white px-3 py-1 rounded text-[10px] font-medium tracking-wider uppercase shadow-md leading-tight">
+                {isTrending && (
+                    <div className="absolute top-4 right-4 z-20 pointer-events-none">
+                        <span className="inline-block bg-[#C20059] text-white px-2.5 py-1 rounded text-[10px] font-bold tracking-wider uppercase leading-tight">
                             Trending
                         </span>
-                    )}
-                </div>
+                    </div>
+                )}
             </div>
 
             {/* Thumbnails */}
@@ -137,12 +137,12 @@ const ProductGallery = ({ images, isTrending }: ProductGalleryProps) => {
                     >
                         {allImages.map((img, index) => (
                             <SwiperSlide key={`thumb-${index}`}>
-                                <div className={`relative aspect-square cursor-pointer rounded-lg overflow-hidden border-2 transition-all duration-300 ${activeIndex === index ? 'border-[#1C1C1C]' : 'border-transparent hover:border-gray-200'
+                                <div className={`relative aspect-square cursor-pointer rounded-xl overflow-hidden border-2 transition-all duration-200 bg-white dark:bg-zinc-900 ${activeIndex === index ? 'border-zinc-900 dark:border-white' : 'border-transparent hover:border-gray-200 dark:hover:border-white/20'
                                     }`}>
                                     <ResilientImage
                                         src={img}
                                         alt={`Thumbnail ${index + 1}`}
-                                        className="w-full h-full object-cover"
+                                        className="w-full h-full object-contain p-1"
                                         loading="lazy"
                                     />
                                 </div>
@@ -152,7 +152,7 @@ const ProductGallery = ({ images, isTrending }: ProductGalleryProps) => {
                 </div>
             )}
 
-            {/* Render Lightbox via Portal to bypass stacking contexts */}
+            {/* Render Lightbox via Portal */}
             {mounted && createPortal(lightbox, document.body)}
 
             <style jsx global>{`
@@ -164,7 +164,10 @@ const ProductGallery = ({ images, isTrending }: ProductGalleryProps) => {
                     height: auto;
                 }
                 .thumbs-swiper .swiper-slide-thumb-active .relative {
-                    border-color: #1C1C1C !important;
+                    border-color: #181113 !important;
+                }
+                .dark .thumbs-swiper .swiper-slide-thumb-active .relative {
+                    border-color: #ffffff !important;
                 }
             `}</style>
         </div>

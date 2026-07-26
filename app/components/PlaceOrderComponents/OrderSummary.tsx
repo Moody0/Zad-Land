@@ -3,6 +3,7 @@
 import React from 'react';
 import { CartItem } from '@/app/context/CartContext';
 import { useLanguage } from '@/app/context/LanguageContext';
+import { useCurrency } from '@/app/context/CurrencyContext';
 import { MdPayments, MdRefresh, MdCheckCircle, MdSupportAgent } from 'react-icons/md';
 import { getSafeImageUrl } from '@/lib/image-utils';
 
@@ -17,6 +18,7 @@ interface OrderSummaryProps {
 
 const OrderSummary = ({ items, subtotal, total, loading, discount = 0, onApplyPromo }: OrderSummaryProps) => {
     const { t } = useLanguage();
+    const { formatPrice } = useCurrency();
     const [promoCode, setPromoCode] = React.useState("");
     const [promoMessage, setPromoMessage] = React.useState<{ type: 'success' | 'error', text: string } | null>(null);
     const [isApplyingPromo, setIsApplyingPromo] = React.useState(false);
@@ -42,19 +44,21 @@ const OrderSummary = ({ items, subtotal, total, loading, discount = 0, onApplyPr
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
         if (e.key === 'Enter') {
-            e.preventDefault(); // Prevent outer form submission
+            e.preventDefault();
             handleApplyPromo();
         }
     };
 
     return (
-        <div className="sticky top-[168px] space-y-6">
-            <div className="bg-white dark:bg-white/5 p-8 rounded-[20px] shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-[#E6E9EB] dark:border-white/10">
-                <h2 className="text-[18px] font-bold mb-6 text-[#072835] dark:text-white uppercase tracking-wider">{t('cart.orderSummary')}</h2>
-                <div className="space-y-4 mb-6 max-h-[40vh] overflow-y-auto ltr:pr-2 rtl:pl-2 custom-scrollbar">
+        <div className="sticky top-[150px] space-y-4">
+            <div className="bg-white dark:bg-zinc-900 p-6 md:p-8 rounded-2xl border border-gray-200 dark:border-white/10">
+                <h2 className="text-base font-extrabold mb-6 text-zinc-900 dark:text-white uppercase tracking-wider">{t('cart.orderSummary')}</h2>
+                
+                {/* Items List */}
+                <div className="space-y-3 mb-6 max-h-[35vh] overflow-y-auto ltr:pr-2 rtl:pl-2 custom-scrollbar">
                     {items.map((item) => (
-                        <div key={item.id} className="flex items-center gap-4">
-                            <div className="relative w-16 h-16 !bg-white rounded-lg border border-[#e6dbdf] dark:border-gray-800/50 overflow-hidden shrink-0">
+                        <div key={item.id} className="flex items-center gap-3 bg-gray-50 dark:bg-zinc-800/50 p-2.5 rounded-xl border border-gray-100 dark:border-white/5">
+                            <div className="relative w-12 h-12 bg-white dark:bg-zinc-900 rounded-lg border border-gray-200 dark:border-white/10 overflow-hidden shrink-0">
                                 <img
                                     src={getSafeImageUrl(item.image.split(',')[0])}
                                     alt={item.name}
@@ -63,16 +67,19 @@ const OrderSummary = ({ items, subtotal, total, loading, discount = 0, onApplyPr
                                 />
                             </div>
                             <div className="flex-1 min-w-0">
-                                <p dir="ltr" className="text-[14px] font-bold truncate text-[#072835] dark:text-white font-sans tracking-normal text-left rtl:text-right" title={item.name}>{item.name}</p>
-                                <p className="text-[13px] font-medium text-gray-500 dark:text-gray-400 mt-0.5">{t('cart.quantity')}: {item.quantity} • <span className="text-[#C20059] font-bold">${item.price.toFixed(2)}</span></p>
+                                <p dir="ltr" className="text-xs font-bold truncate text-zinc-900 dark:text-white text-left rtl:text-right" title={item.name}>{item.name}</p>
+                                <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-0.5">
+                                    {t('cart.quantity')}: {item.quantity} • <span className="text-zinc-900 dark:text-white font-extrabold" dir="ltr">{formatPrice(item.price)}</span>
+                                </p>
                             </div>
                         </div>
                     ))}
                     {items.length === 0 && (
-                        <p className="text-sm text-center py-4 text-[#89616f]">{t('cart.emptyCart')}</p>
+                        <p className="text-xs text-center py-4 text-gray-400">{t('cart.emptyCart')}</p>
                     )}
                 </div>
 
+                {/* Promo Code Input */}
                 {onApplyPromo && (
                     <div className="mb-6">
                         <div className="flex gap-2">
@@ -82,80 +89,85 @@ const OrderSummary = ({ items, subtotal, total, loading, discount = 0, onApplyPr
                                 onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
                                 onKeyDown={handleKeyDown}
                                 placeholder={t('checkout.promoCode')}
-                                className="flex-1 px-4 py-3 rounded-xl border border-[#E6E9EB] dark:border-white/10 bg-[#FAFAFA] dark:bg-white/5 text-[14px] focus:outline-none focus:border-[#072835] focus:ring-1 focus:ring-[#072835] uppercase font-medium placeholder:normal-case transition-all"
+                                className="flex-1 px-3.5 py-2.5 rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-zinc-800/60 text-xs text-zinc-900 dark:text-white focus:outline-none focus:border-zinc-900 dark:focus:border-white uppercase font-semibold placeholder:normal-case transition-all"
                             />
                             <button
                                 type="button"
                                 onClick={handleApplyPromo}
                                 disabled={isApplyingPromo || !promoCode.trim()}
-                                className="px-6 py-3 bg-[#072835] dark:bg-white/10 text-white text-[14px] font-bold rounded-xl hover:bg-[#051e28] disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md shadow-[#072835]/10"
+                                className="px-5 py-2.5 bg-zinc-900 dark:bg-white text-white dark:text-black text-xs font-bold rounded-xl hover:bg-black dark:hover:bg-gray-200 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
                             >
                                 {isApplyingPromo ? '...' : t('common.apply')}
                             </button>
                         </div>
                         {promoMessage && (
-                            <p className={`text-xs mt-2 font-bold ${promoMessage.type === 'success' ? 'text-green-600' : 'text-red-500'}`}>
+                            <p className={`text-xs mt-2 font-bold ${promoMessage.type === 'success' ? 'text-emerald-600' : 'text-red-500'}`}>
                                 {promoMessage.text}
                             </p>
                         )}
                     </div>
                 )}
 
-                <div className="flex flex-col gap-3.5 mb-6 border-t border-b border-[#E6E9EB] dark:border-white/10 py-6">
-                    <div className="flex justify-between text-gray-500 dark:text-gray-400 text-[14px] font-medium">
+                {/* Costs breakdown */}
+                <div className="flex flex-col gap-3 mb-6 border-t border-b border-gray-200 dark:border-white/10 py-5">
+                    <div className="flex justify-between text-gray-500 dark:text-gray-400 text-xs font-medium">
                         <span>{t('cart.subtotal')}</span>
-                        <span className="font-bold text-[#072835] dark:text-white">${subtotal.toFixed(2)}</span>
+                        <span className="font-bold text-zinc-900 dark:text-white" dir="ltr">{formatPrice(subtotal)}</span>
                     </div>
                     {discount > 0 && (
-                        <div className="flex justify-between text-[#C20059] font-bold text-[14px]">
+                        <div className="flex justify-between text-[#C20059] font-bold text-xs">
                             <span>{t('checkout.discount')}</span>
-                            <span>-${discount.toFixed(2)}</span>
+                            <span dir="ltr">-{formatPrice(discount)}</span>
                         </div>
                     )}
-                    <div className="flex justify-between text-gray-500 dark:text-gray-400 text-[14px] font-medium">
+                    <div className="flex justify-between text-gray-500 dark:text-gray-400 text-xs font-medium">
                         <span>{t('cart.shipping')}</span>
-                        <span className="font-bold text-green-600 uppercase tracking-wide text-[12px]">{t('cart.freeShipping')}</span>
+                        <span className="font-bold text-emerald-600 uppercase tracking-wide text-xs">{t('cart.freeShipping')}</span>
                     </div>
                 </div>
 
-                <div className="bg-[#FAFAFA] dark:bg-white/5 rounded-[14px] p-5 mb-8 border border-[#E6E9EB] dark:border-white/10">
-                    <div className="flex items-center justify-between mb-1.5">
-                        <span className="text-[11px] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-widest">{t('checkout.paymentMethod')}</span>
-                        <MdPayments className="text-[#072835] dark:text-white text-[16px]" />
+                {/* Payment Method Badge */}
+                <div className="bg-gray-50 dark:bg-zinc-800/60 rounded-xl p-4 mb-6 border border-gray-200 dark:border-white/10">
+                    <div className="flex items-center justify-between mb-1">
+                        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{t('checkout.paymentMethod')}</span>
+                        <MdPayments className="text-zinc-900 dark:text-white text-base" />
                     </div>
-                    <p className="text-[15px] font-bold text-[#072835] dark:text-white">{t('checkout.cashOnDelivery')}</p>
+                    <p className="text-xs font-extrabold text-zinc-900 dark:text-white">{t('checkout.cashOnDelivery')}</p>
                 </div>
 
-                <div className="flex justify-between items-end mb-8">
-                    <span className="text-[18px] font-bold text-[#072835] dark:text-white uppercase tracking-wider">{t('cart.total')}</span>
-                    <span className="text-3xl font-black text-[#C20059] leading-none">${total.toFixed(2)}</span>
+                {/* Total */}
+                <div className="flex justify-between items-end mb-6">
+                    <span className="text-base font-extrabold text-zinc-900 dark:text-white uppercase tracking-wider">{t('cart.total')}</span>
+                    <span className="text-2xl sm:text-3xl font-extrabold text-zinc-900 dark:text-white leading-none" dir="ltr">{formatPrice(total)}</span>
                 </div>
 
+                {/* Submit Order Button (No Glow) */}
                 <button
                     type="submit"
                     disabled={loading || items.length === 0}
-                    className="w-full bg-[#072835] hover:bg-[#051e28] text-white font-bold rounded-full h-[54px] flex items-center justify-center gap-2 transition-all transform active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100 shadow-lg shadow-[#072835]/20 text-[16px]"
+                    className="w-full bg-zinc-900 hover:bg-black dark:bg-white dark:hover:bg-gray-200 text-white dark:text-black font-bold rounded-xl h-12 flex items-center justify-center gap-2 transition-all active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed text-sm"
                 >
                     {loading ? (
                         <MdRefresh className="animate-spin text-xl" />
                     ) : (
                         <>
                             <span>{t('checkout.placeOrder')}</span>
-                            <MdCheckCircle className="text-[18px]" />
+                            <MdCheckCircle className="text-base" />
                         </>
                     )}
                 </button>
-                <p className="text-[10px] text-center text-gray-400 dark:text-gray-500 mt-5 uppercase tracking-widest font-bold">{t('checkout.secureCheckout')}</p>
+                <p className="text-[10px] text-center text-gray-400 dark:text-gray-500 mt-4 uppercase tracking-widest font-bold">{t('checkout.secureCheckout')}</p>
             </div>
 
-            <div className="bg-white dark:bg-white/5 p-5 rounded-[16px] border border-[#E6E9EB] dark:border-white/10 flex items-center gap-4 shadow-sm">
-                <div className="w-11 h-11 rounded-full bg-[#FAFAFA] dark:bg-white/10 flex items-center justify-center border border-[#E6E9EB] dark:border-white/5">
-                    <MdSupportAgent className="text-[#072835] dark:text-white text-[22px]" />
+            {/* Assistance Box */}
+            <div className="bg-gray-50 dark:bg-zinc-800/60 p-4 rounded-xl border border-gray-200 dark:border-white/10 flex items-center gap-3.5">
+                <div className="w-10 h-10 rounded-full bg-white dark:bg-zinc-900 flex items-center justify-center border border-gray-200 dark:border-white/10 shrink-0">
+                    <MdSupportAgent className="text-zinc-900 dark:text-white text-lg" />
                 </div>
                 <div>
-                    <p className="text-[14px] font-bold text-[#072835] dark:text-white mb-0.5">{t('checkout.needAssistance')}</p>
+                    <p className="text-xs font-bold text-zinc-900 dark:text-white mb-0.5">{t('checkout.needAssistance')}</p>
                     <a
-                        className="text-[12px] font-bold text-gray-500 hover-underline-animated"
+                        className="text-xs font-semibold text-gray-500 hover:text-zinc-900 dark:hover:text-white transition-colors hover:underline"
                         href="https://wa.me/963933254796"
                         target="_blank"
                         rel="noopener noreferrer"

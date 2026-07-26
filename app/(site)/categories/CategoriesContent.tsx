@@ -6,7 +6,6 @@ import { MdChevronRight } from "react-icons/md";
 import { useLanguage } from "@/app/context/LanguageContext";
 import CategoriesGrid from "./CategoriesGrid";
 import { getSafeImageUrl } from '@/lib/image-utils';
-import { Settings } from "@prisma/client";
 
 interface Category {
     id: string;
@@ -45,7 +44,7 @@ export default function CategoriesContent({ categories, siteSettings }: Categori
             </nav>
 
             <section className="container-custom mb-12">
-                <div className="border-l-4 border-primary pl-6 rtl:border-l-0 rtl:border-r-4 rtl:pl-0 rtl:pr-6">
+                <div className="border-l-4 border-zinc-900 dark:border-white pl-6 rtl:border-l-0 rtl:border-r-4 rtl:pl-0 rtl:pr-6">
                     <h2 className="text-4xl md:text-5xl font-extrabold text-text-main-light dark:text-text-main-dark tracking-tight">{t('categoriesPage.title')}</h2>
                     <p className="mt-3 text-lg text-text-muted-light dark:text-text-muted-dark max-w-2xl">
                         {t('categoriesPage.description')}
@@ -57,15 +56,14 @@ export default function CategoriesContent({ categories, siteSettings }: Categori
                 <CategoriesGrid categories={categories} />
             </div>
 
-
             <section className="container-custom mt-24">
-                <div className="rounded-3xl bg-primary/5 p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8 border border-primary/10">
+                <div className="rounded-3xl bg-gray-50 dark:bg-zinc-900 p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8 border border-gray-200 dark:border-white/10">
                     <div className="flex flex-col gap-4 text-center md:text-left rtl:md:text-right">
                         <h4 className="text-3xl font-extrabold text-text-main-light dark:text-text-main-dark">{ctaTitle}</h4>
                         <p className="text-text-muted-light dark:text-text-muted-dark max-w-md">{ctaDesc}</p>
                         <div className="flex flex-wrap gap-4 mt-2 justify-center md:justify-start">
-                            <Link href="/products" className="px-8 py-3 bg-primary text-white rounded-full font-bold text-sm hover:bg-primary/90 transition-all">{t('categoriesPage.viewAllProducts')}</Link>
-                            <Link target="_blank" href="https://wa.me/963933254796" className="px-8 py-3 bg-transparent border border-primary text-primary rounded-full font-bold text-sm hover:bg-primary/5 transition-all">{t('footer.contactUs')}</Link>
+                            <Link href="/products" className="px-8 py-3 bg-zinc-900 dark:bg-white text-white dark:text-black rounded-full font-bold text-sm hover:bg-black dark:hover:bg-gray-200 transition-all">{t('categoriesPage.viewAllProducts')}</Link>
+                            <Link target="_blank" href="https://wa.me/963933254796" className="px-8 py-3 bg-transparent border border-zinc-900 dark:border-white text-zinc-900 dark:text-white rounded-full font-bold text-sm hover:bg-black/5 dark:hover:bg-white/10 transition-all">{t('footer.contactUs')}</Link>
                         </div>
                     </div>
                     <div className="hidden lg:block w-1/3">
@@ -83,4 +81,3 @@ export default function CategoriesContent({ categories, siteSettings }: Categori
         </main>
     );
 }
-

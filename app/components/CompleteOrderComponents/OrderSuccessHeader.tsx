@@ -8,13 +8,13 @@ const OrderSuccessHeader = () => {
     const { t } = useLanguage();
 
     return (
-        <div className="flex flex-col items-center text-center mb-10">
-            <div className="w-24 h-24 bg-soft-pink dark:bg-primary/10 rounded-full flex items-center justify-center mb-6 relative">
-                <div className="absolute inset-0 border-2 border-primary/20 rounded-full animate-ping opacity-75"></div>
-                <MdCheckCircle className="text-primary text-6xl relative z-10" />
+        <div className="flex flex-col items-center text-center mb-8">
+            <div className="w-20 h-20 sm:w-24 sm:h-24 bg-emerald-50 dark:bg-emerald-950/40 rounded-full flex items-center justify-center mb-5 relative">
+                <div className="absolute inset-0 border-2 border-emerald-500/30 rounded-full animate-ping opacity-75"></div>
+                <MdCheckCircle className="text-emerald-500 text-5xl sm:text-6xl relative z-10" />
             </div>
-            <h1 className="text-4xl font-black tracking-tight text-[#181113] dark:text-white mb-2">{t('orderComplete.thankYou')}</h1>
-            <p className="text-[#89616f] dark:text-[#a08590] text-lg">{t('orderComplete.orderConfirmed')}</p>
+            <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-white mb-2">{t('orderComplete.thankYou')}</h1>
+            <p className="text-gray-500 dark:text-gray-400 text-sm sm:text-base font-medium">{t('orderComplete.orderConfirmed')}</p>
         </div>
     );
 };

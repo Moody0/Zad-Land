@@ -1,8 +1,7 @@
-﻿import React from 'react';
+import React from 'react';
 import { prisma } from "@/lib/prisma";
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
-import Link from 'next/link';
 import ProductGallery from '@/app/components/ProductDetailsComponents/ProductGallery';
 import ProductHeader from '@/app/components/ProductDetailsComponents/ProductHeader';
 import ProductPrice from '@/app/components/ProductDetailsComponents/ProductPrice';
@@ -66,7 +65,6 @@ export async function generateMetadata(
 
 const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
     const params = await props.params;
-    console.log('SERVER: Rendering ProductPage for slug:', params.slug);
     const cookieStore = await cookies();
     const language = cookieStore.get('language')?.value || 'ar';
 
@@ -106,7 +104,7 @@ const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
     const totalReviews = reviewStats._count.id || 0;
 
     return (
-        <div className="grow w-full mx-auto container-custom py-4 lg:py-8">
+        <main className="grow w-full mx-auto container-custom py-4 lg:py-8">
             <Breadcrumbs
                 productName={product.name}
                 categoryName={product.category?.name}
@@ -123,16 +121,14 @@ const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
                 </div>
 
                 {/* Product Details (Right) */}
-                <div className="w-full lg:w-[41.5%] lg:sticky lg:top-[168px] self-start flex flex-col gap-1">
-                    <div className="block">
-                        <ProductHeader
-                            name={product.name}
-                            brandName={product.brand?.name}
-                            categoryName={product.category?.name}
-                            averageRating={averageRating}
-                            totalReviews={totalReviews}
-                        />
-                    </div>
+                <div className="w-full lg:w-[41.5%] lg:sticky lg:top-[140px] self-start flex flex-col gap-1">
+                    <ProductHeader
+                        name={product.name}
+                        brandName={product.brand?.name}
+                        categoryName={product.category?.name}
+                        averageRating={averageRating}
+                        totalReviews={totalReviews}
+                    />
 
                     <ProductPrice
                         price={product.price.toString()}
@@ -152,31 +148,37 @@ const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
 
                     <ProductAccordions description={product.description} />
 
-                    <div className="flex items-center justify-start mt-6 pt-6 border-t border-gray-100 dark:border-white/5 gap-3">
-                        <span className="text-[13px] font-bold tracking-widest uppercase text-gray-400 mr-2">{language === 'ar' ? 'مشاركة:' : 'Share:'}</span>
+                    {/* Social Share */}
+                    <div className="flex items-center justify-start mt-6 pt-6 border-t border-gray-200 dark:border-white/10 gap-3">
+                        <span className="text-xs font-bold tracking-widest uppercase text-gray-400 mr-2">
+                            {language === 'ar' ? 'مشاركة:' : 'Share:'}
+                        </span>
                         <a
                             href="https://wa.me/963933254796"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="w-10 h-10 flex items-center justify-center rounded-full bg-[#FAFAFA] text-[#072835] hover:bg-[#072835] hover:text-white transition-all duration-300 shadow-sm border border-gray-100 dark:bg-white/5 dark:border-white/10 dark:text-gray-300 dark:hover:bg-white dark:hover-underline-animated"
+                            className="w-9 h-9 flex items-center justify-center rounded-full bg-gray-100 text-zinc-900 dark:bg-zinc-800 dark:text-white hover:bg-zinc-900 hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors"
+                            aria-label="Share on WhatsApp"
                         >
-                            <FaWhatsapp className="text-lg" />
+                            <FaWhatsapp className="text-base" />
                         </a>
                         <a
                             href="https://www.instagram.com/ruby.beauty.sy"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="w-10 h-10 flex items-center justify-center rounded-full bg-[#FAFAFA] text-[#072835] hover:bg-[#072835] hover:text-white transition-all duration-300 shadow-sm border border-gray-100 dark:bg-white/5 dark:border-white/10 dark:text-gray-300 dark:hover:bg-white dark:hover-underline-animated"
+                            className="w-9 h-9 flex items-center justify-center rounded-full bg-gray-100 text-zinc-900 dark:bg-zinc-800 dark:text-white hover:bg-zinc-900 hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors"
+                            aria-label="Share on Instagram"
                         >
-                            <FaInstagram className="text-lg" />
+                            <FaInstagram className="text-base" />
                         </a>
                         <a
                             href="https://www.facebook.com/share/1HzXdo7sLG/?mibextid=wwXIfr"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="w-10 h-10 flex items-center justify-center rounded-full bg-[#FAFAFA] text-[#072835] hover:bg-[#072835] hover:text-white transition-all duration-300 shadow-sm border border-gray-100 dark:bg-white/5 dark:border-white/10 dark:text-gray-300 dark:hover:bg-white dark:hover-underline-animated"
+                            className="w-9 h-9 flex items-center justify-center rounded-full bg-gray-100 text-zinc-900 dark:bg-zinc-800 dark:text-white hover:bg-zinc-900 hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors"
+                            aria-label="Share on Facebook"
                         >
-                            <FaFacebook className="text-lg" />
+                            <FaFacebook className="text-base" />
                         </a>
                     </div>
                 </div>
@@ -184,24 +186,23 @@ const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
 
             {/* Product Reviews Anchor */}
             <div id="product-reviews" className="scroll-mt-32">
+                <RelatedProducts products={relatedProducts.map(p => ({
+                    ...p,
+                    price: Number(p.price),
+                    discountPrice: p.discountPrice ? Number(p.discountPrice) : null,
+                    discountType: p.discountType,
+                    discountValue: p.discountValue ? Number(p.discountValue) : null,
+                    createdAt: p.createdAt.toISOString(),
+                    updatedAt: p.updatedAt.toISOString(),
+                }))} />
 
-            <RelatedProducts products={relatedProducts.map(p => ({
-                ...p,
-                price: Number(p.price),
-                discountPrice: p.discountPrice ? Number(p.discountPrice) : null,
-                discountType: p.discountType,
-                discountValue: p.discountValue ? Number(p.discountValue) : null,
-                createdAt: p.createdAt.toISOString(),
-                updatedAt: p.updatedAt.toISOString(),
-            }))} />
-
-            <ProductReviews
-                productId={product.id}
-                productName={product.name}
-                productImage={(product.images as string).split(',').map((img: string) => img.trim()).filter(Boolean)[0]}
-            />
+                <ProductReviews
+                    productId={product.id}
+                    productName={product.name}
+                    productImage={(product.images as string).split(',').map((img: string) => img.trim()).filter(Boolean)[0]}
+                />
             </div>
-        </div>
+        </main>
     );
 }
 

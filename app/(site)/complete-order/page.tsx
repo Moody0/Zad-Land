@@ -66,7 +66,7 @@ const CompleteOrderContent = () => {
     if (loading) {
         return (
             <div className="flex-grow flex items-center justify-center min-h-[60vh]">
-                <MdRefresh className="animate-spin text-primary text-4xl" />
+                <MdRefresh className="animate-spin text-zinc-900 dark:text-white text-4xl" />
             </div>
         );
     }
@@ -74,10 +74,10 @@ const CompleteOrderContent = () => {
     if (!order) return null;
 
     return (
-        <main className="flex-grow w-full mx-auto px-6 py-16 md:px-20 lg:px-32 xl:px-48 2xl:px-64 flex flex-col items-center">
+        <main className="flex-grow w-full max-w-4xl mx-auto px-4 py-8 md:py-16 flex flex-col items-center">
             <OrderSuccessHeader />
 
-            <div className="w-full bg-white dark:bg-[#2a161d] rounded-2xl border border-[#f4f0f2] dark:border-[#3a2228] shadow-[0_8px_40px_rgba(0,0,0,0.04)] dark:shadow-none overflow-hidden">
+            <div className="w-full bg-white dark:bg-zinc-900 rounded-2xl border border-gray-200 dark:border-white/10 overflow-hidden">
                 <OrderBasicInfo
                     orderId={order.id}
                     totalAmount={order.totalAmount}
@@ -104,7 +104,7 @@ const Page = () => {
     return (
         <Suspense fallback={
             <div className="flex-grow flex items-center justify-center min-h-[60vh]">
-                <MdRefresh className="animate-spin text-primary text-4xl" />
+                <MdRefresh className="animate-spin text-zinc-900 dark:text-white text-4xl" />
             </div>
         }>
             <CompleteOrderContent />

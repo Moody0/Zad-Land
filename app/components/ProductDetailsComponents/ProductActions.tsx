@@ -4,8 +4,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/app/context/CartContext";
 import { useLanguage } from "@/app/context/LanguageContext";
-import { MdRemove, MdAdd } from "react-icons/md";
-import { FaShieldAlt, FaShippingFast, FaLock } from "react-icons/fa";
+import { MdRemove, MdAdd, MdShoppingBag } from "react-icons/md";
 import toast from "react-hot-toast";
 
 interface ProductActionsProps {
@@ -55,68 +54,72 @@ const ProductActions = ({ product, stock }: ProductActionsProps) => {
         router.push("/place-order");
     };
 
-    // Simulated stock for visual parity if not provided
     const displayStock = stock !== undefined ? stock : 3;
-    const isLowStock = displayStock > 0 && displayStock <= 10;
 
     return (
-        <div className="flex flex-col gap-4">
-            {/* Stock Progress Bar - Always show if stock exists */}
+        <div className="flex flex-col gap-4 my-2">
+            {/* Stock Indicator */}
             {displayStock > 0 && (
                 <div className="w-full">
-                    <div className="flex items-center justify-start mb-1">
-                        <div className="flex items-center gap-2 text-[#000000] font-bold text-[14px]">
-                            <span className="relative flex h-3 w-3">
-                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                                <span className="relative inline-flex rounded-full h-3 w-3 bg-red-600"></span>
+                    <div className="flex items-center justify-start mb-1.5">
+                        <div className="flex items-center gap-2 font-bold text-xs sm:text-sm text-zinc-900 dark:text-white">
+                            <span className="relative flex h-2.5 w-2.5">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
                             </span>
-                            <span className="text-[#000000] font-bold text-[14px]">
+                            <span>
                                 {language === 'ar'
-                                    ? `items left ${stock || 0}`
-                                    : `items left ${stock || 0}`}
+                                    ? `متوفر في المخزون (${stock || displayStock} قطعة)`
+                                    : `In Stock (${stock || displayStock} items left)`}
                             </span>
                         </div>
                     </div>
-                    <div className="w-full h-[3px] bg-gray-100 rounded-full overflow-hidden mb-2">
+                    <div className="w-full h-1 bg-gray-100 dark:bg-white/10 rounded-full overflow-hidden">
                         <div
-                            className="h-full bg-[#FF395A] transition-all duration-1000 ease-out"
-                            style={{ width: `${(displayStock / 15) * 100}%` }}
+                            className="h-full bg-zinc-900 dark:bg-white transition-all duration-1000 ease-out"
+                            style={{ width: `${Math.min(100, (displayStock / 15) * 100)}%` }}
                         ></div>
                     </div>
                 </div>
             )}
 
             {/* Quantity and Add to Cart Row */}
-            <div className="flex flex-row-reverse md:flex-row items-center gap-4">
-                <button
-                    onClick={handleAddToCart}
-                    className="flex-1 h-[48px] bg-[#072835] hover:bg-[#051e28] text-white rounded-full font-bold text-[15px] transition-all duration-300 active:scale-[0.98] shadow-md shadow-[#072835]/20"
-                >
-                    {language === 'ar' ? 'اضافة للعربة' : 'Add to Cart'}
-                </button>
-
-                <div className="flex items-center h-[48px] border border-gray-200 dark:border-white/10 rounded-full bg-white dark:bg-white/5 px-2 shrink-0">
+            <div className="flex items-center gap-3">
+                {/* Quantity Controls */}
+                <div className="flex items-center h-12 border border-gray-200 dark:border-white/10 rounded-xl bg-gray-50 dark:bg-zinc-800/50 px-2 shrink-0">
                     <button
                         onClick={handleDecrement}
-                        className="w-10 h-10 flex items-center justify-center text-gray-500 hover:text-black transition-colors"
+                        className="w-8 h-8 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors"
+                        aria-label="Decrease quantity"
                     >
-                        <MdRemove size={20} />
+                        <MdRemove size={18} />
                     </button>
-                    <span className="w-10 text-center text-[16px] font-bold text-[#1C1C1C] dark:text-white">{quantity}</span>
+                    <span className="w-8 text-center text-sm font-extrabold text-zinc-900 dark:text-white select-none">{quantity}</span>
                     <button
                         onClick={handleIncrement}
-                        className="w-10 h-10 flex items-center justify-center text-gray-500 hover:text-black transition-colors"
+                        className="w-8 h-8 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors"
+                        aria-label="Increase quantity"
                     >
-                        <MdAdd size={20} />
+                        <MdAdd size={18} />
                     </button>
                 </div>
+
+                {/* Add to Cart Button (No Glow) */}
+                <button
+                    onClick={handleAddToCart}
+                    className="flex-1 h-12 bg-zinc-900 hover:bg-black dark:bg-white dark:hover:bg-gray-100 text-white dark:text-black rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.98]"
+                >
+                    <MdShoppingBag size={18} />
+                    <span>{language === 'ar' ? 'إضافة للسلة' : 'Add to Cart'}</span>
+                </button>
             </div>
 
+            {/* Buy Now Button (No Glow) */}
             <button
                 onClick={handleBuyNow}
-                className="w-full h-[48px] bg-[#C20059] hover:bg-[#a1004a] text-white rounded-full font-bold text-[15px] active:scale-[0.98] transition-all duration-300 shadow-md shadow-[#C20059]/20"
+                className="w-full h-12 bg-[#C20059] hover:bg-[#a1004a] text-white rounded-xl font-bold text-sm transition-all duration-200 active:scale-[0.98]"
             >
-                {language === 'ar' ? 'اشتري الان' : 'Buy it now'}
+                {language === 'ar' ? 'شراء الآن' : 'Buy Now'}
             </button>
         </div>
     );

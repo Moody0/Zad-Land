@@ -30,10 +30,11 @@ const ProductHeader = ({ name, brandName, categoryName, averageRating = 0, total
     };
 
     return (
-        <div className="mb-2">
+        <div className="mb-3">
+            {/* Title */}
             <h1 
                 dir="ltr" 
-                className={`text-[#072835] dark:text-white text-[25px] md:text-[30px] font-semibold leading-[1.2] mb-3 font-sans tracking-normal ${language === 'ar' ? 'text-right' : 'text-left'}`}
+                className={`text-zinc-900 dark:text-white text-2xl sm:text-3xl font-extrabold leading-tight mb-3 tracking-tight ${language === 'ar' ? 'text-right' : 'text-left'}`}
             >
                 {name}
             </h1>
@@ -45,26 +46,26 @@ const ProductHeader = ({ name, brandName, categoryName, averageRating = 0, total
                     document.getElementById('product-reviews')?.scrollIntoView({ behavior: 'smooth' });
                 }}
             >
-                <div className="flex text-[#C20059] text-[14px]">
+                <div className="flex text-[#C20059] text-sm gap-0.5">
                     {renderStars()}
                 </div>
-                <span className="text-[13px] text-gray-500 font-medium group-hover-underline-animated transition-colors border-b border-transparent group-hover:border-[#072835]">
+                <span className="text-xs text-gray-500 font-medium group-hover:text-zinc-900 dark:group-hover:text-white transition-colors">
                     {language === 'ar' ? `(${totalReviews} تقييم)` : `(${totalReviews} Reviews)`}
                 </span>
             </div>
 
-            <div className="flex items-center gap-4 text-[15px] font-semibold">
+            {/* Brand and Category Badges */}
+            <div className="flex items-center gap-3 text-xs font-semibold">
                 {brandName && (
-                    <div className="flex items-center gap-1.5">
-                        <span className="text-[#000000]">{language === 'ar' ? 'البراند:' : 'Brand:'}</span>
-                        <span className="text-[rgb(7,40,53)] border-b border-[rgb(7,40,53)]  transition-colors cursor-pointer">{brandName}</span>
+                    <div className="flex items-center gap-1.5 bg-gray-100 dark:bg-zinc-800/60 px-3 py-1 rounded-full text-zinc-900 dark:text-gray-200">
+                        <span className="text-gray-400 font-normal">{language === 'ar' ? 'البراند:' : 'Brand:'}</span>
+                        <span>{brandName}</span>
                     </div>
                 )}
-                <span className="opacity-20">|</span>
                 {categoryName && (
-                    <div className="flex items-center gap-1.5">
-                        <span className="text-[#000000]">{language === 'ar' ? 'النوع:' : 'Type:'}</span>
-                        <span className="text-[rgb(7,40,53)] border-b border-[rgb(7,40,53)] transition-colors cursor-pointer">{categoryName}</span>
+                    <div className="flex items-center gap-1.5 bg-gray-100 dark:bg-zinc-800/60 px-3 py-1 rounded-full text-zinc-900 dark:text-gray-200">
+                        <span className="text-gray-400 font-normal">{language === 'ar' ? 'القسم:' : 'Category:'}</span>
+                        <span>{categoryName}</span>
                     </div>
                 )}
             </div>
@@ -73,4 +74,3 @@ const ProductHeader = ({ name, brandName, categoryName, averageRating = 0, total
 };
 
 export default ProductHeader;
-

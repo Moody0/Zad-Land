@@ -1,12 +1,12 @@
 "use client";
 
 import { ThemeProvider } from "next-themes";
-import { useEffect, useState } from "react";
 import { CartProvider } from "./context/CartContext";
 import { LanguageProvider } from "./context/LanguageContext";
 import { CurrencyProvider } from "./context/CurrencyContext";
 import { Toaster } from "react-hot-toast";
 import { SessionProvider } from "next-auth/react";
+import CartDrawer from "./components/CartDrawer";
 
 export function Providers({ children, session, initialExchangeRate = 135 }: { children: React.ReactNode, session?: any, initialExchangeRate?: number }) {
     return (
@@ -16,6 +16,7 @@ export function Providers({ children, session, initialExchangeRate = 135 }: { ch
                     <CartProvider>
                         <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
                             {children}
+                            <CartDrawer />
                             <Toaster
                                 position="bottom-right"
                                 toastOptions={{
@@ -32,11 +33,11 @@ export function Providers({ children, session, initialExchangeRate = 135 }: { ch
                                     },
                                     success: {
                                         iconTheme: {
-                                            primary: 'var(--color-primary)',
+                                            primary: '#C20059',
                                             secondary: 'white',
                                         },
                                         style: {
-                                            border: '1px solid rgba(238, 43, 108, 0.2)',
+                                            border: '1px solid rgba(194, 0, 89, 0.2)',
                                         }
                                     },
                                     error: {
@@ -48,7 +49,7 @@ export function Providers({ children, session, initialExchangeRate = 135 }: { ch
                                             border: '1px solid rgba(239, 68, 68, 0.2)',
                                         }
                                     },
-                                    className: 'dark:!bg-[#2d161e] dark:!text-white dark:!border-white/10 font-sans',
+                                    className: 'dark:!bg-zinc-900 dark:!text-white dark:!border-white/10 font-sans',
                                 }}
                             />
                         </ThemeProvider>
