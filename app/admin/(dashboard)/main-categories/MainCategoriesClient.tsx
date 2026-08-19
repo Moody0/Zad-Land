@@ -107,7 +107,7 @@ export default function MainCategoriesClient({ mainCategories }: { mainCategorie
                                 />
                             </div>
                             {isSuperAdmin && (
-                                <button onClick={handleAdd} className="flex h-11 items-center justify-center gap-2 rounded-xl bg-primary px-5 text-sm font-bold text-white transition-colors hover:bg-primary/90">
+                                <button onClick={handleAdd} className="flex h-11 items-center justify-center gap-2 rounded-xl bg-[#072835] hover:bg-[#0c4054] px-5 text-sm font-bold text-white transition-all shadow-xs">
                                     <MdAdd className="text-xl" />{t("admin.addMainCategory")}</button>
                             )}
                         </div>
@@ -130,7 +130,7 @@ export default function MainCategoriesClient({ mainCategories }: { mainCategorie
 
                     <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
                         {filtered.map((mc) => (
-                            <article key={mc.id} className="overflow-hidden rounded-2xl border border-black/[0.04] dark:border-white/[0.04] bg-white dark:bg-surface-dark shadow-[0_4px_20px_-4px_rgba(0,0,0,0.02)] transition-all duration-300 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.04)]">
+                            <article key={mc.id} className="overflow-hidden rounded-2xl border border-slate-200/80 dark:border-white/10 bg-white dark:bg-[#0f172a] shadow-xs transition-all duration-300 hover:shadow-md">
                                 <div className="flex h-36 items-center justify-center bg-gray-50 dark:bg-gray-800">
                                     {mc.image ? (
                                         <img src={mc.image} alt={mc.name} className="h-full w-full object-contain" />
@@ -142,7 +142,7 @@ export default function MainCategoriesClient({ mainCategories }: { mainCategorie
                                     <div className="mb-3 flex items-start justify-between gap-3">
                                         <div className="min-w-0">
                                             <h3 className="truncate text-lg font-bold text-text-main dark:text-white">{mc.name}</h3>
-                                            <p className="text-xs font-bold uppercase tracking-wider text-primary">{mc.slug}</p>
+                                            <p className="text-xs font-bold uppercase tracking-wider text-[#072835] dark:text-[#E5B54A]">{mc.slug}</p>
                                         </div>
                                         <span className={`rounded-full px-2.5 py-1 text-[10px] font-bold ${mc.isActive ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-300" : "bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400"}`}>
                                             {mc.isActive ? t("admin.active") : t("admin.draft")}
@@ -156,7 +156,7 @@ export default function MainCategoriesClient({ mainCategories }: { mainCategorie
                                     <div className="mb-4 flex flex-wrap gap-2 text-xs font-bold text-text-sub dark:text-gray-400">
                                         <button 
                                             onClick={() => setRelatedModalInfo({ isOpen: true, type: "brands", entityId: mc.id, entityName: mc.name })}
-                                            className="cursor-pointer rounded-full bg-primary/10 px-3 py-1 text-primary hover:bg-primary/20 transition-colors"
+                                            className="cursor-pointer rounded-full bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 px-3 py-1 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
                                         >
                                             {mc._count.brands} Brands
                                         </button>

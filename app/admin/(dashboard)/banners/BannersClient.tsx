@@ -105,7 +105,7 @@ export default function BannersClient({ banners }: { banners: Banner[] }) {
                         {canManage && (
                             <button
                                 onClick={handleAdd}
-                                className="bg-primary text-white px-6 py-3 rounded-xl font-bold hover:bg-primary/90 transition-all flex items-center justify-center gap-2"
+                                className="bg-[#072835] hover:bg-[#0c4054] text-white px-6 py-3 rounded-xl font-bold transition-all shadow-xs flex items-center justify-center gap-2"
                             >
                                 <MdAdd className="text-xl" />
                                 {t('admin.createNewAd')}
@@ -121,7 +121,7 @@ export default function BannersClient({ banners }: { banners: Banner[] }) {
 
                     <div className="grid grid-cols-1 gap-8">
                         {banners.map((banner) => (
-                            <div key={banner.id} className="bg-surface-light dark:bg-surface-dark rounded-2xl border border-border-color/50 dark:border-white/[0.04] shadow-sm hover:shadow-lg transition-all overflow-hidden flex flex-col lg:flex-row">
+                            <div key={banner.id} className="bg-white dark:bg-[#0f172a] rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-xs hover:shadow-md transition-all overflow-hidden flex flex-col lg:flex-row">
                                 <div className="lg:w-1/3 aspect-21/9 lg:aspect-auto overflow-hidden bg-gray-100 dark:bg-gray-800">
                                     <img
                                         alt={banner.title || "Banner"}
@@ -132,7 +132,7 @@ export default function BannersClient({ banners }: { banners: Banner[] }) {
                                 <div className="p-6 lg:p-8 flex-1 flex flex-col justify-between">
                                     <div className="flex flex-col gap-2">
                                         <div className="flex items-center gap-3">
-                                            <span className="bg-primary/10 text-primary px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">
+                                            <span className="bg-amber-50 text-[#B8860B] border border-amber-200 dark:bg-amber-950/40 dark:text-[#E5B54A] dark:border-amber-900 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">
                                                 {banner.badge || t('admin.banner')}
                                             </span>
                                             {!banner.isActive && (

@@ -170,78 +170,106 @@ export default function OrdersClient({ orders }: { orders: Order[] }) {
                 <div className="max-w-[1400px] mx-auto flex flex-col gap-8">
 
                     {/* Stats Grid */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        <div className="bg-surface-light dark:bg-surface-dark p-6 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] shadow-sm">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+                        <div className="bg-white dark:bg-[#0f172a] p-6 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-xs transition-all hover:shadow-md">
                             <div className="flex justify-between items-start mb-4">
-                                <div className="p-3 bg-amber-50 dark:bg-amber-900/20 text-amber-600 rounded-lg">
+                                <div className="p-3 bg-amber-50 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 rounded-xl">
                                     <MdPendingActions className="text-2xl" />
                                 </div>
                             </div>
-                            <p className="text-text-sub dark:text-gray-400 text-sm font-medium">{t('admin.pendingOrders')}</p>
-                            <h3 className="text-text-main dark:text-white text-2xl md:text-3xl font-bold tracking-tight mt-1">{stats.pending}</h3>
+                            <p className="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-widest">{t('admin.pendingOrders')}</p>
+                            <h3 className="text-slate-900 dark:text-white text-2xl sm:text-3xl font-extrabold tracking-tight mt-1">{stats.pending}</h3>
                         </div>
 
-                        <div className="bg-surface-light dark:bg-surface-dark p-6 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] shadow-sm">
+                        <div className="bg-white dark:bg-[#0f172a] p-6 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-xs transition-all hover:shadow-md">
                             <div className="flex justify-between items-start mb-4">
-                                <div className="p-3 bg-blue-50 dark:bg-blue-900/20 text-blue-600 rounded-lg">
+                                <div className="p-3 bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 rounded-xl">
                                     <MdLocalShipping className="text-2xl" />
                                 </div>
                             </div>
-                            <p className="text-text-sub dark:text-gray-400 text-sm font-medium">{t('admin.shippedToday')}</p>
-                            <h3 className="text-text-main dark:text-white text-2xl md:text-3xl font-bold tracking-tight mt-1">{stats.shippedToday}</h3>
+                            <p className="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-widest">{t('admin.shippedToday')}</p>
+                            <h3 className="text-slate-900 dark:text-white text-2xl sm:text-3xl font-extrabold tracking-tight mt-1">{stats.shippedToday}</h3>
                         </div>
 
-                        <div className="bg-surface-light dark:bg-surface-dark p-6 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] shadow-sm">
+                        <div className="bg-white dark:bg-[#0f172a] p-6 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-xs transition-all hover:shadow-md">
                             <div className="flex justify-between items-start mb-4">
-                                <div className="p-3 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 rounded-lg">
+                                <div className="p-3 bg-emerald-50 dark:bg-emerald-950/50 text-[#2E7D32] dark:text-[#4ade80] rounded-xl">
                                     <MdTaskAlt className="text-2xl" />
                                 </div>
                             </div>
-                            <p className="text-text-sub dark:text-gray-400 text-sm font-medium">{t('admin.deliveredMtd')}</p>
-                            <h3 className="text-text-main dark:text-white text-2xl md:text-3xl font-bold tracking-tight mt-1">{stats.deliveredMTD}</h3>
+                            <p className="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-widest">{t('admin.deliveredMtd')}</p>
+                            <h3 className="text-slate-900 dark:text-white text-2xl sm:text-3xl font-extrabold tracking-tight mt-1">{stats.deliveredMTD}</h3>
                         </div>
 
-                        <div className="bg-surface-light dark:bg-surface-dark p-6 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] shadow-sm">
+                        <div className="bg-white dark:bg-[#0f172a] p-6 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-xs transition-all hover:shadow-md">
                             <div className="flex justify-between items-start mb-4">
-                                <div className="p-3 bg-primary/10 text-primary rounded-lg">
+                                <div className="p-3 bg-[#072835]/10 dark:bg-[#E5B54A]/10 text-[#072835] dark:text-[#E5B54A] rounded-xl">
                                     <MdPayments className="text-2xl" />
                                 </div>
                             </div>
-                            <p className="text-text-sub dark:text-gray-400 text-sm font-medium">{t('admin.totalRevenue')}</p>
-                            <h3 className="text-text-main dark:text-white text-2xl md:text-3xl font-bold tracking-tight mt-1">
-                                ${stats.totalRevenue.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                            <p className="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-widest">{t('admin.totalRevenue')}</p>
+                            <h3 className="text-slate-900 dark:text-white text-2xl sm:text-3xl font-extrabold tracking-tight mt-1">
+                                ${stats.totalRevenue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                             </h3>
                         </div>
                     </div>
 
                     <div className="flex flex-col gap-4">
                         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                            <div className="flex items-center gap-4">
-                                <h3 className="text-text-main dark:text-white text-lg font-bold">{t('admin.allOrders')} ({filteredOrders.length})</h3>
-                                <div className="flex bg-white dark:bg-surface-dark rounded-lg p-1 border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04]">
+                            <div className="flex flex-wrap items-center gap-3">
+                                <h3 className="text-slate-900 dark:text-white text-lg font-bold">
+                                    {t('admin.allOrders')} ({filteredOrders.length})
+                                </h3>
+                                <div className="flex flex-wrap bg-white dark:bg-[#0f172a] rounded-xl p-1 border border-slate-200/80 dark:border-white/10 gap-1 shadow-2xs">
                                     <button
                                         onClick={() => setFilter("ALL")}
-                                        className={`px-3 py-1 text-xs font-bold rounded-md transition-all ${filter === "ALL" ? "bg-primary text-white shadow-sm" : "text-text-sub hover:text-text-main"}`}
+                                        className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${
+                                            filter === "ALL" 
+                                                ? "bg-[#072835] text-white shadow-2xs" 
+                                                : "text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                                        }`}
                                     >
-                                        {t('admin.viewAll')}
+                                        {t('admin.viewAll')} ({orders.length})
                                     </button>
                                     <button
                                         onClick={() => setFilter("PENDING")}
-                                        className={`px-3 py-1 text-xs font-bold rounded-md transition-all ${filter === "PENDING" ? "bg-amber-500 text-white shadow-sm" : "text-text-sub hover:text-amber-600"}`}
+                                        className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${
+                                            filter === "PENDING" 
+                                                ? "bg-amber-500 text-white shadow-2xs" 
+                                                : "text-slate-600 dark:text-slate-400 hover:text-amber-600"
+                                        }`}
                                     >
-                                        {t('admin.pending')}
+                                        {t('admin.pending')} ({orders.filter(o => o.status === 'PENDING').length})
+                                    </button>
+                                    <button
+                                        onClick={() => setFilter("PROCESSING")}
+                                        className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${
+                                            filter === "PROCESSING" 
+                                                ? "bg-blue-600 text-white shadow-2xs" 
+                                                : "text-slate-600 dark:text-slate-400 hover:text-blue-600"
+                                        }`}
+                                    >
+                                        {t('admin.processing')} ({orders.filter(o => o.status === 'PROCESSING').length})
                                     </button>
                                     <button
                                         onClick={() => setFilter("SHIPPED")}
-                                        className={`px-3 py-1 text-xs font-bold rounded-md transition-all ${filter === "SHIPPED" ? "bg-purple-500 text-white shadow-sm" : "text-text-sub hover:text-purple-600"}`}
+                                        className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${
+                                            filter === "SHIPPED" 
+                                                ? "bg-purple-600 text-white shadow-2xs" 
+                                                : "text-slate-600 dark:text-slate-400 hover:text-purple-600"
+                                        }`}
                                     >
-                                        {t('admin.shipped')}
+                                        {t('admin.shipped')} ({orders.filter(o => o.status === 'SHIPPED').length})
                                     </button>
                                     <button
                                         onClick={() => setFilter("DELIVERED")}
-                                        className={`px-3 py-1 text-xs font-bold rounded-md transition-all ${filter === "DELIVERED" ? "bg-emerald-500 text-white shadow-sm" : "text-text-sub hover:text-emerald-600"}`}
+                                        className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all ${
+                                            filter === "DELIVERED" 
+                                                ? "bg-[#2E7D32] text-white shadow-2xs" 
+                                                : "text-slate-600 dark:text-slate-400 hover:text-[#2E7D32]"
+                                        }`}
                                     >
-                                        {t('admin.delivered')}
+                                        {t('admin.delivered')} ({orders.filter(o => o.status === 'DELIVERED').length})
                                     </button>
                                 </div>
                             </div>
@@ -259,58 +287,58 @@ export default function OrdersClient({ orders }: { orders: Order[] }) {
                             isDeleting={selectedOrder ? deletingId === selectedOrder.id : false}
                         />
 
-                        <div className="bg-surface-light dark:bg-surface-dark rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] shadow-sm overflow-hidden">
+                        <div className="bg-white dark:bg-[#0f172a] rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-xs overflow-hidden">
                             <div className="overflow-x-auto">
                                 <table className={`w-full border-collapse ${dir === 'rtl' ? 'text-end' : 'text-start'}`}>
                                     <thead>
-                                        <tr className="border-b border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-gray-50/50 dark:bg-gray-800/20">
-                                            <th className={`p-4 text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400 cursor-pointer select-none group`} onClick={() => handleSort('id')}>
+                                        <tr className="border-b border-slate-200/80 dark:border-white/10 bg-slate-50/90 dark:bg-slate-800/60">
+                                            <th className="p-4 text-[11px] font-extrabold uppercase tracking-widest text-slate-700 dark:text-slate-200 cursor-pointer select-none group" onClick={() => handleSort('id')}>
                                                 <div className="flex items-center">
                                                     {t('admin.orderId')}
                                                     <span className={`flex flex-col ms-1 ${dir === 'rtl' ? 'me-1 ms-0' : 'ms-1'}`}>
-                                                        <MdArrowUpward className={`w-2.5 h-2.5 -mb-0.5 ${sortConfig.key === 'id' && sortConfig.direction === 'asc' ? 'text-primary' : 'text-gray-300'}`} />
-                                                        <MdArrowDownward className={`w-2.5 h-2.5 ${sortConfig.key === 'id' && sortConfig.direction === 'desc' ? 'text-primary' : 'text-gray-300'}`} />
+                                                        <MdArrowUpward className={`w-2.5 h-2.5 -mb-0.5 ${sortConfig.key === 'id' && sortConfig.direction === 'asc' ? 'text-[#072835] dark:text-[#E5B54A]' : 'text-slate-300'}`} />
+                                                        <MdArrowDownward className={`w-2.5 h-2.5 ${sortConfig.key === 'id' && sortConfig.direction === 'desc' ? 'text-[#072835] dark:text-[#E5B54A]' : 'text-slate-300'}`} />
                                                     </span>
                                                 </div>
                                             </th>
-                                            <th className={`p-4 text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400 cursor-pointer select-none group`} onClick={() => handleSort('Name')}>
+                                            <th className="p-4 text-[11px] font-extrabold uppercase tracking-widest text-slate-700 dark:text-slate-200 cursor-pointer select-none group" onClick={() => handleSort('Name')}>
                                                 <div className="flex items-center">
                                                     {t('admin.customerName')}
                                                     <span className={`flex flex-col ms-1 ${dir === 'rtl' ? 'me-1 ms-0' : 'ms-1'}`}>
-                                                        <MdArrowUpward className={`w-2.5 h-2.5 -mb-0.5 ${sortConfig.key === 'Name' && sortConfig.direction === 'asc' ? 'text-primary' : 'text-gray-300'}`} />
-                                                        <MdArrowDownward className={`w-2.5 h-2.5 ${sortConfig.key === 'Name' && sortConfig.direction === 'desc' ? 'text-primary' : 'text-gray-300'}`} />
+                                                        <MdArrowUpward className={`w-2.5 h-2.5 -mb-0.5 ${sortConfig.key === 'Name' && sortConfig.direction === 'asc' ? 'text-[#072835] dark:text-[#E5B54A]' : 'text-slate-300'}`} />
+                                                        <MdArrowDownward className={`w-2.5 h-2.5 ${sortConfig.key === 'Name' && sortConfig.direction === 'desc' ? 'text-[#072835] dark:text-[#E5B54A]' : 'text-slate-300'}`} />
                                                     </span>
                                                 </div>
                                             </th>
-                                            <th className={`p-4 text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400 cursor-pointer select-none group`} onClick={() => handleSort('createdAt')}>
+                                            <th className="p-4 text-[11px] font-extrabold uppercase tracking-widest text-slate-700 dark:text-slate-200 cursor-pointer select-none group" onClick={() => handleSort('createdAt')}>
                                                 <div className="flex items-center">
                                                     {t('admin.date')}
                                                     <span className={`flex flex-col ms-1 ${dir === 'rtl' ? 'me-1 ms-0' : 'ms-1'}`}>
-                                                        <MdArrowUpward className={`w-2.5 h-2.5 -mb-0.5 ${sortConfig.key === 'createdAt' && sortConfig.direction === 'asc' ? 'text-primary' : 'text-gray-300'}`} />
-                                                        <MdArrowDownward className={`w-2.5 h-2.5 ${sortConfig.key === 'createdAt' && sortConfig.direction === 'desc' ? 'text-primary' : 'text-gray-300'}`} />
+                                                        <MdArrowUpward className={`w-2.5 h-2.5 -mb-0.5 ${sortConfig.key === 'createdAt' && sortConfig.direction === 'asc' ? 'text-[#072835] dark:text-[#E5B54A]' : 'text-slate-300'}`} />
+                                                        <MdArrowDownward className={`w-2.5 h-2.5 ${sortConfig.key === 'createdAt' && sortConfig.direction === 'desc' ? 'text-[#072835] dark:text-[#E5B54A]' : 'text-slate-300'}`} />
                                                     </span>
                                                 </div>
                                             </th>
-                                            <th className={`p-4 text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400 cursor-pointer select-none group`} onClick={() => handleSort('totalAmount')}>
+                                            <th className="p-4 text-[11px] font-extrabold uppercase tracking-widest text-slate-700 dark:text-slate-200 cursor-pointer select-none group" onClick={() => handleSort('totalAmount')}>
                                                 <div className="flex items-center">
                                                     {t('admin.totalAmount')}
                                                     <span className={`flex flex-col ms-1 ${dir === 'rtl' ? 'me-1 ms-0' : 'ms-1'}`}>
-                                                        <MdArrowUpward className={`w-2.5 h-2.5 -mb-0.5 ${sortConfig.key === 'totalAmount' && sortConfig.direction === 'asc' ? 'text-primary' : 'text-gray-300'}`} />
-                                                        <MdArrowDownward className={`w-2.5 h-2.5 ${sortConfig.key === 'totalAmount' && sortConfig.direction === 'desc' ? 'text-primary' : 'text-gray-300'}`} />
+                                                        <MdArrowUpward className={`w-2.5 h-2.5 -mb-0.5 ${sortConfig.key === 'totalAmount' && sortConfig.direction === 'asc' ? 'text-[#072835] dark:text-[#E5B54A]' : 'text-slate-300'}`} />
+                                                        <MdArrowDownward className={`w-2.5 h-2.5 ${sortConfig.key === 'totalAmount' && sortConfig.direction === 'desc' ? 'text-[#072835] dark:text-[#E5B54A]' : 'text-slate-300'}`} />
                                                     </span>
                                                 </div>
                                             </th>
-                                            <th className={`p-4 text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400`}>{t('admin.products')}</th>
-                                            <th className={`p-4 text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400 cursor-pointer select-none group`} onClick={() => handleSort('status')}>
+                                            <th className="p-4 text-[11px] font-extrabold uppercase tracking-widest text-slate-700 dark:text-slate-200">{t('admin.products')}</th>
+                                            <th className="p-4 text-[11px] font-extrabold uppercase tracking-widest text-slate-700 dark:text-slate-200 cursor-pointer select-none group" onClick={() => handleSort('status')}>
                                                 <div className="flex items-center">
                                                     {t('admin.orderStatus')}
                                                     <span className={`flex flex-col ms-1 ${dir === 'rtl' ? 'me-1 ms-0' : 'ms-1'}`}>
-                                                        <MdArrowUpward className={`w-2.5 h-2.5 -mb-0.5 ${sortConfig.key === 'status' && sortConfig.direction === 'asc' ? 'text-primary' : 'text-gray-300'}`} />
-                                                        <MdArrowDownward className={`w-2.5 h-2.5 ${sortConfig.key === 'status' && sortConfig.direction === 'desc' ? 'text-primary' : 'text-gray-300'}`} />
+                                                        <MdArrowUpward className={`w-2.5 h-2.5 -mb-0.5 ${sortConfig.key === 'status' && sortConfig.direction === 'asc' ? 'text-[#072835] dark:text-[#E5B54A]' : 'text-slate-300'}`} />
+                                                        <MdArrowDownward className={`w-2.5 h-2.5 ${sortConfig.key === 'status' && sortConfig.direction === 'desc' ? 'text-[#072835] dark:text-[#E5B54A]' : 'text-slate-300'}`} />
                                                     </span>
                                                 </div>
                                             </th>
-                                            <th className={`p-4 text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400 ${dir === 'rtl' ? 'text-start' : 'text-end'}`}>{t('admin.actions')}</th>
+                                            <th className={`p-4 text-[11px] font-extrabold uppercase tracking-widest text-slate-700 dark:text-slate-200 ${dir === 'rtl' ? 'text-start' : 'text-end'}`}>{t('admin.actions')}</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-black/[0.04] dark:divide-white/[0.04] dark:divide-gray-700">

@@ -111,7 +111,7 @@ export default function PromoCodesClient({ promoCodes }: { promoCodes: PromoCode
                             {canManage && (
                                 <button
                                     onClick={handleAdd}
-                                    className="w-full md:w-auto bg-primary text-white px-6 py-3 rounded-xl font-bold hover:bg-primary/90 transition-all flex items-center justify-center gap-2"
+                                    className="w-full md:w-auto bg-[#072835] hover:bg-[#0c4054] text-white px-6 py-3 rounded-xl font-bold transition-all shadow-xs flex items-center justify-center gap-2"
                                 >
                                     <MdAdd className="text-[20px]" />
                                     {t('admin.addPromoCode')}
@@ -128,15 +128,15 @@ export default function PromoCodesClient({ promoCodes }: { promoCodes: PromoCode
 
                     {/* Stats Summary */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-8">
-                        <div className="bg-white dark:bg-surface-dark p-5 rounded-2xl border border-black/[0.04] dark:border-white/[0.04] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.02)] transition-all duration-300 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.04)] flex flex-col gap-1">
-                            <p className="text-text-sub dark:text-gray-400 text-[11px] font-bold uppercase tracking-widest">{t('admin.totalSales')}</p>
-                            <p className="text-2xl md:text-3xl font-bold tracking-tight text-text-main dark:text-white">
+                        <div className="bg-white dark:bg-[#0f172a] p-5 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-xs transition-all duration-300 hover:shadow-md flex flex-col gap-1">
+                            <p className="text-slate-500 dark:text-slate-400 text-[11px] font-bold uppercase tracking-widest">{t('admin.totalSales')}</p>
+                            <p className="text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
                                 ${promoCodes.reduce((sum, pc) => sum + pc.totalSales, 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
                             </p>
                         </div>
-                        <div className="bg-white dark:bg-surface-dark p-5 rounded-2xl border border-black/[0.04] dark:border-white/[0.04] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.02)] transition-all duration-300 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.04)] flex flex-col gap-1">
-                            <p className="text-text-sub dark:text-gray-400 text-[11px] font-bold uppercase tracking-widest">{t('admin.activeCodes')}</p>
-                            <p className="text-2xl md:text-3xl font-bold tracking-tight text-emerald-500">
+                        <div className="bg-white dark:bg-[#0f172a] p-5 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-xs transition-all duration-300 hover:shadow-md flex flex-col gap-1">
+                            <p className="text-slate-500 dark:text-slate-400 text-[11px] font-bold uppercase tracking-widest">{t('admin.activeCodes')}</p>
+                            <p className="text-2xl md:text-3xl font-extrabold tracking-tight text-[#2E7D32] dark:text-[#4ade80]">
                                 {promoCodes.filter(pc => pc.isActive).length}
                             </p>
                         </div>

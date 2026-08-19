@@ -1,7 +1,21 @@
 "use client";
 
 import { useState } from "react";
-import { MdImage, MdImageNotSupported, MdSchedule, MdLocalShipping, MdWarning, MdCleanHands, MdAssignmentReturn, MdVerified } from "react-icons/md";
+import { 
+    MdImage, 
+    MdImageNotSupported, 
+    MdSchedule, 
+    MdLocalShipping, 
+    MdWarning, 
+    MdCleanHands, 
+    MdAssignmentReturn, 
+    MdVerified,
+    MdCurrencyExchange,
+    MdViewCarousel,
+    MdInfoOutline,
+    MdSave,
+    MdStorefront
+} from "react-icons/md";
 import AdminHeader from "../../components/AdminHeader";
 import { useAdminSidebar } from "../../context/AdminSidebarContext";
 import { updateSiteSettings } from "../../../../lib/admin-actions";
@@ -113,6 +127,7 @@ interface SiteSettings {
     aboutValue3TitleAr: string | null;
     aboutValue3Desc: string | null;
     aboutValue3DescAr: string | null;
+    exchangeRate: number | null;
     middleBanner1Image: string | null;
     middleBanner1Link: string | null;
     middleBanner2Image: string | null;
@@ -123,18 +138,21 @@ interface SiteSettings {
     middleBanner2SubtitleAr: string | null;
     middleBanner2ButtonText: string | null;
     middleBanner2ButtonTextAr: string | null;
-    exchangeRate: number;
 }
+
+type TabType = "currency" | "footer" | "banners" | "shipping" | "about";
 
 export default function SiteContentClient({ 
     initialSettings,
-    categories,
+    categories 
 }: { 
     initialSettings: SiteSettings | null;
     categories: FooterCategoryOption[];
 }) {
-    const { t } = useLanguage();
+    const { t, dir } = useLanguage();
     const { openSidebar } = useAdminSidebar();
+    const [activeTab, setActiveTab] = useState<TabType>("currency");
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     // Site Settings State - Categories CTA
     const [ctaTitle, setCtaTitle] = useState(initialSettings?.categoriesCtaTitle || "");
@@ -142,6 +160,8 @@ export default function SiteContentClient({
     const [ctaTitleAr, setCtaTitleAr] = useState(initialSettings?.categoriesCtaTitleAr || "");
     const [ctaDescAr, setCtaDescAr] = useState(initialSettings?.categoriesCtaDescAr || "");
     const [ctaImage, setCtaImage] = useState(initialSettings?.categoriesCtaImage || "");
+
+    // Site Settings State - Footer Content
     const [footerContent, setFooterContent] = useState({
         footerBrandTitle: initialSettings?.footerBrandTitle || "",
         footerBrandTitleAr: initialSettings?.footerBrandTitleAr || "",
@@ -248,9 +268,6 @@ export default function SiteContentClient({
     const [middleBanner2ButtonText, setMiddleBanner2ButtonText] = useState(initialSettings?.middleBanner2ButtonText || "");
     const [middleBanner2ButtonTextAr, setMiddleBanner2ButtonTextAr] = useState(initialSettings?.middleBanner2ButtonTextAr || "");
 
-    const [isSubmittingSettings, setIsSubmittingSettings] = useState(false);
-    const [isSubmittingCurrency, setIsSubmittingCurrency] = useState(false);
-
     const handleFooterFieldChange = (field: string, value: string) => {
         setFooterContent((current) => ({
             ...current,
@@ -258,95 +275,13 @@ export default function SiteContentClient({
         }));
     };
 
-    const handleSiteSettingsSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setIsSubmittingSettings(true);
+    const handleSaveAll = async (e?: React.FormEvent) => {
+        if (e) e.preventDefault();
+        setIsSubmitting(true);
 
         try {
             const result = await updateSiteSettings({
-                categoriesCtaTitle: ctaTitle,
-                categoriesCtaDesc: ctaDesc,
-                categoriesCtaTitleAr: ctaTitleAr,
-                categoriesCtaDescAr: ctaDescAr,
-                categoriesCtaImage: ctaImage,
-                ...footerContent,
-                footerCategory1Id: footerContent.footerCategory1Id || null,
-                footerCategory2Id: footerContent.footerCategory2Id || null,
-                footerCategory3Id: footerContent.footerCategory3Id || null,
-                footerCategory4Id: footerContent.footerCategory4Id || null,
-                shippingTitle,
-                shippingDesc,
-                shippingTitleAr,
-                shippingDescAr,
-                verificationTitle,
-                verificationDesc,
-                verificationTitleAr,
-                verificationDescAr,
-                standardShippingTime,
-                expressShippingTime,
-                returnsTitle,
-                returnsDesc,
-                returnsTitleAr,
-                returnsDescAr,
-                finalSaleTitle,
-                finalSaleDesc,
-                finalSaleTitleAr,
-                finalSaleDescAr,
-                hygieneTitle,
-                hygieneDesc,
-                hygieneTitleAr,
-                hygieneDescAr,
-                shippingReturnsImage,
-                aboutHeroTitle,
-                aboutHeroTitleAr,
-                aboutHeroSubtitle,
-                aboutHeroSubtitleAr,
-                aboutHeroImage,
-                aboutNarrativeTitle,
-                aboutNarrativeTitleAr,
-                aboutNarrativeFounded,
-                aboutNarrativeFoundedAr,
-                aboutNarrativeDesc1,
-                aboutNarrativeDesc1Ar,
-                aboutNarrativeDesc2,
-                aboutNarrativeDesc2Ar,
-                aboutNarrativeQuote,
-                aboutNarrativeQuoteAr,
-                aboutNarrativeImage,
-                middleBanner1Image,
-                middleBanner1Link,
-                middleBanner2Image,
-                middleBanner2Link,
-                middleBanner2Title,
-                middleBanner2TitleAr,
-                middleBanner2Subtitle,
-                middleBanner2SubtitleAr,
-                middleBanner2ButtonText,
-                middleBanner2ButtonTextAr,
-                exchangeRate: Number(exchangeRate),
-            });
-
-            if (result.success) {
-                toast.success(t('admin.settingsUpdated') || "Settings updated successfully");
-            } else {
-                toast.error(result.error || t('admin.failedToUpdate') || "Failed to update");
-            }
-        } catch (error) {
-            console.error("Error updating site settings:", error);
-            toast.error(t('admin.failedToUpdate') || "Failed to update");
-        } finally {
-            setIsSubmittingSettings(false);
-        }
-    };
-
-    const handleCurrencySubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setIsSubmittingCurrency(true);
-
-        try {
-            const result = await updateSiteSettings({
-                exchangeRate: Number(exchangeRate),
-                // Pass current values for other fields to prevent overriding them with null/empty
+                exchangeRate: Number(exchangeRate) || 135,
                 categoriesCtaTitle: ctaTitle,
                 categoriesCtaDesc: ctaDesc,
                 categoriesCtaTitleAr: ctaTitleAr,
@@ -409,1088 +344,465 @@ export default function SiteContentClient({
             });
 
             if (result.success) {
-                toast.success(t('admin.settingsUpdated') || "Currency settings updated successfully");
+                toast.success(t('admin.settingsUpdated') || "Settings updated successfully!");
             } else {
-                toast.error(result.error || t('admin.failedToUpdate') || "Failed to update currency settings");
+                toast.error(result.error || t('admin.failedToUpdate') || "Failed to update settings");
             }
         } catch (error) {
-            console.error("Error updating currency settings:", error);
+            console.error("Error updating settings:", error);
             toast.error(t('admin.failedToUpdate') || "Failed to update");
         } finally {
-            setIsSubmittingCurrency(false);
+            setIsSubmitting(false);
         }
     };
+
+    const tabs: { id: TabType; label: string; icon: React.ReactNode }[] = [
+        { id: "currency", label: t('admin.tabCurrency') || "Currency & Rates", icon: <MdCurrencyExchange className="text-lg" /> },
+        { id: "footer", label: t('admin.tabFooter') || "Footer & Social", icon: <MdStorefront className="text-lg" /> },
+        { id: "banners", label: t('admin.tabBanners') || "Promo Banners", icon: <MdViewCarousel className="text-lg" /> },
+        { id: "shipping", label: t('admin.tabShipping') || "Shipping & Policy", icon: <MdLocalShipping className="text-lg" /> },
+        { id: "about", label: t('admin.tabAbout') || "About Us Story", icon: <MdInfoOutline className="text-lg" /> },
+    ];
 
     return (
-        <div className="flex-1 flex flex-col overflow-hidden">
+        <div className="flex-1 flex flex-col overflow-hidden bg-slate-50 dark:bg-[#0b1120]">
             <AdminHeader title={t('admin.siteContent')} onMenuClick={openSidebar} />
 
-            <div className="flex-1 overflow-y-auto bg-background-light dark:bg-background-dark p-8">
-                <div className="max-w-4xl mx-auto">
-                    {/* Currency Settings Section - Now First */}
-                    <div className="bg-surface-light dark:bg-surface-dark rounded-2xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] p-8 mb-8">
-                        <div className="mb-6">
-                            <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-text-main dark:text-white mb-2">
-                                {t('admin.currencySettings')}
-                            </h2>
-                            <p className="text-text-sub dark:text-gray-400">
-                                {t('admin.currencySettingsDesc')}
-                            </p>
-                        </div>
-                        <form onSubmit={handleCurrencySubmit} className="space-y-6">
-                            <div className="space-y-4 max-w-md">
-                                <div className="space-y-2">
-                                    <label className="text-sm font-bold text-text-main dark:text-white">
-                                        {t('admin.exchangeRate')}
-                                    </label>
-                                    <input
-                                        type="number"
-                                        min="0"
-                                        step="0.01"
-                                        value={exchangeRate}
-                                        onChange={(e) => setExchangeRate(Number(e.target.value))}
-                                        className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
-                                    />
-                                </div>
-                            </div>
-                            <div className="flex justify-end">
-                                <button
-                                    type="submit"
-                                    disabled={isSubmittingCurrency}
-                                    className="min-w-[160px] rounded-xl bg-primary px-6 py-2.5 font-bold text-white transition-all hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
-                                >
-                                    {isSubmittingCurrency ? (
-                                        <span className="flex items-center justify-center gap-2">
-                                            <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-                                            {t('admin.saving')}
-                                        </span>
-                                    ) : (
-                                        t('admin.saveChanges')
-                                    )}
-                                </button>
-                            </div>
-                        </form>
+            {/* Sub-Header & Sticky Action Bar */}
+            <div className="bg-white dark:bg-[#0f172a] border-b border-slate-200/80 dark:border-white/10 px-6 md:px-10 py-5 sticky top-0 z-20">
+                <div className="max-w-6xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <h2 className="text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                            {t('admin.siteContent')}
+                        </h2>
+                        <p className="text-xs md:text-sm text-slate-500 dark:text-slate-400 mt-0.5">
+                            {t('admin.siteContentSubtitle') || "Customize pages, banners, policies, and store information across both languages."}
+                        </p>
                     </div>
 
-                    {/* Site Content Settings */}
-                    <div className="space-y-8">
-                        <form onSubmit={handleSiteSettingsSubmit} className="space-y-6">
+                    <button
+                        onClick={() => handleSaveAll()}
+                        disabled={isSubmitting}
+                        className="bg-[#072835] hover:bg-[#0c4054] text-white px-6 py-2.5 rounded-xl font-bold text-sm transition-all shadow-xs flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed self-start md:self-auto"
+                    >
+                        {isSubmitting ? (
+                            <>
+                                <span className="animate-spin h-4 w-4 border-2 border-white/30 border-t-white rounded-full" />
+                                <span>{t('admin.saving')}</span>
+                            </>
+                        ) : (
+                            <>
+                                <MdSave className="text-lg" />
+                                <span>{t('admin.saveChanges')}</span>
+                            </>
+                        )}
+                    </button>
+                </div>
+
+                {/* Sub-Navigation Tabs */}
+                <div className="max-w-6xl mx-auto mt-5 flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
+                    {tabs.map((tab) => {
+                        const isActive = activeTab === tab.id;
+                        return (
+                            <button
+                                key={tab.id}
+                                onClick={() => setActiveTab(tab.id)}
+                                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs md:text-sm font-bold transition-all whitespace-nowrap ${
+                                    isActive
+                                        ? 'bg-[#072835] text-white shadow-xs'
+                                        : 'bg-slate-100 dark:bg-slate-800/60 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800'
+                                }`}
+                            >
+                                <span className={isActive ? 'text-[#E5B54A]' : 'text-slate-400'}>{tab.icon}</span>
+                                <span>{tab.label}</span>
+                            </button>
+                        );
+                    })}
+                </div>
+            </div>
+
+            {/* Tab Contents */}
+            <div className="flex-1 overflow-y-auto p-6 md:p-10">
+                <div className="max-w-6xl mx-auto pb-12">
+                    {/* TAB 1: CURRENCY & EXCHANGE RATES */}
+                    {activeTab === "currency" && (
+                        <div className="bg-white dark:bg-[#0f172a] rounded-2xl border border-slate-200/80 dark:border-white/10 p-6 md:p-8 shadow-xs animate-in fade-in-50 duration-200">
+                            <div className="mb-6 flex items-start gap-4">
+                                <div className="p-3 bg-amber-50 dark:bg-amber-950/40 text-[#B8860B] dark:text-[#E5B54A] rounded-xl">
+                                    <MdCurrencyExchange className="text-2xl" />
+                                </div>
+                                <div>
+                                    <h3 className="text-xl font-bold text-slate-900 dark:text-white">
+                                        {t('admin.currencySettings')}
+                                    </h3>
+                                    <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                                        {t('admin.currencySettingsDesc')}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="max-w-md space-y-4">
+                                <label className="block text-sm font-bold text-slate-700 dark:text-slate-200">
+                                    {t('admin.exchangeRateLabel')} (1 USD = X SYP)
+                                </label>
+                                <div className="relative">
+                                    <input
+                                        type="number"
+                                        step="0.01"
+                                        min="0"
+                                        value={exchangeRate}
+                                        onChange={(e) => setExchangeRate(parseFloat(e.target.value) || 0)}
+                                        className="w-full px-4 py-3 bg-slate-50 dark:bg-gray-800 border border-slate-200/80 dark:border-white/10 rounded-xl text-lg font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-[#072835] outline-none transition-all"
+                                        placeholder="135"
+                                        required
+                                    />
+                                    <span className="absolute end-4 top-1/2 -translate-y-1/2 text-xs font-bold text-slate-400">
+                                        SYP / USD
+                                    </span>
+                                </div>
+                                <p className="text-xs text-slate-400">
+                                    {t('admin.currencyHelpText') || "All prices stored in USD will be multiplied by this rate when customer views prices in Syrian Pounds."}
+                                </p>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* TAB 2: FOOTER & SOCIAL LINKS */}
+                    {activeTab === "footer" && (
+                        <div className="animate-in fade-in-50 duration-200">
                             <FooterContentSection
                                 footerContent={footerContent}
                                 categories={categories}
                                 onFieldChange={handleFooterFieldChange}
                                 t={t}
                             />
+                        </div>
+                    )}
 
-                            {/* Middle Banner 1 Section */}
-                            <div className="bg-surface-light dark:bg-surface-dark rounded-2xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] p-8">
+                    {/* TAB 3: PROMO & MIDDLE BANNERS */}
+                    {activeTab === "banners" && (
+                        <div className="space-y-8 animate-in fade-in-50 duration-200">
+                            {/* Categories CTA Banner */}
+                            <div className="bg-white dark:bg-[#0f172a] rounded-2xl border border-slate-200/80 dark:border-white/10 p-6 md:p-8 shadow-xs">
                                 <div className="mb-6">
-                                    <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-text-main dark:text-white mb-2">
-                                        {t('admin.middleBanner1') || "Middle Banner 1 (After Trending)"}
-                                    </h2>
-                                    <p className="text-text-sub dark:text-gray-400">
-                                        {t('admin.middleBanner1Desc') || "Control the banner that appears after the Trending Products section."}
+                                    <h3 className="text-xl font-bold text-slate-900 dark:text-white">
+                                        {t('admin.categoriesCtaBanner') || "Categories CTA Banner"}
+                                    </h3>
+                                    <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                                        {t('admin.categoriesCtaBannerDesc') || "Control the Call To Action banner shown on the Categories landing page."}
                                     </p>
                                 </div>
+
                                 <div className="space-y-6">
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        <div className="space-y-2">
-                                            <label className="text-sm font-bold text-text-main dark:text-white">
-                                                {t('admin.imageUrl')}
-                                                <span className="block text-[10px] text-primary/70 font-normal">
-                                                    {t('admin.recommendedResolution')}: {t('admin.res21_6')}
-                                                </span>
-                                            </label>
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-bold text-slate-700 dark:text-slate-200">
+                                            {t('admin.imageUrl')}
+                                        </label>
+                                        <div className="flex gap-4 items-start">
                                             <input
                                                 type="text"
-                                                value={middleBanner1Image}
-                                                onChange={(e) => setMiddleBanner1Image(e.target.value)}
-                                                className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
-                                                placeholder="https://..."
+                                                value={ctaImage}
+                                                onChange={(e) => setCtaImage(e.target.value)}
+                                                className="flex-1 px-4 py-3 rounded-xl border border-slate-200/80 dark:border-white/10 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-[#072835] outline-none text-sm"
+                                                placeholder="https://images.unsplash.com/..."
                                             />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <label className="text-sm font-bold text-text-main dark:text-white">
-                                                {t('admin.linkUrl')} ({t('admin.optional') || "Optional"})
-                                            </label>
-                                            <input
-                                                type="text"
-                                                value={middleBanner1Link}
-                                                onChange={(e) => setMiddleBanner1Link(e.target.value)}
-                                                className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
-                                                placeholder="/products/..."
-                                            />
-                                        </div>
-                                    </div>
-                                    {middleBanner1Image && (
-                                        <div className="relative aspect-[21/9] md:aspect-[21/6] rounded-xl overflow-hidden border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04]">
-                                            <img src={middleBanner1Image} alt="Preview" className="w-full h-full object-cover" />
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-
-                            {/* Middle Banner 2 Section */}
-                            <div className="bg-surface-light dark:bg-surface-dark rounded-2xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] p-8">
-                                <div className="mb-6">
-                                    <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-text-main dark:text-white mb-2">
-                                        {t('admin.middleBanner2') || "Middle Banner 2 (After Brands)"}
-                                    </h2>
-                                    <p className="text-text-sub dark:text-gray-400">
-                                        {t('admin.middleBanner2Desc') || "Control the banner that appears after the Brands section. This banner supports text overlays."}
-                                    </p>
-                                </div>
-                                <div className="space-y-6">
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        <div className="space-y-2">
-                                            <label className="text-sm font-bold text-text-main dark:text-white">
-                                                {t('admin.imageUrl')}
-                                                <span className="block text-[10px] text-primary/70 font-normal">
-                                                    {t('admin.recommendedResolution')}: {t('admin.res21_6')}
-                                                </span>
-                                            </label>
-                                            <input
-                                                type="text"
-                                                value={middleBanner2Image}
-                                                onChange={(e) => setMiddleBanner2Image(e.target.value)}
-                                                className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
-                                                placeholder="https://..."
-                                            />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <label className="text-sm font-bold text-text-main dark:text-white">
-                                                {t('admin.linkUrl')} ({t('admin.optional') || "Optional"})
-                                            </label>
-                                            <input
-                                                type="text"
-                                                value={middleBanner2Link}
-                                                onChange={(e) => setMiddleBanner2Link(e.target.value)}
-                                                className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
-                                                placeholder="/products/..."
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        <div className="space-y-2">
-                                            <label className="text-sm font-bold text-text-main dark:text-white">{t('admin.englishLabel')} - {t('admin.title')}</label>
-                                            <input
-                                                type="text"
-                                                value={middleBanner2Title}
-                                                onChange={(e) => setMiddleBanner2Title(e.target.value)}
-                                                className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
-                                            />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <label className="text-sm font-bold text-text-main dark:text-white">{t('admin.arabicLabel')} - {t('admin.title')}</label>
-                                            <input
-                                                type="text"
-                                                value={middleBanner2TitleAr}
-                                                onChange={(e) => setMiddleBanner2TitleAr(e.target.value)}
-                                                className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
-                                                dir="rtl"
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        <div className="space-y-2">
-                                            <label className="text-sm font-bold text-text-main dark:text-white">{t('admin.englishLabel')} - {t('admin.description')}</label>
-                                            <textarea
-                                                value={middleBanner2Subtitle}
-                                                onChange={(e) => setMiddleBanner2Subtitle(e.target.value)}
-                                                className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none min-h-[80px]"
-                                            />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <label className="text-sm font-bold text-text-main dark:text-white">{t('admin.arabicLabel')} - {t('admin.description')}</label>
-                                            <textarea
-                                                value={middleBanner2SubtitleAr}
-                                                onChange={(e) => setMiddleBanner2SubtitleAr(e.target.value)}
-                                                className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none min-h-[80px]"
-                                                dir="rtl"
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        <div className="space-y-2">
-                                            <label className="text-sm font-bold text-text-main dark:text-white">{t('admin.englishLabel')} - {t('admin.buttonText')}</label>
-                                            <input
-                                                type="text"
-                                                value={middleBanner2ButtonText}
-                                                onChange={(e) => setMiddleBanner2ButtonText(e.target.value)}
-                                                className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
-                                            />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <label className="text-sm font-bold text-text-main dark:text-white">{t('admin.arabicLabel')} - {t('admin.buttonText')}</label>
-                                            <input
-                                                type="text"
-                                                value={middleBanner2ButtonTextAr}
-                                                onChange={(e) => setMiddleBanner2ButtonTextAr(e.target.value)}
-                                                className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
-                                                dir="rtl"
-                                            />
-                                        </div>
-                                    </div>
-
-                                    {middleBanner2Image && (
-                                        <div className="relative aspect-[21/9] md:aspect-[21/6] rounded-xl overflow-hidden border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] group">
-                                            <img src={middleBanner2Image} alt="Preview" className="w-full h-full object-cover" />
-                                            {(middleBanner2Title || middleBanner2Subtitle) && (
-                                                <div className="absolute inset-0 bg-black/40 flex flex-col justify-center px-8 text-white">
-                                                    <h3 className="text-xl font-bold">{middleBanner2Title}</h3>
-                                                    <p className="text-xs text-white/80">{middleBanner2Subtitle}</p>
-                                                    {middleBanner2ButtonText && (
-                                                        <span className="mt-2 inline-block bg-primary text-white text-[10px] px-3 py-1 rounded-full w-fit">
-                                                            {middleBanner2ButtonText}
-                                                        </span>
-                                                    )}
-                                                </div>
-                                            )}
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-
-                            <div className="flex justify-end">
-                                <button
-                                    type="submit"
-                                    disabled={isSubmittingSettings}
-                                    className="min-w-[200px] rounded-xl bg-primary px-8 py-3 font-bold text-white transition-all hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
-                                >
-                                    {isSubmittingSettings ? (
-                                        <span className="flex items-center justify-center gap-2">
-                                            <span className="h-5 w-5 animate-spin rounded-full border-2 border-white/30 border-t-white" />
-                                            {t('admin.saving')}
-                                        </span>
-                                    ) : (
-                                        t('admin.saveChanges')
-                                    )}
-                                </button>
-                            </div>
-                        </form>
-
-                        {/* Categories Page CTA */}
-                        <div className="bg-surface-light dark:bg-surface-dark rounded-2xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] p-8">
-                            <div className="mb-8">
-                                <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-text-main dark:text-white mb-2">
-                                    {t('admin.categoriesPageCta')}
-                                </h2>
-                                <p className="text-text-sub dark:text-gray-400">
-                                    {t('admin.categoriesCtaDescription')}
-                                </p>
-                            </div>
-
-                            <form onSubmit={handleSiteSettingsSubmit} className="space-y-6">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                    {/* English Content */}
-                                    <div className="space-y-6">
-                                        <div className="flex items-center gap-2 mb-2">
-                                            <span className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xs">EN</span>
-                                            <h3 className="font-bold text-text-main dark:text-white">{t('admin.englishContent')}</h3>
-                                        </div>
-                                        <div className="space-y-2">
-                                            <label className="text-sm font-bold text-text-main dark:text-white">{t('admin.title')}</label>
-                                            <input
-                                                type="text"
-                                                value={ctaTitle}
-                                                onChange={(e) => setCtaTitle(e.target.value)}
-                                                className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
-                                            />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <label className="text-sm font-bold text-text-main dark:text-white">{t('admin.description')}</label>
-                                            <textarea
-                                                rows={5}
-                                                value={ctaDesc}
-                                                onChange={(e) => setCtaDesc(e.target.value)}
-                                                className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
-                                            />
-                                        </div>
-                                    </div>
-
-                                    {/* Arabic Content */}
-                                    <div className="space-y-6" dir="rtl">
-                                        <div className="flex items-center gap-2 mb-2">
-                                            <span className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xs">AR</span>
-                                            <h3 className="font-bold text-text-main dark:text-white">{t('admin.arabicContent')}</h3>
-                                        </div>
-                                        <div className="space-y-2">
-                                            <label className="text-sm font-bold text-text-main dark:text-white">{t('admin.title')}</label>
-                                            <input
-                                                type="text"
-                                                value={ctaTitleAr}
-                                                onChange={(e) => setCtaTitleAr(e.target.value)}
-                                                className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
-                                            />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <label className="text-sm font-bold text-text-main dark:text-white">{t('admin.description')}</label>
-                                            <textarea
-                                                rows={5}
-                                                value={ctaDescAr}
-                                                onChange={(e) => setCtaDescAr(e.target.value)}
-                                                className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Image Settings */}
-                                <div className="border-t border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] pt-8 mt-8">
-                                    <div className="flex items-center gap-2 mb-6">
-                                        <MdImage className="text-primary text-xl" />
-                                        <h3 className="font-bold text-text-main dark:text-white text-lg">{t('admin.ctaImage')}</h3>
-                                    </div>
-                                    
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
-                                        <div className="space-y-4">
-                                            <div className="space-y-2">
-                                                <label className="text-sm font-bold text-text-main dark:text-white">
-                                                    {t('admin.imageUrl')}
-                                                    <span className="block text-[10px] text-primary/70 font-normal">
-                                                        {t('admin.recommendedResolution')}: {t('admin.res3_2')}
-                                                    </span>
-                                                </label>
-                                                <input
-                                                    type="text"
-                                                    value={ctaImage}
-                                                    onChange={(e) => setCtaImage(e.target.value)}
-                                                    placeholder="https://example.com/image.jpg"
-                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
-                                                />
-                                                <p className="text-xs text-text-sub dark:text-gray-400">
-                                                    {t('admin.ctaImageDescription')}
-                                                </p>
-                                            </div>
-                                        </div>
-
-                                        <div className="space-y-2">
-                                            <label className="text-sm font-bold text-text-main dark:text-white">{t('admin.preview')}</label>
-                                            <div className="aspect-video rounded-2xl border-2 border-dashed border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] overflow-hidden bg-background-light dark:bg-gray-800 flex items-center justify-center">
+                                            <div className="w-28 h-16 rounded-xl border border-slate-200/80 dark:border-white/10 overflow-hidden bg-slate-100 dark:bg-gray-800 flex items-center justify-center shrink-0">
                                                 {ctaImage ? (
-                                                    <img 
-                                                        src={ctaImage} 
-                                                        alt={t('admin.ctaPreview')} 
-                                                        className="w-full h-full object-cover"
-                                                        onError={(e) => {
-                                                            (e.target as HTMLImageElement).src = 'https://via.placeholder.com/400x225?text=Invalid+Image+URL';
-                                                        }}
-                                                    />
+                                                    <img src={ctaImage} alt="CTA Preview" className="w-full h-full object-cover" onError={(e) => (e.currentTarget.style.display = 'none')} />
                                                 ) : (
-                                                    <div className="text-center p-6">
-                                                        <MdImageNotSupported className="text-4xl text-text-sub/30 mb-2 mx-auto" />
-                                                        <p className="text-xs text-text-sub/50">{t('admin.noImageProvided') || "No image URL provided"}</p>
-                                                    </div>
+                                                    <MdImage className="text-2xl text-slate-400" />
                                                 )}
                                             </div>
                                         </div>
                                     </div>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div className="space-y-4">
+                                            <span className="inline-block px-2.5 py-1 bg-slate-100 dark:bg-slate-800 text-xs font-bold rounded-md text-slate-700 dark:text-slate-300">🇬🇧 English</span>
+                                            <div>
+                                                <label className="text-xs font-bold text-slate-500 uppercase">{t('admin.bannerTitle') || "Title"}</label>
+                                                <input type="text" value={ctaTitle} onChange={(e) => setCtaTitle(e.target.value)} className="w-full mt-1 px-4 py-2.5 rounded-xl border border-slate-200/80 dark:border-white/10 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white outline-none text-sm" />
+                                            </div>
+                                            <div>
+                                                <label className="text-xs font-bold text-slate-500 uppercase">{t('admin.description')}</label>
+                                                <textarea rows={3} value={ctaDesc} onChange={(e) => setCtaDesc(e.target.value)} className="w-full mt-1 px-4 py-2.5 rounded-xl border border-slate-200/80 dark:border-white/10 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white outline-none text-sm resize-none" />
+                                            </div>
+                                        </div>
+
+                                        <div className="space-y-4" dir="rtl">
+                                            <span className="inline-block px-2.5 py-1 bg-slate-100 dark:bg-slate-800 text-xs font-bold rounded-md text-slate-700 dark:text-slate-300">🇸🇦 العربية</span>
+                                            <div>
+                                                <label className="text-xs font-bold text-slate-500 uppercase">{t('admin.bannerTitle') || "العنوان"}</label>
+                                                <input type="text" value={ctaTitleAr} onChange={(e) => setCtaTitleAr(e.target.value)} className="w-full mt-1 px-4 py-2.5 rounded-xl border border-slate-200/80 dark:border-white/10 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white outline-none text-sm" />
+                                            </div>
+                                            <div>
+                                                <label className="text-xs font-bold text-slate-500 uppercase">{t('admin.description')}</label>
+                                                <textarea rows={3} value={ctaDescAr} onChange={(e) => setCtaDescAr(e.target.value)} className="w-full mt-1 px-4 py-2.5 rounded-xl border border-slate-200/80 dark:border-white/10 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white outline-none text-sm resize-none" />
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-
-
-
-                                <div className="flex justify-end pt-4">
-                                    <button
-                                        type="submit"
-                                        disabled={isSubmittingSettings}
-                                        className="px-8 bg-primary text-white py-3 rounded-xl font-bold hover:bg-primary/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed min-w-[200px]"
-                                    >
-                                        {isSubmittingSettings ? (
-                                            <span className="flex items-center justify-center gap-2">
-                                                <span className="animate-spin h-5 w-5 border-2 border-white/30 border-t-white rounded-full" />
-                                                {t('admin.saving')}
-                                            </span>
-                                        ) : (
-                                            t('admin.saveChanges')
-                                        )}
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-
-                        {/* Shipping & Returns Page Content */}
-                        <div className="bg-surface-light dark:bg-surface-dark rounded-2xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] p-8">
-                            <div className="mb-8">
-                                <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-text-main dark:text-white mb-2">
-                                    {t('admin.shippingReturnsContent')}
-                                </h2>
-                                <p className="text-text-sub dark:text-gray-400">
-                                    {t('admin.shippingReturnsDescription')}
-                                </p>
                             </div>
 
-                            <form onSubmit={handleSiteSettingsSubmit} className="space-y-12">
-                                {/* Shipping & Returns Page Image */}
-                                <div className="space-y-6">
-                                    <div className="flex items-center gap-2 mb-6">
-                                        <MdImage className="text-primary text-xl" />
-                                        <h3 className="font-bold text-text-main dark:text-white text-lg">{t('admin.pageHeaderImage')}</h3>
-                                    </div>
-                                    
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
-                                        <div className="space-y-4">
-                                            <div className="space-y-2">
-                                                <label className="text-sm font-bold text-text-main dark:text-white">
-                                                    {t('admin.imageUrl')}
-                                                    <span className="block text-[10px] text-primary/70 font-normal">
-                                                        {t('admin.recommendedResolution')}: {t('admin.resWide')}
-                                                    </span>
-                                                </label>
-                                                <input
-                                                    type="text"
-                                                    value={shippingReturnsImage}
-                                                    onChange={(e) => setShippingReturnsImage(e.target.value)}
-                                                    placeholder="https://example.com/image.jpg"
-                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
-                                                />
-                                                <p className="text-xs text-text-sub dark:text-gray-400">
-                                                    {t('admin.shippingReturnsImageHint')}
-                                                </p>
-                                            </div>
-                                        </div>
-
-                                        <div className="space-y-2">
-                                            <label className="text-sm font-bold text-text-main dark:text-white">{t('admin.preview')}</label>
-                                            <div className="aspect-video rounded-2xl border-2 border-dashed border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] overflow-hidden bg-background-light dark:bg-gray-800 flex items-center justify-center">
-                                                {shippingReturnsImage ? (
-                                                    <img 
-                                                        src={shippingReturnsImage} 
-                                                        alt="Shipping & Returns Preview" 
-                                                        className="w-full h-full object-cover"
-                                                        onError={(e) => {
-                                                            (e.target as HTMLImageElement).src = 'https://via.placeholder.com/400x225?text=Invalid+Image+URL';
-                                                        }}
-                                                    />
-                                                ) : (
-                                                    <div className="text-center p-6">
-                                                        <MdImageNotSupported className="text-4xl text-text-sub/30 mb-2 mx-auto" />
-                                                        <p className="text-xs text-text-sub/50">{t('admin.noImageProvided') || "No image URL provided"}</p>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </div>
-                                    </div>
+                            {/* Middle Banner 1 */}
+                            <div className="bg-white dark:bg-[#0f172a] rounded-2xl border border-slate-200/80 dark:border-white/10 p-6 md:p-8 shadow-xs">
+                                <div className="mb-6">
+                                    <h3 className="text-xl font-bold text-slate-900 dark:text-white">
+                                        {t('admin.middleBanner1') || "Middle Banner 1 (After Trending)"}
+                                    </h3>
+                                    <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                                        {t('admin.middleBanner1Desc') || "Control the full-width banner that appears after the Trending Products section."}
+                                    </p>
                                 </div>
 
-                                {/* 1. Verification Section */}
-                                <div className="space-y-6 border-t border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] pt-8">
-                                    <div className="flex items-center gap-2 mb-2">
-                                        <MdVerified className="text-primary text-xl" />
-                                        <h3 className="font-bold text-text-main dark:text-white text-lg">{t('admin.verificationSection')}</h3>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-bold text-slate-700 dark:text-slate-200">{t('admin.imageUrl')}</label>
+                                        <input type="text" value={middleBanner1Image} onChange={(e) => setMiddleBanner1Image(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-slate-200/80 dark:border-white/10 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white outline-none text-sm" placeholder="https://..." />
                                     </div>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                        <div className="space-y-4">
-                                            <div className="flex items-center gap-2 mb-2">
-                                                <span className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-[10px]">EN</span>
-                                                <span className="text-sm font-bold text-text-main dark:text-white">{t('admin.englishContent')}</span>
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">{t('admin.title')}</label>
-                                                <input
-                                                    type="text"
-                                                    value={verificationTitle}
-                                                    onChange={(e) => setVerificationTitle(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
-                                                />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">{t('admin.description')}</label>
-                                                <textarea
-                                                    rows={3}
-                                                    value={verificationDesc}
-                                                    onChange={(e) => setVerificationDesc(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
-                                                />
-                                            </div>
-                                        </div>
-                                        <div className="space-y-4" dir="rtl">
-                                            <div className="flex items-center gap-2 mb-2">
-                                                <span className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-[10px]">AR</span>
-                                                <span className="text-sm font-bold text-text-main dark:text-white">{t('admin.arabicContent')}</span>
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">{t('admin.title')}</label>
-                                                <input
-                                                    type="text"
-                                                    value={verificationTitleAr}
-                                                    onChange={(e) => setVerificationTitleAr(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
-                                                />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">{t('admin.description')}</label>
-                                                <textarea
-                                                    rows={3}
-                                                    value={verificationDescAr}
-                                                    onChange={(e) => setVerificationDescAr(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
-                                                />
-                                            </div>
-                                        </div>
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-bold text-slate-700 dark:text-slate-200">{t('admin.linkUrl')}</label>
+                                        <input type="text" value={middleBanner1Link} onChange={(e) => setMiddleBanner1Link(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-slate-200/80 dark:border-white/10 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white outline-none text-sm" placeholder="/categories or /products" />
                                     </div>
                                 </div>
-
-                                {/* 2. Shipping Times */}
-                                <div className="space-y-6 border-t border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] pt-8">
-                                    <div className="flex items-center gap-2 mb-2">
-                                        <MdSchedule className="text-primary text-xl" />
-                                        <h3 className="font-bold text-text-main dark:text-white text-lg">{t('admin.shippingTimes')}</h3>
-                                    </div>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                        <div className="space-y-2">
-                                            <label className="text-sm font-bold text-text-main dark:text-white">{t('admin.standardTime')}</label>
-                                            <input
-                                                type="text"
-                                                value={standardShippingTime}
-                                                onChange={(e) => setStandardShippingTime(e.target.value)}
-                                                placeholder="e.g. 3-5 Business Days"
-                                                className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
-                                            />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <label className="text-sm font-bold text-text-main dark:text-white">{t('admin.expressTime')}</label>
-                                            <input
-                                                type="text"
-                                                value={expressShippingTime}
-                                                onChange={(e) => setExpressShippingTime(e.target.value)}
-                                                placeholder="e.g. 1-2 Business Days"
-                                                className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* 3. Shipping Section */}
-                                <div className="space-y-6 border-t border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] pt-8">
-                                    <div className="flex items-center gap-2 mb-2">
-                                        <MdLocalShipping className="text-primary text-xl" />
-                                        <h3 className="font-bold text-text-main dark:text-white text-lg">{t('admin.shippingSection')}</h3>
-                                    </div>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                        <div className="space-y-4">
-                                            <div className="flex items-center gap-2 mb-2">
-                                                <span className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-[10px]">EN</span>
-                                                <span className="text-sm font-bold text-text-main dark:text-white">{t('admin.englishContent')}</span>
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">{t('admin.title')}</label>
-                                                <input
-                                                    type="text"
-                                                    value={shippingTitle}
-                                                    onChange={(e) => setShippingTitle(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
-                                                />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">{t('admin.description')}</label>
-                                                <textarea
-                                                    rows={3}
-                                                    value={shippingDesc}
-                                                    onChange={(e) => setShippingDesc(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
-                                                />
-                                            </div>
-                                        </div>
-                                        <div className="space-y-4" dir="rtl">
-                                            <div className="flex items-center gap-2 mb-2">
-                                                <span className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-[10px]">AR</span>
-                                                <span className="text-sm font-bold text-text-main dark:text-white">{t('admin.arabicContent')}</span>
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">{t('admin.title')}</label>
-                                                <input
-                                                    type="text"
-                                                    value={shippingTitleAr}
-                                                    onChange={(e) => setShippingTitleAr(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
-                                                />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">{t('admin.description')}</label>
-                                                <textarea
-                                                    rows={3}
-                                                    value={shippingDescAr}
-                                                    onChange={(e) => setShippingDescAr(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* 4. Final Sale Section */}
-                                <div className="space-y-6 border-t border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] pt-8">
-                                    <div className="flex items-center gap-2 mb-2">
-                                        <MdWarning className="text-primary text-xl" />
-                                        <h3 className="font-bold text-text-main dark:text-white text-lg">{t('admin.finalSaleSection')}</h3>
-                                    </div>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                        <div className="space-y-4">
-                                            <div className="flex items-center gap-2 mb-2">
-                                                <span className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-[10px]">EN</span>
-                                                <span className="text-sm font-bold text-text-main dark:text-white">{t('admin.englishContent')}</span>
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">{t('admin.title')}</label>
-                                                <input
-                                                    type="text"
-                                                    value={finalSaleTitle}
-                                                    onChange={(e) => setFinalSaleTitle(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
-                                                />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">{t('admin.description')}</label>
-                                                <textarea
-                                                    rows={3}
-                                                    value={finalSaleDesc}
-                                                    onChange={(e) => setFinalSaleDesc(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
-                                                />
-                                            </div>
-                                        </div>
-                                        <div className="space-y-4" dir="rtl">
-                                            <div className="flex items-center gap-2 mb-2">
-                                                <span className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-[10px]">AR</span>
-                                                <span className="text-sm font-bold text-text-main dark:text-white">{t('admin.arabicContent')}</span>
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">{t('admin.title')}</label>
-                                                <input
-                                                    type="text"
-                                                    value={finalSaleTitleAr}
-                                                    onChange={(e) => setFinalSaleTitleAr(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
-                                                />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">{t('admin.description')}</label>
-                                                <textarea
-                                                    rows={3}
-                                                    value={finalSaleDescAr}
-                                                    onChange={(e) => setFinalSaleDescAr(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* 5. Hygiene Section */}
-                                <div className="space-y-6 border-t border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] pt-8">
-                                    <div className="flex items-center gap-2 mb-2">
-                                        <MdCleanHands className="text-primary text-xl" />
-                                        <h3 className="font-bold text-text-main dark:text-white text-lg">{t('admin.hygieneProtocols')}</h3>
-                                    </div>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                        <div className="space-y-4">
-                                            <div className="flex items-center gap-2 mb-2">
-                                                <span className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-[10px]">EN</span>
-                                                <span className="text-sm font-bold text-text-main dark:text-white">{t('admin.englishContent')}</span>
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">{t('admin.hygieneImage')}</label>
-                                                <input
-                                                    type="text"
-                                                    value={hygieneTitle}
-                                                    onChange={(e) => setHygieneTitle(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
-                                                />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">{t('admin.description')}</label>
-                                                <textarea
-                                                    rows={3}
-                                                    value={hygieneDesc}
-                                                    onChange={(e) => setHygieneDesc(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
-                                                />
-                                            </div>
-                                        </div>
-                                        <div className="space-y-4" dir="rtl">
-                                            <div className="flex items-center gap-2 mb-2">
-                                                <span className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-[10px]">AR</span>
-                                                <span className="text-sm font-bold text-text-main dark:text-white">{t('admin.arabicContent')}</span>
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">{t('admin.hygieneImage')}</label>
-                                                <input
-                                                    type="text"
-                                                    value={hygieneTitleAr}
-                                                    onChange={(e) => setHygieneTitleAr(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
-                                                />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">{t('admin.description')}</label>
-                                                <textarea
-                                                    rows={3}
-                                                    value={hygieneDescAr}
-                                                    onChange={(e) => setHygieneDescAr(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* 6. Returns Section */}
-                                <div className="space-y-6 border-t border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] pt-8">
-                                    <div className="flex items-center gap-2 mb-2">
-                                        <MdAssignmentReturn className="text-primary text-xl" />
-                                        <h3 className="font-bold text-text-main dark:text-white text-lg">{t('admin.returnsSection')}</h3>
-                                    </div>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                        <div className="space-y-4">
-                                            <div className="flex items-center gap-2 mb-2">
-                                                <span className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-[10px]">EN</span>
-                                                <span className="text-sm font-bold text-text-main dark:text-white">{t('admin.englishContent')}</span>
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">{t('admin.title')}</label>
-                                                <input
-                                                    type="text"
-                                                    value={returnsTitle}
-                                                    onChange={(e) => setReturnsTitle(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
-                                                />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">{t('admin.description')}</label>
-                                                <textarea
-                                                    rows={3}
-                                                    value={returnsDesc}
-                                                    onChange={(e) => setReturnsDesc(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
-                                                />
-                                            </div>
-                                        </div>
-                                        <div className="space-y-4" dir="rtl">
-                                            <div className="flex items-center gap-2 mb-2">
-                                                <span className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-[10px]">AR</span>
-                                                <span className="text-sm font-bold text-text-main dark:text-white">{t('admin.arabicContent')}</span>
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">{t('admin.title')}</label>
-                                                <input
-                                                    type="text"
-                                                    value={returnsTitleAr}
-                                                    onChange={(e) => setReturnsTitleAr(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
-                                                />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">{t('admin.description')}</label>
-                                                <textarea
-                                                    rows={3}
-                                                    value={returnsDescAr}
-                                                    onChange={(e) => setReturnsDescAr(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="flex justify-end pt-4">
-                                    <button
-                                        type="submit"
-                                        disabled={isSubmittingSettings}
-                                        className="px-8 bg-primary text-white py-3 rounded-xl font-bold hover:bg-primary/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed min-w-[200px]"
-                                    >
-                                        {isSubmittingSettings ? (
-                                            <span className="flex items-center justify-center gap-2">
-                                                <span className="animate-spin h-5 w-5 border-2 border-white/30 border-t-white rounded-full" />
-                                                {t('admin.saving')}
-                                            </span>
-                                        ) : (
-                                            t('admin.saveChanges')
-                                        )}
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-
-                        {/* About Us Page Content */}
-                        <div className="bg-surface-light dark:bg-surface-dark rounded-2xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] p-8">
-                            <div className="mb-8">
-                                <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-text-main dark:text-white mb-2">
-                                    {t('admin.aboutUsContent')}
-                                </h2>
-                                <p className="text-text-sub dark:text-gray-400">
-                                    {t('admin.aboutUsDescription')}
-                                </p>
                             </div>
 
-                            <form onSubmit={handleSiteSettingsSubmit} className="space-y-12">
-                                {/* Hero Section */}
+                            {/* Middle Banner 2 */}
+                            <div className="bg-white dark:bg-[#0f172a] rounded-2xl border border-slate-200/80 dark:border-white/10 p-6 md:p-8 shadow-xs">
+                                <div className="mb-6">
+                                    <h3 className="text-xl font-bold text-slate-900 dark:text-white">
+                                        {t('admin.middleBanner2') || "Middle Banner 2 (After Featured Collection)"}
+                                    </h3>
+                                    <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                                        {t('admin.middleBanner2Desc') || "Configure the secondary promotional banner with call to action button."}
+                                    </p>
+                                </div>
+
                                 <div className="space-y-6">
-                                    <div className="flex items-center gap-2 mb-6">
-                                        <MdImage className="text-primary text-xl" />
-                                        <h3 className="font-bold text-text-main dark:text-white text-lg">{t('admin.heroSection')}</h3>
-                                    </div>
-
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                        <div className="space-y-4">
-                                            <div className="flex items-center gap-2 mb-2">
-                                                <span className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-[10px]">EN</span>
-                                                <span className="text-sm font-bold text-text-main dark:text-white">{t('admin.englishContent')}</span>
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">{t('admin.title')}</label>
-                                                <input
-                                                    type="text"
-                                                    value={aboutHeroTitle}
-                                                    onChange={(e) => setAboutHeroTitle(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
-                                                />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">{t('admin.subtitle')}</label>
-                                                <textarea
-                                                    rows={3}
-                                                    value={aboutHeroSubtitle}
-                                                    onChange={(e) => setAboutHeroSubtitle(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
-                                                />
-                                            </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div>
+                                            <label className="text-xs font-bold text-slate-500 uppercase">{t('admin.imageUrl')}</label>
+                                            <input type="text" value={middleBanner2Image} onChange={(e) => setMiddleBanner2Image(e.target.value)} className="w-full mt-1 px-4 py-2.5 rounded-xl border border-slate-200/80 dark:border-white/10 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white outline-none text-sm" placeholder="https://..." />
                                         </div>
-                                        <div className="space-y-4" dir="rtl">
-                                            <div className="flex items-center gap-2 mb-2">
-                                                <span className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-[10px]">AR</span>
-                                                <span className="text-sm font-bold text-text-main dark:text-white">{t('admin.arabicContent')}</span>
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">{t('admin.title')}</label>
-                                                <input
-                                                    type="text"
-                                                    value={aboutHeroTitleAr}
-                                                    onChange={(e) => setAboutHeroTitleAr(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
-                                                />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">{t('admin.subtitle')}</label>
-                                                <textarea
-                                                    rows={3}
-                                                    value={aboutHeroSubtitleAr}
-                                                    onChange={(e) => setAboutHeroSubtitleAr(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
-                                                />
-                                            </div>
+                                        <div>
+                                            <label className="text-xs font-bold text-slate-500 uppercase">{t('admin.linkUrl')}</label>
+                                            <input type="text" value={middleBanner2Link} onChange={(e) => setMiddleBanner2Link(e.target.value)} className="w-full mt-1 px-4 py-2.5 rounded-xl border border-slate-200/80 dark:border-white/10 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white outline-none text-sm" placeholder="/categories" />
                                         </div>
                                     </div>
 
-                                    {/* Hero Image */}
-                                    <div className="pt-4">
-                                        <div className="space-y-2">
-                                            <label className="text-sm font-bold text-text-main dark:text-white">
-                                                {t('admin.heroImage')}
-                                                <span className="block text-[10px] text-primary/70 font-normal">
-                                                    {t('admin.recommendedResolution')}: {t('admin.resHero')}
-                                                </span>
-                                            </label>
-                                            <div className="flex gap-4 items-start">
-                                                <div className="flex-1 space-y-2">
-                                                    <input
-                                                        type="text"
-                                                        value={aboutHeroImage}
-                                                        onChange={(e) => setAboutHeroImage(e.target.value)}
-                                                        placeholder="https://example.com/image.jpg"
-                                                        className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
-                                                    />
-                                                </div>
-                                                <div className="w-32 aspect-video rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] overflow-hidden bg-background-light dark:bg-gray-800 flex items-center justify-center">
-                                                    {aboutHeroImage ? (
-                                                        <img 
-                                                            src={aboutHeroImage} 
-                                                            alt="Hero Preview" 
-                                                            className="w-full h-full object-cover"
-                                                            onError={(e) => {
-                                                                (e.target as HTMLImageElement).src = 'https://via.placeholder.com/400x225?text=Invalid';
-                                                            }}
-                                                        />
-                                                    ) : (
-                                                        <MdImageNotSupported className="text-2xl text-text-sub/30" />
-                                                    )}
-                                                </div>
-                                            </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div className="space-y-3">
+                                            <span className="inline-block px-2.5 py-1 bg-slate-100 dark:bg-slate-800 text-xs font-bold rounded-md text-slate-700 dark:text-slate-300">🇬🇧 English</span>
+                                            <input type="text" value={middleBanner2Title} onChange={(e) => setMiddleBanner2Title(e.target.value)} placeholder="Title" className="w-full px-4 py-2.5 rounded-xl border border-slate-200/80 dark:border-white/10 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white outline-none text-sm" />
+                                            <input type="text" value={middleBanner2Subtitle} onChange={(e) => setMiddleBanner2Subtitle(e.target.value)} placeholder="Subtitle" className="w-full px-4 py-2.5 rounded-xl border border-slate-200/80 dark:border-white/10 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white outline-none text-sm" />
+                                            <input type="text" value={middleBanner2ButtonText} onChange={(e) => setMiddleBanner2ButtonText(e.target.value)} placeholder="Button Text" className="w-full px-4 py-2.5 rounded-xl border border-slate-200/80 dark:border-white/10 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white outline-none text-sm" />
+                                        </div>
+                                        <div className="space-y-3" dir="rtl">
+                                            <span className="inline-block px-2.5 py-1 bg-slate-100 dark:bg-slate-800 text-xs font-bold rounded-md text-slate-700 dark:text-slate-300">🇸🇦 العربية</span>
+                                            <input type="text" value={middleBanner2TitleAr} onChange={(e) => setMiddleBanner2TitleAr(e.target.value)} placeholder="العنوان" className="w-full px-4 py-2.5 rounded-xl border border-slate-200/80 dark:border-white/10 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white outline-none text-sm" />
+                                            <input type="text" value={middleBanner2SubtitleAr} onChange={(e) => setMiddleBanner2SubtitleAr(e.target.value)} placeholder="العنوان الفرعي" className="w-full px-4 py-2.5 rounded-xl border border-slate-200/80 dark:border-white/10 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white outline-none text-sm" />
+                                            <input type="text" value={middleBanner2ButtonTextAr} onChange={(e) => setMiddleBanner2ButtonTextAr(e.target.value)} placeholder="نص الزر" className="w-full px-4 py-2.5 rounded-xl border border-slate-200/80 dark:border-white/10 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white outline-none text-sm" />
                                         </div>
                                     </div>
                                 </div>
-
-                                {/* Narrative Section */}
-                                <div className="space-y-6 border-t border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] pt-8">
-                                    <div className="flex items-center gap-2 mb-6">
-                                        <MdAssignmentReturn className="text-primary text-xl" />
-                                        <h3 className="font-bold text-text-main dark:text-white text-lg">{t('admin.narrativeSection')}</h3>
-                                    </div>
-
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                        <div className="space-y-4">
-                                            <div className="flex items-center gap-2 mb-2">
-                                                <span className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-[10px]">EN</span>
-                                                <span className="text-sm font-bold text-text-main dark:text-white">{t('admin.englishContent')}</span>
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">{t('admin.foundedText')}</label>
-                                                <input
-                                                    type="text"
-                                                    value={aboutNarrativeFounded}
-                                                    onChange={(e) => setAboutNarrativeFounded(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
-                                                />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">{t('admin.title')}</label>
-                                                <input
-                                                    type="text"
-                                                    value={aboutNarrativeTitle}
-                                                    onChange={(e) => setAboutNarrativeTitle(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
-                                                />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">{t('admin.description')} 1</label>
-                                                <textarea
-                                                    rows={4}
-                                                    value={aboutNarrativeDesc1}
-                                                    onChange={(e) => setAboutNarrativeDesc1(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
-                                                />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">{t('admin.description')} 2</label>
-                                                <textarea
-                                                    rows={4}
-                                                    value={aboutNarrativeDesc2}
-                                                    onChange={(e) => setAboutNarrativeDesc2(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
-                                                />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">{t('admin.quote')}</label>
-                                                <input
-                                                    type="text"
-                                                    value={aboutNarrativeQuote}
-                                                    onChange={(e) => setAboutNarrativeQuote(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
-                                                />
-                                            </div>
-                                        </div>
-                                        <div className="space-y-4" dir="rtl">
-                                            <div className="flex items-center gap-2 mb-2">
-                                                <span className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-[10px]">AR</span>
-                                                <span className="text-sm font-bold text-text-main dark:text-white">{t('admin.arabicContent')}</span>
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">{t('admin.foundedText')}</label>
-                                                <input
-                                                    type="text"
-                                                    value={aboutNarrativeFoundedAr}
-                                                    onChange={(e) => setAboutNarrativeFoundedAr(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
-                                                />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">{t('admin.title')}</label>
-                                                <input
-                                                    type="text"
-                                                    value={aboutNarrativeTitleAr}
-                                                    onChange={(e) => setAboutNarrativeTitleAr(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
-                                                />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">{t('admin.description')} 1</label>
-                                                <textarea
-                                                    rows={4}
-                                                    value={aboutNarrativeDesc1Ar}
-                                                    onChange={(e) => setAboutNarrativeDesc1Ar(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
-                                                />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">{t('admin.description')} 2</label>
-                                                <textarea
-                                                    rows={4}
-                                                    value={aboutNarrativeDesc2Ar}
-                                                    onChange={(e) => setAboutNarrativeDesc2Ar(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
-                                                />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">{t('admin.quote')}</label>
-                                                <input
-                                                    type="text"
-                                                    value={aboutNarrativeQuoteAr}
-                                                    onChange={(e) => setAboutNarrativeQuoteAr(e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {/* Narrative Image */}
-                                    <div className="pt-4">
-                                        <div className="space-y-2">
-                                            <label className="text-sm font-bold text-text-main dark:text-white">
-                                                {t('admin.narrativeImage')}
-                                                <span className="block text-[10px] text-primary/70 font-normal">
-                                                    {t('admin.recommendedResolution')}: {t('admin.res3_2')}
-                                                </span>
-                                            </label>
-                                            <div className="flex gap-4 items-start">
-                                                <div className="flex-1 space-y-2">
-                                                    <input
-                                                        type="text"
-                                                        value={aboutNarrativeImage}
-                                                        onChange={(e) => setAboutNarrativeImage(e.target.value)}
-                                                        placeholder="https://example.com/image.jpg"
-                                                        className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
-                                                    />
-                                                </div>
-                                                <div className="w-32 aspect-video rounded-xl border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] overflow-hidden bg-background-light dark:bg-gray-800 flex items-center justify-center">
-                                                    {aboutNarrativeImage ? (
-                                                        <img 
-                                                            src={aboutNarrativeImage} 
-                                                            alt="Narrative Preview" 
-                                                            className="w-full h-full object-cover"
-                                                            onError={(e) => {
-                                                                (e.target as HTMLImageElement).src = 'https://via.placeholder.com/400x225?text=Invalid';
-                                                            }}
-                                                        />
-                                                    ) : (
-                                                        <MdImageNotSupported className="text-2xl text-text-sub/30" />
-                                                    )}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="flex justify-end pt-4">
-                                    <button
-                                        type="submit"
-                                        disabled={isSubmittingSettings}
-                                        className="px-8 bg-primary text-white py-3 rounded-xl font-bold hover:bg-primary/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed min-w-[200px]"
-                                    >
-                                        {isSubmittingSettings ? (
-                                            <span className="flex items-center justify-center gap-2">
-                                                <span className="animate-spin h-5 w-5 border-2 border-white/30 border-t-white rounded-full" />
-                                                {t('admin.saving')}
-                                            </span>
-                                        ) : (
-                                            t('admin.saveChanges')
-                                        )}
-                                    </button>
-                                </div>
-                            </form>
+                            </div>
                         </div>
-                    </div>
+                    )}
+
+                    {/* TAB 4: SHIPPING & POLICIES */}
+                    {activeTab === "shipping" && (
+                        <div className="space-y-8 animate-in fade-in-50 duration-200">
+                            {/* Shipping & Delivery Timelines */}
+                            <div className="bg-white dark:bg-[#0f172a] rounded-2xl border border-slate-200/80 dark:border-white/10 p-6 md:p-8 shadow-xs">
+                                <div className="mb-6">
+                                    <h3 className="text-xl font-bold text-slate-900 dark:text-white">
+                                        {t('admin.shippingSection') || "Shipping & Delivery Policy"}
+                                    </h3>
+                                    <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                                        {t('admin.shippingSectionDesc') || "Configure customer-facing shipping timeline details and inspection instructions."}
+                                    </p>
+                                </div>
+
+                                <div className="space-y-6">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div>
+                                            <label className="text-xs font-bold text-slate-500 uppercase">{t('admin.standardShippingTime') || "Standard Shipping Timeline"}</label>
+                                            <input type="text" value={standardShippingTime} onChange={(e) => setStandardShippingTime(e.target.value)} className="w-full mt-1 px-4 py-2.5 rounded-xl border border-slate-200/80 dark:border-white/10 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white outline-none text-sm" placeholder="1-3 Business Days" />
+                                        </div>
+                                        <div>
+                                            <label className="text-xs font-bold text-slate-500 uppercase">{t('admin.expressShippingTime') || "Express Shipping Timeline"}</label>
+                                            <input type="text" value={expressShippingTime} onChange={(e) => setExpressShippingTime(e.target.value)} className="w-full mt-1 px-4 py-2.5 rounded-xl border border-slate-200/80 dark:border-white/10 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white outline-none text-sm" placeholder="Within 24 Hours" />
+                                        </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div className="space-y-4">
+                                            <span className="inline-block px-2.5 py-1 bg-slate-100 dark:bg-slate-800 text-xs font-bold rounded-md text-slate-700 dark:text-slate-300">🇬🇧 English</span>
+                                            <div>
+                                                <label className="text-xs font-bold text-slate-500 uppercase">{t('admin.shippingTitle') || "Policy Title"}</label>
+                                                <input type="text" value={shippingTitle} onChange={(e) => setShippingTitle(e.target.value)} className="w-full mt-1 px-4 py-2.5 rounded-xl border border-slate-200/80 dark:border-white/10 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white outline-none text-sm" />
+                                            </div>
+                                            <div>
+                                                <label className="text-xs font-bold text-slate-500 uppercase">{t('admin.shippingDesc') || "Description"}</label>
+                                                <textarea rows={3} value={shippingDesc} onChange={(e) => setShippingDesc(e.target.value)} className="w-full mt-1 px-4 py-2.5 rounded-xl border border-slate-200/80 dark:border-white/10 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white outline-none text-sm resize-none" />
+                                            </div>
+                                        </div>
+
+                                        <div className="space-y-4" dir="rtl">
+                                            <span className="inline-block px-2.5 py-1 bg-slate-100 dark:bg-slate-800 text-xs font-bold rounded-md text-slate-700 dark:text-slate-300">🇸🇦 العربية</span>
+                                            <div>
+                                                <label className="text-xs font-bold text-slate-500 uppercase">{t('admin.shippingTitle') || "عنوان السياسة"}</label>
+                                                <input type="text" value={shippingTitleAr} onChange={(e) => setShippingTitleAr(e.target.value)} className="w-full mt-1 px-4 py-2.5 rounded-xl border border-slate-200/80 dark:border-white/10 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white outline-none text-sm" />
+                                            </div>
+                                            <div>
+                                                <label className="text-xs font-bold text-slate-500 uppercase">{t('admin.shippingDesc') || "الوصف"}</label>
+                                                <textarea rows={3} value={shippingDescAr} onChange={(e) => setShippingDescAr(e.target.value)} className="w-full mt-1 px-4 py-2.5 rounded-xl border border-slate-200/80 dark:border-white/10 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white outline-none text-sm resize-none" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Returns Policy */}
+                            <div className="bg-white dark:bg-[#0f172a] rounded-2xl border border-slate-200/80 dark:border-white/10 p-6 md:p-8 shadow-xs">
+                                <div className="mb-6">
+                                    <h3 className="text-xl font-bold text-slate-900 dark:text-white">
+                                        {t('admin.returnsSection') || "Quality & Claims Policy"}
+                                    </h3>
+                                    <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                                        {t('admin.returnsSectionDesc') || "Explain terms for wholesale cases, packaging standards, and claim procedures."}
+                                    </p>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="space-y-4">
+                                        <span className="inline-block px-2.5 py-1 bg-slate-100 dark:bg-slate-800 text-xs font-bold rounded-md text-slate-700 dark:text-slate-300">🇬🇧 English</span>
+                                        <div>
+                                            <label className="text-xs font-bold text-slate-500 uppercase">Heading</label>
+                                            <input type="text" value={returnsTitle} onChange={(e) => setReturnsTitle(e.target.value)} className="w-full mt-1 px-4 py-2.5 rounded-xl border border-slate-200/80 dark:border-white/10 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white outline-none text-sm" />
+                                        </div>
+                                        <div>
+                                            <label className="text-xs font-bold text-slate-500 uppercase">Policy Content</label>
+                                            <textarea rows={4} value={returnsDesc} onChange={(e) => setReturnsDesc(e.target.value)} className="w-full mt-1 px-4 py-2.5 rounded-xl border border-slate-200/80 dark:border-white/10 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white outline-none text-sm resize-none" />
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-4" dir="rtl">
+                                        <span className="inline-block px-2.5 py-1 bg-slate-100 dark:bg-slate-800 text-xs font-bold rounded-md text-slate-700 dark:text-slate-300">🇸🇦 العربية</span>
+                                        <div>
+                                            <label className="text-xs font-bold text-slate-500 uppercase">العنوان</label>
+                                            <input type="text" value={returnsTitleAr} onChange={(e) => setReturnsTitleAr(e.target.value)} className="w-full mt-1 px-4 py-2.5 rounded-xl border border-slate-200/80 dark:border-white/10 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white outline-none text-sm" />
+                                        </div>
+                                        <div>
+                                            <label className="text-xs font-bold text-slate-500 uppercase">نص السياسة</label>
+                                            <textarea rows={4} value={returnsDescAr} onChange={(e) => setReturnsDescAr(e.target.value)} className="w-full mt-1 px-4 py-2.5 rounded-xl border border-slate-200/80 dark:border-white/10 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white outline-none text-sm resize-none" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* TAB 5: ABOUT US STORY */}
+                    {activeTab === "about" && (
+                        <div className="space-y-8 animate-in fade-in-50 duration-200">
+                            {/* Hero Header */}
+                            <div className="bg-white dark:bg-[#0f172a] rounded-2xl border border-slate-200/80 dark:border-white/10 p-6 md:p-8 shadow-xs">
+                                <div className="mb-6">
+                                    <h3 className="text-xl font-bold text-slate-900 dark:text-white">
+                                        {t('admin.aboutHero') || "About Us Hero Header"}
+                                    </h3>
+                                    <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                                        {t('admin.aboutHeroDesc') || "Top banner text and background photo for the /about-us page."}
+                                    </p>
+                                </div>
+
+                                <div className="space-y-6">
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-bold text-slate-700 dark:text-slate-200">{t('admin.imageUrl')}</label>
+                                        <input type="text" value={aboutHeroImage} onChange={(e) => setAboutHeroImage(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-slate-200/80 dark:border-white/10 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white outline-none text-sm" placeholder="https://..." />
+                                    </div>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div className="space-y-3">
+                                            <span className="inline-block px-2.5 py-1 bg-slate-100 dark:bg-slate-800 text-xs font-bold rounded-md text-slate-700 dark:text-slate-300">🇬🇧 English</span>
+                                            <input type="text" value={aboutHeroTitle} onChange={(e) => setAboutHeroTitle(e.target.value)} placeholder="Hero Title (e.g. Our Story)" className="w-full px-4 py-2.5 rounded-xl border border-slate-200/80 dark:border-white/10 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white outline-none text-sm" />
+                                            <input type="text" value={aboutHeroSubtitle} onChange={(e) => setAboutHeroSubtitle(e.target.value)} placeholder="Hero Subtitle" className="w-full px-4 py-2.5 rounded-xl border border-slate-200/80 dark:border-white/10 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white outline-none text-sm" />
+                                        </div>
+                                        <div className="space-y-3" dir="rtl">
+                                            <span className="inline-block px-2.5 py-1 bg-slate-100 dark:bg-slate-800 text-xs font-bold rounded-md text-slate-700 dark:text-slate-300">🇸🇦 العربية</span>
+                                            <input type="text" value={aboutHeroTitleAr} onChange={(e) => setAboutHeroTitleAr(e.target.value)} placeholder="عنوان البانر (مثال: قصتنا)" className="w-full px-4 py-2.5 rounded-xl border border-slate-200/80 dark:border-white/10 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white outline-none text-sm" />
+                                            <input type="text" value={aboutHeroSubtitleAr} onChange={(e) => setAboutHeroSubtitleAr(e.target.value)} placeholder="العنوان الفرعي" className="w-full px-4 py-2.5 rounded-xl border border-slate-200/80 dark:border-white/10 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white outline-none text-sm" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Narrative */}
+                            <div className="bg-white dark:bg-[#0f172a] rounded-2xl border border-slate-200/80 dark:border-white/10 p-6 md:p-8 shadow-xs">
+                                <div className="mb-6">
+                                    <h3 className="text-xl font-bold text-slate-900 dark:text-white">
+                                        {t('admin.aboutNarrative') || "Company Story & Narrative"}
+                                    </h3>
+                                    <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                                        {t('admin.aboutNarrativeDesc') || "Detailed mission paragraphs, founding badge, and brand motto."}
+                                    </p>
+                                </div>
+
+                                <div className="space-y-6">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div className="space-y-4">
+                                            <span className="inline-block px-2.5 py-1 bg-slate-100 dark:bg-slate-800 text-xs font-bold rounded-md text-slate-700 dark:text-slate-300">🇬🇧 English</span>
+                                            <div>
+                                                <label className="text-xs font-bold text-slate-500 uppercase">Badge Text</label>
+                                                <input type="text" value={aboutNarrativeFounded} onChange={(e) => setAboutNarrativeFounded(e.target.value)} className="w-full mt-1 px-4 py-2.5 rounded-xl border border-slate-200/80 dark:border-white/10 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white outline-none text-sm" />
+                                            </div>
+                                            <div>
+                                                <label className="text-xs font-bold text-slate-500 uppercase">Section Title</label>
+                                                <input type="text" value={aboutNarrativeTitle} onChange={(e) => setAboutNarrativeTitle(e.target.value)} className="w-full mt-1 px-4 py-2.5 rounded-xl border border-slate-200/80 dark:border-white/10 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white outline-none text-sm" />
+                                            </div>
+                                            <div>
+                                                <label className="text-xs font-bold text-slate-500 uppercase">Paragraph 1</label>
+                                                <textarea rows={3} value={aboutNarrativeDesc1} onChange={(e) => setAboutNarrativeDesc1(e.target.value)} className="w-full mt-1 px-4 py-2.5 rounded-xl border border-slate-200/80 dark:border-white/10 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white outline-none text-sm resize-none" />
+                                            </div>
+                                            <div>
+                                                <label className="text-xs font-bold text-slate-500 uppercase">Paragraph 2</label>
+                                                <textarea rows={3} value={aboutNarrativeDesc2} onChange={(e) => setAboutNarrativeDesc2(e.target.value)} className="w-full mt-1 px-4 py-2.5 rounded-xl border border-slate-200/80 dark:border-white/10 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white outline-none text-sm resize-none" />
+                                            </div>
+                                            <div>
+                                                <label className="text-xs font-bold text-slate-500 uppercase">Brand Quote / Motto</label>
+                                                <input type="text" value={aboutNarrativeQuote} onChange={(e) => setAboutNarrativeQuote(e.target.value)} className="w-full mt-1 px-4 py-2.5 rounded-xl border border-slate-200/80 dark:border-white/10 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white outline-none text-sm" />
+                                            </div>
+                                        </div>
+
+                                        <div className="space-y-4" dir="rtl">
+                                            <span className="inline-block px-2.5 py-1 bg-slate-100 dark:bg-slate-800 text-xs font-bold rounded-md text-slate-700 dark:text-slate-300">🇸🇦 العربية</span>
+                                            <div>
+                                                <label className="text-xs font-bold text-slate-500 uppercase">نص الشارة</label>
+                                                <input type="text" value={aboutNarrativeFoundedAr} onChange={(e) => setAboutNarrativeFoundedAr(e.target.value)} className="w-full mt-1 px-4 py-2.5 rounded-xl border border-slate-200/80 dark:border-white/10 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white outline-none text-sm" />
+                                            </div>
+                                            <div>
+                                                <label className="text-xs font-bold text-slate-500 uppercase">عنوان القسم</label>
+                                                <input type="text" value={aboutNarrativeTitleAr} onChange={(e) => setAboutNarrativeTitleAr(e.target.value)} className="w-full mt-1 px-4 py-2.5 rounded-xl border border-slate-200/80 dark:border-white/10 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white outline-none text-sm" />
+                                            </div>
+                                            <div>
+                                                <label className="text-xs font-bold text-slate-500 uppercase">الفقرة الأولى</label>
+                                                <textarea rows={3} value={aboutNarrativeDesc1Ar} onChange={(e) => setAboutNarrativeDesc1Ar(e.target.value)} className="w-full mt-1 px-4 py-2.5 rounded-xl border border-slate-200/80 dark:border-white/10 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white outline-none text-sm resize-none" />
+                                            </div>
+                                            <div>
+                                                <label className="text-xs font-bold text-slate-500 uppercase">الفقرة الثانية</label>
+                                                <textarea rows={3} value={aboutNarrativeDesc2Ar} onChange={(e) => setAboutNarrativeDesc2Ar(e.target.value)} className="w-full mt-1 px-4 py-2.5 rounded-xl border border-slate-200/80 dark:border-white/10 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white outline-none text-sm resize-none" />
+                                            </div>
+                                            <div>
+                                                <label className="text-xs font-bold text-slate-500 uppercase">الاقتباس أو الشعار</label>
+                                                <input type="text" value={aboutNarrativeQuoteAr} onChange={(e) => setAboutNarrativeQuoteAr(e.target.value)} className="w-full mt-1 px-4 py-2.5 rounded-xl border border-slate-200/80 dark:border-white/10 bg-slate-50 dark:bg-gray-800 text-slate-900 dark:text-white outline-none text-sm" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

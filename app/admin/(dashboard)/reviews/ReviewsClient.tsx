@@ -127,30 +127,30 @@ export default function ReviewsClient() {
 
                     {/* Stats Cards */}
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                        <div className="bg-white dark:bg-surface-dark p-5 rounded-2xl border border-black/[0.04] dark:border-white/[0.04] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.02)] transition-all duration-300 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.04)] flex flex-col gap-1">
-                            <p className="text-text-sub dark:text-gray-400 text-[11px] font-bold uppercase tracking-widest">{t('admin.totalReviews') || "Total Reviews"}</p>
-                            <p className="text-2xl md:text-3xl font-bold tracking-tight text-text-main dark:text-white">{reviews.length}</p>
+                        <div className="bg-white dark:bg-[#0f172a] p-5 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-xs transition-all duration-300 hover:shadow-md flex flex-col gap-1">
+                            <p className="text-slate-500 dark:text-slate-400 text-[11px] font-bold uppercase tracking-widest">{t('admin.totalReviews') || "Total Reviews"}</p>
+                            <p className="text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">{reviews.length}</p>
                         </div>
-                        <div className="bg-white dark:bg-surface-dark p-5 rounded-2xl border border-black/[0.04] dark:border-white/[0.04] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.02)] transition-all duration-300 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.04)] flex flex-col gap-1">
-                            <p className="text-text-sub dark:text-gray-400 text-[11px] font-bold uppercase tracking-widest">{t('admin.pendingReviews') || "Pending"}</p>
-                            <p className="text-2xl md:text-3xl font-bold tracking-tight text-amber-500">{reviews.filter(r => !r.isApproved).length}</p>
+                        <div className="bg-white dark:bg-[#0f172a] p-5 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-xs transition-all duration-300 hover:shadow-md flex flex-col gap-1">
+                            <p className="text-slate-500 dark:text-slate-400 text-[11px] font-bold uppercase tracking-widest">{t('admin.pendingReviews') || "Pending"}</p>
+                            <p className="text-2xl md:text-3xl font-extrabold tracking-tight text-amber-500">{reviews.filter(r => !r.isApproved).length}</p>
                         </div>
-                        <div className="bg-white dark:bg-surface-dark p-5 rounded-2xl border border-black/[0.04] dark:border-white/[0.04] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.02)] transition-all duration-300 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.04)] flex flex-col gap-1">
-                            <p className="text-text-sub dark:text-gray-400 text-[11px] font-bold uppercase tracking-widest">{t('admin.approvedReviews') || "Approved"}</p>
-                            <p className="text-2xl md:text-3xl font-bold tracking-tight text-emerald-500">{reviews.filter(r => r.isApproved).length}</p>
+                        <div className="bg-white dark:bg-[#0f172a] p-5 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-xs transition-all duration-300 hover:shadow-md flex flex-col gap-1">
+                            <p className="text-slate-500 dark:text-slate-400 text-[11px] font-bold uppercase tracking-widest">{t('admin.approvedReviews') || "Approved"}</p>
+                            <p className="text-2xl md:text-3xl font-extrabold tracking-tight text-[#2E7D32] dark:text-[#4ade80]">{reviews.filter(r => r.isApproved).length}</p>
                         </div>
                     </div>
 
                     {/* Filters & Table Container */}
-                    <div className="bg-surface-light dark:bg-surface-dark border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] rounded-2xl shadow-sm">
+                    <div className="bg-white dark:bg-[#0f172a] border border-slate-200/80 dark:border-white/10 rounded-2xl shadow-xs overflow-hidden">
                         {/* Toolbar */}
-                        <div className="p-5 border-b border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] flex flex-col sm:flex-row gap-4 sm:items-center justify-between">
+                        <div className="p-5 border-b border-slate-200/80 dark:border-white/10 flex flex-col sm:flex-row gap-4 sm:items-center justify-between">
                             <div className="relative w-full sm:w-80">
                                 <span className={`absolute inset-y-0 ${dir === 'rtl' ? 'end-0 pe-3' : 'start-0 ps-3'} flex items-center pointer-events-none`}>
-                                    <MdSearch className="text-text-sub dark:text-gray-400 text-[20px]" />
+                                    <MdSearch className="text-slate-400 text-[20px]" />
                                 </span>
                                 <input
-                                    className={`block w-full ${dir === 'rtl' ? 'pe-10 ps-3' : 'ps-10 pe-3'} py-2.5 border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] rounded-xl bg-background-light dark:bg-gray-800 text-sm text-text-main dark:text-white placeholder-text-sub dark:placeholder-gray-500 focus:ring-1 focus:ring-primary focus:border-primary transition-all outline-none`}
+                                    className={`block w-full ${dir === 'rtl' ? 'pe-10 ps-3' : 'ps-10 pe-3'} py-2.5 border border-slate-200/80 dark:border-white/10 rounded-xl bg-slate-50 dark:bg-gray-800 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-gray-500 focus:ring-1 focus:ring-[#072835] focus:border-[#072835] transition-all outline-none`}
                                     placeholder={t('admin.searchPlaceholder') || "Search..."}
                                     type="text"
                                     value={searchQuery}
@@ -160,7 +160,7 @@ export default function ReviewsClient() {
                             
                             <div className="relative w-full sm:w-48">
                                 <select
-                                    className={`appearance-none w-full ${dir === 'rtl' ? 'pe-3 ps-10' : 'ps-3 pe-10'} py-2.5 bg-background-light dark:bg-gray-800 border border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] rounded-xl text-sm font-medium text-text-main dark:text-white focus:ring-1 focus:ring-primary focus:border-primary cursor-pointer outline-none`}
+                                    className={`appearance-none w-full ${dir === 'rtl' ? 'pe-3 ps-10' : 'ps-3 pe-10'} py-2.5 bg-slate-50 dark:bg-gray-800 border border-slate-200/80 dark:border-white/10 rounded-xl text-sm font-medium text-slate-900 dark:text-white focus:ring-1 focus:ring-[#072835] focus:border-[#072835] cursor-pointer outline-none`}
                                     value={statusFilter}
                                     onChange={(e) => setStatusFilter(e.target.value)}
                                 >
@@ -168,7 +168,7 @@ export default function ReviewsClient() {
                                     <option value="APPROVED">{t('admin.approvedReviews') || "Approved"}</option>
                                     <option value="PENDING">{t('admin.pendingReviews') || "Pending"}</option>
                                 </select>
-                                <div className={`absolute inset-y-0 ${dir === 'rtl' ? 'start-0 ps-2' : 'end-0 pe-2'} flex items-center pointer-events-none text-text-sub dark:text-gray-400`}>
+                                <div className={`absolute inset-y-0 ${dir === 'rtl' ? 'start-0 ps-2' : 'end-0 pe-2'} flex items-center pointer-events-none text-slate-400`}>
                                     <MdExpandMore className="text-[20px]" />
                                 </div>
                             </div>
@@ -177,16 +177,16 @@ export default function ReviewsClient() {
                         <div className="overflow-x-auto">
                             {isLoading ? (
                                 <div className="flex items-center justify-center py-12">
-                                    <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+                                    <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#072835] border-t-transparent" />
                                 </div>
                             ) : filteredReviews.length === 0 ? (
-                                <div className="flex flex-col items-center justify-center py-12 text-center text-text-sub dark:text-gray-400">
+                                <div className="flex flex-col items-center justify-center py-12 text-center text-slate-400">
                                     <p>{t("admin.noReviewsFound") || "No reviews found"}</p>
                                 </div>
                             ) : (
                                 <table className={`w-full min-w-[800px] border-collapse ${dir === 'rtl' ? 'text-end' : 'text-start'}`}>
                                     <thead>
-                                        <tr className="bg-background-light dark:bg-gray-800/50 border-b border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] text-[10px] sm:text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">
+                                        <tr className="bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200/80 dark:border-white/10 text-[10px] sm:text-xs font-extrabold text-slate-700 dark:text-slate-200 uppercase tracking-wider">
                                             <th className="p-3 sm:p-5">{t("admin.product")}</th>
                                             <th className="p-3 sm:p-5">{t("admin.reviewerName")}</th>
                                             <th className="p-3 sm:p-5">{t("admin.rating")}</th>
@@ -195,7 +195,7 @@ export default function ReviewsClient() {
                                             <th className={`p-3 sm:p-5 ${dir === 'rtl' ? 'text-start' : 'text-end'}`}>{t("admin.actions")}</th>
                                         </tr>
                                     </thead>
-                                    <tbody className="divide-y divide-black/[0.04] dark:divide-white/[0.04] dark:divide-gray-700">
+                                    <tbody className="divide-y divide-slate-100 dark:divide-white/5">
                                         {filteredReviews.map((review) => (
                                             <tr key={review.id} className="group hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
                                                 <td className="p-3 sm:p-5">

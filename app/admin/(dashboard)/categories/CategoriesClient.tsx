@@ -305,7 +305,7 @@ export default function CategoriesClient({ categories, brands }: { categories: C
                             {canManage && (
                                 <button
                                     onClick={handleAdd}
-                                    className="w-full md:w-auto bg-primary text-white px-6 py-3 rounded-xl font-bold hover:bg-primary/90 transition-all flex items-center justify-center gap-2 whitespace-nowrap"
+                                    className="w-full md:w-auto bg-[#072835] hover:bg-[#0c4054] text-white px-6 py-3 rounded-xl font-bold transition-all shadow-xs flex items-center justify-center gap-2 whitespace-nowrap"
                                 >
                                     <MdAdd className="text-xl" />
                                     {t('admin.addCategory')}
@@ -334,12 +334,12 @@ export default function CategoriesClient({ categories, brands }: { categories: C
                         {filteredCategories.map((category) => (
                             <div 
                                 key={category.id} 
-                                className={`bg-surface-light dark:bg-surface-dark rounded-xl border ${selectedIds.has(category.id) ? 'border-primary' : 'border-border-color/50 dark:border-white/[0.04] shadow-sm'} hover:shadow-lg transition-all overflow-hidden group relative`}
+                                className={`bg-surface-light dark:bg-surface-dark rounded-xl border ${selectedIds.has(category.id) ? 'border-[#072835]' : 'border-slate-200/80 dark:border-white/10 shadow-xs'} hover:shadow-md transition-all overflow-hidden group relative`}
                             >
                                 {/* Selection Checkbox */}
                                 <button
                                     onClick={() => toggleSelect(category.id)}
-                                    className={`absolute top-4 start-4 z-10 w-6 h-6 rounded-md border flex items-center justify-center transition-all ${selectedIds.has(category.id) ? 'bg-primary border-primary text-white' : 'bg-white/80 dark:bg-black/20 border-white/50 text-transparent hover:border-primary'}`}
+                                    className={`absolute top-4 start-4 z-10 w-6 h-6 rounded-md border flex items-center justify-center transition-all ${selectedIds.has(category.id) ? 'bg-[#072835] border-[#072835] text-white' : 'bg-white/80 dark:bg-black/20 border-white/50 text-transparent hover:border-[#072835]'}`}
                                 >
                                     <MdCheck className="text-[18px]" />
                                 </button>
@@ -357,16 +357,16 @@ export default function CategoriesClient({ categories, brands }: { categories: C
                                 </div>
                                 <div className="p-6">
                                     <h3 className="text-lg font-bold text-text-main dark:text-white mb-2">{category.name}</h3>
-                                    <p className="mb-2 text-xs font-bold uppercase tracking-wider text-primary">
+                                    <p className="mb-2 text-xs font-bold uppercase tracking-wider text-[#072835] dark:text-[#E5B54A]">
                                         {category.brand?.name || 'Zad Land'}
                                     </p>
                                     <p className="text-sm text-text-sub dark:text-gray-400 line-clamp-2 mb-4">
                                         {category.description || t('admin.noDescription')}
                                     </p>
-                                    <div className="w-full flex items-center justify-between pt-4 border-t border-border-color/30 dark:border-white/[0.04]">
+                                    <div className="w-full flex items-center justify-between pt-4 border-t border-slate-100 dark:border-white/5">
                                         <button 
                                             onClick={() => setRelatedModalInfo({ isOpen: true, type: "products", entityId: category.id, entityName: category.name })}
-                                            className="cursor-pointer bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-bold hover:bg-primary/20 transition-colors"
+                                            className="cursor-pointer bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 px-3 py-1 rounded-full text-xs font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"
                                         >
                                             {category._count.products} {t('admin.products')}
                                         </button>

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { 
     MdDashboard, 
     MdShoppingBag, 
@@ -43,25 +44,52 @@ interface NavItem {
     superAdminOnly?: boolean;
 }
 
+interface NavSection {
+    title: string;
+    items: NavItem[];
+}
+
 export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
     const pathname = usePathname();
     const { data: session } = useSession();
-    const { t, dir } = useLanguage();
+    const { t, dir, language } = useLanguage();
     const isSuperAdmin = session?.user?.role === 'SUPER_ADMIN';
 
-    const navItems: NavItem[] = [
-        { href: "/admin/dashboard", icon: MdDashboard, label: t('admin.dashboard') },
-        { href: "/admin/main-categories", icon: MdAccountTree, label: t("admin.mainCategories"), superAdminOnly: true },
-        { href: "/admin/brands", icon: MdStorefront, label: t('admin.brands'), permission: "canManageBrands" },
-        { href: "/admin/products", icon: MdShoppingBag, label: t('admin.products'), permission: "canManageProducts" },
-        { href: "/admin/categories", icon: MdCategory, label: t('admin.categories'), permission: "canManageCategories" },
-        { href: "/admin/banners", icon: MdViewCarousel, label: t('admin.banners'), permission: "canManageBanners" },
-        { href: "/admin/orders", icon: MdInventory2, label: t('admin.orders'), permission: "canManageOrders" },
-        { href: "/admin/promocodes", icon: MdLocalOffer, label: t('admin.promoCodes'), permission: "canManagePromoCodes" },
-        { href: "/admin/reviews", icon: MdStar, label: t('admin.reviews'), permission: "canManageReviews" },
-        { href: "/admin/site-content", icon: MdEditNote, label: t('admin.siteContent'), superAdminOnly: true },
-        { href: "/admin/users", icon: MdGroup, label: t('admin.users'), superAdminOnly: true },
-        { href: "/admin/settings", icon: MdSettings, label: t('admin.settings'), superAdminOnly: true },
+    const isArabic = language === 'ar';
+
+    const navSections: NavSection[] = [
+        {
+            title: t('admin.overview') || "Overview",
+            items: [
+                { href: "/admin/dashboard", icon: MdDashboard, label: t('admin.dashboard') }
+            ]
+        },
+        {
+            title: t('admin.catalogManagement') || "Catalog Management",
+            items: [
+                { href: "/admin/main-categories", icon: MdAccountTree, label: t("admin.mainCategories"), superAdminOnly: true },
+                { href: "/admin/categories", icon: MdCategory, label: t('admin.categories'), permission: "canManageCategories" },
+                { href: "/admin/brands", icon: MdStorefront, label: t('admin.brands'), permission: "canManageBrands" },
+                { href: "/admin/products", icon: MdShoppingBag, label: t('admin.products'), permission: "canManageProducts" }
+            ]
+        },
+        {
+            title: t('admin.salesAndCustomers') || "Sales & Customers",
+            items: [
+                { href: "/admin/orders", icon: MdInventory2, label: t('admin.orders'), permission: "canManageOrders" },
+                { href: "/admin/promocodes", icon: MdLocalOffer, label: t('admin.promoCodes'), permission: "canManagePromoCodes" },
+                { href: "/admin/reviews", icon: MdStar, label: t('admin.reviews'), permission: "canManageReviews" }
+            ]
+        },
+        {
+            title: t('admin.storeAndSystem') || "Store & System",
+            items: [
+                { href: "/admin/banners", icon: MdViewCarousel, label: t('admin.banners'), permission: "canManageBanners" },
+                { href: "/admin/site-content", icon: MdEditNote, label: t('admin.siteContent'), superAdminOnly: true },
+                { href: "/admin/users", icon: MdGroup, label: t('admin.users'), superAdminOnly: true },
+                { href: "/admin/settings", icon: MdSettings, label: t('admin.settings'), superAdminOnly: true }
+            ]
+        }
     ];
 
     const handleSignOut = () => {
@@ -73,89 +101,108 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
             {/* Mobile Overlay */}
             {isOpen && (
                 <div
-                    className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 lg:hidden transition-opacity"
+                    className="fixed inset-0 bg-black/50 backdrop-blur-xs z-40 lg:hidden transition-opacity"
                     onClick={onClose}
                 />
             )}
 
             {/* Sidebar */}
             <aside
-                className={`fixed lg:static inset-y-0 ${dir === 'rtl' ? 'end-0 border-s' : 'start-0 border-e'} z-50 w-[260px] shrink-0 border-black/[0.04] dark:border-white/[0.04] bg-surface-light dark:bg-surface-dark flex flex-col transition-transform duration-300 ease-in-out shadow-[4px_0_24px_rgba(0,0,0,0.02)] dark:shadow-none ${isOpen ? "translate-x-0" : (dir === 'rtl' ? "translate-x-full lg:translate-x-0" : "-translate-x-full lg:translate-x-0")
-                    }`}
+                className={`fixed lg:static inset-y-0 ${dir === 'rtl' ? 'end-0 border-s' : 'start-0 border-e'} z-50 w-[270px] shrink-0 border-slate-200/80 dark:border-white/10 bg-white dark:bg-[#0f172a] flex flex-col transition-transform duration-300 ease-in-out shadow-lg lg:shadow-none ${
+                    isOpen ? "translate-x-0" : (dir === 'rtl' ? "translate-x-full lg:translate-x-0" : "-translate-x-full lg:translate-x-0")
+                }`}
             >
-                <div className="h-full flex flex-col justify-between py-6 px-4 overflow-y-auto scrollbar-hide">
-                    <div className="flex flex-col gap-8">
-                        {/* Logo & Brand */}
-                        <div className="flex items-center justify-between px-2">
-                            <div className="flex items-center gap-3">
-                                <img
-                                    src="/logo.jpeg"
+                <div className="h-full flex flex-col justify-between py-5 px-4 overflow-y-auto scrollbar-hide">
+                    <div className="flex flex-col gap-6">
+                        {/* Logo & Brand Header */}
+                        <div className="flex items-center justify-between px-2 pb-2 border-b border-slate-100 dark:border-white/5">
+                            <Link href="/admin/dashboard" className="flex items-center gap-3 group">
+                                <Image
+                                    src="/logo.png"
                                     alt="Zad Land"
-                                    className="h-9 w-auto object-contain rounded-md shadow-sm"
+                                    width={140}
+                                    height={44}
+                                    priority
+                                    className="h-10 w-auto object-contain transition-transform group-hover:scale-105"
                                 />
                                 <div className="flex flex-col">
-                                    <h1 className="text-text-main dark:text-white text-base font-bold tracking-tight">
-                                        {t('header.brandName')}
-                                    </h1>
-                                    <p className="text-text-sub/70 dark:text-gray-500 text-[10px] uppercase tracking-wider font-semibold">
-                                        {t('admin.adminPanel')}
-                                    </p>
+                                    <span className="text-[11px] font-bold uppercase tracking-wider text-[#072835] dark:text-[#E5B54A]">
+                                        {isArabic ? "لوحة الإدارة" : "Admin Portal"}
+                                    </span>
                                 </div>
-                            </div>
+                            </Link>
+
                             {/* Close button for mobile */}
                             <button
                                 onClick={onClose}
-                                className="lg:hidden text-text-sub dark:text-gray-400 hover:text-text-main dark:hover:text-white transition-colors"
+                                className="lg:hidden p-1.5 rounded-lg text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                                aria-label="Close Sidebar"
                             >
-                                <MdClose className="text-2xl" />
+                                <MdClose className="text-xl" />
                             </button>
                         </div>
 
-                        {/* Navigation */}
-                        <nav className="flex flex-col gap-1">
-                            {navItems.map((item) => {
-                                if (item.superAdminOnly && !isSuperAdmin) return null;
-                                if (item.permission && !isSuperAdmin && !session?.user?.[item.permission]) {
-                                    return null;
-                                }
+                        {/* Grouped Navigation Sections */}
+                        <div className="flex flex-col gap-5">
+                            {navSections.map((section, sIdx) => {
+                                const visibleItems = section.items.filter((item) => {
+                                    if (item.superAdminOnly && !isSuperAdmin) return false;
+                                    if (item.permission && !isSuperAdmin && !session?.user?.[item.permission]) return false;
+                                    return true;
+                                });
 
-                                const isActive = pathname === item.href;
+                                if (visibleItems.length === 0) return null;
+
                                 return (
-                                    <Link
-                                        key={item.href}
-                                        href={item.href}
-                                        onClick={onClose}
-                                        className={`relative flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group ${isActive
-                                            ? "bg-gray-50 dark:bg-gray-800/60 text-text-main dark:text-white font-semibold"
-                                            : "text-text-sub dark:text-gray-400 hover:bg-gray-50/50 dark:hover:bg-gray-800/30 hover:text-text-main dark:hover:text-gray-200"
-                                            }`}
-                                    >
-                                        {isActive && (
-                                            <div className={`absolute ${dir === 'rtl' ? 'end-0 rounded-s-full' : 'start-0 rounded-e-full'} top-1/2 -translate-y-1/2 w-1 h-5 bg-primary`} />
-                                        )}
-                                        <item.icon
-                                            className={`text-[20px] transition-colors ${isActive ? "text-primary" : "group-hover:text-text-main dark:group-hover:text-gray-300"}`}
-                                        />
-                                        <p className="text-[13px] leading-tight tracking-wide">
-                                            {item.label}
+                                    <div key={sIdx} className="flex flex-col gap-1">
+                                        <p className="px-3 mb-1 text-[10px] font-extrabold uppercase tracking-widest text-slate-600 dark:text-slate-300">
+                                            {section.title}
                                         </p>
-                                    </Link>
+                                        <div className="flex flex-col gap-0.5">
+                                            {visibleItems.map((item) => {
+                                                const isActive = pathname === item.href;
+                                                return (
+                                                    <Link
+                                                        key={item.href}
+                                                        href={item.href}
+                                                        onClick={onClose}
+                                                        className={`relative flex items-center gap-3 px-3.5 py-2.5 rounded-xl transition-all duration-200 group ${
+                                                            isActive
+                                                                ? "bg-[#072835] text-white shadow-xs font-semibold"
+                                                                : "text-slate-600 dark:text-slate-300 hover:bg-slate-100/90 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-white font-medium"
+                                                        }`}
+                                                    >
+                                                        <item.icon
+                                                            className={`text-[19px] shrink-0 transition-colors ${
+                                                                isActive
+                                                                    ? "text-[#E5B54A]"
+                                                                    : "text-slate-400 dark:text-slate-500 group-hover:text-slate-700 dark:group-hover:text-slate-200"
+                                                            }`}
+                                                        />
+                                                        <span className="text-[13.5px] leading-tight">
+                                                            {item.label}
+                                                        </span>
+                                                    </Link>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
                                 );
                             })}
-                        </nav>
+                        </div>
                     </div>
 
-                    {/* Bottom Actions */}
-                    <div className="flex flex-col gap-2 pt-6 mt-6 border-t border-black/[0.04] dark:border-white/[0.04]">
-                        <div className="flex items-center gap-3 px-3 py-2 mb-2">
-                            <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">
+                    {/* Bottom User & Sign Out Footer */}
+                    <div className="flex flex-col gap-2 pt-4 mt-4 border-t border-slate-200/80 dark:border-white/10">
+                        <div className="flex items-center gap-3 px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/60 dark:border-white/5">
+                            <div className="h-8 w-8 rounded-full bg-[#072835] dark:bg-[#E5B54A] text-white dark:text-[#072835] flex items-center justify-center font-bold text-xs shrink-0 shadow-2xs">
                                 {session?.user?.name?.charAt(0).toUpperCase() || "A"}
                             </div>
-                            <div className="flex flex-col">
-                                <p className="text-text-main dark:text-white text-[13px] font-semibold leading-tight">
+                            <div className="flex flex-col min-w-0 flex-1">
+                                <p className="text-slate-900 dark:text-white text-[13px] font-bold leading-tight truncate">
                                     {session?.user?.name || "Admin"}
                                 </p>
-                                <p className="text-text-sub dark:text-gray-500 text-[11px] font-medium">
+                                <p className="text-[#2E7D32] dark:text-[#4ade80] text-[10.5px] font-bold tracking-tight uppercase truncate">
                                     {isSuperAdmin ? t('admin.superAdmin') : t('admin.editor')}
                                 </p>
                             </div>
@@ -163,10 +210,10 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
 
                         <button
                             onClick={handleSignOut}
-                            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-sub dark:text-gray-400 hover:bg-red-50/50 dark:hover:bg-red-900/10 hover:text-red-600 dark:hover:text-red-400 transition-colors group"
+                            className="flex items-center gap-3 px-3 py-2 rounded-xl text-slate-500 dark:text-slate-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 hover:text-rose-700 dark:hover:text-rose-400 transition-colors group text-xs font-semibold"
                         >
-                            <MdLogout className={`text-[20px] group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors ${dir === 'rtl' ? 'rotate-180' : ''}`} />
-                            <p className="text-[13px] font-medium leading-tight">{t('admin.signOut')}</p>
+                            <MdLogout className={`text-base group-hover:text-rose-600 transition-colors ${dir === 'rtl' ? 'rotate-180' : ''}`} />
+                            <span>{t('admin.signOut')}</span>
                         </button>
                     </div>
                 </div>

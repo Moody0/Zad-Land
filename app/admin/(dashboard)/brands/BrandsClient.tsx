@@ -129,7 +129,7 @@ export default function BrandsClient({ brands }: { brands: Brand[] }) {
                                 <option value="DIFFERENT">{t("brands.differentBrands")}</option>
                             </select>
                             {canManage && (
-                                <button onClick={handleAdd} className="flex h-11 items-center justify-center gap-2 rounded-xl bg-primary px-5 text-sm font-bold text-white transition-colors hover:bg-primary/90">
+                                <button onClick={handleAdd} className="flex h-11 items-center justify-center gap-2 rounded-xl bg-[#072835] hover:bg-[#0c4054] px-5 text-sm font-bold text-white transition-all shadow-xs">
                                     <MdAdd className="text-xl" />
                                     {t("admin.addBrand")}
                                 </button>
@@ -154,7 +154,7 @@ export default function BrandsClient({ brands }: { brands: Brand[] }) {
 
                     <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
                         {filteredBrands.map((brand) => (
-                            <article key={brand.id} className="overflow-hidden rounded-2xl border border-black/[0.04] dark:border-white/[0.04] bg-white dark:bg-surface-dark shadow-[0_4px_20px_-4px_rgba(0,0,0,0.02)] transition-all duration-300 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.04)]">
+                            <article key={brand.id} className="overflow-hidden rounded-2xl border border-slate-200/80 dark:border-white/10 bg-white dark:bg-[#0f172a] shadow-xs transition-all duration-300 hover:shadow-md">
                                 <div className="flex h-36 items-center justify-center bg-gray-50 dark:bg-gray-800">
                                     {brand.image ? (
                                         <img src={brand.image} alt={brand.name} className="h-full w-full object-contain" />

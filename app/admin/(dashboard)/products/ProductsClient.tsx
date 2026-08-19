@@ -636,7 +636,7 @@ export default function ProductsClient({
                                         setSelectedProduct(null);
                                         setIsAddModalOpen(true);
                                     }}
-                                    className="bg-primary hover:bg-primary/90 text-white h-12 px-6 rounded-xl font-bold text-sm flex items-center gap-2 transition-all transform hover:-translate-y-0.5 active:translate-y-0"
+                                    className="bg-[#2E7D32] hover:bg-[#256629] text-white h-12 px-6 rounded-xl font-bold text-sm flex items-center gap-2 transition-all shadow-xs transform hover:-translate-y-0.5 active:translate-y-0"
                                 >
                                     <MdAdd className="text-[20px]" />
                                     {t('admin.addNewProduct')}
@@ -837,7 +837,7 @@ export default function ProductsClient({
                         <div className="overflow-visible">
                             <table className={`w-full border-collapse min-w-[900px] ${dir === 'rtl' ? 'text-end' : 'text-start'}`}>
                                 <thead>
-                                    <tr className="bg-background-light dark:bg-gray-800/50 border-b border-black/[0.04] dark:border-white/[0.04] dark:border-white/[0.04] text-[10px] sm:text-xs font-bold text-text-sub dark:text-gray-400 uppercase tracking-wider">
+                                    <tr className="bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200/80 dark:border-white/10 text-[10px] sm:text-xs font-extrabold text-slate-700 dark:text-slate-200 uppercase tracking-wider">
                                         <th className="p-3 sm:p-5 w-10 sm:w-12 text-center text-[0px]">
                                             <input
                                                 className="rounded border-gray-300 text-primary focus:ring-primary size-3 sm:size-4 cursor-pointer"
