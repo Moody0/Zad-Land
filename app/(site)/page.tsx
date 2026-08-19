@@ -2,7 +2,7 @@ import Main from "../components/HomePageComponents/Main";
 import {
     getActiveBanners,
     getMainCategoryBrands,
-    getHomeRailCategories,
+    getHomeRailBrands,
     getCategoryHighlightCardsData,
     getApprovedReviews,
     getBestSellerProducts,
@@ -19,7 +19,7 @@ export default async function Home() {
     const [
         banners,
         mainBrands,
-        railCategories,
+        railBrands,
         highlightCards,
         reviews,
         featuredBestSellers,
@@ -31,7 +31,7 @@ export default async function Home() {
     ] = await Promise.all([
         getActiveBanners(),
         getMainCategoryBrands(),
-        getHomeRailCategories(),
+        getHomeRailBrands(),
         getCategoryHighlightCardsData(),
         getApprovedReviews(),
         getBestSellerProducts(),
@@ -47,7 +47,7 @@ export default async function Home() {
             <Main
                 banners={banners}
                 mainBrands={mainBrands}
-                railCategories={railCategories}
+                railBrands={railBrands}
                 highlightCards={highlightCards}
                 reviews={reviews}
                 featuredNewArrivals={featuredNewArrivals}

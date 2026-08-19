@@ -1,7 +1,7 @@
 import React from 'react';
 import dynamic from 'next/dynamic';
-import type { HomeBrand } from '@/lib/admin-actions';
-import CategoriesRail from './CategoriesRail';
+import type { HomeBrand, RailBrand } from '@/lib/admin-actions';
+import BrandsRail from './BrandsRail';
 
 import FeaturedCollection from './FeaturedCollection';
 import PromoBanner from './PromoBanner';
@@ -56,7 +56,6 @@ interface Product {
     } | null;
 }
 
-import type { RailCategory } from './CategoriesRail';
 import type { HighlightCard } from './CategoryHighlightCards';
 import type { ReviewItem } from './TestimonialsMasonry';
 
@@ -73,7 +72,7 @@ interface FeaturedCategory {
 interface MainProps {
     banners: Banner[];
     mainBrands: HomeBrand[];
-    railCategories: RailCategory[];
+    railBrands: RailBrand[];
     highlightCards: HighlightCard[];
     reviews: ReviewItem[];
     featuredNewArrivals: Product[];
@@ -87,7 +86,7 @@ interface MainProps {
 const Main = async ({
     banners,
     mainBrands,
-    railCategories,
+    railBrands,
     highlightCards,
     reviews,
     featuredNewArrivals,
@@ -99,13 +98,13 @@ const Main = async ({
 }: MainProps) => {
     return (
         <main className="w-full flex flex-col gap-y-[40px] md:gap-y-[80px] pb-12">
-            {/* Group Hero Carousel and Categories Rail close to each other */}
+            {/* Group Hero Carousel and Brands Rail close to each other */}
             <div className="flex flex-col gap-y-0">
                 {/* 1. Hero Carousel Section */}
                 <HeroCarousel banners={banners} />
 
-                {/* 2. Categories Rail (Dynamic from Database) */}
-                <CategoriesRail categories={railCategories} />
+                {/* 2. Brands Rail (Dynamic from Database) */}
+                <BrandsRail brands={railBrands} />
             </div>
 
             {/* 3. First Ad - Placed above CategoryHighlightCards */}

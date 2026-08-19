@@ -1058,6 +1058,80 @@ export async function toggleCategoryFeatured(id: string, isFeatured: boolean) {
     }
 }
 
+export interface RailBrand {
+    id: string;
+    name: string;
+    nameAr: string;
+    fullName: string;
+    slug: string;
+    image: string;
+    productCount?: number;
+}
+
+export async function getHomeRailBrands(): Promise<RailBrand[]> {
+    try {
+        const brands = await prisma.brand.findMany({
+            where: {
+                isActive: true,
+                products: {
+                    some: {
+                        NOT: [
+                            { images: '/placeholder.svg' },
+                            { images: '' }
+                        ]
+                    }
+                }
+            },
+            orderBy: [
+                { isFeatured: 'desc' },
+                { products: { _count: 'desc' } }
+            ],
+            select: {
+                id: true,
+                name: true,
+                slug: true,
+                image: true,
+                products: {
+                    where: {
+                        NOT: [
+                            { images: '/placeholder.svg' },
+                            { images: '' }
+                        ]
+                    },
+                    take: 1,
+                    select: { images: true }
+                },
+                _count: {
+                    select: { products: true }
+                }
+            }
+        });
+
+        return brands.map(b => {
+            let en = b.name;
+            let ar = b.name;
+            if (b.name.includes(' - ')) {
+                const parts = b.name.split(' - ').map(s => s.trim());
+                en = parts[0] || b.name;
+                ar = parts[1] || parts[0] || b.name;
+            }
+            const productImg = b.products[0]?.images ? b.products[0].images.split(',')[0].trim() : null;
+            return {
+                id: b.id,
+                name: en,
+                nameAr: ar,
+                fullName: b.name,
+                slug: b.slug,
+                image: b.image || productImg || '/logo.png',
+                productCount: b._count.products
+            };
+        }).filter(b => b.image && b.image !== '/placeholder.svg');
+    } catch (error) {
+        console.error("Failed to fetch rail brands:", error);
+        return [];
+    }
+}
+
 export async function getHomeRailCategories() {
     try {
         const mainCats = await prisma.mainCategory.findMany({
