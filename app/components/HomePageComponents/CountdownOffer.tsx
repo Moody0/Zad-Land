@@ -45,53 +45,50 @@ const CountdownOffer = () => {
     return (
         <section className="w-full bg-white dark:bg-[#121212]">
             <div className="container-custom">
-                <div className={`w-full rounded-[10px] bg-[#f9dae5] h-auto md:h-[160px] py-8 md:py-0 px-6 md:px-12 flex flex-col md:flex-row items-center justify-between gap-6 md:gap-4 ${dir === 'rtl' ? 'md:flex-row' : 'md:flex-row-reverse'}`}>
+                <div className={`w-full rounded-[14px] bg-gradient-to-r from-[#072835] via-[#0a3547] to-[#072835] text-white border border-[#B8860B]/30 h-auto md:h-[155px] py-6 md:py-0 px-6 md:px-12 flex flex-col md:flex-row items-center justify-between gap-6 md:gap-4 ${dir === 'rtl' ? 'md:flex-row' : 'md:flex-row-reverse'}`}>
 
-                    {/* 1. Subheading */}
-                    <div className="flex-shrink-0">
-                        <span className="text-[#333] text-xs md:text-sm font-medium opacity-70">
-                            {language === 'ar' ? 'عروض لفترة محدودة' : 'Limited Time Offers'}
-                        </span>
+                    {/* 1. Button */}
+                    <div className="flex-shrink-0 order-4 md:order-1">
+                        <Link
+                            href="/products"
+                            className="px-7 py-3 bg-[#B8860B] hover:bg-[#9E7309] text-white rounded-full font-bold text-sm md:text-base transition-all active:scale-95 whitespace-nowrap"
+                        >
+                            {language === 'ar' ? 'تصفح كافة العروض' : 'All Offers'}
+                        </Link>
                     </div>
 
                     {/* 2. Timer (Middle) */}
-                    <div className="flex items-center gap-3 md:gap-4 text-[24px] md:text-[32px] font-bold text-[#1a1a1a] tabular-nums">
-                        <div className="flex flex-col items-center">
-                            <span>{formatNumber(timeLeft.days)}</span>
-                            <span className="text-[10px] uppercase opacity-50 mt-[-5px]">{language === 'ar' ? 'يوم' : 'Day'}</span>
+                    <div className="flex items-center gap-2.5 md:gap-3 text-[20px] md:text-[26px] font-extrabold text-[#F5F0E0] tabular-nums order-2">
+                        <div className="flex flex-col items-center bg-black/25 backdrop-blur-sm border border-[#B8860B]/20 px-3.5 py-1.5 rounded-xl min-w-[56px]">
+                            <span className="text-[#E5B54A]">{formatNumber(timeLeft.days)}</span>
+                            <span className="text-[9px] uppercase tracking-wider text-white/70 mt-0.5">{language === 'ar' ? 'يوم' : 'Day'}</span>
                         </div>
-                        <span className="opacity-30 mb-4">:</span>
-                        <div className="flex flex-col items-center">
-                            <span>{formatNumber(timeLeft.hours)}</span>
-                            <span className="text-[10px] uppercase opacity-50 mt-[-5px]">{language === 'ar' ? 'ساعة' : 'Hrs'}</span>
+                        <span className="text-[#B8860B] font-bold">:</span>
+                        <div className="flex flex-col items-center bg-black/25 backdrop-blur-sm border border-[#B8860B]/20 px-3.5 py-1.5 rounded-xl min-w-[56px]">
+                            <span className="text-[#E5B54A]">{formatNumber(timeLeft.hours)}</span>
+                            <span className="text-[9px] uppercase tracking-wider text-white/70 mt-0.5">{language === 'ar' ? 'ساعة' : 'Hrs'}</span>
                         </div>
-                        <span className="opacity-30 mb-4">:</span>
-                        <div className="flex flex-col items-center">
-                            <span>{formatNumber(timeLeft.minutes)}</span>
-                            <span className="text-[10px] uppercase opacity-50 mt-[-5px]">{language === 'ar' ? 'دقيقة' : 'Min'}</span>
+                        <span className="text-[#B8860B] font-bold">:</span>
+                        <div className="flex flex-col items-center bg-black/25 backdrop-blur-sm border border-[#B8860B]/20 px-3.5 py-1.5 rounded-xl min-w-[56px]">
+                            <span className="text-[#E5B54A]">{formatNumber(timeLeft.minutes)}</span>
+                            <span className="text-[9px] uppercase tracking-wider text-white/70 mt-0.5">{language === 'ar' ? 'دقيقة' : 'Min'}</span>
                         </div>
-                        <span className="opacity-30 mb-4">:</span>
-                        <div className="flex flex-col items-center">
-                            <span>{formatNumber(timeLeft.seconds)}</span>
-                            <span className="text-[10px] uppercase opacity-50 mt-[-5px]">{language === 'ar' ? 'ثانية' : 'Sec'}</span>
+                        <span className="text-[#B8860B] font-bold">:</span>
+                        <div className="flex flex-col items-center bg-black/25 backdrop-blur-sm border border-[#B8860B]/20 px-3.5 py-1.5 rounded-xl min-w-[56px]">
+                            <span className="text-[#E5B54A]">{formatNumber(timeLeft.seconds)}</span>
+                            <span className="text-[9px] uppercase tracking-wider text-white/70 mt-0.5">{language === 'ar' ? 'ثانية' : 'Sec'}</span>
                         </div>
                     </div>
 
-                    {/* 3. Heading */}
-                    <div className="max-w-[300px]">
-                        <h2 className="text-xl md:text-2xl font-bold text-[#1a1a1a] leading-tight text-center md:text-right">
-                            {language === 'ar' ? 'أفضل العروض، في مكان واحد' : 'Best Offers, All in One Place'}
+                    {/* 3. Heading & Subheading */}
+                    <div className="flex flex-col items-center md:items-start text-center md:text-start order-1 md:order-3">
+                        <span className="text-xs uppercase tracking-widest text-[#E5B54A] font-bold mb-1 flex items-center gap-1.5">
+                            <span className="w-2 h-2 rounded-full bg-[#2E7D32] inline-block animate-pulse"></span>
+                            <span>{language === 'ar' ? 'عروض الجملة الحصرية' : 'Exclusive Wholesale Deals'}</span>
+                        </span>
+                        <h2 className="text-lg md:text-2xl font-bold text-white leading-tight">
+                            {language === 'ar' ? 'أفضل العروض والأسعار التنافسية' : 'Best Offers, All in One Place'}
                         </h2>
-                    </div>
-
-                    {/* 3. Button (On the side) */}
-                    <div className="flex-shrink-0">
-                        <Link
-                            href="/products"
-                            className="px-8 py-3 bg-black text-white hover:bg-black/90 rounded-full font-bold text-sm md:text-base transition-all shadow-md active:scale-95 whitespace-nowrap"
-                        >
-                            {language === 'ar' ? 'كل العروض' : 'All Offers'}
-                        </Link>
                     </div>
                 </div>
             </div>

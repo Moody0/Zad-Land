@@ -8,15 +8,15 @@
 @variant rtl (&:where([dir="rtl"], [dir="rtl"] *));
 
 @theme {
-  --color-primary: #ee2b6c;
+  --color-primary: #B8860B;
   --color-background-light: #ffffff;
-  --color-background-dark: #221016;
+  --color-background-dark: #1A1A14;
   --color-surface-light: #ffffff;
-  --color-surface-dark: #2d161e;
-  --color-text-main-light: #181113;
-  --color-text-main-dark: #fce7ef;
-  --color-text-muted-light: #89616f;
-  --color-text-muted-dark: #dcbcc7;
+  --color-surface-dark: #2A2A1E;
+  --color-text-main-light: #1A1A14;
+  --color-text-main-dark: #F5F0E0;
+  --color-text-muted-light: #7A7A60;
+  --color-text-muted-dark: #C4B89A;
 
 
   /* Semantic Colors */
@@ -56,19 +56,19 @@
 
 @layer base {
   :root {
-    --text-main: #181113;
-    --text-sub: #89616f;
+    --text-main: #1A1A14;
+    --text-sub: #7A7A60;
   }
 
   .dark {
-    --text-main: #fce7ef;
-    --text-sub: #dcbcc7;
+    --text-main: #F5F0E0;
+    --text-sub: #C4B89A;
   }
 }
 
 @layer utilities {
   .container-custom {
-    @apply w-full mx-auto px-4 sm:px-6 lg:px-[135px] max-w-none;
+    @apply w-full mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 2xl:px-16 max-w-[1600px];
   }
 
   .glass {
@@ -168,8 +168,8 @@ html.app-loading body {
   align-items: center;
   justify-content: center;
   background:
-    radial-gradient(circle at top right, rgba(238, 43, 108, 0.16), transparent 34%),
-    linear-gradient(180deg, rgba(255, 250, 252, 0.98), rgba(248, 246, 246, 0.98));
+    radial-gradient(circle at top right, rgba(184, 134, 11, 0.16), transparent 34%),
+    linear-gradient(180deg, rgba(255, 253, 248, 0.98), rgba(248, 246, 240, 0.98));
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.35s ease, visibility 0.35s ease;
@@ -177,8 +177,8 @@ html.app-loading body {
 
 .dark #initial-page-loader {
   background:
-    radial-gradient(circle at top right, rgba(238, 43, 108, 0.18), transparent 32%),
-    linear-gradient(180deg, rgba(34, 16, 22, 0.98), rgba(24, 13, 17, 0.98));
+    radial-gradient(circle at top right, rgba(184, 134, 11, 0.18), transparent 32%),
+    linear-gradient(180deg, rgba(26, 26, 20, 0.98), rgba(20, 20, 15, 0.98));
 }
 
 html.app-loading #initial-page-loader {
@@ -197,9 +197,9 @@ html.app-loading #initial-page-loader {
   width: 3rem;
   height: 3rem;
   border-radius: 9999px;
-  border: 3px solid rgba(238, 43, 108, 0.18);
-  border-top-color: #ee2b6c;
-  animation: ruby-spin 0.9s linear infinite;
+  border: 3px solid rgba(184, 134, 11, 0.18);
+  border-top-color: #B8860B;
+  animation: zad-spin 0.9s linear infinite;
 }
 
 .initial-page-loader__brand {
@@ -218,7 +218,7 @@ html.app-loading #app-shell {
   opacity: 0;
 }
 
-@keyframes ruby-spin {
+@keyframes zad-spin {
   to {
     transform: rotate(360deg);
   }
@@ -291,7 +291,7 @@ html.app-loading #app-shell {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #ee2b6c;
+  background: #B8860B;
 }
 
 /* Premium Curved Sliding Fill Hover Effect */
@@ -310,7 +310,7 @@ html.app-loading #app-shell {
   left: -20%;
   width: 140%;
   height: 140%;
-  background-color: #000000;
+  background-color: #B8860B;
   border-radius: 50%;
   transform: translate(-105%, -50%);
   transition: transform 0.65s cubic-bezier(0.25, 1, 0.5, 1);
@@ -319,7 +319,7 @@ html.app-loading #app-shell {
 
 .btn-curved-fill:hover {
   color: #ffffff !important;
-  border-color: #000000 !important;
+  border-color: #B8860B !important;
 }
 
 .btn-curved-fill:hover::before {
@@ -359,15 +359,15 @@ html.app-loading #app-shell {
 
 /* Dark Mode Compatibility */
 .dark .btn-curved-fill::before {
-  background-color: #ffffff !important;
+  background-color: #B8860B !important;
 }
 .dark .btn-curved-fill:hover {
-  color: #000000 !important;
-  border-color: #ffffff !important;
+  color: #ffffff !important;
+  border-color: #B8860B !important;
 }
 
 .dark .btn-curved-fill:disabled {
-  background-color: #2d161e !important;
+  background-color: #2A2A1E !important;
   border-color: rgba(255, 255, 255, 0.1) !important;
   color: rgba(255, 255, 255, 0.3) !important;
   opacity: 0.4 !important;

@@ -16,8 +16,8 @@ export async function generateMetadata(props: { params: Promise<{ slug: string }
     if (!department) return { title: "Department Not Found" };
 
     return {
-        title: `${department.name} | Ruby Beauty`,
-        description: department.description || `Explore ${department.name} products at Ruby Beauty`,
+        title: `${department.name} | Zad Land`,
+        description: department.description || `Explore ${department.name} products at Zad Land`,
     };
 }
 

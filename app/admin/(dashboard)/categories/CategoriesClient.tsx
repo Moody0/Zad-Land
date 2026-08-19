@@ -358,7 +358,7 @@ export default function CategoriesClient({ categories, brands }: { categories: C
                                 <div className="p-6">
                                     <h3 className="text-lg font-bold text-text-main dark:text-white mb-2">{category.name}</h3>
                                     <p className="mb-2 text-xs font-bold uppercase tracking-wider text-primary">
-                                        {category.brand?.name || 'Ruby Beauty'}
+                                        {category.brand?.name || 'Zad Land'}
                                     </p>
                                     <p className="text-sm text-text-sub dark:text-gray-400 line-clamp-2 mb-4">
                                         {category.description || t('admin.noDescription')}
@@ -366,7 +366,7 @@ export default function CategoriesClient({ categories, brands }: { categories: C
                                     <div className="w-full flex items-center justify-between pt-4 border-t border-border-color/30 dark:border-white/[0.04]">
                                         <button 
                                             onClick={() => setRelatedModalInfo({ isOpen: true, type: "products", entityId: category.id, entityName: category.name })}
-                                            className="cursor-pointer bg-primary-light dark:bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-bold hover:bg-primary-light/80 dark:hover:bg-primary/20 transition-colors"
+                                            className="cursor-pointer bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-bold hover:bg-primary/20 transition-colors"
                                         >
                                             {category._count.products} {t('admin.products')}
                                         </button>
@@ -388,7 +388,7 @@ export default function CategoriesClient({ categories, brands }: { categories: C
                                             {canManage && (
                                                 <button
                                                     onClick={() => handleEdit(category)}
-                                                    className="p-2 text-text-sub hover:text-primary hover:bg-primary-light dark:hover:bg-primary/10 rounded-lg transition-colors"
+                                                    className="p-2 text-text-sub hover:text-primary hover:bg-primary/10 dark:hover:bg-primary/10 rounded-lg transition-colors"
                                                     title={t('admin.editCategory')}
                                                 >
                                                     <MdEdit className="text-[20px]" />

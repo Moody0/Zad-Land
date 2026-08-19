@@ -31,7 +31,7 @@ const ProductPrice = ({ price, discountPrice }: ProductPriceProps) => {
 
             {hasDiscount && (
                 <div>
-                    <span className="bg-[#C20059] text-white text-xs font-bold px-2.5 py-1 rounded-full flex items-center leading-none">
+                    <span className="bg-[#2E7D32] text-white text-xs font-bold px-2.5 py-1 rounded-full flex items-center leading-none">
                         -{discountPercentage}% {language === 'ar' ? 'خصم' : 'OFF'}
                     </span>
                 </div>

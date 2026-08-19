@@ -6,14 +6,20 @@ import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
 
 interface ProductHeaderProps {
     name: string;
+    nameAr?: string | null;
+    nameEn?: string | null;
     brandName?: string;
     categoryName?: string;
     averageRating?: number;
     totalReviews?: number;
 }
 
-const ProductHeader = ({ name, brandName, categoryName, averageRating = 0, totalReviews = 0 }: ProductHeaderProps) => {
+const ProductHeader = ({ name, nameAr, nameEn, brandName, categoryName, averageRating = 0, totalReviews = 0 }: ProductHeaderProps) => {
     const { language } = useLanguage();
+
+    const displayName = language === 'ar'
+        ? (nameAr || name)
+        : (nameEn || name || nameAr);
 
     const renderStars = () => {
         const stars = [];
@@ -33,10 +39,9 @@ const ProductHeader = ({ name, brandName, categoryName, averageRating = 0, total
         <div className="mb-3">
             {/* Title */}
             <h1 
-                dir="ltr" 
                 className={`text-zinc-900 dark:text-white text-2xl sm:text-3xl font-extrabold leading-tight mb-3 tracking-tight ${language === 'ar' ? 'text-right' : 'text-left'}`}
             >
-                {name}
+                {displayName}
             </h1>
 
             {/* Reviews Summary */}
@@ -46,7 +51,7 @@ const ProductHeader = ({ name, brandName, categoryName, averageRating = 0, total
                     document.getElementById('product-reviews')?.scrollIntoView({ behavior: 'smooth' });
                 }}
             >
-                <div className="flex text-[#C20059] text-sm gap-0.5">
+                <div className="flex text-[#B8860B] text-sm gap-0.5">
                     {renderStars()}
                 </div>
                 <span className="text-xs text-gray-500 font-medium group-hover:text-zinc-900 dark:group-hover:text-white transition-colors">

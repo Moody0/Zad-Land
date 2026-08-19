@@ -16,8 +16,40 @@ interface HeaderSearchProps {
     locale?: 'en' | 'ar';
 }
 
-const wordsEn = ["Perfumes", "Accessories", "Skincare", "Lipsticks", "Serums", "Moisturizers", "Sunscreen"];
-const wordsAr = ["العطور", "المكياج", "العناية بالبشرة", "أحمر الشفاه", "السيروم", "المرطبات"];
+const foodSuggestionsAr = ['معكرونة دي سيكو', 'صوصات أميركان غاردن', 'تونة ريو ماري', 'حليب وبدائل ألبان', 'مفرزات كابتن فيشر', 'قهوة علي كافيه'];
+const foodSuggestionsEn = ['De Cecco Pasta', 'American Garden Sauces', 'Rio Mare Tuna', 'Nada Dairy Milk', 'Captain Fisher Frozen', 'Ali Cafe Coffee'];
+
+const quickCategoriesAr = [
+    { id: '1', name: 'باستا ومواد غذائية', slug: 'pasta-and-foodstuffs' },
+    { id: '2', name: 'صوصات وتتبيلات', slug: 'sauces-condiments' },
+    { id: '3', name: 'مفرزات ولحوم', slug: 'frozen-foods' },
+    { id: '4', name: 'معلبات وتونة', slug: 'canned-goods' }
+];
+
+const quickCategoriesEn = [
+    { id: '1', name: 'Pasta & Foodstuffs', slug: 'pasta-and-foodstuffs' },
+    { id: '2', name: 'Sauces & Condiments', slug: 'sauces-condiments' },
+    { id: '3', name: 'Frozen Foods & Seafood', slug: 'frozen-foods' },
+    { id: '4', name: 'Canned Goods & Tuna', slug: 'canned-goods' }
+];
+
+const dynamicItemsAr = [
+    "معكرونة دي سيكو إيطالية...",
+    "صوصات وتوابل أميركان غاردن...",
+    "تونة ريو ماري وزيوت طعام...",
+    "مفرزات ومأكولات بحرية فاخرة...",
+    "أرز وحبوب وبقوليات بالجملة...",
+    "قهوة وشاي ومشروبات..."
+];
+
+const dynamicItemsEn = [
+    "De Cecco Italian Pasta...",
+    "American Garden Sauces & Dressings...",
+    "Rio Mare Tuna & Olive Oils...",
+    "Frozen Seafood & Gourmet Items...",
+    "Wholesale Rice, Grains & Foodstuffs...",
+    "Coffee, Tea & Beverages..."
+];
 
 const HeaderSearch = ({ onSearchSelect, onClose, placeholder, autoFocus = false, locale }: HeaderSearchProps) => {
     const { t, dir, language } = useLanguage();
@@ -30,48 +62,52 @@ const HeaderSearch = ({ onSearchSelect, onClose, placeholder, autoFocus = false,
     const [loading, setLoading] = useState(false);
     const [showResults, setShowResults] = useState(false);
     const [totalCount, setTotalCount] = useState(0);
+    const [dynamicText, setDynamicText] = useState("");
     const searchRef = useRef<HTMLDivElement>(null);
     const inputRef = useRef<HTMLInputElement>(null);
 
     const isArabic = currentLocale === 'ar';
+    const staticPrefix = isArabic ? "ابحث عن: " : "Search: ";
+    const searchPlaceholder = placeholder || `${staticPrefix}${dynamicText}`;
 
-    // Typewriter effect state for dynamic placeholder
-    const [wordIndex, setWordIndex] = useState(0);
-    const [subIndex, setSubIndex] = useState(0);
-    const [isDeleting, setIsDeleting] = useState(false);
-
+    // Typewriter animation only for dynamic suffix text (prefix stays static)
     useEffect(() => {
-        const words = isArabic ? wordsAr : wordsEn;
-        const currentWord = words[wordIndex % words.length];
+        if (query) return;
+        const items = isArabic ? dynamicItemsAr : dynamicItemsEn;
+        let itemIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+        let timeoutId: NodeJS.Timeout;
 
-        if (!isDeleting && subIndex === currentWord.length) {
-            const timeout = setTimeout(() => {
-                setIsDeleting(true);
-            }, 1800);
-            return () => clearTimeout(timeout);
-        }
+        const tick = () => {
+            const currentItem = items[itemIndex];
+            
+            if (isDeleting) {
+                setDynamicText(currentItem.substring(0, charIndex - 1));
+                charIndex--;
+            } else {
+                setDynamicText(currentItem.substring(0, charIndex + 1));
+                charIndex++;
+            }
 
-        if (isDeleting && subIndex === 0) {
-            const timeout = setTimeout(() => {
-                setIsDeleting(false);
-                setWordIndex((prev) => (prev + 1) % words.length);
-            }, 300);
-            return () => clearTimeout(timeout);
-        }
+            let delta = isDeleting ? 35 : 70;
 
-        const speed = isDeleting ? 40 : 80;
-        const timeout = setTimeout(() => {
-            setSubIndex((prev) => prev + (isDeleting ? -1 : 1));
-        }, speed);
+            if (!isDeleting && charIndex === currentItem.length) {
+                delta = 2200; // Pause when item is fully typed
+                isDeleting = true;
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                itemIndex = (itemIndex + 1) % items.length;
+                delta = 350; // Pause before typing next item
+            }
 
-        return () => clearTimeout(timeout);
-    }, [subIndex, isDeleting, wordIndex, isArabic]);
+            timeoutId = setTimeout(tick, delta);
+        };
 
-    const activeWords = isArabic ? wordsAr : wordsEn;
-    const currentWord = activeWords[wordIndex % activeWords.length] || "";
-    const typedWord = currentWord.substring(0, subIndex);
-    const staticPrefix = isArabic ? "البحث عن " : "Search for ";
-    const searchPlaceholder = placeholder || `${staticPrefix}${typedWord}`;
+        timeoutId = setTimeout(tick, 200);
+
+        return () => clearTimeout(timeoutId);
+    }, [isArabic, query]);
 
     // Click outside to close
     useEffect(() => {
@@ -97,13 +133,8 @@ const HeaderSearch = ({ onSearchSelect, onClose, placeholder, autoFocus = false,
                         setTotalCount(data.total || data.products?.length || 0);
                         setShowResults(true);
 
-                        setSuggestions(['s', 'd', 'rs', 'hydrates strands']);
-
-                        setCategories([
-                            { id: '1', name: 'Superkids', slug: 'superkids' },
-                            { id: '2', name: 'Ponds', slug: 'ponds' },
-                            { id: '3', name: 'جولدز أند بييز', slug: 'golds-and-bees' }
-                        ]);
+                        setSuggestions(isArabic ? foodSuggestionsAr.slice(0, 4) : foodSuggestionsEn.slice(0, 4));
+                        setCategories(isArabic ? quickCategoriesAr : quickCategoriesEn);
                     }
                 } catch (error) {
                     console.error("Search failed", error);
@@ -117,9 +148,9 @@ const HeaderSearch = ({ onSearchSelect, onClose, placeholder, autoFocus = false,
                 setShowResults(false);
                 setTotalCount(0);
             }
-        }, 300);
+        }, 250);
         return () => clearTimeout(timeoutId);
-    }, [query, currentLocale]);
+    }, [query, currentLocale, isArabic]);
 
     const handleProductClick = () => {
         setShowResults(false);
@@ -177,7 +208,7 @@ const HeaderSearch = ({ onSearchSelect, onClose, placeholder, autoFocus = false,
                         onFocus={() => {
                             if (query.trim().length > 0) setShowResults(true);
                         }}
-                        className="w-full bg-[#EDEDED] dark:bg-white/5 border border-transparent rounded-full text-[15px] font-medium text-[#1a1a1a] dark:text-white placeholder-[#888] dark:placeholder-gray-400 focus:outline-none focus:bg-[#FFFFFF] dark:focus:bg-white/10 focus:border-zinc-900 dark:focus:border-white focus:placeholder-gray-400 transition-all h-12 [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden [&::-webkit-search-results-button]:hidden [&::-webkit-search-results-decoration]:hidden"
+                        className="w-full bg-[#EDEDED] dark:bg-white/5 border border-transparent rounded-full text-[15px] font-medium text-[#1a1a1a] dark:text-white placeholder-[#888] dark:placeholder-gray-400 focus:outline-none focus:bg-white dark:focus:bg-white/10 focus:border-[#B8860B] focus:ring-2 focus:ring-[#B8860B]/15 focus:placeholder-gray-400 transition-all h-12 [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden [&::-webkit-search-results-button]:hidden [&::-webkit-search-results-decoration]:hidden"
                         style={{
                             padding: isArabic ? '0 16px 0 80px' : '0 80px 0 16px',
                             direction: dir,
@@ -196,7 +227,7 @@ const HeaderSearch = ({ onSearchSelect, onClose, placeholder, autoFocus = false,
                         <button
                             type="button"
                             onClick={handleReset}
-                            className="absolute flex items-center justify-center text-xs font-bold text-[#555] dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors"
+                            className="absolute flex items-center justify-center text-xs font-bold text-[#555] dark:text-gray-300 hover:text-[#B8860B] dark:hover:text-[#E5B54A] transition-colors"
                             style={{
                                 [isArabic ? 'left' : 'right']: '48px',
                             }}
@@ -209,7 +240,7 @@ const HeaderSearch = ({ onSearchSelect, onClose, placeholder, autoFocus = false,
                     {/* Search Icon */}
                     <button 
                         type="submit"
-                        className="absolute flex items-center justify-center text-[22px] text-[#555] dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors"
+                        className="absolute flex items-center justify-center text-[22px] text-[#555] dark:text-gray-300 hover:text-[#B8860B] dark:hover:text-[#E5B54A] transition-colors"
                         style={{
                             [isArabic ? 'left' : 'right']: '16px',
                         }}
@@ -329,7 +360,7 @@ const HeaderSearch = ({ onSearchSelect, onClose, placeholder, autoFocus = false,
                                             </div>
                                             
                                             <span className="text-[10px] text-[#888] dark:text-gray-400 uppercase tracking-[0.1em] mb-1.5 font-medium line-clamp-1">
-                                                {product.brand?.name || 'THE BATH LAND'}
+                                                {product.brand?.name || 'ZAD LAND'}
                                             </span>
                                             
                                             <h4 dir="ltr" className="text-[13px] font-medium text-[#333] dark:text-gray-200 group-hover:text-zinc-900 dark:group-hover:text-white transition-colors leading-tight mb-1.5 line-clamp-2 px-2 font-sans tracking-normal">

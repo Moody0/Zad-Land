@@ -156,13 +156,13 @@ const MobileMenu = ({
 
                             {/* Social Footer */}
                             <div className="p-8 flex items-center justify-start gap-6 mt-auto">
-                                <a href="https://wa.me/963933254796" target="_blank" rel="noopener noreferrer" className="w-12 h-12 flex items-center justify-center rounded-full border border-gray-200 dark:border-white/10 text-gray-700 dark:text-white hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
+                                <a href="#" target="_blank" rel="noopener noreferrer" className="w-12 h-12 flex items-center justify-center rounded-full border border-gray-200 dark:border-white/10 text-gray-700 dark:text-white hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
                                     <FaWhatsapp className="text-xl" />
                                 </a>
-                                <a href="https://www.instagram.com/ruby.beauty.sy" target="_blank" rel="noopener noreferrer" className="w-12 h-12 flex items-center justify-center rounded-full border border-gray-200 dark:border-white/10 text-gray-700 dark:text-white hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
+                                <a href="#" target="_blank" rel="noopener noreferrer" className="w-12 h-12 flex items-center justify-center rounded-full border border-gray-200 dark:border-white/10 text-gray-700 dark:text-white hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
                                     <FaInstagram className="text-xl" />
                                 </a>
-                                <a href="https://www.facebook.com/share/1HzXdo7sLG/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer" className="w-12 h-12 flex items-center justify-center rounded-full border border-gray-200 dark:border-white/10 text-gray-700 dark:text-white hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
+                                <a href="#" target="_blank" rel="noopener noreferrer" className="w-12 h-12 flex items-center justify-center rounded-full border border-gray-200 dark:border-white/10 text-gray-700 dark:text-white hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
                                     <FaFacebook className="text-xl" />
                                 </a>
                             </div>

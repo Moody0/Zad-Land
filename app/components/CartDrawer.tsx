@@ -73,8 +73,8 @@ const CartDrawer = () => {
                 <div className="flex-1 overflow-y-auto p-4 space-y-3">
                     {items.length === 0 ? (
                         <div className="h-full flex flex-col items-center justify-center text-center p-8 text-gray-400">
-                            <div className="w-16 h-16 rounded-full bg-gray-50 dark:bg-zinc-800 flex items-center justify-center mb-4">
-                                <MdShoppingBag className="text-3xl text-gray-300 dark:text-gray-500" />
+                            <div className="w-16 h-16 rounded-full bg-[#FAF6EC] dark:bg-[#1A1A14] flex items-center justify-center mb-4 border border-[#B8860B]/20">
+                                <MdShoppingBag className="text-3xl text-[#B8860B]" />
                             </div>
                             <p className="text-base font-bold text-zinc-900 dark:text-white mb-1">
                                 {language === 'ar' ? 'سلة التسوق فارغة' : 'Your cart is empty'}
@@ -84,7 +84,7 @@ const CartDrawer = () => {
                             </p>
                             <button 
                                 onClick={closeDrawer}
-                                className="px-6 py-2.5 bg-zinc-900 dark:bg-white text-white dark:text-black rounded-xl font-bold text-xs hover:bg-black dark:hover:bg-gray-200 transition-colors"
+                                className="px-6 py-2.5 bg-[#072835] hover:bg-[#0c4054] text-white rounded-xl font-bold text-xs transition-all active:scale-95"
                             >
                                 {language === 'ar' ? 'متابعة التسوق' : 'Continue Shopping'}
                             </button>
@@ -92,8 +92,9 @@ const CartDrawer = () => {
                     ) : (
                         items.map(item => {
                             const imageSrc = item.image ? item.image.split(',')[0].trim() : '';
+                            const itemKey = `${item.id}:${item.selectedOption || ''}`;
                             return (
-                                <div key={item.id} className="bg-gray-50 dark:bg-zinc-800/50 p-3 rounded-2xl flex gap-3 relative border border-gray-100 dark:border-white/5">
+                                <div key={itemKey} className="bg-gray-50 dark:bg-zinc-800/50 p-3 rounded-2xl flex gap-3 relative border border-gray-100 dark:border-white/5">
                                     <div 
                                         className="w-20 h-20 bg-white dark:bg-zinc-900 rounded-xl bg-contain bg-center bg-no-repeat shrink-0 border border-gray-100 dark:border-white/5 p-1"
                                         style={{ backgroundImage: `url('${imageSrc}')` }}
@@ -103,11 +104,15 @@ const CartDrawer = () => {
                                             <Link 
                                                 href={`/products/${item.slug}`} 
                                                 onClick={closeDrawer}
-                                                dir="ltr"
                                                 className={`font-semibold text-xs sm:text-sm text-zinc-900 dark:text-white line-clamp-2 leading-snug block ${dir === 'rtl' ? 'text-right' : 'text-left'}`}
                                             >
-                                                <span className="hover:underline">{item.name}</span>
+                                                <span className="hover:text-[#B8860B] dark:hover:text-[#E5B54A] transition-colors">{item.name}</span>
                                             </Link>
+                                            {item.selectedOption && (
+                                                <span className="inline-block mt-1 text-[10px] font-bold bg-[#B8860B]/10 text-[#B8860B] border border-[#B8860B]/20 px-2 py-0.5 rounded">
+                                                    {item.selectedOption}
+                                                </span>
+                                            )}
                                             <p className="text-zinc-900 dark:text-white font-extrabold text-xs sm:text-sm mt-1" dir="ltr">
                                                 {formatPrice(item.price)}
                                             </p>
@@ -116,20 +121,20 @@ const CartDrawer = () => {
                                         <div className="flex items-center justify-between mt-2">
                                             <div className="flex items-center bg-white dark:bg-zinc-900 rounded-lg border border-gray-200 dark:border-white/10 h-7 px-1">
                                                 <button 
-                                                    onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                                                    className="w-6 h-full flex items-center justify-center text-gray-500 hover:text-black dark:hover:text-white transition-colors text-xs"
+                                                    onClick={() => updateQuantity(item.id, item.quantity - 1, item.selectedOption)}
+                                                    className="w-6 h-full flex items-center justify-center text-gray-500 hover:text-[#B8860B] transition-colors text-xs font-bold"
                                                 >-</button>
                                                 <span className="w-6 text-center text-xs font-bold text-zinc-900 dark:text-white select-none">{item.quantity}</span>
                                                 <button 
-                                                    onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                                                    className="w-6 h-full flex items-center justify-center text-gray-500 hover:text-black dark:hover:text-white transition-colors text-xs"
+                                                    onClick={() => updateQuantity(item.id, item.quantity + 1, item.selectedOption)}
+                                                    className="w-6 h-full flex items-center justify-center text-gray-500 hover:text-[#B8860B] transition-colors text-xs font-bold"
                                                 >+</button>
                                             </div>
                                         </div>
 
                                         <button 
-                                            onClick={() => removeItem(item.id)}
-                                            className="absolute top-3 ltr:right-3 rtl:left-3 text-gray-400 hover:text-red-500 transition-colors p-1"
+                                            onClick={() => removeItem(item.id, item.selectedOption)}
+                                            className="absolute top-3 ltr:right-3 rtl:left-3 text-gray-400 hover:text-red-500 transition-colors p-1 cursor-pointer"
                                             aria-label="Remove item"
                                         >
                                             <MdDelete className="text-base" />
@@ -153,7 +158,7 @@ const CartDrawer = () => {
                             <Link
                                 href="/cart"
                                 onClick={closeDrawer}
-                                className="w-full py-3 bg-gray-100 dark:bg-zinc-800 hover:bg-gray-200 dark:hover:bg-zinc-700 text-zinc-900 dark:text-white text-center rounded-xl font-bold text-xs transition-colors flex items-center justify-center"
+                                className="w-full py-3 bg-gray-50 dark:bg-zinc-800 hover:bg-[#B8860B]/10 hover:border-[#B8860B] border border-gray-200 dark:border-white/10 text-zinc-900 dark:text-white text-center rounded-xl font-bold text-xs transition-colors flex items-center justify-center"
                             >
                                 {language === 'ar' ? 'عرض السلة' : 'View Cart'}
                             </Link>
@@ -161,7 +166,7 @@ const CartDrawer = () => {
                             <Link
                                 href="/place-order"
                                 onClick={closeDrawer}
-                                className="w-full py-3 bg-zinc-900 hover:bg-black dark:bg-white dark:hover:bg-gray-200 text-white dark:text-black text-center rounded-xl font-bold text-xs transition-colors flex items-center justify-center gap-1"
+                                className="w-full py-3 bg-[#2E7D32] hover:bg-[#256628] text-white text-center rounded-xl font-bold text-xs transition-all flex items-center justify-center gap-1 active:scale-95"
                             >
                                 <span>{language === 'ar' ? 'إتمام الطلب' : 'Checkout'}</span>
                                 {dir === 'rtl' ? <MdArrowBack className="text-sm" /> : <MdArrowForward className="text-sm" />}

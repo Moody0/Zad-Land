@@ -103,7 +103,7 @@ const CategorySelector = ({ categories, activeCategory = null }: CategorySelecto
                     type="button"
                     onClick={() => handleScroll('left')}
                     aria-label="Scroll left"
-                    className="hidden sm:flex absolute left-0 top-1/2 -translate-y-1/2 -translate-x-3 w-9 h-9 rounded-full bg-white dark:bg-zinc-800 border border-gray-200 dark:border-white/10 text-zinc-900 dark:text-white hover:bg-zinc-900 hover:text-white dark:hover:bg-white dark:hover:text-black shadow-md items-center justify-center transition-all cursor-pointer z-20"
+                    className="hidden sm:flex absolute left-0 top-1/2 -translate-y-1/2 -translate-x-3 w-9 h-9 rounded-full bg-white dark:bg-zinc-800 border border-gray-200 dark:border-white/10 text-zinc-900 dark:text-white hover:bg-[#B8860B] hover:text-white hover:border-[#B8860B] dark:hover:bg-[#B8860B] dark:hover:text-white items-center justify-center transition-all cursor-pointer z-20"
                 >
                     <MdChevronLeft className="text-2xl" />
                 </button>
@@ -122,13 +122,13 @@ const CategorySelector = ({ categories, activeCategory = null }: CategorySelecto
                 >
                     <div className={`w-[64px] h-[64px] sm:w-[72px] sm:h-[72px] rounded-full p-0.5 transition-all duration-300 ${
                         !activeCategory 
-                        ? 'border-2 border-zinc-900 dark:border-white' 
-                        : 'border border-gray-200 dark:border-white/10 group-hover/item:border-zinc-900 dark:group-hover/item:border-white'
+                        ? 'border-2 border-[#B8860B] ring-2 ring-[#B8860B]/20' 
+                        : 'border border-gray-200 dark:border-white/10 group-hover/item:border-[#B8860B]'
                     }`}>
                         <div className={`w-full h-full rounded-full flex items-center justify-center transition-all duration-300 ${
                             !activeCategory
-                            ? 'bg-zinc-900 text-white dark:bg-white dark:text-black'
-                            : 'bg-gray-50 dark:bg-zinc-800 text-gray-700 dark:text-gray-300 group-hover/item:text-black dark:group-hover/item:text-white'
+                            ? 'bg-[#B8860B] text-white'
+                            : 'bg-gray-50 dark:bg-zinc-800 text-gray-700 dark:text-gray-300 group-hover/item:text-[#B8860B]'
                         }`}>
                             <MdGridView className="text-2xl sm:text-3xl" />
                         </div>
@@ -136,7 +136,7 @@ const CategorySelector = ({ categories, activeCategory = null }: CategorySelecto
 
                     <div className="flex flex-col items-center">
                         <span className={`text-[11px] sm:text-xs font-semibold text-center leading-tight line-clamp-1 ${
-                            !activeCategory ? 'text-zinc-900 dark:text-white font-bold' : 'text-gray-600 dark:text-gray-400 group-hover/item:text-gray-900 dark:group-hover/item:text-white'
+                            !activeCategory ? 'text-[#B8860B] dark:text-[#E5B54A] font-bold' : 'text-gray-600 dark:text-gray-400 group-hover/item:text-[#B8860B]'
                         }`}>
                             {t("products.allProducts")}
                         </span>
@@ -146,7 +146,7 @@ const CategorySelector = ({ categories, activeCategory = null }: CategorySelecto
                 {/* Category Circles */}
                 {categories.map((category) => {
                     const isActive = activeCategory?.slug === category.slug;
-                    const defaultImage = 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=300';
+                    const defaultImage = 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=300';
                     const imageToUse = category.image || defaultImage;
                     
                     return (
@@ -158,8 +158,8 @@ const CategorySelector = ({ categories, activeCategory = null }: CategorySelecto
                         >
                             <div className={`w-[64px] h-[64px] sm:w-[72px] sm:h-[72px] rounded-full p-0.5 transition-all duration-300 ${
                                 isActive 
-                                ? 'border-2 border-zinc-900 dark:border-white' 
-                                : 'border border-gray-200 dark:border-white/10 group-hover/item:border-zinc-900 dark:group-hover/item:border-white'
+                                ? 'border-2 border-[#B8860B] ring-2 ring-[#B8860B]/25' 
+                                : 'border border-gray-200 dark:border-white/10 group-hover/item:border-[#B8860B]'
                             }`}>
                                 <div className="w-full h-full rounded-full overflow-hidden bg-gray-50 dark:bg-zinc-900">
                                     <ResilientImage 
@@ -174,8 +174,8 @@ const CategorySelector = ({ categories, activeCategory = null }: CategorySelecto
                             <div className="flex flex-col items-center max-w-[72px] sm:max-w-[80px]">
                                 <span className={`text-[11px] sm:text-xs font-semibold text-center leading-tight line-clamp-1 transition-colors duration-200 ${
                                     isActive 
-                                    ? 'text-zinc-900 dark:text-white font-bold' 
-                                    : 'text-gray-600 dark:text-gray-400 group-hover/item:text-gray-900 dark:group-hover/item:text-white'
+                                    ? 'text-[#B8860B] dark:text-[#E5B54A] font-bold' 
+                                    : 'text-gray-600 dark:text-gray-400 group-hover/item:text-[#B8860B] dark:group-hover/item:text-[#E5B54A]'
                                 }`}>
                                     {category.name}
                                 </span>
@@ -191,7 +191,7 @@ const CategorySelector = ({ categories, activeCategory = null }: CategorySelecto
                     type="button"
                     onClick={() => handleScroll('right')}
                     aria-label="Scroll right"
-                    className="hidden sm:flex absolute right-0 top-1/2 -translate-y-1/2 translate-x-3 w-9 h-9 rounded-full bg-white dark:bg-zinc-800 border border-gray-200 dark:border-white/10 text-zinc-900 dark:text-white hover:bg-zinc-900 hover:text-white dark:hover:bg-white dark:hover:text-black shadow-md items-center justify-center transition-all cursor-pointer z-20"
+                    className="hidden sm:flex absolute right-0 top-1/2 -translate-y-1/2 translate-x-3 w-9 h-9 rounded-full bg-white dark:bg-zinc-800 border border-gray-200 dark:border-white/10 text-zinc-900 dark:text-white hover:bg-[#B8860B] hover:text-white hover:border-[#B8860B] dark:hover:bg-[#B8860B] dark:hover:text-white items-center justify-center transition-all cursor-pointer z-20"
                 >
                     <MdChevronRight className="text-2xl" />
                 </button>

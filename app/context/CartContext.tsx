@@ -10,13 +10,14 @@ export interface CartItem {
     quantity: number;
     slug: string;
     description?: string;
+    selectedOption?: string;
 }
 
 interface CartContextType {
     items: CartItem[];
     addItem: (item: CartItem) => void;
-    removeItem: (id: string) => void;
-    updateQuantity: (id: string, quantity: number) => void;
+    removeItem: (id: string, selectedOption?: string) => void;
+    updateQuantity: (id: string, quantity: number, selectedOption?: string) => void;
     clearCart: () => void;
     cartCount: number;
     totalItems: number;
@@ -33,6 +34,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     const [items, setItems] = useState<CartItem[]>([]);
     const [isLoaded, setIsLoaded] = useState(false);
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+    const getItemKey = (item: { id: string; selectedOption?: string }) => 
+        `${item.id}:${item.selectedOption || ''}`;
 
     // Load from local storage on mount
     useEffect(() => {
@@ -56,10 +60,11 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
     const addItem = (newItem: CartItem) => {
         setItems(prev => {
-            const existing = prev.find(item => item.id === newItem.id);
+            const targetKey = getItemKey(newItem);
+            const existing = prev.find(item => getItemKey(item) === targetKey);
             if (existing) {
                 return prev.map(item =>
-                    item.id === newItem.id
+                    getItemKey(item) === targetKey
                         ? { ...item, quantity: item.quantity + newItem.quantity }
                         : item
                 );
@@ -68,15 +73,25 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         });
     };
 
-    const removeItem = (id: string) => {
-        setItems(prev => prev.filter(item => item.id !== id));
+    const removeItem = (id: string, selectedOption?: string) => {
+        const targetKey = `${id}:${selectedOption || ''}`;
+        setItems(prev => prev.filter(item => {
+            if (selectedOption !== undefined) {
+                return getItemKey(item) !== targetKey;
+            }
+            return item.id !== id;
+        }));
     };
 
-    const updateQuantity = (id: string, quantity: number) => {
+    const updateQuantity = (id: string, quantity: number, selectedOption?: string) => {
         if (quantity < 1) return;
-        setItems(prev => prev.map(item =>
-            item.id === id ? { ...item, quantity } : item
-        ));
+        const targetKey = `${id}:${selectedOption || ''}`;
+        setItems(prev => prev.map(item => {
+            if (selectedOption !== undefined) {
+                return getItemKey(item) === targetKey ? { ...item, quantity } : item;
+            }
+            return item.id === id ? { ...item, quantity } : item;
+        }));
     };
 
     const clearCart = () => {

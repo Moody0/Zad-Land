@@ -16,6 +16,7 @@ interface Order {
         id: string;
         quantity: number;
         price: number;
+        options?: string | null;
         product: {
             name: string;
             images: string;
@@ -148,9 +149,16 @@ export default function OrderDetailsModal({ isOpen, onClose, order, canDelete, o
                                                             className="w-full h-full object-cover"
                                                         />
                                                     </div>
-                                                    <span className="text-xs font-bold text-text-main dark:text-white line-clamp-1">
-                                                        {item.product?.name || 'Deleted Product'}
-                                                    </span>
+                                                    <div className="flex flex-col min-w-0">
+                                                        <span className="text-xs font-bold text-text-main dark:text-white line-clamp-1">
+                                                            {item.product?.name || 'Deleted Product'}
+                                                        </span>
+                                                        {item.options && (
+                                                            <span className="text-[10px] font-bold text-primary bg-primary/10 px-1.5 py-0.5 rounded w-fit mt-0.5">
+                                                                {item.options}
+                                                            </span>
+                                                        )}
+                                                    </div>
                                                 </div>
                                             </td>
                                             <td className="p-3 text-center text-xs font-bold text-text-sub dark:text-gray-400">

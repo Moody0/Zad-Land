@@ -34,10 +34,13 @@ const AccordionItem = ({ title, content, isOpen, onClick, isRTL }: { title: stri
 };
 
 interface ProductAccordionsProps {
-    description: string | null;
+    description?: string | null;
+    descriptionAr?: string | null;
+    descriptionEn?: string | null;
+    options?: string | null;
 }
 
-const ProductAccordions = ({ description }: ProductAccordionsProps) => {
+const ProductAccordions = ({ description, descriptionAr, descriptionEn, options }: ProductAccordionsProps) => {
     const { language } = useLanguage();
     const isRTL = language === 'ar';
     const [openIndex, setOpenIndex] = useState<number>(0);
@@ -46,22 +49,28 @@ const ProductAccordions = ({ description }: ProductAccordionsProps) => {
         setOpenIndex(openIndex === index ? -1 : index);
     };
 
+    const activeDescription = isRTL
+        ? (descriptionAr || description)
+        : (descriptionEn || description || descriptionAr);
+
     return (
         <div className="flex flex-col w-full mt-1 md:border-t border-[#D5D5D5] dark:border-white/5">
             <AccordionItem
-                title={isRTL ? 'تفاصيل المنتج' : 'Product Details'}
-                content={<div className="prose prose-sm dark:prose-invert max-w-none" dangerouslySetInnerHTML={{ __html: description || '' }} />}
+                title={isRTL ? 'تفاصيل ومواصفات المنتج' : 'Product Details & Specs'}
+                content={<div className="prose prose-sm dark:prose-invert max-w-none whitespace-pre-line leading-relaxed">{activeDescription || (isRTL ? 'منتج غذائي أصلي عالي الجودة من شركة زاد لاند' : 'Authentic high quality product from Zad Land')}</div>}
                 isOpen={openIndex === 0}
                 onClick={() => toggleAccordion(0)}
                 isRTL={isRTL}
             />
-            <AccordionItem
-                title={isRTL ? 'معلومات إضافية' : 'Additional Information'}
-                content={<p>{isRTL ? 'لا يوجد معلومات إضافية.' : 'No additional information available.'}</p>}
-                isOpen={openIndex === 1}
-                onClick={() => toggleAccordion(1)}
-                isRTL={isRTL}
-            />
+            {options && (
+                <AccordionItem
+                    title={isRTL ? 'الأحجام والخيارات المتوفرة' : 'Available Sizes & Options'}
+                    content={<p className="font-semibold text-zinc-800 dark:text-zinc-200">{options}</p>}
+                    isOpen={openIndex === 1}
+                    onClick={() => toggleAccordion(1)}
+                    isRTL={isRTL}
+                />
+            )}
         </div>
     );
 };

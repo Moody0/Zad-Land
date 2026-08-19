@@ -33,11 +33,11 @@ export function Providers({ children, session, initialExchangeRate = 135 }: { ch
                                     },
                                     success: {
                                         iconTheme: {
-                                            primary: '#C20059',
+                                            primary: '#2E7D32',
                                             secondary: 'white',
                                         },
                                         style: {
-                                            border: '1px solid rgba(194, 0, 89, 0.2)',
+                                            border: '1px solid rgba(46, 125, 50, 0.2)',
                                         }
                                     },
                                     error: {

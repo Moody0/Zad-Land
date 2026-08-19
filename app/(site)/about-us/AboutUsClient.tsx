@@ -56,7 +56,7 @@ export default function AboutUsClient({ settings }: { settings: AboutUsSettings 
     const narrativeImage = settings?.aboutNarrativeImage || "https://lh3.googleusercontent.com/aida-public/AB6AXuC4yp4c_LJLNPwaV2ay8DZ6xRHD0UF1WqXU8eDtrdDoiVjtq9oNRc9Cn6cnbqsNwOLO-y-99jnkiLnCsGLs2rQqthU8TPqhAh2Msisbst1UyfyrILBR5fRO7KYu90u1FEoeRRjGceGVbB5vz2SJAtjzUrLLtA6BmR8VN5a5Seo4MraBJj7i4Gs4QPEZbURtSN-F7wbJsu4WNj3pEaWlye2SuJvokQhYXJ27gnAoabHg5_0_4DZY49qyKnQuMHHL9atOIILRIMD3FkeZ";
 
     return (
-        <main className="flex-1 bg-white dark:bg-[#1a0d11]" dir={dir}>
+        <main className="flex-1 bg-white dark:bg-background-dark" dir={dir}>
             {/* Hero Section */}
             <section className="container-custom py-10">
                 <div className="relative h-[500px] w-full overflow-hidden rounded-3xl flex items-center justify-center text-center">
@@ -76,7 +76,7 @@ export default function AboutUsClient({ settings }: { settings: AboutUsSettings 
                         <div className="animate-fade-in-up animation-delay-400">
                             <Link
                                 href="/products"
-                                className="bg-primary hover:bg-[#d43a6b] text-white px-10 py-4 rounded-2xl font-bold transition-all active:scale-95 inline-block"
+                                className="bg-primary hover:bg-[#9E7309] text-white px-10 py-4 rounded-2xl font-bold transition-all active:scale-95 inline-block"
                             >
                                 {t('aboutUsPage.hero.cta')}
                             </Link>
@@ -92,7 +92,7 @@ export default function AboutUsClient({ settings }: { settings: AboutUsSettings 
                         <div className="absolute -inset-4 bg-primary/10 rounded-3xl transition-all group-hover:bg-primary/15 blur-2xl"></div>
                         <img
                             alt="Brand Narrative"
-                            className="relative rounded-3xl w-full object-cover shadow-[0_20px_50px_rgba(0,0,0,0.15)] group-hover:scale-[1.02] transition-transform duration-500"
+                            className="relative rounded-3xl w-full object-cover border border-[#B8860B]/15 group-hover:scale-[1.02] transition-transform duration-500"
                             src={narrativeImage}
                         />
                     </div>
@@ -107,10 +107,10 @@ export default function AboutUsClient({ settings }: { settings: AboutUsSettings 
                         </h2>
                     </div>
                     <div className="flex flex-col gap-6">
-                        <p className="text-[#4a353b] dark:text-gray-300 text-xl leading-relaxed">
+                        <p className="text-text-muted-light dark:text-text-muted-dark text-xl leading-relaxed">
                             {getContent(settings?.aboutNarrativeDesc1, settings?.aboutNarrativeDesc1Ar)}
                         </p>
-                        <p className="text-[#4a353b] dark:text-gray-300 text-xl leading-relaxed">
+                        <p className="text-text-muted-light dark:text-text-muted-dark text-xl leading-relaxed">
                             {getContent(settings?.aboutNarrativeDesc2, settings?.aboutNarrativeDesc2Ar)}
                         </p>
                     </div>

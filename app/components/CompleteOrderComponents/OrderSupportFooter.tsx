@@ -13,17 +13,17 @@ const OrderSupportFooter = () => {
             <div className="w-full mt-8">
                 <Link
                     href="/products"
-                    className="w-full bg-zinc-900 hover:bg-black dark:bg-white dark:hover:bg-gray-200 text-white dark:text-black font-bold rounded-xl h-12 flex items-center justify-center gap-2 transition-all active:scale-[0.98] text-sm"
+                    className="w-full bg-[#072835] hover:bg-[#0c4054] text-white font-bold rounded-xl h-12 flex items-center justify-center gap-2 transition-all active:scale-[0.98] text-sm"
                 >
                     <span>{t('cart.continueShopping')}</span>
-                    <MdShoppingBag className="text-base" />
+                    <MdShoppingBag className="text-base text-[#B8860B]" />
                 </Link>
             </div>
             <div className="mt-8 flex flex-col items-center gap-2 text-center">
                 <p className="text-xs text-gray-500">
                     {t('checkout.needAssistance')}{' '}
                     <a
-                        className="text-zinc-900 dark:text-white font-bold hover:underline"
+                        className="text-[#072835] dark:text-[#B8860B] font-bold hover:underline"
                         href="https://wa.me/963933254796"
                         target="_blank"
                         rel="noopener noreferrer"

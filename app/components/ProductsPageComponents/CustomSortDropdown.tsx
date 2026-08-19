@@ -45,7 +45,7 @@ const CustomSortDropdown: React.FC<CustomSortDropdownProps> = ({ sort, setSort, 
             <button
                 type="button"
                 onClick={() => setIsOpen((prev) => !prev)}
-                className="flex items-center gap-2 px-3.5 py-2 bg-gray-100 dark:bg-zinc-800 hover:bg-gray-200 dark:hover:bg-zinc-700/80 text-zinc-900 dark:text-white rounded-full text-xs font-bold border border-gray-200 dark:border-white/10 transition-all active:scale-95 shadow-sm"
+                className="flex items-center gap-2 px-3.5 py-2 bg-gray-100 dark:bg-zinc-800 hover:border-[#B8860B] text-zinc-900 dark:text-white rounded-full text-xs font-bold border border-gray-200 dark:border-white/10 transition-all active:scale-95"
                 aria-expanded={isOpen}
                 aria-haspopup="listbox"
             >
@@ -53,7 +53,7 @@ const CustomSortDropdown: React.FC<CustomSortDropdownProps> = ({ sort, setSort, 
                 <span className="truncate max-w-[130px] sm:max-w-none">{selectedOption.label}</span>
                 <MdExpandMore
                     className={`text-base text-gray-500 dark:text-gray-400 transition-transform duration-200 shrink-0 ${
-                        isOpen ? "rotate-180 text-zinc-900 dark:text-white" : ""
+                        isOpen ? "rotate-180 text-[#B8860B]" : ""
                     }`}
                 />
             </button>
@@ -84,8 +84,8 @@ const CustomSortDropdown: React.FC<CustomSortDropdownProps> = ({ sort, setSort, 
                                         }}
                                         className={`w-full px-3.5 py-2.5 rounded-xl text-xs flex items-center justify-between transition-colors ${
                                             isSelected
-                                                ? "bg-zinc-900 text-white dark:bg-white dark:text-black font-extrabold shadow-sm"
-                                                : "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-zinc-800 font-medium"
+                                                ? "bg-[#B8860B] text-white font-extrabold"
+                                                : "text-gray-700 dark:text-gray-300 hover:bg-[#B8860B]/10 hover:text-[#B8860B] font-medium"
                                         }`}
                                         role="option"
                                         aria-selected={isSelected}

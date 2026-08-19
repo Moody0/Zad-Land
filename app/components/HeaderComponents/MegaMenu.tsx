@@ -31,6 +31,8 @@ interface TopProduct {
 interface TrendingProduct {
     id: string;
     name: string;
+    nameAr?: string | null;
+    nameEn?: string | null;
     slug: string;
     images: string;
     price: number;
@@ -41,7 +43,9 @@ interface TrendingProduct {
 export interface NavMainCategory {
     id: string;
     name: string;
+    nameEn?: string;
     slug: string;
+    image?: string | null;
     brands: Brand[];
     categories: Category[];
     topProducts: TopProduct[];
@@ -61,6 +65,8 @@ function MiniProductCard({ product, onClose }: { product: TrendingProduct; onClo
     const { addItem } = useCart();
     const { language, dir } = useLanguage();
 
+    const displayName = (language === "ar" ? product.nameAr : product.nameEn) || product.name || product.nameAr || "";
+
     const getImages = (images: string) => {
         try {
             const parsed = JSON.parse(images);
@@ -79,13 +85,13 @@ function MiniProductCard({ product, onClose }: { product: TrendingProduct; onClo
         e.stopPropagation();
         addItem({
             id: product.id,
-            name: product.name,
+            name: displayName,
             price: Number(product.discountPrice || product.price),
             image: primaryImage,
             slug: product.slug,
             quantity: 1,
         });
-        toast.success(language === "ar" ? `تمت إضافة ${product.name} إلى السلة` : `Added ${product.name} to cart`);
+        toast.success(language === "ar" ? `تمت إضافة ${displayName} إلى السلة` : `Added ${displayName} to cart`);
     };
 
     return (
@@ -94,7 +100,7 @@ function MiniProductCard({ product, onClose }: { product: TrendingProduct; onClo
             {/* Quick View Icon */}
             <button
                 onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
-                className="absolute z-20 top-3 left-3 w-8 h-8 bg-white text-black hover:bg-black hover:text-white rounded-full shadow-md flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 scale-90 group-hover:scale-100"
+                className="absolute z-20 top-3 left-3 w-8 h-8 bg-white text-black hover:bg-[#B8860B] hover:text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 scale-90 group-hover:scale-100 border border-gray-100"
                 aria-label="Quick View"
             >
                 <MdSearch size={18} />
@@ -102,12 +108,12 @@ function MiniProductCard({ product, onClose }: { product: TrendingProduct; onClo
 
             {/* Image Area — 177×177px */}
             <div className="relative w-[177px] h-[177px] shrink-0 overflow-hidden">
-                <Link href={`/products/${product.slug}`} onClick={onClose} className="absolute inset-0 block w-full h-full" aria-label={product.name}>
+                <Link href={`/products/${product.slug}`} onClick={onClose} className="absolute inset-0 block w-full h-full" aria-label={displayName}>
                     {/* Primary Image */}
                     <div className={`absolute inset-0 transition-opacity duration-500 z-10 ${secondaryImage ? "group-hover:opacity-0" : ""}`}>
                         <ResilientImage
                             src={primaryImage}
-                            alt={product.name}
+                            alt={displayName}
                             className="w-full h-full object-cover mix-blend-multiply dark:mix-blend-normal"
                             loading="lazy"
                         />
@@ -117,7 +123,7 @@ function MiniProductCard({ product, onClose }: { product: TrendingProduct; onClo
                         <div className="absolute inset-0 transition-opacity duration-500 opacity-0 group-hover:opacity-100 z-0">
                             <ResilientImage
                                 src={secondaryImage}
-                                alt={product.name}
+                                alt={displayName}
                                 className="w-full h-full object-cover mix-blend-multiply dark:mix-blend-normal"
                                 loading="lazy"
                             />
@@ -129,7 +135,7 @@ function MiniProductCard({ product, onClose }: { product: TrendingProduct; onClo
                 <div className="absolute inset-x-2 bottom-3 z-20 translate-y-4 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
                     <button
                         onClick={handleAddToCart}
-                        className="w-full bg-white hover:bg-black text-black hover:text-white h-[36px] rounded-full text-[12px] font-bold shadow-lg transition-all duration-300 flex items-center justify-center"
+                        className="w-full bg-[#072835] hover:bg-[#2E7D32] text-white h-[36px] rounded-full text-[12px] font-bold transition-all duration-300 flex items-center justify-center cursor-pointer"
                     >
                         {language === "ar" ? "اضافة للعربة" : "Add to Cart"}
                     </button>
@@ -146,11 +152,10 @@ function MiniProductCard({ product, onClose }: { product: TrendingProduct; onClo
                 )}
                 {/* Title */}
                 <h3
-                    dir="ltr"
                     className={`text-[rgb(7,40,53)] dark:text-white text-[12px] font-semibold leading-tight mb-1 line-clamp-2 ${dir === "rtl" ? "text-right" : "text-left"}`}
                 >
                     <Link href={`/products/${product.slug}`} onClick={onClose}>
-                        {product.name}
+                        {displayName}
                     </Link>
                 </h3>
                 {/* Price */}
@@ -182,24 +187,18 @@ export default function MegaMenu({ data, onClose, onMouseEnter, onMouseLeave }: 
 
     return (
         <div
-            className="absolute top-full left-0 right-0 z-50"
+            className="absolute top-full left-0 right-0 z-40"
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}
         >
             <motion.div
-                className="bg-white dark:bg-[#1a1a1a] border-b border-gray-200 dark:border-white/10 shadow-xl overflow-hidden origin-top"
-                initial={{ clipPath: "inset(0% 0% 100% 0%)" }}
-                animate={{ clipPath: "inset(0% 0% 0% 0%)" }}
-                exit={{ clipPath: "inset(0% 0% 100% 0%)" }}
-                transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+                className="bg-white dark:bg-[#1a1a1a] border-b border-gray-200 dark:border-white/10 shadow-2xl overflow-hidden origin-top"
+                initial={{ opacity: 0, y: -6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -6 }}
+                transition={{ duration: 0.16, ease: "easeOut" }}
             >
-                <motion.div
-                    className="container-custom py-8"
-                    initial={{ opacity: 0, y: -15 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.7, delay: 0.35, ease: "easeOut" }}
-                >
+                <div className="container-custom py-8">
                     <div
                         className={`grid gap-8 ${dir === "rtl" ? "text-right" : "text-left"}`}
                         style={{ gridTemplateColumns: "1fr 1fr 1fr 2fr" }}
@@ -309,7 +308,7 @@ export default function MegaMenu({ data, onClose, onMouseEnter, onMouseLeave }: 
                             )}
                         </div>
                     </div>
-                </motion.div>
+                </div>
             </motion.div>
         </div>
     );

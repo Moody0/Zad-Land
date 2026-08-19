@@ -177,7 +177,7 @@ export default function BannerModal({ isOpen, onClose, banner }: BannerModalProp
                         <textarea
                             value={subtitle}
                             onChange={(e) => setSubtitle(e.target.value)}
-                            placeholder="Discover our new botanical collection..."
+                            placeholder="Discover our premium goods from top global brands..."
                             rows={2}
                             className="w-full px-4 py-2.5 rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
                         />

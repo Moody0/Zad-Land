@@ -12,6 +12,8 @@ interface Product {
     id: string;
     slug: string;
     name: string;
+    nameAr?: string | null;
+    nameEn?: string | null;
     description: string | null;
     price: number;
     discountPrice?: number | null;
@@ -103,17 +105,17 @@ const TrendingWeekly = ({ products }: TrendingWeeklyProps) => {
                                 hidden: { opacity: 0, scale: 0.9, y: 20 },
                                 visible: { opacity: 1, scale: 1, y: 0, transition: { type: "spring", stiffness: 200, damping: 20 } }
                             }}
-                            className="group flex items-center gap-4 bg-[#F7F7F5] dark:bg-[#1e1e1e] rounded-[10px] p-3 md:p-4 h-[112px] transition-all duration-300"
+                            className="group flex items-center gap-4 bg-[#F7F7F2] dark:bg-[#22221A] border border-[#B8860B]/10 hover:border-[#B8860B]/40 rounded-[12px] p-3 md:p-4 h-[112px] transition-all duration-300 shadow-xs hover:shadow-sm"
                         >
                             {/* Product Image */}
                             <Link
                                 href={`/products/${product.slug}`}
-                                className="w-[86px] h-[86px] shrink-0 rounded-lg overflow-hidden bg-white"
+                                className="w-[86px] h-[86px] shrink-0 rounded-lg overflow-hidden bg-white p-1 border border-gray-100 dark:border-white/5"
                             >
                                 <ResilientImage
                                     src={getFirstImage(product.images)}
                                     alt={product.name}
-                                    className="w-full h-full object-cover transition-transform duration-500"
+                                    className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
                                     loading="lazy"
                                 />
                             </Link>
@@ -122,24 +124,24 @@ const TrendingWeekly = ({ products }: TrendingWeeklyProps) => {
                             <div className={`flex-1 min-w-0 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
                                 {/* Brand */}
                                 {product.brand && (
-                                    <p className="text-[11px] md:text-[12px] text-[rgba(7,40,53,0.6)] dark:text-gray-400 mb-0.5 truncate uppercase">
+                                    <p className="text-[11px] md:text-[12px] font-bold text-[#B8860B] dark:text-[#E5B54A] mb-0.5 truncate uppercase">
                                         {product.brand.name.toUpperCase()}
                                     </p>
                                 )}
                                 {/* Product Name */}
-                                <h3 dir="ltr" className={`text-[12px] md:text-[15px] font-semibold text-[rgb(7,40,53)] dark:text-white truncate leading-tight mb-1 font-sans tracking-normal ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
+                                <h3 className={`text-[12px] md:text-[15px] font-semibold text-[#072835] dark:text-white truncate leading-tight mb-1 font-sans tracking-normal ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
                                     <Link
                                         href={`/products/${product.slug}`}
                                         className="hover-underline-animated"
                                     >
-                                        {product.name}
+                                        {language === 'ar' ? (product.nameAr || product.name) : (product.nameEn || product.name)}
                                     </Link>
                                 </h3>
                                 {/* Price */}
                                 <div className={`flex items-center gap-2 ${dir === 'rtl' ? 'flex-row' : 'flex-row'}`}>
                                     {product.discountPrice ? (
                                         <>
-                                            <span className="text-sm md:text-base font-bold text-[rgb(7,40,53)] dark:text-white">
+                                            <span className="text-sm md:text-base font-extrabold text-[#2E7D32] dark:text-[#4ade80]">
                                                 {formatPrice(Number(product.discountPrice))}
                                             </span>
                                             <span className="text-xs text-gray-400 line-through">
@@ -147,7 +149,7 @@ const TrendingWeekly = ({ products }: TrendingWeeklyProps) => {
                                             </span>
                                         </>
                                     ) : (
-                                        <span className="text-sm md:text-base font-bold text-[rgb(7,40,53)] dark:text-white">
+                                        <span className="text-sm md:text-base font-extrabold text-[#072835] dark:text-white">
                                             {formatPrice(Number(product.price))}
                                         </span>
                                     )}
@@ -157,7 +159,7 @@ const TrendingWeekly = ({ products }: TrendingWeeklyProps) => {
                             {/* Arrow Button */}
                             <Link
                                 href={`/products/${product.slug}`}
-                                className="shrink-0 w-8 h-8 md:w-9 md:h-9 rounded-full bg-white dark:bg-[#000000] border border-gray-200 dark:border-gray-700 flex items-center justify-center transition-all group-hover:bg-[#1a1a1a] group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-black"
+                                className="shrink-0 w-8 h-8 md:w-9 md:h-9 rounded-full bg-white dark:bg-[#141414] border border-gray-200 dark:border-white/10 flex items-center justify-center transition-all group-hover:bg-[#B8860B] group-hover:border-[#B8860B] group-hover:text-white"
                             >
                                 <svg className={`w-3.5 h-3.5 ${dir === 'rtl' ? '' : 'rotate-180'}`} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M12.5 16.25L6.25 10L12.5 3.75" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />

@@ -9,10 +9,10 @@ const AnnouncementBar = () => {
 
     return (
         <div className="w-full bg-primary text-white text-center py-2 px-4 text-xs md:text-sm font-medium z-[60] relative">
-            <div className="flex items-center justify-center gap-2">
-                <span>💎</span>
+            <div className="flex items-center justify-center gap-2 font-bold tracking-wide">
+                <MdLocalShipping className="text-base shrink-0" />
                 <span>{t('announcement.freeShipping')}</span>
-                <span>💎</span>
+                <MdLocalShipping className="text-base shrink-0 hidden sm:inline-block" />
             </div>
         </div>
     );

@@ -12,7 +12,12 @@ interface Product {
     id: string;
     slug: string;
     name: string;
+    nameAr?: string | null;
+    nameEn?: string | null;
     description: string | null;
+    descriptionAr?: string | null;
+    descriptionEn?: string | null;
+    options?: string | null;
     price: number;
     discountPrice?: number | null;
     images: string;
@@ -87,9 +92,9 @@ const FeaturedCollection = ({ newArrivals, bundles, bestSellers }: FeaturedColle
                                 role="tab"
                                 aria-selected={activeTab === index}
                                 onClick={() => setActiveTab(index)}
-                                className={`tabs__btn whitespace-nowrap px-8 py-3 text-[15px] font-medium transition-all border-b-2 ${activeTab === index
-                                    ? 'border-[rgb(46,46,46)] text-[rgb(46,46,46)]'
-                                    : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
+                                className={`tabs__btn whitespace-nowrap px-6 py-2.5 text-[15px] transition-all border-b-2 ${activeTab === index
+                                    ? 'border-[#B8860B] text-[#B8860B] dark:text-[#E5B54A] font-bold'
+                                    : 'border-transparent text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 font-medium'
                                     }`}
                             >
                                 {t(tab.labelKey)}

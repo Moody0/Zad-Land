@@ -10,6 +10,7 @@ interface Category {
     id: string;
     name: string;
     brandId: string;
+    mainCategoryId?: string | null;
 }
 
 interface Brand {
@@ -17,18 +18,31 @@ interface Brand {
     name: string;
     group: string;
     isActive?: boolean;
+    mainCategoryId?: string | null;
+}
+
+interface MainCategory {
+    id: string;
+    name: string;
+    slug?: string;
 }
 
 interface Product {
     id: string;
     name: string;
+    nameAr?: string | null;
+    nameEn?: string | null;
     description: string | null;
+    descriptionAr?: string | null;
+    descriptionEn?: string | null;
     categoryId: string;
+    mainCategoryId?: string | null;
     price: number;
     discountPrice: number | null;
     discountType: string | null;
     discountValue: number | null;
     stock: number;
+    options?: string | null;
     sku: string | null;
     images: string;
     brandId: string;
@@ -39,21 +53,28 @@ interface AddProductModalProps {
     onClose: () => void;
     categories: Category[];
     brands: Brand[];
-    product?: Product | null; // Optional product for editing
+    mainCategories?: MainCategory[];
+    product?: Product | null;
 }
 
-export default function AddProductModal({ isOpen, onClose, categories, brands, product }: AddProductModalProps) {
+export default function AddProductModal({ isOpen, onClose, categories, brands, mainCategories = [], product }: AddProductModalProps) {
     const { t, language } = useLanguage();
     const [isLoading, setIsLoading] = useState(false);
     const [formData, setFormData] = useState({
         name: "",
+        nameAr: "",
+        nameEn: "",
         description: "",
+        descriptionAr: "",
+        descriptionEn: "",
+        mainCategoryId: "",
         brandId: brands[0]?.id || "",
         categoryId: "",
         price: "",
         discountType: "NONE", // NONE, PERCENTAGE, FIXED
         discountValue: "",
         stock: "",
+        options: "",
         sku: "",
         images: "", // Comma separated links
     });
@@ -65,47 +86,60 @@ export default function AddProductModal({ isOpen, onClose, categories, brands, p
         if (product && isOpen) {
             setFormData({
                 name: product.name,
+                nameAr: product.nameAr || "",
+                nameEn: product.nameEn || product.name || "",
                 description: product.description || "",
+                descriptionAr: product.descriptionAr || "",
+                descriptionEn: product.descriptionEn || product.description || "",
+                mainCategoryId: product.mainCategoryId || "",
                 brandId: product.brandId,
                 categoryId: product.categoryId,
                 price: product.price.toString(),
                 discountType: product.discountType || "NONE",
                 discountValue: product.discountValue?.toString() || "",
                 stock: product.stock.toString(),
+                options: product.options || "",
                 sku: product.sku || "",
                 images: product.images,
             });
         } else if (isOpen) {
             setFormData({
                 name: "",
+                nameAr: "",
+                nameEn: "",
                 description: "",
+                descriptionAr: "",
+                descriptionEn: "",
+                mainCategoryId: mainCategories[0]?.id || "",
                 brandId: brands[0]?.id || "",
-                categoryId: "",
+                categoryId: categories[0]?.id || "",
                 price: "",
                 discountType: "NONE",
                 discountValue: "",
                 stock: "",
+                options: "",
                 sku: "",
                 images: "",
             });
         }
-    }, [product, isOpen, brands]);
+    }, [product, isOpen, brands, categories, mainCategories]);
 
     if (!isOpen) return null;
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!formData.name || !formData.brandId || !formData.categoryId || !formData.price || !formData.images) {
-            toast.error(t("admin.addProductModal.fillRequiredFields"));
+        const primaryName = formData.nameEn || formData.name || formData.nameAr;
+        if (!primaryName || !formData.brandId || !formData.categoryId || !formData.price || !formData.images) {
+            toast.error(t("admin.addProductModal.fillRequiredFields") || "Please fill all required fields");
             return;
         }
 
         setIsLoading(true);
         try {
             let calculatedDiscountPrice = null;
-            if (formData.discountType === "FIXED") {
+            if (formData.discountType === "FIXED" && formData.discountValue) {
                 calculatedDiscountPrice = parseFloat(formData.discountValue);
-            } else if (formData.discountType === "PERCENTAGE") {
+            } else if (formData.discountType === "PERCENTAGE" && formData.discountValue) {
                 const price = parseFloat(formData.price);
                 const percent = parseFloat(formData.discountValue);
                 calculatedDiscountPrice = price - (price * percent / 100);
@@ -113,10 +147,18 @@ export default function AddProductModal({ isOpen, onClose, categories, brands, p
 
             const formDataToSubmit = {
                 ...formData,
-                price: parseFloat(formData.price),
+                name: primaryName,
+                nameAr: formData.nameAr || null,
+                nameEn: formData.nameEn || primaryName,
+                description: formData.descriptionEn || formData.description || formData.descriptionAr || null,
+                descriptionAr: formData.descriptionAr || null,
+                descriptionEn: formData.descriptionEn || formData.description || null,
+                price: parseFloat(formData.price) || 0,
                 discountPrice: calculatedDiscountPrice,
                 discountValue: formData.discountType === "NONE" ? null : parseFloat(formData.discountValue),
                 stock: parseInt(formData.stock) || 0,
+                options: formData.options || null,
+                mainCategoryId: formData.mainCategoryId || null,
             };
 
             const result = product
@@ -124,24 +166,24 @@ export default function AddProductModal({ isOpen, onClose, categories, brands, p
                 : await createProduct(formDataToSubmit);
 
             if (result.success) {
-                toast.success(product ? t("admin.productUpdated") : t("admin.productCreated"));
+                toast.success(product ? (t("admin.productUpdated") || "Product updated") : (t("admin.productCreated") || "Product created"));
                 onClose();
             } else {
-                toast.error(result.error || (product ? t("admin.addProductModal.failedToUpdate") : t("admin.addProductModal.failedToCreate")));
+                toast.error(result.error || (product ? "Failed to update product" : "Failed to create product"));
             }
         } catch (err) {
             console.error(product ? "Error updating product:" : "Error creating product:", err);
-            toast.error(t("admin.addProductModal.errorGeneric"));
+            toast.error("An unexpected error occurred");
         } finally {
             setIsLoading(false);
         }
     };
 
     const addImageLink = () => {
-        if (!imageLink) return;
+        if (!imageLink.trim()) return;
         const currentImages = formData.images ? formData.images.split(',').filter(Boolean) : [];
-        if (!currentImages.includes(imageLink)) {
-            const newImages = [...currentImages, imageLink].filter(Boolean).join(',');
+        if (!currentImages.includes(imageLink.trim())) {
+            const newImages = [...currentImages, imageLink.trim()].filter(Boolean).join(',');
             setFormData({ ...formData, images: newImages });
         }
         setImageLink("");
@@ -152,7 +194,7 @@ export default function AddProductModal({ isOpen, onClose, categories, brands, p
         setFormData({ ...formData, images: newImages });
     };
 
-    const filteredCategories = categories.filter((category) => category.brandId === formData.brandId);
+    const filteredCategories = categories.filter((category) => !formData.brandId || category.brandId === formData.brandId);
 
     return (
         <div className="fixed inset-0 z-100 flex items-center justify-center p-4">
@@ -163,15 +205,15 @@ export default function AddProductModal({ isOpen, onClose, categories, brands, p
                 <div className="px-8 py-6 border-b border-black/[0.04] dark:border-white/[0.04] flex items-center justify-between">
                     <div>
                         <h3 className="text-2xl font-extrabold text-text-main dark:text-white tracking-tight">
-                            {product ? t("admin.addProductModal.titleEdit") : t("admin.addProductModal.titleAdd")}
+                            {product ? (language === 'ar' ? 'تعديل المنتج' : 'Edit Product') : (language === 'ar' ? 'إضافة منتج جديد' : 'Add New Product')}
                         </h3>
                         <p className="text-sm text-text-sub dark:text-gray-400">
-                            {product ? t("admin.addProductModal.subtitleEdit") : t("admin.addProductModal.subtitleAdd")}
+                            {product ? (language === 'ar' ? 'تحديث تفاصيل المنتج وبيانات الجملة' : 'Update product details and wholesale data') : (language === 'ar' ? 'أدخل تفاصيل وبيانات المنتج بالعربي والانجليزي' : 'Enter bilingual product details and wholesale specifications')}
                         </p>
                     </div>
                     <button
                         onClick={onClose}
-                        className="p-2 text-text-sub dark:text-gray-400 hover:text-primary hover:bg-primary/10 rounded-full transition-colors"
+                        className="p-2 text-text-sub dark:text-gray-400 hover:text-primary hover:bg-primary/10 rounded-full transition-colors cursor-pointer"
                     >
                         <MdClose className="text-[24px]" />
                     </button>
@@ -183,9 +225,9 @@ export default function AddProductModal({ isOpen, onClose, categories, brands, p
                     {/* Images Section */}
                     <div className="space-y-4">
                         <label className="text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400">
-                            {t("admin.addProductModal.productImages")}
+                            {language === 'ar' ? 'صور المنتج (Images)' : 'Product Images'}
                             <span className="block text-[10px] text-primary/70 font-normal">
-                                {t('admin.recommendedResolution')}: {t('admin.resProduct')}
+                                {language === 'ar' ? 'أدخل روابط الصور أو أضف رابط صورة مباشر' : 'Paste direct image URLs and click Add'}
                             </span>
                         </label>
 
@@ -194,7 +236,7 @@ export default function AddProductModal({ isOpen, onClose, categories, brands, p
                             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-4">
                                 {formData.images.split(',').filter(Boolean).map((url, index) => (
                                     <div key={index} className="relative aspect-square rounded-xl border border-black/[0.04] dark:border-white/[0.04] overflow-hidden group">
-                                        <img src={url} alt={`${t("admin.addProductModal.imagePreviewAlt")} ${index}`} className="w-full h-full object-cover" />
+                                        <img src={url} alt={`Preview ${index}`} className="w-full h-full object-cover" />
                                         
                                         {/* Main Image Badge */}
                                         {index === 0 && (
@@ -206,7 +248,7 @@ export default function AddProductModal({ isOpen, onClose, categories, brands, p
                                         <button
                                             type="button"
                                             onClick={() => removeImage(url)}
-                                            className="absolute top-1 end-1 size-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                                            className="absolute top-1 end-1 size-6 bg-red-500 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10 cursor-pointer"
                                         >
                                             <MdClose className="text-xs" />
                                         </button>
@@ -216,11 +258,10 @@ export default function AddProductModal({ isOpen, onClose, categories, brands, p
                         )}
 
                         <div className="flex flex-col gap-4">
-                            {/* Image Link Input */}
                             <div className="flex gap-2">
                                 <input
                                     className="flex-1 h-12 rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-gray-50/50 dark:bg-black/20 focus:bg-white dark:focus:bg-surface-dark focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all px-4 text-sm font-medium dark:text-white outline-none"
-                                    placeholder={t("admin.addProductModal.pasteImageUrlPlaceholder")}
+                                    placeholder={language === 'ar' ? 'ضع رابط الصورة هنا (https://...)' : 'Paste image URL here (https://...)'}
                                     type="text"
                                     value={imageLink}
                                     onChange={(e) => setImageLink(e.target.value)}
@@ -229,43 +270,98 @@ export default function AddProductModal({ isOpen, onClose, categories, brands, p
                                 <button
                                     type="button"
                                     onClick={addImageLink}
-                                    className="px-4 h-12 rounded-xl bg-primary/10 text-primary font-bold text-sm hover:bg-primary/20 transition-colors"
+                                    className="px-4 h-12 rounded-xl bg-primary/10 text-primary font-bold text-sm hover:bg-primary/20 transition-colors cursor-pointer"
                                 >
-                                    {t("admin.addProductModal.addLink")}
+                                    {language === 'ar' ? 'إضافة رابط' : 'Add Link'}
                                 </button>
                             </div>
                         </div>
                     </div>
 
-                    {/* Product Basic Info */}
+                    {/* Product Names (Bilingual) */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="md:col-span-2 space-y-2">
+                        <div className="space-y-2">
                             <label className="text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400 flex items-center gap-1">
-                                {t("admin.addProductModal.productName")} <span className="text-primary">*</span>
+                                {language === 'ar' ? 'اسم المنتج بالعربي (Name ar)' : 'Arabic Product Name (Name ar)'} <span className="text-primary">*</span>
                             </label>
                             <input
-                                className="w-full h-12 rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-gray-50/50 dark:bg-black/20 focus:bg-white dark:focus:bg-surface-dark focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all px-4 text-sm font-medium dark:text-white outline-none"
-                                placeholder={t("admin.addProductModal.productNamePlaceholder")}
+                                className="w-full h-12 rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-gray-50/50 dark:bg-black/20 focus:bg-white dark:focus:bg-surface-dark focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all px-4 text-sm font-medium dark:text-white outline-none text-right"
+                                placeholder="مثال: معكرونة دي سيكو سباغيتي رقم 12"
                                 type="text"
-                                required
-                                value={formData.name}
-                                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                dir="rtl"
+                                value={formData.nameAr}
+                                onChange={(e) => setFormData({ ...formData, nameAr: e.target.value, name: formData.nameEn || e.target.value })}
                             />
                         </div>
 
-                        <div className="md:col-span-2 space-y-2">
-                            <label className="text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400">{t("admin.addProductModal.description")}</label>
+                        <div className="space-y-2">
+                            <label className="text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400 flex items-center gap-1">
+                                {language === 'ar' ? 'اسم المنتج بالانجليزي (Name en)' : 'English Product Name (Name en)'} <span className="text-primary">*</span>
+                            </label>
+                            <input
+                                className="w-full h-12 rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-gray-50/50 dark:bg-black/20 focus:bg-white dark:focus:bg-surface-dark focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all px-4 text-sm font-medium dark:text-white outline-none"
+                                placeholder="e.g. De Cecco Spaghetti No.12 500g"
+                                type="text"
+                                required
+                                value={formData.nameEn}
+                                onChange={(e) => setFormData({ ...formData, nameEn: e.target.value, name: e.target.value || formData.nameAr })}
+                            />
+                        </div>
+
+                        {/* Descriptions (Bilingual) */}
+                        <div className="space-y-2">
+                            <label className="text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400">
+                                {language === 'ar' ? 'الوصف بالعربي (description ar)' : 'Arabic Description (description ar)'}
+                            </label>
                             <textarea
-                                className="w-full rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-gray-50/50 dark:bg-black/20 focus:bg-white dark:focus:bg-surface-dark focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all px-4 py-3 text-sm font-medium leading-relaxed dark:text-white outline-none"
-                                placeholder={t("admin.addProductModal.descriptionPlaceholder")}
-                                rows={4}
-                                value={formData.description}
-                                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                                className="w-full rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-gray-50/50 dark:bg-black/20 focus:bg-white dark:focus:bg-surface-dark focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all px-4 py-3 text-sm font-medium leading-relaxed dark:text-white outline-none text-right"
+                                placeholder="صف مواصفات وتفاصيل المنتج وتعبئته..."
+                                dir="rtl"
+                                rows={3}
+                                value={formData.descriptionAr}
+                                onChange={(e) => setFormData({ ...formData, descriptionAr: e.target.value })}
                             ></textarea>
                         </div>
 
                         <div className="space-y-2">
-                            <label className="text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400">{t("admin.brands")} <span className="text-primary">*</span></label>
+                            <label className="text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400">
+                                {language === 'ar' ? 'الوصف بالانجليزي (description en)' : 'English Description (description en)'}
+                            </label>
+                            <textarea
+                                className="w-full rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-gray-50/50 dark:bg-black/20 focus:bg-white dark:focus:bg-surface-dark focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all px-4 py-3 text-sm font-medium leading-relaxed dark:text-white outline-none"
+                                placeholder="Describe product details, packaging specifications..."
+                                rows={3}
+                                value={formData.descriptionEn}
+                                onChange={(e) => setFormData({ ...formData, descriptionEn: e.target.value, description: e.target.value })}
+                            ></textarea>
+                        </div>
+
+                        {/* Main Category, Brand, Sub Category */}
+                        {mainCategories.length > 0 && (
+                            <div className="space-y-2">
+                                <label className="text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400">
+                                    {language === 'ar' ? 'القسم الرئيسي (Main Category)' : 'Main Category'}
+                                </label>
+                                <div className="relative">
+                                    <select
+                                        className="w-full h-12 rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-gray-50/50 dark:bg-black/20 focus:bg-white dark:focus:bg-surface-dark focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all px-4 text-sm font-medium dark:text-white appearance-none outline-none cursor-pointer"
+                                        value={formData.mainCategoryId}
+                                        onChange={(e) => setFormData({ ...formData, mainCategoryId: e.target.value })}
+                                    >
+                                        <option value="">{language === 'ar' ? '-- اختر القسم الرئيسي --' : '-- Select Main Category --'}</option>
+                                        {mainCategories.map(mc => (
+                                            <option key={mc.id} value={mc.id}>{mc.name}</option>
+                                        ))}
+                                    </select>
+                                    <MdExpandMore className="absolute end-3 top-1/2 -translate-y-1/2 pointer-events-none text-text-sub text-[20px]" />
+                                </div>
+                            </div>
+                        )}
+
+                        <div className="space-y-2">
+                            <label className="text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400">
+                                {language === 'ar' ? 'الشركة / الماركة (Brand Name)' : 'Brand Name'} <span className="text-primary">*</span>
+                            </label>
                             <div className="relative">
                                 <select
                                     className="w-full h-12 rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-gray-50/50 dark:bg-black/20 focus:bg-white dark:focus:bg-surface-dark focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all px-4 text-sm font-medium dark:text-white appearance-none outline-none cursor-pointer"
@@ -273,7 +369,7 @@ export default function AddProductModal({ isOpen, onClose, categories, brands, p
                                     value={formData.brandId}
                                     onChange={(e) => setFormData({ ...formData, brandId: e.target.value, categoryId: "" })}
                                 >
-                                    <option value="">{t("admin.selectBrand")}</option>
+                                    <option value="">{language === 'ar' ? '-- اختر الماركة / الشركة --' : '-- Select Brand --'}</option>
                                     {brands.map(brand => (
                                         <option key={brand.id} value={brand.id}>{brand.name}</option>
                                     ))}
@@ -283,7 +379,9 @@ export default function AddProductModal({ isOpen, onClose, categories, brands, p
                         </div>
 
                         <div className="space-y-2">
-                            <label className="text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400">{t("admin.addProductModal.category")} <span className="text-primary">*</span></label>
+                            <label className="text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400">
+                                {language === 'ar' ? 'الفئة الفرعية (Sub Category)' : 'Sub Category'} <span className="text-primary">*</span>
+                            </label>
                             <div className="relative">
                                 <select
                                     className="w-full h-12 rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-gray-50/50 dark:bg-black/20 focus:bg-white dark:focus:bg-surface-dark focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all px-4 text-sm font-medium dark:text-white appearance-none outline-none cursor-pointer"
@@ -291,7 +389,7 @@ export default function AddProductModal({ isOpen, onClose, categories, brands, p
                                     value={formData.categoryId}
                                     onChange={(e) => setFormData({ ...formData, categoryId: e.target.value })}
                                 >
-                                    <option value="">{t("admin.addProductModal.selectCategory")}</option>
+                                    <option value="">{language === 'ar' ? '-- اختر الفئة --' : '-- Select Sub Category --'}</option>
                                     {filteredCategories.map(cat => (
                                         <option key={cat.id} value={cat.id}>{cat.name}</option>
                                     ))}
@@ -300,13 +398,30 @@ export default function AddProductModal({ isOpen, onClose, categories, brands, p
                             </div>
                         </div>
 
+                        {/* Options / Variants */}
                         <div className="space-y-2">
-                            <label className="text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400">{t("admin.addProductModal.price")} <span className="text-primary">*</span></label>
+                            <label className="text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400">
+                                {language === 'ar' ? 'الخيارات والأحجام (Options / Variants)' : 'Options / Variants'}
+                            </label>
+                            <input
+                                className="w-full h-12 rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-gray-50/50 dark:bg-black/20 focus:bg-white dark:focus:bg-surface-dark focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all px-4 text-sm font-medium dark:text-white outline-none"
+                                placeholder={language === 'ar' ? 'مفصولة بفواصل، مثل: 500g, 1kg أو شوكولا, فانيلا' : 'Comma-separated, e.g. 500g, 1kg or Vanilla, Chocolate'}
+                                type="text"
+                                value={formData.options}
+                                onChange={(e) => setFormData({ ...formData, options: e.target.value })}
+                            />
+                        </div>
+
+                        {/* Price */}
+                        <div className="space-y-2">
+                            <label className="text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400">
+                                {language === 'ar' ? 'السعر (Price)' : 'Price ($)'} <span className="text-primary">*</span>
+                            </label>
                             <div className="relative">
                                 <span className="absolute start-4 top-1/2 -translate-y-1/2 text-text-sub font-bold text-sm">$</span>
                                 <input
                                     className="w-full h-12 rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-gray-50/50 dark:bg-black/20 focus:bg-white dark:focus:bg-surface-dark focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all ps-8 pe-4 text-sm font-bold dark:text-white outline-none"
-                                    placeholder={t("admin.addProductModal.pricePlaceholder")}
+                                    placeholder="0.00"
                                     step="0.01"
                                     type="number"
                                     required
@@ -316,23 +431,54 @@ export default function AddProductModal({ isOpen, onClose, categories, brands, p
                             </div>
                         </div>
 
+                        {/* Quantity (Stock) */}
+                        <div className="space-y-2">
+                            <label className="text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400">
+                                {language === 'ar' ? 'الكمية والمخزون (Quantity / Stock)' : 'Quantity / Stock'}
+                            </label>
+                            <input
+                                className="w-full h-12 rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-gray-50/50 dark:bg-black/20 focus:bg-white dark:focus:bg-surface-dark focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all px-4 text-sm font-medium dark:text-white outline-none"
+                                placeholder="0"
+                                type="number"
+                                value={formData.stock}
+                                onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
+                            />
+                        </div>
+
+                        {/* SKU */}
+                        <div className="space-y-2">
+                            <label className="text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400">
+                                {language === 'ar' ? 'رمز المنتج (SKU)' : 'SKU Code'}
+                            </label>
+                            <input
+                                className="w-full h-12 rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-gray-50/50 dark:bg-black/20 focus:bg-white dark:focus:bg-surface-dark focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all px-4 text-sm font-medium dark:text-white outline-none"
+                                placeholder="ZAD-001"
+                                type="text"
+                                value={formData.sku}
+                                onChange={(e) => setFormData({ ...formData, sku: e.target.value })}
+                            />
+                        </div>
+
+                        {/* Discounts Section */}
                         <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6 p-6 rounded-2xl bg-primary/5 dark:bg-primary/10 border border-primary/10">
                             <div className="space-y-2">
-                                <label className="text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400">{t("admin.addProductModal.discountType")}</label>
+                                <label className="text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400">
+                                    {language === 'ar' ? 'نوع الخصم (Discount Type)' : 'Discount Type'}
+                                </label>
                                 <div className="flex bg-white dark:bg-gray-800 p-1 rounded-xl border border-black/[0.04] dark:border-white/[0.04]">
                                     {(["NONE", "PERCENTAGE", "FIXED"] as const).map((type) => (
                                         <button
                                             key={type}
                                             type="button"
                                             onClick={() => setFormData({ ...formData, discountType: type, discountValue: type === "NONE" ? "" : formData.discountValue })}
-                                            className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${formData.discountType === type
+                                            className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all cursor-pointer ${formData.discountType === type
                                                 ? "bg-primary text-white"
                                                 : "text-text-sub hover:bg-gray-50 dark:hover:bg-gray-900"
                                                 }`}
                                         >
-                                            {type === "NONE" ? t("admin.addProductModal.noDiscount") :
-                                                type === "PERCENTAGE" ? t("admin.addProductModal.percentageDiscount") :
-                                                    t("admin.addProductModal.fixedDiscount")}
+                                            {type === "NONE" ? (language === 'ar' ? 'بدون خصم' : 'No Discount') :
+                                                type === "PERCENTAGE" ? (language === 'ar' ? 'نسبة %' : 'Percentage %') :
+                                                    (language === 'ar' ? 'سعر مخفض ثابت' : 'Fixed Price')}
                                         </button>
                                     ))}
                                 </div>
@@ -341,7 +487,7 @@ export default function AddProductModal({ isOpen, onClose, categories, brands, p
                             {formData.discountType !== "NONE" && (
                                 <div className="space-y-2 animate-in fade-in slide-in-from-top-2">
                                     <label className="text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400">
-                                        {formData.discountType === "PERCENTAGE" ? t("admin.addProductModal.percentageDiscount") : t("admin.addProductModal.discountPrice")}
+                                        {formData.discountType === "PERCENTAGE" ? (language === 'ar' ? 'نسبة الخصم (%)' : 'Discount Percentage (%)') : (language === 'ar' ? 'السعر بعد الخصم ($)' : 'Discount Price ($)')}
                                     </label>
                                     <div className="relative">
                                         <span className="absolute start-4 top-1/2 -translate-y-1/2 text-text-sub font-bold text-sm">
@@ -349,42 +495,15 @@ export default function AddProductModal({ isOpen, onClose, categories, brands, p
                                         </span>
                                         <input
                                             className="w-full h-12 rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-gray-50/50 dark:bg-black/20 focus:bg-white dark:focus:bg-surface-dark focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all ps-8 pe-4 text-sm font-bold dark:text-white outline-none"
-                                            placeholder={formData.discountType === "PERCENTAGE" ? t("admin.addProductModal.percentagePlaceholder") : t("admin.addProductModal.discountPricePlaceholder")}
+                                            placeholder={formData.discountType === "PERCENTAGE" ? "20" : "15.00"}
                                             step="0.01"
                                             type="number"
                                             value={formData.discountValue}
                                             onChange={(e) => setFormData({ ...formData, discountValue: e.target.value })}
                                         />
                                     </div>
-                                    {formData.discountType === "PERCENTAGE" && formData.price && formData.discountValue && (
-                                        <p className="text-[10px] font-bold text-primary mt-1">
-                                            {t("admin.addProductModal.discountPrice")}: ${(parseFloat(formData.price) - (parseFloat(formData.price) * parseFloat(formData.discountValue) / 100)).toFixed(2)}
-                                        </p>
-                                    )}
                                 </div>
                             )}
-                        </div>
-
-                        <div className="space-y-2">
-                            <label className="text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400">{t("admin.addProductModal.stockQuantity")}</label>
-                            <input
-                                className="w-full h-12 rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-gray-50/50 dark:bg-black/20 focus:bg-white dark:focus:bg-surface-dark focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all px-4 text-sm font-medium dark:text-white outline-none"
-                                placeholder={t("admin.addProductModal.stockPlaceholder")}
-                                type="number"
-                                value={formData.stock}
-                                onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
-                            />
-                        </div>
-
-                        <div className="space-y-2">
-                            <label className="text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400">{t("admin.addProductModal.skuNumber")}</label>
-                            <input
-                                className="w-full h-12 rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-gray-50/50 dark:bg-black/20 focus:bg-white dark:focus:bg-surface-dark focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all px-4 text-sm font-medium dark:text-white outline-none"
-                                placeholder={t("admin.addProductModal.skuPlaceholder")}
-                                type="text"
-                                value={formData.sku}
-                                onChange={(e) => setFormData({ ...formData, sku: e.target.value })}
-                            />
                         </div>
                     </div>
                 </form>
@@ -394,21 +513,21 @@ export default function AddProductModal({ isOpen, onClose, categories, brands, p
                     <button
                         type="button"
                         onClick={onClose}
-                        className="px-6 h-12 rounded-xl text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400 hover:bg-black/5 dark:hover:bg-white/5 border border-transparent hover:border-black/[0.04] dark:border-white/[0.04] dark:hover:border-gray-700 transition-all"
+                        className="px-6 h-12 rounded-xl text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400 hover:bg-black/5 dark:hover:bg-white/5 border border-transparent hover:border-black/[0.04] dark:border-white/[0.04] dark:hover:border-gray-700 transition-all cursor-pointer"
                     >
-                        {t("admin.addProductModal.cancel")}
+                        {language === 'ar' ? 'إلغاء' : 'Cancel'}
                     </button>
                     <button
                         onClick={handleSubmit}
                         disabled={isLoading}
-                        className="bg-primary hover:bg-primary/90 disabled:opacity-50 text-white h-12 px-8 rounded-xl font-bold text-sm flex items-center gap-2 transition-all transform active:scale-[0.98]"
+                        className="bg-primary hover:bg-primary/90 disabled:opacity-50 text-white h-12 px-8 rounded-xl font-bold text-sm flex items-center gap-2 transition-all transform active:scale-[0.98] cursor-pointer"
                     >
                         {isLoading ? (
                             <MdSync className="animate-spin text-[20px]" />
                         ) : (
                             <MdCheckCircle className="text-[20px]" />
                         )}
-                        {isLoading ? (product ? t("admin.addProductModal.updating") : t("admin.addProductModal.saving")) : (product ? t("admin.addProductModal.updateProduct") : t("admin.addProductModal.saveProduct"))}
+                        {isLoading ? (product ? (language === 'ar' ? 'جاري التحديث...' : 'Updating...') : (language === 'ar' ? 'جاري الحفظ...' : 'Saving...')) : (product ? (language === 'ar' ? 'تحديث المنتج' : 'Update Product') : (language === 'ar' ? 'حفظ المنتج' : 'Save Product'))}
                     </button>
                 </div>
             </div>

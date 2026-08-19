@@ -21,12 +21,18 @@ interface Product {
     id: string;
     slug: string;
     name: string;
+    nameAr?: string | null;
+    nameEn?: string | null;
     description: string | null;
+    descriptionAr?: string | null;
+    descriptionEn?: string | null;
     price: string;
     discountPrice?: string | null;
     images: string;
     brandId: string;
     categoryId: string;
+    mainCategoryId?: string | null;
+    options?: string | null;
     stock: number;
     isTrending: boolean;
     brand?: Brand | null;
@@ -207,7 +213,7 @@ const ProductsClient = ({
                 {/* Automatic Infinite Scroll Trigger & Spinner */}
                 {hasMore && (
                     <div ref={observerRef} className="mt-10 py-6 flex items-center justify-center">
-                        <div className="flex items-center gap-2.5 text-xs font-semibold text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-zinc-900 px-4 py-2 rounded-full border border-gray-100 dark:border-white/5 shadow-sm">
+                        <div className="flex items-center gap-2.5 text-xs font-semibold text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-zinc-900 px-4 py-2 rounded-full border border-gray-100 dark:border-white/5">
                             <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
                             <span>{language === 'ar' ? 'جاري تحميل المزيد من المنتجات...' : 'Loading more products...'}</span>
                         </div>

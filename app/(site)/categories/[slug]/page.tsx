@@ -12,13 +12,13 @@ export async function generateMetadata(
 
     if (!category) {
         return {
-            title: "Category Not Found | Ruby Beauty",
+            title: "Category Not Found | Zad Land",
         };
     }
 
     return {
-        title: `${category.name} | Ruby Beauty`,
-        description: category.description || `Shop the ${category.name} collection at Ruby Beauty.`,
+        title: `${category.name} | Zad Land`,
+        description: category.description || `Shop the ${category.name} collection at Zad Land.`,
     };
 }
 

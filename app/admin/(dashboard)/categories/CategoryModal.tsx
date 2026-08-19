@@ -107,7 +107,7 @@ export default function CategoryModal({ isOpen, onClose, category, brands }: Cat
                             type="text"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
-                            placeholder="e.g. Skincare, Makeup"
+                            placeholder="e.g. Pasta, Sauces, Dairy"
                             required
                             className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
                         />

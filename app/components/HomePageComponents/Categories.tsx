@@ -18,7 +18,7 @@ interface CategoriesProps {
 }
 
 const Categories = ({ categories, t, dir }: CategoriesProps) => {
-    const defaultImage = 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=800';
+    const defaultImage = 'https://images.unsplash.com/photo-1621996346565-e3d5d6281290?w=800';
 
     if (!categories || categories.length === 0) {
         return null;

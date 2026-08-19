@@ -112,7 +112,7 @@ const ProductGallery = ({ images, isTrending }: ProductGalleryProps) => {
                 {/* Trending Badge */}
                 {isTrending && (
                     <div className="absolute top-4 right-4 z-20 pointer-events-none">
-                        <span className="inline-block bg-[#C20059] text-white px-2.5 py-1 rounded text-[10px] font-bold tracking-wider uppercase leading-tight">
+                        <span className="inline-block bg-[#2E7D32] text-white px-2.5 py-1 rounded text-[10px] font-bold tracking-wider uppercase leading-tight">
                             Trending
                         </span>
                     </div>
@@ -164,10 +164,10 @@ const ProductGallery = ({ images, isTrending }: ProductGalleryProps) => {
                     height: auto;
                 }
                 .thumbs-swiper .swiper-slide-thumb-active .relative {
-                    border-color: #181113 !important;
+                    border-color: #B8860B !important;
                 }
                 .dark .thumbs-swiper .swiper-slide-thumb-active .relative {
-                    border-color: #ffffff !important;
+                    border-color: #B8860B !important;
                 }
             `}</style>
         </div>

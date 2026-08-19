@@ -3,7 +3,7 @@
 
 import React, { useMemo, useState } from "react";
 import Image, { ImageProps } from "next/image";
-import { getImageSourceCandidates, IMAGE_PLACEHOLDER_SRC } from "@/lib/image-utils";
+import { getImageSourceCandidates, IMAGE_PLACEHOLDER_SRC, isValidImageSrc } from "@/lib/image-utils";
 
 interface ResilientImageProps extends Omit<ImageProps, "src" | "alt"> {
     src: string | null | undefined;
@@ -67,19 +67,22 @@ const ResilientImageInner = ({
     const [isLoaded, setIsLoaded] = useState(false);
 
     const currentSrc = candidates[currentIndex] || fallbackSrc;
+    const safeSrc = isValidImageSrc(currentSrc) 
+        ? currentSrc 
+        : (isValidImageSrc(fallbackSrc) ? fallbackSrc : IMAGE_PLACEHOLDER_SRC);
 
     return (
         <span className="relative block h-full w-full overflow-hidden">
             <span
                 aria-hidden="true"
-                className={`absolute inset-0 overflow-hidden bg-[#f8eef2] dark:bg-white/6 ${skeletonClassName || ""} ${isLoaded ? "opacity-0" : "opacity-100"} transition-opacity duration-500`}
+                className={`absolute inset-0 overflow-hidden bg-gray-100 dark:bg-zinc-800 ${skeletonClassName || ""} ${isLoaded ? "opacity-0" : "opacity-100"} transition-opacity duration-500`}
             >
                 <span className="image-shimmer absolute inset-0" />
             </span>
             <Image
                 {...imgProps}
                 alt={alt || ""}
-                src={currentSrc}
+                src={safeSrc}
                 fill
                 sizes={imgProps.sizes || "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"}
                 className={`${className || ""} block transition-opacity duration-500 ${isLoaded ? "opacity-100" : "opacity-0"}`}

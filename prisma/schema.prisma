@@ -67,28 +67,33 @@ model Category {
 }
 
 model Product {
-  id            String      @id @default(cuid())
-  name          String
-  slug          String      @unique
-  images        String
-  isTrending    Boolean     @default(false)
-  description   String?
-  price         Decimal     @db.Decimal(10, 2)
-  discountPrice Decimal?    @db.Decimal(10, 2)
-  discountType  String?
-  discountValue Decimal?    @db.Decimal(10, 2)
-  stock         Int         @default(0)
-  categoryId    String
-  createdAt     DateTime    @default(now())
-  updatedAt     DateTime    @updatedAt
-  sku           String?
-  brandId       String
-  orderItems    OrderItem[]
-  brand         Brand       @relation(fields: [brandId], references: [id])
-  category      Category    @relation(fields: [categoryId], references: [id])
+  id             String        @id @default(cuid())
+  name           String
+  nameAr         String?
+  nameEn         String?
+  slug           String        @unique
+  images         String
+  isTrending     Boolean       @default(false)
+  description    String?
+  descriptionAr  String?
+  descriptionEn  String?
+  price          Decimal       @db.Decimal(10, 2)
+  discountPrice  Decimal?      @db.Decimal(10, 2)
+  discountType   String?
+  discountValue  Decimal?      @db.Decimal(10, 2)
+  stock          Int           @default(0)
+  options        String?
+  categoryId     String
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  sku            String?
+  brandId        String
   mainCategoryId String?
+  orderItems     OrderItem[]
+  brand          Brand         @relation(fields: [brandId], references: [id])
+  category       Category      @relation(fields: [categoryId], references: [id])
   mainCategory   MainCategory? @relation(fields: [mainCategoryId], references: [id])
-  reviews       Review[]
+  reviews        Review[]
 
   @@index([brandId])
   @@index([categoryId])
@@ -166,6 +171,7 @@ model OrderItem {
   productId String
   quantity  Int
   price     Decimal  @db.Decimal(10, 2)
+  options   String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
@@ -177,76 +183,76 @@ model OrderItem {
 
 model Settings {
   id                        String   @id @default("site-settings")
-  categoriesCtaTitle        String?  @default("Need expert advice?")
-  categoriesCtaDesc         String?  @default("Our beauty consultants are here to help you find the perfect products for your skin type and concerns.")
-  categoriesCtaTitleAr      String?  @default("هل تحتاجين إلى نصيحة الخبراء؟")
-  categoriesCtaDescAr       String?  @default("مستشارو التجميل لدينا هنا لمساعدتك في العثور على المنتجات المثالية لنوع بشرتك واحتياجاتها.")
+  categoriesCtaTitle        String?  @default("Looking for specific wholesale brands?")
+  categoriesCtaDesc         String?  @default("Our wholesale team is ready to provide custom pricing and scheduled deliveries for your business.")
+  categoriesCtaTitleAr      String?  @default("تبحث عن شركات أو منتجات محددة؟")
+  categoriesCtaDescAr       String?  @default("فريق المبيعات لدينا جاهز لتزويدكم بأفضل أسعار الجملة وجداول التوزيع المنتظمة.")
   updatedAt                 DateTime @updatedAt
   categoriesCtaImage        String?  @default("https://lh3.googleusercontent.com/aida-public/AB6AXuC-S_GMsoebb73JIEWcxtvH2G-vVgkfypE8ysWpGMNiiiwyTno8rIbMCpHR-fsa76ZQL49aYswb7bGZh-kgwc6z9lv0VwUSUrStxNWz2qU3RuIb75ShOMAKZMRyrOXZHZjEBgtxfW7r97FEEshOkEd2MqgE6FpGYrmKa8msLtMOQxXBsmhr3ZGGEtL7jpzgMYbgrAXhiHcMfCspdvD5FRNuSbgFY9_xGqcJM9KbgG0MoC4Ie4WkkmCR4FsuavfglcnY13G2ADZxlK8F")
-  expressShippingTime       String?  @default("1-2 Business Days")
-  finalSaleDesc             String?  @default("Certain items like opened skincare and personalized products are final sale for hygiene reasons.")
-  finalSaleDescAr           String?  @default("بعض العناصر مثل منتجات العناية بالبشرة المفتوحة والمنتجات المخصصة هي بيع نهائي لأسباب صحية.")
-  finalSaleTitle            String?  @default("Final Sale Items")
-  finalSaleTitleAr          String?  @default("أصناف البيع النهائي")
-  returnsDesc               String?  @default("Your satisfaction is our priority. If you're not happy with your purchase, we're here to help.")
-  returnsDescAr             String?  @default("رضاكم هو أولويتنا. إذا لم تكن راضيًا عن مشترياتك، فنحن هنا للمساعدة.")
-  returnsTitle              String?  @default("Returns & Exchanges")
-  returnsTitleAr            String?  @default("المرتجعات والاستبدال")
-  shippingDesc              String?  @default("We ensure your beauty essentials reach you in perfect condition, wherever you are in the world.")
-  shippingDescAr            String?  @default("نحن نضمن وصول مستلزمات التجميل الخاصة بك إليك في حالة ممتازة، أينما كنت في العالم.")
-  shippingTitle             String?  @default("Fast & Reliable Shipping")
-  shippingTitleAr           String?  @default("شحن سريع وموثوق")
-  standardShippingTime      String?  @default("3-5 Business Days")
-  verificationDesc          String?  @default("Orders are processed within 24-48 hours. You will receive a confirmation email once your package has shipped.")
-  verificationDescAr        String?  @default("يتم معالجة الطلبات في غضون 24-48 ساعة. ستتلقى رسالة تأكيد بالبريد الإلكتروني بمجرد شحن طردك.")
+  expressShippingTime       String?  @default("24 Hours")
+  finalSaleDesc             String?  @default("All goods are shipped in factory-sealed cases conforming to international standards.")
+  finalSaleDescAr           String?  @default("يتم تسليم البضائع في كراتين المصنع الأصلية والمطابقة للمواصفات القياسية.")
+  finalSaleTitle            String?  @default("Wholesale Delivery Terms")
+  finalSaleTitleAr          String?  @default("شروط تسليم الجملة")
+  returnsDesc               String?  @default("We are committed to full satisfaction and verified shipment handling.")
+  returnsDescAr             String?  @default("نحن ملتزمون بالجودة والمطابقة التامة للشحنات.")
+  returnsTitle              String?  @default("Wholesale Support")
+  returnsTitleAr            String?  @default("دعم الجملة")
+  shippingDesc              String?  @default("We ensure wholesale goods reach your business in perfect condition.")
+  shippingDescAr            String?  @default("نحن نضمن وصول بضائع الجملة إلى نشاطكم التجاري في أفضل حالة.")
+  shippingTitle             String?  @default("Fast & Reliable Distribution")
+  shippingTitleAr           String?  @default("توزيع سريع وموثوق")
+  standardShippingTime      String?  @default("1-3 Business Days")
+  verificationDesc          String?  @default("Orders are verified and scheduled immediately with our logistics fleet.")
+  verificationDescAr        String?  @default("يتم التحقق من الطلبات وجدولتها فوراً مع أسطولنا اللوجستي.")
   verificationTitle         String?  @default("Verification Process")
   verificationTitleAr       String?  @default("عملية التحقق")
-  hygieneDesc               String?  @default("For your safety and to maintain the highest hygiene standards, we follow strict protocols for handling beauty products.")
-  hygieneDescAr             String?  @default("من أجل سلامتك وللحفاظ على أعلى معايير النظافة، نتبع بروتوكولات صارمة للتعامل مع منتجات التجميل.")
-  hygieneTitle              String?  @default("Hygiene & Safety Protocols")
-  hygieneTitleAr            String?  @default("بروتوكولات النظافة والسلامة")
+  hygieneDesc               String?  @default("Our temperature-controlled warehouses ensure optimal quality preservation.")
+  hygieneDescAr             String?  @default("تضمن مستودعاتنا وشاحناتنا درجات حرارة وبيئة تخزين مثالية حتى نقطة التسليم.")
+  hygieneTitle              String?  @default("Safety & Temperature Storage")
+  hygieneTitleAr            String?  @default("بروتوكولات السلامة والتخزين")
   shippingReturnsImage      String?  @default("https://lh3.googleusercontent.com/aida-public/AB6AXuC1GmfD6bueEsJqlHNPjDWHMlhsLZSm2Jmp21TUCLKvobkcd7oAPMMdwzfm8BOHC5XtR0EP6tLI7DT5hhyLxuijsbpX2kQf6iNlqROU-8k-DrqZAUqdc7-0lE4nxuCcLaEb0fEaXVBxc_yXkiUlyhfvaYJ1FfHZtngnoJbeanLgsf7rcxqON6rjkoC4BQv6FhlwLNKZrMbxjCugphq-bo5GCqBoLfmjjZSuH0N5eV-Kz33xFQTD5jSYCTsVYAwOkwhLQsQiPD_lnD9U")
   aboutHeroImage            String?  @default("https://lh3.googleusercontent.com/aida-public/AB6AXuAz8qN2iAHz-UZeEQfqOY49U5OCZ5z4ejVm7ILFjFSl9S5xg_6UuBa61qOmrkMPrBa4CuXDzHa9EN3-LNyUxi5IDK5A9TvJWkNuG-tt_RRyvJH8LvynO1daOEkTk47KDtkW3Md2ugZYShZJdxolsjiJUtDdOOz4Q7-6TNrexIvyClP0ADf1TWdbCUk1kBn8bfzhTC1cn8s9jG3yt0tDDht7__J5YKKf690SmKN4WIJX_pc2LOj3x1CnYk5JuqEu0Bzp2vGwsrYLaJWb")
-  aboutHeroSubtitle         String?  @default("Redefining beauty with clean, conscious care that honors your skin and the earth.")
-  aboutHeroSubtitleAr       String?  @default("إعادة تعريف الجمال بعناية نظيفة وواعية تكرم بشرتك والأرض.")
+  aboutHeroSubtitle         String?  @default("Your trusted partner for distributing top quality global goods and food products.")
+  aboutHeroSubtitleAr       String?  @default("شريككم الموثوق لتوزيع البضائع والمواد الغذائية من أفضل الشركات العالمية.")
   aboutHeroTitle            String?  @default("Our Story")
   aboutHeroTitleAr          String?  @default("قصتنا")
-  aboutNarrativeDesc1       String?  @default("We believe that beauty should be kind—to your skin, your spirit, and the planet. Our journey started in a sun-drenched studio with a simple, radical goal: to create high-performance skincare without compromising on ethics or transparency.")
-  aboutNarrativeDesc1Ar     String?  @default("نؤمن بأن الجمال يجب أن يكون لطيفًا - على بشرتك، وروحك، والكوكب. بدأت رحلتنا في استوديو مشمس بهدف بسيط وجذري: إنشاء عناية بالبشرة عالية الأداء دون المساومة على الأخلاق أو الشفافية.")
-  aboutNarrativeDesc2       String?  @default("For too long, the industry was clouded by hidden ingredients and unsustainable practices. Ruby Beauty was born to bring light back to your ritual. Every formula is meticulously crafted with botanical extracts and clean science, ensuring that what you put on your body is as pure as the results it delivers.")
-  aboutNarrativeDesc2Ar     String?  @default("لفترة طويلة، كانت الصناعة ملبدة بالمكونات الخفية والممارسات غير المستدامة. ولدت روبي بيوتي لإعادة النور إلى طقوسك. يتم صياغة كل تركيبة بدقة باستخدام المستخلصات النباتية والعلوم النظيفة، مما يضمن أن ما تضعه على جسمك نقي بقدر النتائج التي يقدمها.")
+  aboutNarrativeDesc1       String?  @default("At Zad Land, we bridge the gap between world-renowned international brands and local markets. We believe in providing retailers and businesses with seamless access to authentic, top-tier goods at competitive wholesale prices.")
+  aboutNarrativeDesc1Ar     String?  @default("في زاد لاند، نعمل كجسر موثوق يربط بين كبرى الشركات والعلامات التجارية العالمية والأسواق المحلية.")
+  aboutNarrativeDesc2       String?  @default("With rigorous quality control, modern logistics, and a commitment to reliability, Zad Land has established itself as the trusted partner for food and consumer goods distribution across all governorates.")
+  aboutNarrativeDesc2Ar     String?  @default("بفضل أسطول التوزيع المنظم والمستودعات المجهزة، أثبتت زاد لاند مكانتها كشركة رائدة وموثوقة لتوزيع البضائع الغذائية والاستهلاكية في جميع المحافظات.")
   aboutNarrativeImage       String?  @default("https://lh3.googleusercontent.com/aida-public/AB6AXuC4yp4c_LJLNPwaV2ay8DZ6xRHD0UF1WqXU8eDtrdDoiVjtq9oNRc9Cn6cnbqsNwOLO-y-99jnkiLnCsGLs2rQqthU8TPqhAh2Msisbst1UyfyrILBR5fRO7KYu90u1FEoeRRjGceGVbB5vz2SJAtjzUrLLtA6BmR8VN5a5Seo4MraBJj7i4Gs4QPEZbURtSN-F7wbJsu4WNj3pEaWlye2SuJvokQhYXJ27gnAoabHg5_0_4DZY49qyKnQuMHHL9atOIILRIMD3FkeZ")
-  aboutNarrativeQuote       String?  @default("Naturally inspired, scientifically proven.")
-  aboutNarrativeQuoteAr     String?  @default("مستوحى طبيعياً، مثبت علمياً.")
-  aboutNarrativeTitle       String?  @default("Our Mission for Clean Beauty")
-  aboutNarrativeTitleAr     String?  @default("مهمتنا للجمال النظيف")
-  aboutValue1Desc           String?  @default("We never test on animals. Our products are certified cruelty-free by Leaping Bunny.")
-  aboutValue1DescAr         String?  @default("نحن لا نختبر أبدًا على الحيوانات. منتجاتنا معتمدة خالية من القسوة من قبل Leaping Bunny.")
-  aboutValue1Title          String?  @default("Cruelty-Free")
-  aboutValue1TitleAr        String?  @default("خالٍ من القسوة")
-  aboutValue2Desc           String?  @default("No animal-derived ingredients. Just pure, potent plant power.")
-  aboutValue2DescAr         String?  @default("لا توجد مكونات مشتقة من الحيوانات. فقط قوة نباتية نقية وفعالة.")
-  aboutValue2Title          String?  @default("100% Vegan")
-  aboutValue2TitleAr        String?  @default("نباتي 100٪")
-  aboutValue3Desc           String?  @default("Eco-friendly packaging and responsibly sourced ingredients.")
-  aboutValue3DescAr         String?  @default("تغليف صديق للبيئة ومكونات من مصادر مسؤولة.")
-  aboutValue3Title          String?  @default("Sustainable")
-  aboutValue3TitleAr        String?  @default("مستدام")
-  aboutValuesDesc           String?  @default("We are committed to transparency, sustainability, and ethical practices in everything we do.")
-  aboutValuesDescAr         String?  @default("نحن ملتزمون بالشفافية والاستدامة والممارسات الأخلاقية في كل ما نقوم به.")
+  aboutNarrativeQuote       String?  @default("Connecting you with the world's finest brands.")
+  aboutNarrativeQuoteAr     String?  @default("جودة مضمونة وخدمة توزيع موثوقة.")
+  aboutNarrativeTitle       String?  @default("Our Mission for Quality Distribution")
+  aboutNarrativeTitleAr     String?  @default("مهمتنا في التوزيع الموثوق")
+  aboutValue1Desc           String?  @default("All products are certified authentic from original manufacturers.")
+  aboutValue1DescAr         String?  @default("جميع المنتجات أصلية 100% ومطابقة لأعلى معايير الجودة والمواصفات.")
+  aboutValue1Title          String?  @default("Certified Quality")
+  aboutValue1TitleAr        String?  @default("جودة ومواصفات قياسية")
+  aboutValue2Desc           String?  @default("Direct distribution partnerships with leading global brands.")
+  aboutValue2DescAr         String?  @default("شراكات توزيع مباشرة مع كبرى العلامات التجارية العالمية.")
+  aboutValue2Title          String?  @default("100% Authentic")
+  aboutValue2TitleAr        String?  @default("أصلي 100٪")
+  aboutValue3Desc           String?  @default("Temperature-controlled logistics fleet covering all distribution channels.")
+  aboutValue3DescAr         String?  @default("أسطول سيارات وشاحنات مجهزة لنقل وتوزيع البضائع والمفرزات بدقة وكفاءة.")
+  aboutValue3Title          String?  @default("Reliable Fleet")
+  aboutValue3TitleAr        String?  @default("أسطول توزيع مجهز")
+  aboutValuesDesc           String?  @default("We are committed to transparency, reliability, and excellence in food distribution.")
+  aboutValuesDescAr         String?  @default("نحن ملتزمون بالشفافية والموثوقية والتميز في توزيع البضائع والمواد الغذائية.")
   aboutValuesTitle          String?  @default("Our Core Values")
   aboutValuesTitleAr        String?  @default("قيمنا الجوهرية")
-  aboutNarrativeFounded     String?  @default("Founded in 2024")
-  aboutNarrativeFoundedAr   String?  @default("تأسست في 2024")
-  footerBrandTitle          String?  @default("Ruby Beauty")
-  footerBrandTitleAr        String?  @default("Ruby Beauty")
-  footerBrandDescription    String?  @default("Premium botanical skincare designed to reveal your natural radiance. Cruelty-free, vegan, and sustainable.")
-  footerBrandDescriptionAr  String?  @default("منتجات عناية بالبشرة نباتية فاخرة مصممة لإظهار إشراقتك الطبيعية. خالية من القسوة، نباتية ومستدامة.")
-  footerCopyright           String?  @default("© 2026 Ruby Beauty. All rights reserved.")
-  footerCopyrightAr         String?  @default("© 2026 روبي بيوتي. جميع الحقوق محفوظة.")
-  footerInstagramUrl        String?  @default("https://www.instagram.com/ruby.beauty.sy")
-  footerFacebookUrl         String?  @default("https://www.facebook.com/share/1HzXdo7sLG/?mibextid=wwXIfr")
-  footerWhatsappUrl         String?  @default("https://wa.me/963933254796")
+  aboutNarrativeFounded     String?  @default("Founded with Trust")
+  aboutNarrativeFoundedAr   String?  @default("تأسست على الثقة")
+  footerBrandTitle          String?  @default("Zad Land")
+  footerBrandTitleAr        String?  @default("زاد لاند")
+  footerBrandDescription    String?  @default("Your trusted partner in wholesale food and consumer goods distribution from top international brands.")
+  footerBrandDescriptionAr  String?  @default("شريككم الموثوق لتوزيع البضائع والمواد الغذائية من أفضل الشركات العالمية.")
+  footerCopyright           String?  @default("© 2026 Zad Land. All rights reserved.")
+  footerCopyrightAr         String?  @default("© 2026 زاد لاند. جميع الحقوق محفوظة.")
+  footerInstagramUrl        String?  @default("#")
+  footerFacebookUrl         String?  @default("#")
+  footerWhatsappUrl         String?  @default("#")
   footerShopTitle           String?  @default("Shop")
   footerShopTitleAr         String?  @default("المتجر")
   footerSupportTitle        String?  @default("Support")
@@ -255,13 +261,13 @@ model Settings {
   footerCompanyTitleAr      String?  @default("الشركة")
   footerSupportLink1Label   String?  @default("Help Center")
   footerSupportLink1LabelAr String?  @default("مركز المساعدة")
-  footerSupportLink1Url     String?  @default("https://wa.me/963933254796")
+  footerSupportLink1Url     String?  @default("#")
   footerSupportLink2Label   String?  @default("Shipping & Returns")
-  footerSupportLink2LabelAr String?  @default("الشحن والإرجاع")
+  footerSupportLink2LabelAr String?  @default("التوزيع والتسليم")
   footerSupportLink2Url     String?  @default("/shipping-returns")
   footerSupportLink3Label   String?  @default("Contact Us")
   footerSupportLink3LabelAr String?  @default("اتصل بنا")
-  footerSupportLink3Url     String?  @default("https://wa.me/963933254796")
+  footerSupportLink3Url     String?  @default("#")
   footerCompanyLink1Label   String?  @default("About Us")
   footerCompanyLink1LabelAr String?  @default("من نحن")
   footerCompanyLink1Url     String?  @default("/about-us")
@@ -278,14 +284,14 @@ model Settings {
   exchangeRate              Decimal  @default(135) @db.Decimal(10, 2)
   middleBanner1Image        String?  @default("https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=1200")
   middleBanner1Link         String?  @default("/products")
-  middleBanner2ButtonText   String?  @default("Shop Perfumes")
-  middleBanner2ButtonTextAr String?  @default("تسوق العطور")
+  middleBanner2ButtonText   String?  @default("Explore Catalog")
+  middleBanner2ButtonTextAr String?  @default("تصفح الكتالوج")
   middleBanner2Image        String?  @default("https://images.unsplash.com/photo-1547887538-e3a2f32cb1cc?w=1200")
   middleBanner2Link         String?  @default("/products")
-  middleBanner2Subtitle     String?  @default("Discover scents that last all day and leave a mark.")
-  middleBanner2SubtitleAr   String?  @default("اكتشف الروائح التي تدوم طوال اليوم وتترك أثراً.")
-  middleBanner2Title        String?  @default("Luxury Fragrances")
-  middleBanner2TitleAr      String?  @default("عطور فاخرة")
+  middleBanner2Subtitle     String?  @default("Discover the best products from around the world.")
+  middleBanner2SubtitleAr   String?  @default("اكتشف أفضل المنتجات من كبرى الشركات العالمية.")
+  middleBanner2Title        String?  @default("Global Brands")
+  middleBanner2TitleAr      String?  @default("شركات عالمية")
 }
 
 enum OrderStatus {

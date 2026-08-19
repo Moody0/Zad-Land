@@ -1,7 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import React from 'react';
+import Image from 'next/image';
+import React, { useRef, useState, useEffect } from 'react';
 import { MdOutlineShoppingBag, MdMenu, MdClose, MdKeyboardArrowDown } from 'react-icons/md';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useCart } from '@/app/context/CartContext';
@@ -10,7 +11,7 @@ import MobileMenu from './MobileMenu';
 import CurrencyToggle from './CurrencyToggle';
 import LanguageToggle from './LanguageToggle';
 import MegaMenu, { type NavMainCategory } from './HeaderComponents/MegaMenu';
-import { AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import TopBar from './HeaderComponents/TopBar';
 
 interface HeaderCategory {
@@ -28,21 +29,64 @@ interface HeaderProps {
 }
 
 const Header = ({ initialCategories = [], dir }: HeaderProps) => {
+    const { language } = useLanguage();
     const { totalItems, openDrawer } = useCart();
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
-    const [isMobileSearchOpen, setIsMobileSearchOpen] = React.useState(false);
-    const [isScrolled, setIsScrolled] = React.useState(false);
-    const [manualToggle, setManualToggle] = React.useState(false);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
+    const [isScrolled, setIsScrolled] = useState(false);
+    const [manualToggle, setManualToggle] = useState(false);
     const isNavVisible = !isScrolled || manualToggle;
-    const isScrolledRef = React.useRef(false);
+    const isScrolledRef = useRef(false);
 
     // Mega menu state
-    const [navData, setNavData] = React.useState<NavMainCategory[]>([]);
-    const [activeMegaMenu, setActiveMegaMenu] = React.useState<string | null>(null);
-    const closeTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
+    const [navData, setNavData] = useState<NavMainCategory[]>([]);
+    const [activeMegaMenu, setActiveMegaMenu] = useState<string | null>(null);
+    const closeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+    // Adaptive Visible Items & More Dropdown
+    const [isMoreOpen, setIsMoreOpen] = useState(false);
+    const moreTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const [visibleCount, setVisibleCount] = useState(5);
+
+    useEffect(() => {
+        const handleResize = () => {
+            const width = window.innerWidth;
+            if (width >= 1536) {
+                setVisibleCount(8);
+            } else if (width >= 1280) {
+                setVisibleCount(6);
+            } else if (width >= 1080) {
+                setVisibleCount(5);
+            } else {
+                setVisibleCount(4);
+            }
+        };
+        handleResize();
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    const handleMoreEnter = () => {
+        if (moreTimeoutRef.current) {
+            clearTimeout(moreTimeoutRef.current);
+            moreTimeoutRef.current = null;
+        }
+        if (closeTimeoutRef.current) {
+            clearTimeout(closeTimeoutRef.current);
+            closeTimeoutRef.current = null;
+        }
+        setActiveMegaMenu(null);
+        setIsMoreOpen(true);
+    };
+
+    const handleMoreLeave = () => {
+        moreTimeoutRef.current = setTimeout(() => {
+            setIsMoreOpen(false);
+        }, 120);
+    };
 
     // Fetch navigation data on mount
-    React.useEffect(() => {
+    useEffect(() => {
         fetch('/api/navigation')
             .then((res) => res.json())
             .then((data) => {
@@ -100,13 +144,18 @@ const Header = ({ initialCategories = [], dir }: HeaderProps) => {
             clearTimeout(closeTimeoutRef.current);
             closeTimeoutRef.current = null;
         }
+        if (moreTimeoutRef.current) {
+            clearTimeout(moreTimeoutRef.current);
+            moreTimeoutRef.current = null;
+        }
+        setIsMoreOpen(false);
         setActiveMegaMenu(slug);
     };
 
     const handleNavLeave = () => {
         closeTimeoutRef.current = setTimeout(() => {
             setActiveMegaMenu(null);
-        }, 150);
+        }, 120);
     };
 
     const handleMegaMenuClose = () => {
@@ -115,10 +164,13 @@ const Header = ({ initialCategories = [], dir }: HeaderProps) => {
 
     const activeNavData = navData.find((mc) => mc.slug === activeMegaMenu);
 
+    const visibleNavItems = navData.slice(0, visibleCount);
+    const overflowNavItems = navData.slice(visibleCount);
+
     return (
         <>
             {/* Spacer to prevent layout shift when header collapses */}
-            <div className="w-full h-[140px] md:h-[126px] lg:h-[158px]" aria-hidden="true" />
+            <div className="w-full h-[140px] lg:h-[158px]" aria-hidden="true" />
 
             <header className="fixed top-0 left-0 z-50 w-full bg-white dark:bg-zinc-900 border-b border-gray-100 dark:border-white/10 transition-all duration-300">
                 {/* Disappearing Top Bar */}
@@ -126,9 +178,9 @@ const Header = ({ initialCategories = [], dir }: HeaderProps) => {
                 
                 <div className="container-custom">
                     {/* Main Header Row */}
-                    <div className="py-4 md:py-[11px] h-auto md:h-[70px] flex flex-col md:flex-row md:items-center relative">
-                        {/* Desktop Version */}
-                        <div className="hidden md:flex items-center justify-between gap-6 w-full">
+                    <div className="py-3 lg:py-[11px] h-auto lg:h-[70px] flex flex-col lg:flex-row lg:items-center relative">
+                        {/* Desktop Version (lg and up) */}
+                        <div className="hidden lg:flex items-center justify-between gap-6 w-full">
                             {/* Left: Logo and Menu Toggle Group */}
                             <div className="flex items-center shrink-0">
                                 <button
@@ -147,35 +199,34 @@ const Header = ({ initialCategories = [], dir }: HeaderProps) => {
                                 </button>
 
                                 <div className={`transition-all duration-500 ease-in-out ${isScrolled ? 'ms-2' : 'ms-0'}`}>
-                                    <Link href="/" className="flex flex-col items-center">
-                                        <span className="text-[28px] leading-none font-extrabold tracking-tight text-zinc-900 dark:text-white">
-                                            Ruby Beauty
-                                        </span>
-                                        <span className={`font-medium leading-none transition-all duration-300 ${dir === 'rtl'
-                                            ? 'text-[13px] tracking-normal mt-[2px] font-semibold text-zinc-900 dark:text-white'
-                                            : 'text-[10px] tracking-[0.2em] uppercase mt-[2px] text-gray-500 dark:text-white/70'
-                                            }`}>
-                                            {dir === 'rtl' ? 'جـمــالــك يـلـيــق بــك' : 'Your beauty deserves it'}
-                                        </span>
+                                    <Link href="/" className="flex items-center group">
+                                        <Image
+                                            src="/logo.png"
+                                            alt="ZAD LAND - زاد لاند"
+                                            width={180}
+                                            height={65}
+                                            priority
+                                            className="h-[48px] xl:h-[54px] w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+                                        />
                                     </Link>
                                 </div>
                             </div>
 
                             {/* Center: Search */}
-                            <div className="flex-1 max-w-3xl px-4">
+                            <div className="flex-1 max-w-2xl xl:max-w-3xl px-2 xl:px-4">
                                 <HeaderSearch />
                             </div>
 
                             {/* Right: Cart Button Drawer Trigger */}
-                            <div className="flex items-center gap-3 md:gap-5 shrink-0">
+                            <div className="flex items-center gap-3 lg:gap-4 shrink-0">
                                 <button
                                     onClick={openDrawer}
-                                    className="w-11 h-11 rounded-full border border-gray-200 dark:border-white/10 flex items-center justify-center text-xl text-zinc-900 dark:text-white hover:bg-zinc-900 hover:text-white dark:hover:bg-white dark:hover:text-black transition-all relative"
+                                    className="w-10 h-10 xl:w-11 xl:h-11 rounded-full border border-gray-200 dark:border-white/10 flex items-center justify-center text-xl text-zinc-900 dark:text-white hover:bg-[#072835] hover:text-white dark:hover:bg-white dark:hover:text-black transition-all relative"
                                     aria-label="Open Shopping Cart"
                                 >
                                     <MdOutlineShoppingBag />
                                     {totalItems > 0 && (
-                                        <span className="absolute -top-1 -right-1 bg-[#C20059] text-white text-[10px] font-extrabold w-4.5 h-4.5 flex items-center justify-center rounded-full shadow-sm">
+                                        <span className="absolute -top-1 -right-1 bg-[#2E7D32] text-white text-[10px] font-extrabold w-4.5 h-4.5 flex items-center justify-center rounded-full shadow-sm">
                                             {totalItems}
                                         </span>
                                     )}
@@ -183,31 +234,31 @@ const Header = ({ initialCategories = [], dir }: HeaderProps) => {
                             </div>
                         </div>
 
-                        {/* Mobile Version */}
-                        <div className="flex md:hidden flex-col gap-4">
+                        {/* Mobile & Tablet Version (below lg) */}
+                        <div className="flex lg:hidden flex-col gap-3">
                             {/* Top Row: Menu, Logo, Controls, Cart Drawer Trigger */}
                             <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-4">
+                                <div className="flex items-center gap-3">
                                     <button
                                         onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                                        className="p-1 text-zinc-900 dark:text-white"
+                                        className="p-1.5 text-zinc-900 dark:text-white rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors"
+                                        aria-label="Toggle Menu"
                                     >
                                         {isMobileMenuOpen ? (
-                                            <MdClose className="text-3xl" />
+                                            <MdClose className="text-2xl" />
                                         ) : (
-                                            <MdMenu className="text-3xl" />
+                                            <MdMenu className="text-2xl" />
                                         )}
                                     </button>
-                                    <Link href="/" className="flex flex-col items-center">
-                                        <span className="text-[19.6px] leading-none font-bold tracking-tight text-zinc-900 dark:text-white uppercase">
-                                            Ruby Beauty
-                                        </span>
-                                        <span className={`font-medium leading-none transition-all duration-300 ${dir === 'rtl'
-                                            ? 'text-[11px] tracking-normal mt-[4px] font-semibold text-zinc-900 dark:text-white'
-                                            : 'text-[9px] tracking-[0.1em] uppercase mt-[4px] text-gray-500 dark:text-white/70'
-                                            }`}>
-                                            {dir === 'rtl' ? 'جـمــالــك يـلـيــق بــك' : 'Your beauty deserves it'}
-                                        </span>
+                                    <Link href="/" className="flex items-center group">
+                                        <Image
+                                            src="/logo.png"
+                                            alt="ZAD LAND - زاد لاند"
+                                            width={140}
+                                            height={50}
+                                            priority
+                                            className="h-[36px] sm:h-[40px] w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+                                        />
                                     </Link>
                                 </div>
 
@@ -216,12 +267,12 @@ const Header = ({ initialCategories = [], dir }: HeaderProps) => {
                                     <CurrencyToggle />
                                     <button
                                         onClick={openDrawer}
-                                        className="w-10 h-10 rounded-full border border-gray-200 dark:border-white/10 flex items-center justify-center text-lg text-zinc-900 dark:text-white relative"
+                                        className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-gray-200 dark:border-white/10 flex items-center justify-center text-lg text-zinc-900 dark:text-white relative"
                                         aria-label="Open Shopping Cart"
                                     >
                                         <MdOutlineShoppingBag />
                                         {totalItems > 0 && (
-                                            <span className="absolute -top-1 -right-1 bg-[#C20059] text-white text-[10px] font-extrabold w-4 h-4 flex items-center justify-center rounded-full">
+                                            <span className="absolute -top-1 -right-1 bg-[#2E7D32] text-white text-[10px] font-extrabold w-4 h-4 flex items-center justify-center rounded-full">
                                                 {totalItems}
                                             </span>
                                         )}
@@ -247,34 +298,97 @@ const Header = ({ initialCategories = [], dir }: HeaderProps) => {
                     </div>
                 </div>
 
-                {/* Navigation Links Row - Desktop only */}
+                {/* Navigation Links Row - Desktop only (lg and up) */}
                 <nav
-                    className={`hidden md:grid bg-[#F1F1F1] dark:bg-zinc-800/60 border-t border-gray-100 dark:border-white/5 transition-all duration-300 ease-in-out relative ${!isNavVisible ? 'grid-rows-[0fr] opacity-0 border-t-0' : 'grid-rows-[1fr] opacity-100'
-                        }`}
+                    className={`hidden lg:grid bg-[#F8F8F8] dark:bg-[#1C1C14] border-t border-b border-gray-200/60 dark:border-white/5 transition-all duration-300 ease-in-out relative ${
+                        !isNavVisible ? 'grid-rows-[0fr] opacity-0 border-t-0 border-b-0 pointer-events-none' : 'grid-rows-[1fr] opacity-100'
+                    }`}
                 >
-                    <div className="overflow-hidden">
-                        <div className="container-custom">
-                            <div className="flex items-center justify-center gap-8 h-[56px]">
-                                {navData.map((mc) => (
+                    <div className={`relative min-h-0 ${isNavVisible ? 'overflow-visible' : 'overflow-hidden'}`}>
+                        <div className="container-custom relative flex items-center justify-center h-[48px]">
+                            {/* Primary Visible Departments */}
+                            <div className="flex items-center justify-center gap-5 xl:gap-8 flex-nowrap">
+                                {visibleNavItems.map((mc) => {
+                                    const displayName = language === 'ar' ? mc.name : (mc.nameEn || mc.name);
+                                    return (
+                                        <div
+                                            key={mc.id}
+                                            className="relative shrink-0 group"
+                                            onMouseEnter={() => {
+                                                setIsMoreOpen(false);
+                                                handleNavEnter(mc.slug);
+                                            }}
+                                            onMouseLeave={handleNavLeave}
+                                        >
+                                            <Link
+                                                href={`/department/${mc.slug}`}
+                                                className={`text-[14px] xl:text-[15px] font-medium relative flex items-center gap-1 transition-colors whitespace-nowrap py-1 ${
+                                                    activeMegaMenu === mc.slug
+                                                        ? 'text-[#B8860B] dark:text-[#E5B54A]'
+                                                        : 'text-[#1A1A1A] dark:text-gray-200 hover:text-[#B8860B] dark:hover:text-[#E5B54A]'
+                                                }`}
+                                            >
+                                                <span>{displayName}</span>
+                                                <MdKeyboardArrowDown className={`text-base text-gray-500 group-hover:text-[#B8860B] dark:text-gray-400 dark:group-hover:text-[#E5B54A] transition-transform duration-200 ${activeMegaMenu === mc.slug ? 'rotate-180 text-[#B8860B] dark:text-[#E5B54A]' : ''}`} />
+                                            </Link>
+                                        </div>
+                                    );
+                                })}
+
+                                {/* More Departments Dropdown (Plain text + chevron matching screenshot) */}
+                                {overflowNavItems.length > 0 && (
                                     <div
-                                        key={mc.id}
-                                        className="relative"
-                                        onMouseEnter={() => handleNavEnter(mc.slug)}
-                                        onMouseLeave={handleNavLeave}
+                                        className="relative shrink-0 group"
+                                        onMouseEnter={handleMoreEnter}
+                                        onMouseLeave={handleMoreLeave}
                                     >
-                                        <Link
-                                            href={`/department/${mc.slug}`}
-                                            className={`text-[15px] font-semibold relative flex items-center gap-1 transition-colors ${
-                                                activeMegaMenu === mc.slug
-                                                    ? 'text-black dark:text-white'
-                                                    : 'text-zinc-900 dark:text-white/90 hover:text-black dark:hover:text-white'
+                                        <button
+                                            type="button"
+                                            className={`text-[14px] xl:text-[15px] font-medium relative flex items-center gap-1 transition-colors whitespace-nowrap py-1 ${
+                                                isMoreOpen
+                                                    ? 'text-[#B8860B] dark:text-[#E5B54A]'
+                                                    : 'text-[#1A1A1A] dark:text-gray-200 hover:text-[#B8860B] dark:hover:text-[#E5B54A]'
                                             }`}
                                         >
-                                            <span>{mc.name}</span>
-                                            <MdKeyboardArrowDown className={`text-lg transition-transform duration-300 ${activeMegaMenu === mc.slug ? 'rotate-180' : ''}`} />
-                                        </Link>
+                                            <span>{language === 'ar' ? 'المزيد' : 'More'}</span>
+                                            <MdKeyboardArrowDown className={`text-base text-gray-500 group-hover:text-[#B8860B] dark:text-gray-400 dark:group-hover:text-[#E5B54A] transition-transform duration-200 ${isMoreOpen ? 'rotate-180 text-[#B8860B] dark:text-[#E5B54A]' : ''}`} />
+                                        </button>
+
+                                        {/* Floating More Dropdown Menu */}
+                                        <AnimatePresence>
+                                            {isMoreOpen && (
+                                                <motion.div
+                                                    initial={{ opacity: 0, y: 8, scale: 0.98 }}
+                                                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                                                    exit={{ opacity: 0, y: 6, scale: 0.98 }}
+                                                    transition={{ duration: 0.15 }}
+                                                    className="absolute top-full ltr:right-0 rtl:left-0 mt-1.5 w-64 bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl border border-gray-200/80 dark:border-white/10 p-2 z-50"
+                                                >
+                                                    <div className="flex flex-col gap-0.5 max-h-[340px] overflow-y-auto scrollbar-hide py-1">
+                                                        {overflowNavItems.map((mc) => {
+                                                            const name = language === 'ar' ? mc.name : (mc.nameEn || mc.name);
+                                                            return (
+                                                                <Link
+                                                                    key={mc.id}
+                                                                    href={`/department/${mc.slug}`}
+                                                                    onClick={() => setIsMoreOpen(false)}
+                                                                    className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-[13px] font-semibold text-zinc-800 dark:text-white/90 hover:bg-[#B8860B]/10 hover:text-[#B8860B] dark:hover:text-[#E5B54A] transition-all"
+                                                                >
+                                                                    <span className="truncate">{name}</span>
+                                                                    {mc.categories?.length > 0 && (
+                                                                        <span className="text-[11px] text-gray-400 font-normal shrink-0 ms-3">
+                                                                            {mc.categories.length} {language === 'ar' ? 'فئات' : 'cats'}
+                                                                        </span>
+                                                                    )}
+                                                                </Link>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                </motion.div>
+                                            )}
+                                        </AnimatePresence>
                                     </div>
-                                ))}
+                                )}
                             </div>
                         </div>
                     </div>

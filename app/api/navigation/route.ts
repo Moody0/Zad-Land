@@ -12,6 +12,8 @@ export async function GET() {
                 id: true,
                 name: true,
                 slug: true,
+                description: true,
+                image: true,
                 brands: {
                     where: { isActive: true },
                     orderBy: { name: "asc" },
@@ -36,6 +38,8 @@ export async function GET() {
                     select: {
                         id: true,
                         name: true,
+                        nameAr: true,
+                        nameEn: true,
                         slug: true,
                         images: true,
                         price: true,
@@ -70,6 +74,8 @@ export async function GET() {
                 .map((p) => ({
                     id: p.id,
                     name: p.name,
+                    nameAr: p.nameAr,
+                    nameEn: p.nameEn,
                     slug: p.slug,
                 }));
 
@@ -89,7 +95,9 @@ export async function GET() {
             return {
                 id: mc.id,
                 name: mc.name,
+                nameEn: mc.description || mc.name,
                 slug: mc.slug,
+                image: mc.image,
                 brands: mc.brands,
                 categories: mc.categories,
                 topProducts,

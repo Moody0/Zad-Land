@@ -44,7 +44,11 @@ export async function GET(request: Request) {
         if (search) {
             where.OR = [
                 { name: { contains: search, mode: "insensitive" } },
+                { nameAr: { contains: search, mode: "insensitive" } },
+                { nameEn: { contains: search, mode: "insensitive" } },
                 { description: { contains: search, mode: "insensitive" } },
+                { descriptionAr: { contains: search, mode: "insensitive" } },
+                { descriptionEn: { contains: search, mode: "insensitive" } },
             ];
         }
 
@@ -66,6 +70,11 @@ export async function GET(request: Request) {
                 select: {
                     id: true,
                     name: true,
+                    nameAr: true,
+                    nameEn: true,
+                    description: true,
+                    descriptionAr: true,
+                    descriptionEn: true,
                     slug: true,
                     images: true,
                     price: true,
@@ -73,9 +82,11 @@ export async function GET(request: Request) {
                     discountType: true,
                     discountValue: true,
                     stock: true,
+                    options: true,
                     isTrending: true,
                     brandId: true,
                     categoryId: true,
+                    mainCategoryId: true,
                     brand: {
                         select: {
                             id: true,
@@ -87,7 +98,7 @@ export async function GET(request: Request) {
                     category: {
                         select: {
                             id: true,
-                            name: true
+                            name: true,
                         }
                     }
                 }

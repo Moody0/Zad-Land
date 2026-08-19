@@ -17,7 +17,7 @@ export default async function NotFound() {
             <h1 className="text-9xl md:text-[140px] font-black text-gray-200 dark:text-gray-800 leading-none mb-2">
               404
             </h1>
-            <div className="h-1 w-20 bg-gradient-to-r from-pink-500 to-pink-300 mx-auto mb-6"></div>
+            <div className="h-1 w-20 bg-gradient-to-r from-amber-600 to-amber-400 mx-auto mb-6"></div>
           </div>
 
           {/* Message */}
@@ -32,13 +32,13 @@ export default async function NotFound() {
           <div className={`flex flex-col sm:flex-row gap-4 justify-center ${dir === 'rtl' ? 'flex-row-reverse' : ''}`}>
             <Link 
               href="/" 
-              className="inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white font-semibold rounded-lg transition-all duration-300"
+              className="inline-flex items-center justify-center px-8 py-4 bg-primary hover:bg-[#9a7009] text-white font-semibold rounded-lg transition-all duration-300 active:scale-95"
             >
               {t('notFound.homeCta')}
             </Link>
             <Link 
               href="/products" 
-              className="inline-flex items-center justify-center px-8 py-4 border-2 border-text-main-light dark:border-gray-300 text-text-main-light dark:text-white font-semibold rounded-lg hover:bg-gray-50 dark:hover:bg-white/5 transition-all duration-300"
+              className="inline-flex items-center justify-center px-8 py-4 border-2 border-primary text-primary hover:bg-primary hover:text-white font-semibold rounded-lg transition-all duration-300 active:scale-95"
             >
               {t('notFound.shopCta')}
             </Link>

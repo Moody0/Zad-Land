@@ -8,23 +8,23 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: '#ee2b6c',
+        primary: '#B8860B',
         background: {
           light: '#ffffff',
-          dark: '#221016',
+          dark: '#1A1A14',
         },
         surface: {
           light: '#ffffff',
-          dark: '#2d161e',
+          dark: '#2A2A1E',
         },
         text: {
           main: {
-            light: '#181113',
-            dark: '#fce7ef',
+            light: '#1A1A14',
+            dark: '#F5F0E0',
           },
           muted: {
-            light: '#89616f',
-            dark: '#dcbcc7',
+            light: '#7A7A60',
+            dark: '#C4B89A',
           },
         },
       },

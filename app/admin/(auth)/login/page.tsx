@@ -59,8 +59,8 @@ export default function AdminLoginPage() {
                     <div className="flex flex-col items-center mb-10 text-center">
                         <div className="w-16 h-16 bg-black/5 dark:bg-white/5 rounded-2xl mb-6 p-2 flex items-center justify-center shadow-inner">
                             <img
-                                src="/Ruby-Beauty-Logo.jpeg"
-                                alt="Ruby Beauty"
+                                src="/logo.jpeg"
+                                alt="Zad Land"
                                 className="h-full w-full object-contain rounded-xl"
                             />
                         </div>

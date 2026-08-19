@@ -11,13 +11,13 @@ export async function generateMetadata(
 
     if (!brand) {
         return {
-            title: "Brand Not Found | Ruby Beauty",
+            title: "Brand Not Found | Zad Land",
         };
     }
 
     return {
-        title: `${brand.name} | Ruby Beauty`,
-        description: brand.description || `Shop ${brand.name} products at Ruby Beauty.`,
+        title: `${brand.name} | Zad Land`,
+        description: brand.description || `Shop ${brand.name} products at Zad Land.`,
     };
 }
 

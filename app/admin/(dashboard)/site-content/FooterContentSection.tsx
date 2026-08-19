@@ -176,7 +176,7 @@ export default function FooterContentSection({
             </div>
 
             <div className="space-y-10">
-                <div className="rounded-3xl border border-[#efe6e8] bg-[#fffafb] p-6 dark:border-white/10 dark:bg-[#171316]">
+                <div className="rounded-3xl border border-gray-200 bg-white p-6 dark:border-white/10 dark:bg-zinc-800/40">
                     <SectionTitle
                         title={t('admin.footerBranding') || 'Branding'}
                         description={t('admin.footerBrandingDescription') || 'Edit the brand title, description, and copyright shown on the left side of the footer.'}
@@ -231,7 +231,7 @@ export default function FooterContentSection({
                     </div>
                 </div>
 
-                <div className="rounded-3xl border border-[#efe6e8] bg-[#fffafb] p-6 dark:border-white/10 dark:bg-[#171316]">
+                <div className="rounded-3xl border border-gray-200 bg-white p-6 dark:border-white/10 dark:bg-zinc-800/40">
                     <SectionTitle
                         title={t('admin.socialLinks') || 'Social Links'}
                         description={t('admin.socialLinksDescription') || 'Add or replace the social URLs used by the footer icons.'}
@@ -277,7 +277,7 @@ export default function FooterContentSection({
                     </div>
                 </div>
 
-                <div className="rounded-3xl border border-[#efe6e8] bg-[#fffafb] p-6 dark:border-white/10 dark:bg-[#171316]">
+                <div className="rounded-3xl border border-gray-200 bg-white p-6 dark:border-white/10 dark:bg-zinc-800/40">
                     <SectionTitle
                         title={t('admin.footerShopSection') || 'Shop Section'}
                         description={t('admin.footerShopSectionDescription') || 'Rename the shop column and choose the categories that should appear there.'}
@@ -330,7 +330,7 @@ export default function FooterContentSection({
                     </div>
                 </div>
 
-                <div className="rounded-3xl border border-[#efe6e8] bg-[#fffafb] p-6 dark:border-white/10 dark:bg-[#171316]">
+                <div className="rounded-3xl border border-gray-200 bg-white p-6 dark:border-white/10 dark:bg-zinc-800/40">
                     <SectionTitle
                         title={t('admin.footerSupportSection') || 'Support Section'}
                         description={t('admin.footerSupportSectionDescription') || 'Edit the support column heading and each footer support link.'}
@@ -388,7 +388,7 @@ export default function FooterContentSection({
                     </div>
                 </div>
 
-                <div className="rounded-3xl border border-[#efe6e8] bg-[#fffafb] p-6 dark:border-white/10 dark:bg-[#171316]">
+                <div className="rounded-3xl border border-gray-200 bg-white p-6 dark:border-white/10 dark:bg-zinc-800/40">
                     <SectionTitle
                         title={t('admin.footerCompanySection') || 'Company Section'}
                         description={t('admin.footerCompanySectionDescription') || 'Edit the company column heading and up to three footer links.'}

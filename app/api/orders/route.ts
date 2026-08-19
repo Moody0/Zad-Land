@@ -5,6 +5,7 @@ interface OrderItemInput {
     productId: string;
     quantity: number;
     price: number;
+    options?: string | null;
 }
 
 export async function POST(request: Request) {
@@ -46,7 +47,8 @@ export async function POST(request: Request) {
                         create: items.map((item: OrderItemInput) => ({
                             productId: item.productId,
                             quantity: item.quantity,
-                            price: item.price
+                            price: item.price,
+                            options: item.options || null,
                         }))
                     }
                 },

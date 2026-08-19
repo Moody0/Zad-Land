@@ -35,15 +35,21 @@ import { FaFacebook, FaWhatsapp } from 'react-icons/fa';
 interface Product {
     id: string;
     name: string;
+    nameAr?: string | null;
+    nameEn?: string | null;
     slug: string;
     description: string | null;
+    descriptionAr?: string | null;
+    descriptionEn?: string | null;
     categoryId: string;
+    mainCategoryId?: string | null;
     sku: string | null;
     price: number;
     discountPrice: number | null;
     discountType: string | null;
     discountValue: number | null;
     stock: number;
+    options?: string | null;
     images: string;
     isTrending: boolean;
     brandId: string;
@@ -57,12 +63,18 @@ interface Product {
         id: string;
         name: string;
     } | null;
+    mainCategory?: {
+        id: string;
+        name: string;
+        slug: string;
+    } | null;
 }
 
 interface Category {
     id: string;
     name: string;
     brandId: string;
+    mainCategoryId?: string | null;
 }
 
 interface Brand {
@@ -71,11 +83,28 @@ interface Brand {
     slug: string;
     group: string;
     isActive: boolean;
+    mainCategoryId?: string | null;
+}
+
+interface MainCategory {
+    id: string;
+    name: string;
+    slug?: string;
 }
 
 type ImportRow = Record<string, string | number | boolean | null | undefined>;
 
-export default function ProductsClient({ products, categories, brands }: { products: Product[], categories: Category[], brands: Brand[] }) {
+export default function ProductsClient({ 
+    products, 
+    categories, 
+    brands,
+    mainCategories = []
+}: { 
+    products: Product[], 
+    categories: Category[], 
+    brands: Brand[],
+    mainCategories?: MainCategory[]
+}) {
     const { data: session } = useSession();
     const { t, dir } = useLanguage();
     const canDelete = session?.user?.role === 'SUPER_ADMIN' || session?.user?.canDeleteProducts;
@@ -108,7 +137,7 @@ export default function ProductsClient({ products, categories, brands }: { produ
 
     const handleSocialShare = (platform: 'facebook' | 'whatsapp', product: Product) => {
         const url = `${window.location.origin}/products/${product.slug}`;
-        const text = `Check out ${product.name} at Ruby Beauty!`;
+        const text = `Check out ${product.name} at Zad Land!`;
 
         // Warn the user about localhost sharing limitations
         const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
@@ -382,19 +411,33 @@ export default function ProductsClient({ products, categories, brands }: { produ
 
     const handleExportCSV = () => {
         try {
-            // Prepare headers
-            const headers = ["Name", "SKU", "Brand", "Category", "Price", "Stock", "Status", "Is Trending", "Images"];
+            // Standard 11 columns
+            const headers = [
+                "Main Category",
+                "Sub Category",
+                "Brand Name",
+                "Name ar",
+                "Name en",
+                "description ar",
+                "description en",
+                "Price",
+                "Quantity",
+                "Options",
+                "Images"
+            ];
 
             // Prepare data rows
             const rows = products.map((p) => [
-                `"${p.name.replace(/"/g, '""')}"`,
-                `"${(p.sku || '').replace(/"/g, '""')}"`,
-                `"${(p.brand?.name || 'Ruby Beauty').replace(/"/g, '""')}"`,
-                `"${(p.category?.name || 'Uncategorized').replace(/"/g, '""')}"`,
+                `"${(p.mainCategory?.name || '').replace(/"/g, '""')}"`,
+                `"${(p.category?.name || 'General').replace(/"/g, '""')}"`,
+                `"${(p.brand?.name || 'Zad Land').replace(/"/g, '""')}"`,
+                `"${(p.nameAr || '').replace(/"/g, '""')}"`,
+                `"${(p.nameEn || p.name || '').replace(/"/g, '""')}"`,
+                `"${(p.descriptionAr || '').replace(/"/g, '""')}"`,
+                `"${(p.descriptionEn || p.description || '').replace(/"/g, '""')}"`,
                 p.price,
                 p.stock,
-                p.stock > 0 ? "In Stock" : "Out of Stock",
-                p.isTrending ? "Yes" : "No",
+                `"${(p.options || '').replace(/"/g, '""')}"`,
                 `"${(p.images || '').replace(/"/g, '""')}"`
             ]);
 
@@ -410,16 +453,16 @@ export default function ProductsClient({ products, categories, brands }: { produ
             const url = URL.createObjectURL(blob);
             const link = document.createElement("a");
             link.setAttribute("href", url);
-            link.setAttribute("download", `ruby_beauty_products_${new Date().toISOString().split('T')[0]}.csv`);
+            link.setAttribute("download", `zad_land_products_${new Date().toISOString().split('T')[0]}.csv`);
             link.style.visibility = 'hidden';
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
 
-            toast.success(t('admin.exportSuccess'));
+            toast.success(t('admin.exportSuccess') || "Exported successfully");
         } catch (error) {
             console.error("Export failed:", error);
-            toast.error(t('admin.exportError'));
+            toast.error(t('admin.exportError') || "Export failed");
         } finally {
             setIsExportMenuOpen(false);
         }
@@ -429,29 +472,31 @@ export default function ProductsClient({ products, categories, brands }: { produ
         try {
             const XLSX = await import('xlsx');
 
-            // Prepare data
+            // Standard 11 columns
             const data = products.map((p) => ({
-                Name: p.name,
-                SKU: p.sku || '',
-                Brand: p.brand?.name || 'Ruby Beauty',
-                Category: p.category?.name || 'Uncategorized',
-                Price: p.price,
-                Stock: p.stock,
-                Status: p.stock > 0 ? "In Stock" : "Out of Stock",
-                "Is Trending": p.isTrending ? "Yes" : "No",
-                Images: p.images || ''
+                "Main Category": p.mainCategory?.name || '',
+                "Sub Category": p.category?.name || 'General',
+                "Brand Name": p.brand?.name || 'Zad Land',
+                "Name ar": p.nameAr || '',
+                "Name en": p.nameEn || p.name || '',
+                "description ar": p.descriptionAr || '',
+                "description en": p.descriptionEn || p.description || '',
+                "Price": p.price,
+                "Quantity": p.stock,
+                "Options": p.options || '',
+                "Images": p.images || ''
             }));
 
             const ws = XLSX.utils.json_to_sheet(data);
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, "Products");
 
-            XLSX.writeFile(wb, `ruby_beauty_products_${new Date().toISOString().split('T')[0]}.xlsx`);
+            XLSX.writeFile(wb, `zad_land_products_${new Date().toISOString().split('T')[0]}.xlsx`);
 
-            toast.success(t('admin.exportSuccess'));
+            toast.success(t('admin.exportSuccess') || "Exported successfully");
         } catch (error) {
             console.error("Export XLSX failed:", error);
-            toast.error(t('admin.exportError'));
+            toast.error(t('admin.exportError') || "Export failed");
         } finally {
             setIsExportMenuOpen(false);
         }
@@ -608,6 +653,7 @@ export default function ProductsClient({ products, categories, brands }: { produ
                         }}
                         categories={categories}
                         brands={brands}
+                        mainCategories={mainCategories}
                         product={selectedProduct}
                     />
 
@@ -889,14 +935,19 @@ export default function ProductsClient({ products, categories, brands }: { produ
                                                             />
                                                         </div>
                                                         <div className="flex flex-col min-w-0">
-                                                            <span className="font-bold text-text-main dark:text-white text-xs sm:text-sm line-clamp-1">{product.name}</span>
-                                                            <span className="text-[10px] sm:text-xs text-text-sub dark:text-gray-500">{t('admin.sku')}: {product.sku || 'N/A'}</span>
+                                                            <span className="font-bold text-text-main dark:text-white text-xs sm:text-sm line-clamp-1">
+                                                                {product.nameAr && product.nameEn ? `${product.nameAr} (${product.nameEn})` : (product.nameAr || product.nameEn || product.name)}
+                                                            </span>
+                                                            <div className="flex items-center gap-2 text-[10px] sm:text-xs text-text-sub dark:text-gray-500">
+                                                                <span>{t('admin.sku')}: {product.sku || 'N/A'}</span>
+                                                                {product.options && <span className="bg-primary/10 text-primary px-1.5 py-0.5 rounded text-[10px] font-bold">{product.options}</span>}
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </td>
                                                 <td className="p-3 sm:p-5">
                                                     <span className="inline-flex items-center px-2 py-0.5 sm:px-2.5 rounded-full text-[10px] sm:text-xs font-medium bg-gray-100 text-text-main dark:bg-gray-800 dark:text-white whitespace-nowrap">
-                                                        {product.brand?.name || 'Ruby Beauty'}
+                                                        {product.brand?.name || 'Zad Land'}
                                                     </span>
                                                 </td>
                                                 <td className="p-3 sm:p-5">

@@ -187,7 +187,7 @@ export default function BannersClient({ banners }: { banners: Banner[] }) {
                                             {canManage && (
                                                 <button
                                                     onClick={() => handleEdit(banner)}
-                                                    className="p-3 text-text-sub hover:text-primary hover:bg-primary-light dark:hover:bg-primary/10 rounded-xl transition-colors"
+                                                    className="p-3 text-text-sub hover:text-primary hover:bg-primary/10 dark:hover:bg-primary/10 rounded-xl transition-colors"
                                                     title={t('admin.editBanner')}
                                                 >
                                                     <MdEdit className="text-[22px]" />

@@ -54,15 +54,18 @@ const FeaturedCategoriesGrid = ({ categories }: FeaturedCategoriesGridProps) => 
                         <div className="absolute inset-0 bg-gradient-to-br from-[#072835] to-[#0a3a4d]" />
 
                         {/* Content Overlay */}
-                        <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6">
+                        <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6 py-8">
                             <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-white mb-2 leading-tight">
-                                {language === 'ar' ? 'أهم الفئات. الاكثر مبيعاً' : 'Top Categories. Best Sellers'}
+                                {language === 'ar' ? 'أهم الفئات والأكثر طلباً' : 'Top Categories. Best Sellers'}
                             </h2>
-                            <p className="text-sm md:text-base text-white/80 max-w-[280px]">
+                            <p className="text-xs md:text-sm text-white/80 max-w-[280px] mb-5">
                                 {language === 'ar'
-                                    ? 'من منتجات البشرة الى العطور , اكتشفي كل المنتجات الجديدة'
-                                    : 'From skincare to perfumes, discover all the new products'}
+                                    ? 'من المواد الغذائية إلى المعلبات والحلويات، اكتشف أفضل المنتجات العالمية'
+                                    : 'From premium foods to canned goods and sweets, discover top global brands'}
                             </p>
+                            <span className="px-6 py-2.5 bg-[#B8860B] hover:bg-[#9E7309] text-white font-bold text-xs md:text-sm rounded-full transition-transform group-hover:scale-105">
+                                {language === 'ar' ? 'تصفح كافة الأقسام' : 'Explore All Categories'}
+                            </span>
                         </div>
                     </Link>
                 </motion.div>
@@ -80,7 +83,7 @@ const FeaturedCategoriesGrid = ({ categories }: FeaturedCategoriesGridProps) => 
                             >
                                 <Link
                                     href={`/products?category=${category.slug}`}
-                                    className="group relative block aspect-square rounded-[10px] overflow-hidden h-full w-full"
+                                    className="group relative block aspect-square rounded-[10px] overflow-hidden h-full w-full border border-transparent hover:border-[#B8860B]/80 transition-colors duration-300 shadow-2xs"
                                 >
                                     {/* Category Image */}
                                     {category.image ? (
@@ -95,11 +98,11 @@ const FeaturedCategoriesGrid = ({ categories }: FeaturedCategoriesGridProps) => 
                                     )}
 
                                     {/* Bottom gradient overlay */}
-                                    <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/60 to-transparent" />
+                                    <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
 
                                     {/* Category Name */}
                                     <div className="absolute inset-x-0 bottom-0 flex items-end justify-center pb-3 px-2">
-                                        <span className="text-white text-xs md:text-sm font-semibold text-center leading-tight">
+                                        <span className="text-white text-xs md:text-sm font-semibold text-center leading-tight group-hover:text-[#E5B54A] transition-colors">
                                             {category.name}
                                         </span>
                                     </div>

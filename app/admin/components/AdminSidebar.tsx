@@ -89,8 +89,8 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
                         <div className="flex items-center justify-between px-2">
                             <div className="flex items-center gap-3">
                                 <img
-                                    src="/Ruby-Beauty-Logo.jpeg"
-                                    alt="Ruby Beauty"
+                                    src="/logo.jpeg"
+                                    alt="Zad Land"
                                     className="h-9 w-auto object-contain rounded-md shadow-sm"
                                 />
                                 <div className="flex flex-col">

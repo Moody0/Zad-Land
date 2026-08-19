@@ -56,6 +56,8 @@ const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
                     <div className="block">
                         <ProductHeader
                             name={product.name}
+                            nameAr={product.nameAr}
+                            nameEn={product.nameEn}
                         />
                         {product.brand && (
                             <Link
@@ -75,12 +77,23 @@ const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
                     <ProductActions product={{
                         id: product.id,
                         name: product.name,
-                        price: Number(product.price),
+                        nameAr: product.nameAr,
+                        nameEn: product.nameEn,
+                        price: Number(product.discountPrice || product.price),
                         image: product.images.split(',')[0],
-                        slug: product.slug
-                    }} />
+                        slug: product.slug,
+                        options: product.options,
+                        description: product.description,
+                        descriptionAr: product.descriptionAr,
+                        descriptionEn: product.descriptionEn,
+                    }} stock={product.stock} />
 
-                    <ProductAccordions description={product.description} />
+                    <ProductAccordions 
+                        description={product.description}
+                        descriptionAr={product.descriptionAr}
+                        descriptionEn={product.descriptionEn}
+                        options={product.options}
+                    />
                 </div>
             </div>
 

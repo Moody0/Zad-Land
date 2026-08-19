@@ -14,12 +14,17 @@ export interface Product {
     id: string;
     slug: string;
     name: string;
+    nameAr?: string | null;
+    nameEn?: string | null;
     description: string | null;
+    descriptionAr?: string | null;
+    descriptionEn?: string | null;
     price: string | number;
     discountPrice?: string | number | null;
     images: string;
     categoryId?: string;
     stock?: number;
+    options?: string | null;
     isTrending?: boolean;
     brand?: {
         id: string;
@@ -44,6 +49,19 @@ const ProductCard = ({ product, badge, showBadge = true }: ProductCardProps) => 
     const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
     const [isSecondaryLoaded, setIsSecondaryLoaded] = useState(false);
 
+    // Localized title & description
+    const displayName = (language === 'ar' ? product.nameAr : product.nameEn) || product.name || product.nameAr || '';
+
+    const displayDesc = language === 'ar'
+        ? (product.descriptionAr || product.description)
+        : (product.descriptionEn || product.description);
+
+    // Options parsing
+    const parsedOptions = product.options 
+        ? product.options.split(',').map(o => o.trim()).filter(Boolean)
+        : [];
+    const defaultOption = parsedOptions.length > 0 ? parsedOptions[0] : undefined;
+
     // Check if this item is in cart
     const cartItem = items.find(item => item.id === product.id);
     const quantityInCart = cartItem ? cartItem.quantity : 0;
@@ -61,42 +79,45 @@ const ProductCard = ({ product, badge, showBadge = true }: ProductCardProps) => 
         e.stopPropagation();
         addItem({
             id: product.id,
-            name: product.name,
+            name: displayName,
             price: Number(product.discountPrice || product.price),
             image: primaryImage,
             slug: product.slug,
             quantity: 1,
-            description: product.description || undefined
+            description: displayDesc || undefined,
+            selectedOption: defaultOption,
         });
-        toast.success(language === 'ar' ? `تمت إضافة ${product.name} إلى السلة` : `Added ${product.name} to cart`);
+        toast.success(language === 'ar' ? `تمت إضافة ${displayName} إلى السلة` : `Added ${displayName} to cart`);
     };
 
     const handleIncrease = (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
-        updateQuantity(product.id, quantityInCart + 1);
+        updateQuantity(product.id, quantityInCart + 1, defaultOption);
     };
 
     const handleDecrease = (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
         if (quantityInCart <= 1) {
-            removeItem(product.id);
+            removeItem(product.id, defaultOption);
         } else {
-            updateQuantity(product.id, quantityInCart - 1);
+            updateQuantity(product.id, quantityInCart - 1, defaultOption);
         }
     };
 
-    const displayBadge = product.isTrending ? (language === 'ar' ? 'Trending' : 'Trending') : badge;
+    const displayBadge = product.isTrending 
+        ? (language === 'ar' ? 'مميز' : 'Trending') 
+        : badge;
 
     return (
         <>
             <div className="group relative flex flex-col bg-white dark:bg-zinc-900 rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-lg border border-gray-100 dark:border-white/10 p-2.5 sm:p-4 w-full h-full">
                 
-                {/* Badge matching Homepage #C20059 */}
+                {/* Badge matching Theme (#B8860B for trending, #2E7D32 for new arrival) */}
                 {showBadge && (product.isTrending || badge) && (
                     <div className="absolute top-3 right-3 sm:top-4 sm:right-4 z-20 pointer-events-none">
-                        <span className="bg-[#C20059] text-white text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider shadow-sm">
+                        <span className={`${product.isTrending ? 'bg-[#B8860B]' : 'bg-[#2E7D32]'} text-white text-[9px] sm:text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider shadow-xs`}>
                             {displayBadge}
                         </span>
                     </div>
@@ -109,7 +130,7 @@ const ProductCard = ({ product, badge, showBadge = true }: ProductCardProps) => 
                         e.stopPropagation();
                         setIsQuickViewOpen(true);
                     }}
-                    className="absolute z-20 top-3 left-3 sm:top-4 sm:left-4 w-7 h-7 sm:w-8 sm:h-8 bg-white/90 dark:bg-zinc-800/90 backdrop-blur-sm text-gray-700 dark:text-gray-200 rounded-full shadow-sm flex items-center justify-center opacity-90 sm:opacity-0 group-hover:opacity-100 transition-all duration-200 hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black"
+                    className="absolute z-20 top-3 left-3 sm:top-4 sm:left-4 w-7 h-7 sm:w-8 sm:h-8 bg-white/95 dark:bg-zinc-800/95 backdrop-blur-sm text-gray-700 dark:text-gray-200 rounded-full flex items-center justify-center opacity-90 sm:opacity-0 group-hover:opacity-100 transition-all duration-200 hover:bg-[#B8860B] hover:text-white dark:hover:bg-[#B8860B] dark:hover:text-white border border-gray-200/60 dark:border-white/10"
                     aria-label="Quick View"
                 >
                     <MdSearch className="text-sm sm:text-base" />
@@ -148,28 +169,43 @@ const ProductCard = ({ product, badge, showBadge = true }: ProductCardProps) => 
                     
                     {/* Brand */}
                     <span className="text-[9px] sm:text-xs font-bold uppercase tracking-widest text-[rgba(7,40,53,0.6)] dark:text-gray-400 mb-0.5 line-clamp-1">
-                        {product.brand?.name || 'Ruby Beauty'}
+                        {product.brand?.name || 'Zad Land'}
                     </span>
 
                     {/* Title */}
                     <h3 
-                        dir="ltr"
-                        className={`text-xs sm:text-sm font-semibold text-zinc-900 dark:text-white line-clamp-2 leading-snug mb-1.5 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}
+                        className={`text-xs sm:text-sm font-semibold text-zinc-900 dark:text-white line-clamp-2 leading-snug mb-1 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}
                     >
                         <Link href={`/products/${product.slug}`} className="hover:underline">
-                            {product.name}
+                            {displayName}
                         </Link>
                     </h3>
+
+                    {/* Options Pills (if any) */}
+                    {parsedOptions.length > 0 && (
+                        <div className="flex flex-wrap gap-1 mb-1.5">
+                            {parsedOptions.slice(0, 3).map((opt, i) => (
+                                <span key={i} className="text-[9px] font-bold bg-[#FAF6EC] text-[#072835] border border-[#B8860B]/20 px-1.5 py-0.5 rounded">
+                                    {opt}
+                                </span>
+                            ))}
+                            {parsedOptions.length > 3 && (
+                                <span className="text-[9px] font-bold text-gray-400">
+                                    +{parsedOptions.length - 3}
+                                </span>
+                            )}
+                        </div>
+                    )}
 
                     {/* Price */}
                     <div className="mt-auto flex items-baseline gap-1.5 sm:gap-2 text-zinc-900 dark:text-white">
                         {product.discountPrice && Number(product.discountPrice) < Number(product.price) ? (
                             <>
-                                <span className="text-xs sm:text-base font-extrabold">{formatPrice(Number(product.discountPrice))}</span>
+                                <span className="text-xs sm:text-base font-extrabold text-[#2E7D32] dark:text-[#4ade80]">{formatPrice(Number(product.discountPrice))}</span>
                                 <span className="text-[10px] sm:text-xs text-gray-400 line-through font-normal">{formatPrice(Number(product.price))}</span>
                             </>
                         ) : (
-                            <span className="text-xs sm:text-base font-extrabold">{formatPrice(Number(product.price))}</span>
+                            <span className="text-xs sm:text-base font-extrabold text-[#072835] dark:text-white">{formatPrice(Number(product.price))}</span>
                         )}
                     </div>
 
@@ -178,16 +214,16 @@ const ProductCard = ({ product, badge, showBadge = true }: ProductCardProps) => 
                         {quantityInCart === 0 ? (
                             <button
                                 onClick={handleInitialAdd}
-                                className="w-full h-full bg-[#181113] hover:bg-black dark:bg-white dark:hover:bg-gray-200 text-white dark:text-black rounded-xl font-bold text-[11px] sm:text-xs flex items-center justify-center gap-1.5 transition-all duration-200 active:scale-95 touch-manipulation select-none"
+                                className="w-full h-full bg-[#2E7D32] hover:bg-[#256629] text-white rounded-xl font-bold text-[11px] sm:text-xs flex items-center justify-center gap-1.5 transition-all duration-200 active:scale-95 touch-manipulation select-none shadow-xs"
                             >
-                                <MdShoppingBag className="text-sm sm:text-base shrink-0" />
+                                <MdShoppingBag className="text-sm sm:text-base shrink-0 text-white" />
                                 <span className="truncate">{language === 'ar' ? 'إضافة للسلة' : 'Add to Cart'}</span>
                             </button>
                         ) : (
-                            <div className="w-full h-full bg-[#181113] dark:bg-white text-white dark:text-black rounded-xl font-bold text-xs flex items-center justify-between px-1.5 sm:px-2 shadow-sm transition-all duration-300 animate-scaleUp">
+                            <div className="w-full h-full bg-[#2E7D32] text-white rounded-xl font-bold text-xs flex items-center justify-between px-1.5 sm:px-2 transition-all duration-300 animate-scaleUp">
                                 <button
                                     onClick={handleDecrease}
-                                    className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-white/20 dark:bg-black/20 hover:bg-white/30 dark:hover:bg-black/30 flex items-center justify-center transition-colors active:scale-90 touch-manipulation"
+                                    className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors active:scale-90 touch-manipulation"
                                     aria-label="Decrease quantity"
                                 >
                                     <MdRemove className="text-sm sm:text-base" />
@@ -199,7 +235,7 @@ const ProductCard = ({ product, badge, showBadge = true }: ProductCardProps) => 
 
                                 <button
                                     onClick={handleIncrease}
-                                    className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-white/20 dark:bg-black/20 hover:bg-white/30 dark:hover:bg-black/30 flex items-center justify-center transition-colors active:scale-90 touch-manipulation"
+                                    className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors active:scale-90 touch-manipulation"
                                     aria-label="Increase quantity"
                                 >
                                     <MdAdd className="text-sm sm:text-base" />

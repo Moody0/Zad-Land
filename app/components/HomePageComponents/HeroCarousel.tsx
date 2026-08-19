@@ -37,14 +37,14 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
     
     const DEFAULT_BANNER: Banner = {
         id: 'default',
-        title: 'Flash Sale 50% Off',
-        subtitle: 'Pamper yourself with beauty you love. Enjoy discounts up to 50% for a limited time this week.',
-        titleAr: 'خصم حتى ٥٠٪',
-        subtitleAr: 'دلعي نفسك بجمال تحبينه. استمتعي بخصومات تصل إلى ٥٠٪ لفترة محدودة هذا الأسبوع',
+        title: 'Wholesale Global Food Brands',
+        subtitle: 'Your trusted partner for top-tier international food distribution with reliable logistics.',
+        titleAr: 'توزيع بضائع من كبرى الشركات العالمية',
+        subtitleAr: 'شريككم المعتمد لأجود المنتجات والمواد الغذائية مع أسرع خدمات الشحن والتوزيع.',
         image: "https://lh3.googleusercontent.com/aida-public/AB6AXuB8pRgU38opDPgidWmDRVHh18-R0XsEouLP3xdxsGLZz4BX3nQjc-9PXhgFNDVECMvP80S7ZtFmpA-QwwrnKgOR8B7WY0FlM3qJCAf1J8cxpwvyt6V15oxTZz-uhtroLEp-87KWQzsp-6-2mVURrFG_Q6mWjJ5YGqT0gqwmcLOPMK6pDk77rqmdXEvvM82qGkXdLNmSeXBPXY9j9zwnT_PjJ5YAOzWa2PqrFvo1SOjMCtz71ZHQraBSPlt7TKx00ccpwm4TTWoB6b0y",
-        buttonText: language === 'ar' ? 'اكتشفي' : 'Discover',
+        buttonText: language === 'ar' ? 'تصفح المنتجات' : 'Explore Products',
         link: "/products",
-        badge: language === 'ar' ? 'عرض الويك اند' : 'Weekend Offer',
+        badge: language === 'ar' ? 'توزيع جملة معتمد' : 'Wholesale Distribution',
         isActive: true
     };
 
@@ -58,12 +58,22 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
 
     const getBannerButtonText = (banner: Banner): string => {
         if (language === 'ar') {
-            if (!banner.buttonText || banner.buttonText === 'Shop Now') {
-                return 'اكتشفي';
-            }
-            return banner.buttonText;
+            return banner.buttonText || 'تصفح المنتجات';
         }
-        return banner.buttonText || 'Discover';
+        if (!banner.buttonText || /[\u0600-\u06FF]/.test(banner.buttonText)) {
+            return 'Shop Now';
+        }
+        return banner.buttonText;
+    };
+
+    const getBannerBadge = (banner: Banner): string => {
+        if (language === 'ar') {
+            return banner.badge || 'توزيع جملة معتمد';
+        }
+        if (!banner.badge || /[\u0600-\u06FF]/.test(banner.badge)) {
+            return 'Certified Wholesale';
+        }
+        return banner.badge;
     };
 
     const displayBanners = banners && banners.length > 0 ? banners : [DEFAULT_BANNER];
@@ -72,7 +82,7 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
         <section ref={wrapperRef} className="container-custom pt-4 md:pt-6 pb-4 md:pb-6 group hero-carousel">
             <div className="w-full relative">
                 {/* Responsive Height: Image only on mobile, sleek banner on desktop */}
-                <div className="relative overflow-hidden rounded-[10px] bg-[#FAECE8] dark:bg-[#1a1a1a] h-[150px] md:h-[400px] lg:h-[480px]">
+                <div className="relative overflow-hidden rounded-[10px] bg-[#F5ECD7] dark:bg-[#1a1a1a] h-[150px] md:h-[400px] lg:h-[480px]">
                     <Swiper
                         modules={[Autoplay, Navigation, Pagination]}
                         spaceBetween={0}
@@ -121,7 +131,7 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                                         
                                         {/* Mobile Click Indicator - Hidden on Desktop */}
                                         <div className="absolute bottom-2.5 ltr:right-2.5 rtl:left-2.5 md:hidden z-10 pointer-events-none">
-                                            <span className="bg-white/95 backdrop-blur-md text-black text-[10px] font-bold py-1 px-3 rounded-full shadow-lg flex items-center gap-1.5 border border-white/20">
+                                            <span className="bg-white/95 backdrop-blur-md text-black text-[10px] font-bold py-1 px-3 rounded-full flex items-center gap-1.5 border border-white/20">
                                                 {getBannerButtonText(banner)}
                                                 <svg className={`w-2.5 h-2.5 ${dir === 'rtl' ? 'rotate-180' : ''}`} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <path d="M7.5 3.75L13.75 10L7.5 16.25" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
@@ -131,25 +141,23 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                                     </Link>
 
                                     {/* Content Container - Hidden on mobile, Right side on desktop */}
-                                    <div className="relative z-10 hidden md:flex w-full md:h-full md:w-1/2 flex-col items-center justify-center text-center md:px-12 lg:px-20 bg-[#FAECE8] dark:bg-[#1a1a1a]">
+                                    <div className="relative z-10 hidden md:flex w-full md:h-full md:w-1/2 flex-col items-center justify-center text-center md:px-12 lg:px-20 bg-[#FAF6EC] dark:bg-[#1A1A14]">
                                         <div className="animate-fadeInUp w-full max-w-[320px] md:max-w-md flex flex-col items-center text-center">
                                             
-
-                                            
                                             {/* Title */}
-                                            <h2 className="text-[32px] md:text-[38px] lg:text-[44px] font-bold leading-[1.2] mb-3 md:mb-5 text-[#072835] dark:text-[#072835] md:dark:text-white">
+                                            <h2 className="text-[32px] md:text-[38px] lg:text-[44px] font-bold leading-[1.2] mb-3 md:mb-5 text-[#072835] dark:text-[#F5F0E0]">
                                                 {getBannerTitle(banner)}
                                             </h2>
                                             
                                             {/* Description */}
-                                            <p className="text-[14px] md:text-base lg:text-[17px] text-[#555] md:text-[#666] md:dark:text-white/70 mb-5 md:mb-8 leading-relaxed font-medium">
+                                            <p className="text-[14px] md:text-base lg:text-[17px] text-[#5A5A48] dark:text-[#C4B89A] mb-5 md:mb-8 leading-relaxed font-medium">
                                                 {getBannerSubtitle(banner)}
                                             </p>
                                             
                                             {/* Button */}
                                             <Link
                                                 href={banner.link || "/products"}
-                                                className="px-8 py-3 bg-black text-white hover:bg-white hover:text-black border border-transparent hover:border-black rounded-full font-bold text-[15px] md:text-base transition-all flex items-center justify-center gap-3 w-fit group/btn shadow-lg active:scale-95"
+                                                className="px-8 py-3 bg-[#B8860B] hover:bg-[#9E7309] text-white rounded-full font-bold text-[15px] md:text-base transition-all flex items-center justify-center gap-3 w-fit group/btn active:scale-95"
                                             >
                                                 <span>{getBannerButtonText(banner)}</span>
                                             </Link>
@@ -184,7 +192,7 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                 .hero-carousel .swiper-pagination-bullet {
                     width: 7px;
                     height: 7px;
-                    background: #A89D9F;
+                    background: rgba(184, 134, 11, 0.35);
                     opacity: 1;
                     transition: all 0.3s;
                     border-radius: 99px;
@@ -192,7 +200,7 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                 }
                 .hero-carousel .swiper-pagination-bullet-active {
                     width: 48px;
-                    background: #D9CDD1 !important;
+                    background: rgba(184, 134, 11, 0.15) !important;
                     position: relative;
                     overflow: hidden;
                 }
@@ -203,7 +211,7 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                     bottom: 0;
                     left: 0;
                     width: var(--autoplay-progress, 0%);
-                    background: #333333;
+                    background: #B8860B;
                     border-radius: 99px;
                 }
                 [dir="rtl"] .hero-carousel .swiper-pagination-bullet-active::after {

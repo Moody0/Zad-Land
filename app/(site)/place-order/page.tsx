@@ -107,7 +107,8 @@ const PlaceOrderPage = () => {
                     items: items.map(item => ({
                         productId: item.id,
                         quantity: item.quantity,
-                        price: item.price
+                        price: item.price,
+                        options: item.selectedOption || null
                     }))
                 })
             });

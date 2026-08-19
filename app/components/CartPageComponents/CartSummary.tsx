@@ -25,7 +25,7 @@ const CartSummary = ({ subtotal }: CartSummaryProps) => {
                     </div>
                     <div className="flex justify-between text-gray-500 dark:text-gray-400 text-sm font-medium">
                         <span>{t('cart.shipping')}</span>
-                        <span className="font-bold text-emerald-600 uppercase tracking-wide text-xs">{t('cart.freeShipping')}</span>
+                        <span className="font-bold text-[#2E7D32] uppercase tracking-wide text-xs">{t('cart.freeShipping')}</span>
                     </div>
                 </div>
                 <div className="flex justify-between items-end mb-6">
@@ -33,7 +33,7 @@ const CartSummary = ({ subtotal }: CartSummaryProps) => {
                     <span className="text-2xl sm:text-3xl font-extrabold text-zinc-900 dark:text-white leading-none" dir="ltr">{formatPrice(subtotal)}</span>
                 </div>
 
-                <Link href="/place-order" className="w-full bg-zinc-900 hover:bg-black dark:bg-white dark:hover:bg-gray-200 text-white dark:text-black font-bold rounded-xl h-12 flex items-center justify-center gap-2 transition-all active:scale-[0.98] text-sm">
+                <Link href="/place-order" className="w-full bg-[#2E7D32] hover:bg-[#256628] text-white font-bold rounded-xl h-12 flex items-center justify-center gap-2 transition-all active:scale-[0.98] text-sm">
                     <span>{t('cart.proceedToCheckout')}</span>
                     <MdArrowForward className={`text-base ${dir === 'rtl' ? 'rotate-180' : ''}`} />
                 </Link>
@@ -42,7 +42,7 @@ const CartSummary = ({ subtotal }: CartSummaryProps) => {
             <div className="bg-gray-50 dark:bg-zinc-800/60 p-4 rounded-xl border border-gray-200 dark:border-white/10 text-center">
                 <p className="text-xs font-medium text-gray-500 dark:text-gray-400">{t('footer.contactUs')}</p>
                 <a 
-                    className="text-xs font-bold text-zinc-900 dark:text-white mt-1 inline-block hover:underline" 
+                    className="text-xs font-bold text-[#072835] dark:text-[#B8860B] mt-1 inline-block hover:underline" 
                     href="https://wa.me/963933254796"
                     target="_blank"
                     rel="noopener noreferrer"

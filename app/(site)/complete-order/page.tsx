@@ -11,6 +11,7 @@ import { MdRefresh } from 'react-icons/md';
 
 interface OrderItem {
     id: string;
+    options?: string | null;
     product: {
         images: string;
         name: string;

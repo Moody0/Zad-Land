@@ -56,24 +56,32 @@ const OrderSummary = ({ items, subtotal, total, loading, discount = 0, onApplyPr
                 
                 {/* Items List */}
                 <div className="space-y-3 mb-6 max-h-[35vh] overflow-y-auto ltr:pr-2 rtl:pl-2 custom-scrollbar">
-                    {items.map((item) => (
-                        <div key={item.id} className="flex items-center gap-3 bg-gray-50 dark:bg-zinc-800/50 p-2.5 rounded-xl border border-gray-100 dark:border-white/5">
-                            <div className="relative w-12 h-12 bg-white dark:bg-zinc-900 rounded-lg border border-gray-200 dark:border-white/10 overflow-hidden shrink-0">
-                                <img
-                                    src={getSafeImageUrl(item.image.split(',')[0])}
-                                    alt={item.name}
-                                    className="w-full h-full object-contain p-1"
-                                    loading="lazy"
-                                />
+                    {items.map((item) => {
+                        const itemKey = `${item.id}:${item.selectedOption || ''}`;
+                        return (
+                            <div key={itemKey} className="flex items-center gap-3 bg-gray-50 dark:bg-zinc-800/50 p-2.5 rounded-xl border border-gray-100 dark:border-white/5">
+                                <div className="relative w-12 h-12 bg-white dark:bg-zinc-900 rounded-lg border border-gray-200 dark:border-white/10 overflow-hidden shrink-0">
+                                    <img
+                                        src={getSafeImageUrl(item.image.split(',')[0])}
+                                        alt={item.name}
+                                        className="w-full h-full object-contain p-1"
+                                        loading="lazy"
+                                    />
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                    <p className="text-xs font-bold truncate text-zinc-900 dark:text-white" title={item.name}>{item.name}</p>
+                                    {item.selectedOption && (
+                                        <span className="inline-block text-[10px] font-bold text-[#B8860B] bg-[#B8860B]/10 border border-[#B8860B]/20 px-1.5 py-0.5 rounded">
+                                            {item.selectedOption}
+                                        </span>
+                                    )}
+                                    <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-0.5">
+                                        {t('cart.quantity')}: {item.quantity} • <span className="text-zinc-900 dark:text-white font-extrabold" dir="ltr">{formatPrice(item.price)}</span>
+                                    </p>
+                                </div>
                             </div>
-                            <div className="flex-1 min-w-0">
-                                <p dir="ltr" className="text-xs font-bold truncate text-zinc-900 dark:text-white text-left rtl:text-right" title={item.name}>{item.name}</p>
-                                <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mt-0.5">
-                                    {t('cart.quantity')}: {item.quantity} • <span className="text-zinc-900 dark:text-white font-extrabold" dir="ltr">{formatPrice(item.price)}</span>
-                                </p>
-                            </div>
-                        </div>
-                    ))}
+                        );
+                    })}
                     {items.length === 0 && (
                         <p className="text-xs text-center py-4 text-gray-400">{t('cart.emptyCart')}</p>
                     )}
@@ -89,19 +97,19 @@ const OrderSummary = ({ items, subtotal, total, loading, discount = 0, onApplyPr
                                 onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
                                 onKeyDown={handleKeyDown}
                                 placeholder={t('checkout.promoCode')}
-                                className="flex-1 px-3.5 py-2.5 rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-zinc-800/60 text-xs text-zinc-900 dark:text-white focus:outline-none focus:border-zinc-900 dark:focus:border-white uppercase font-semibold placeholder:normal-case transition-all"
+                                className="flex-1 px-3.5 py-2.5 rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-zinc-800/60 text-xs text-zinc-900 dark:text-white focus:outline-none focus:border-[#072835] dark:focus:border-[#B8860B] focus:ring-1 focus:ring-[#072835] dark:focus:ring-[#B8860B] uppercase font-semibold placeholder:normal-case transition-all"
                             />
                             <button
                                 type="button"
                                 onClick={handleApplyPromo}
                                 disabled={isApplyingPromo || !promoCode.trim()}
-                                className="px-5 py-2.5 bg-zinc-900 dark:bg-white text-white dark:text-black text-xs font-bold rounded-xl hover:bg-black dark:hover:bg-gray-200 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
+                                className="px-5 py-2.5 bg-[#072835] hover:bg-[#0c4054] text-white text-xs font-bold rounded-xl disabled:opacity-40 disabled:cursor-not-allowed transition-all active:scale-95"
                             >
                                 {isApplyingPromo ? '...' : t('common.apply')}
                             </button>
                         </div>
                         {promoMessage && (
-                            <p className={`text-xs mt-2 font-bold ${promoMessage.type === 'success' ? 'text-emerald-600' : 'text-red-500'}`}>
+                            <p className={`text-xs mt-2 font-bold ${promoMessage.type === 'success' ? 'text-[#2E7D32]' : 'text-red-500'}`}>
                                 {promoMessage.text}
                             </p>
                         )}
@@ -115,14 +123,14 @@ const OrderSummary = ({ items, subtotal, total, loading, discount = 0, onApplyPr
                         <span className="font-bold text-zinc-900 dark:text-white" dir="ltr">{formatPrice(subtotal)}</span>
                     </div>
                     {discount > 0 && (
-                        <div className="flex justify-between text-[#C20059] font-bold text-xs">
+                        <div className="flex justify-between text-[#2E7D32] font-bold text-xs">
                             <span>{t('checkout.discount')}</span>
                             <span dir="ltr">-{formatPrice(discount)}</span>
                         </div>
                     )}
                     <div className="flex justify-between text-gray-500 dark:text-gray-400 text-xs font-medium">
                         <span>{t('cart.shipping')}</span>
-                        <span className="font-bold text-emerald-600 uppercase tracking-wide text-xs">{t('cart.freeShipping')}</span>
+                        <span className="font-bold text-[#2E7D32] uppercase tracking-wide text-xs">{t('cart.freeShipping')}</span>
                     </div>
                 </div>
 
@@ -130,7 +138,7 @@ const OrderSummary = ({ items, subtotal, total, loading, discount = 0, onApplyPr
                 <div className="bg-gray-50 dark:bg-zinc-800/60 rounded-xl p-4 mb-6 border border-gray-200 dark:border-white/10">
                     <div className="flex items-center justify-between mb-1">
                         <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{t('checkout.paymentMethod')}</span>
-                        <MdPayments className="text-zinc-900 dark:text-white text-base" />
+                        <MdPayments className="text-[#072835] dark:text-[#B8860B] text-base" />
                     </div>
                     <p className="text-xs font-extrabold text-zinc-900 dark:text-white">{t('checkout.cashOnDelivery')}</p>
                 </div>
@@ -141,11 +149,11 @@ const OrderSummary = ({ items, subtotal, total, loading, discount = 0, onApplyPr
                     <span className="text-2xl sm:text-3xl font-extrabold text-zinc-900 dark:text-white leading-none" dir="ltr">{formatPrice(total)}</span>
                 </div>
 
-                {/* Submit Order Button (No Glow) */}
+                {/* Submit Order Button */}
                 <button
                     type="submit"
                     disabled={loading || items.length === 0}
-                    className="w-full bg-zinc-900 hover:bg-black dark:bg-white dark:hover:bg-gray-200 text-white dark:text-black font-bold rounded-xl h-12 flex items-center justify-center gap-2 transition-all active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed text-sm"
+                    className="w-full bg-[#2E7D32] hover:bg-[#236327] text-white font-bold rounded-xl h-12 flex items-center justify-center gap-2 transition-all active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed text-sm"
                 >
                     {loading ? (
                         <MdRefresh className="animate-spin text-xl" />
@@ -162,12 +170,12 @@ const OrderSummary = ({ items, subtotal, total, loading, discount = 0, onApplyPr
             {/* Assistance Box */}
             <div className="bg-gray-50 dark:bg-zinc-800/60 p-4 rounded-xl border border-gray-200 dark:border-white/10 flex items-center gap-3.5">
                 <div className="w-10 h-10 rounded-full bg-white dark:bg-zinc-900 flex items-center justify-center border border-gray-200 dark:border-white/10 shrink-0">
-                    <MdSupportAgent className="text-zinc-900 dark:text-white text-lg" />
+                    <MdSupportAgent className="text-[#072835] dark:text-[#B8860B] text-lg" />
                 </div>
                 <div>
                     <p className="text-xs font-bold text-zinc-900 dark:text-white mb-0.5">{t('checkout.needAssistance')}</p>
                     <a
-                        className="text-xs font-semibold text-gray-500 hover:text-zinc-900 dark:hover:text-white transition-colors hover:underline"
+                        className="text-xs font-semibold text-gray-500 hover:text-[#B8860B] dark:hover:text-[#B8860B] transition-colors hover:underline"
                         href="https://wa.me/963933254796"
                         target="_blank"
                         rel="noopener noreferrer"

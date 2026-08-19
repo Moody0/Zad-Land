@@ -13,9 +13,9 @@ interface CollectionShowcaseProps {
 }
 
 const panelThemes = [
-    "border-[#f1dbe3] bg-gradient-to-br from-[#fff7f9] via-white to-[#fff0f4] dark:border-white/10 dark:from-[#301821] dark:via-[#241218] dark:to-[#1c0f14]",
-    "border-[#eedee8] bg-gradient-to-br from-[#fff6fb] via-white to-[#fff5ef] dark:border-white/10 dark:from-[#2f1824] dark:via-[#241218] dark:to-[#201117]",
-    "border-[#f0e2ea] bg-gradient-to-br from-[#fffaf7] via-white to-[#fff2f6] dark:border-white/10 dark:from-[#2d1a1f] dark:via-[#241218] dark:to-[#1f1117]",
+    "border-amber-100 bg-gradient-to-br from-[#FDFCF8] via-white to-[#F5ECD7] dark:border-white/10 dark:from-[#24211a] dark:via-[#1e1c17] dark:to-[#171511]",
+    "border-stone-200 bg-gradient-to-br from-[#FAFAF8] via-white to-[#F0EBE1] dark:border-white/10 dark:from-[#21201c] dark:via-[#1c1b18] dark:to-[#181714]",
+    "border-amber-100 bg-gradient-to-br from-[#FCFBF7] via-white to-[#F3EADA] dark:border-white/10 dark:from-[#222019] dark:via-[#1d1b15] dark:to-[#161510]",
 ] as const;
 
 const CollectionShowcase = ({ sections, t, dir, language }: CollectionShowcaseProps) => {

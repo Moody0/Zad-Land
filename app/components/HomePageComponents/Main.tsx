@@ -33,7 +33,12 @@ interface Product {
     id: string;
     slug: string;
     name: string;
+    nameAr?: string | null;
+    nameEn?: string | null;
     description: string | null;
+    descriptionAr?: string | null;
+    descriptionEn?: string | null;
+    options?: string | null;
     price: number;
     discountPrice?: number | null;
     images: string;
@@ -51,6 +56,10 @@ interface Product {
     } | null;
 }
 
+import type { RailCategory } from './CategoriesRail';
+import type { HighlightCard } from './CategoryHighlightCards';
+import type { ReviewItem } from './TestimonialsMasonry';
+
 interface FeaturedCategory {
     id: string;
     name: string;
@@ -64,6 +73,9 @@ interface FeaturedCategory {
 interface MainProps {
     banners: Banner[];
     mainBrands: HomeBrand[];
+    railCategories: RailCategory[];
+    highlightCards: HighlightCard[];
+    reviews: ReviewItem[];
     featuredNewArrivals: Product[];
     featuredBundles: Product[];
     featuredBestSellers: Product[];
@@ -72,7 +84,19 @@ interface MainProps {
     settings: any;
 }
 
-const Main = async ({ banners, mainBrands, featuredNewArrivals, featuredBundles, featuredBestSellers, trendingWeekly, featuredCategories, settings }: MainProps) => {
+const Main = async ({
+    banners,
+    mainBrands,
+    railCategories,
+    highlightCards,
+    reviews,
+    featuredNewArrivals,
+    featuredBundles,
+    featuredBestSellers,
+    trendingWeekly,
+    featuredCategories,
+    settings,
+}: MainProps) => {
     return (
         <main className="w-full flex flex-col gap-y-[40px] md:gap-y-[80px] pb-12">
             {/* Group Hero Carousel and Categories Rail close to each other */}
@@ -80,16 +104,16 @@ const Main = async ({ banners, mainBrands, featuredNewArrivals, featuredBundles,
                 {/* 1. Hero Carousel Section */}
                 <HeroCarousel banners={banners} />
 
-                {/* 2. Categories Rail (12 Custom Circular Items) */}
-                <CategoriesRail />
+                {/* 2. Categories Rail (Dynamic from Database) */}
+                <CategoriesRail categories={railCategories} />
             </div>
 
             {/* 3. First Ad - Placed above CategoryHighlightCards */}
-            <PromoBanner />
+            <PromoBanner settings={settings} />
 
-            {/* 4. Main Categories (4 highlight cards - تسوق حسب الفئة) */}
+            {/* 4. Main Categories (Dynamic 4 highlight cards from Database) */}
             <ScrollReveal>
-                <CategoryHighlightCards mainBrands={mainBrands} />
+                <CategoryHighlightCards cards={highlightCards} />
             </ScrollReveal>
 
             {/* 5. Countdown Offer Section - Placed directly below CategoryHighlightCards */}
@@ -116,9 +140,9 @@ const Main = async ({ banners, mainBrands, featuredNewArrivals, featuredBundles,
                 <TrendingWeekly products={trendingWeekly} />
             </ScrollReveal>
 
-            {/* 8. Testimonials Masonry */}
+            {/* 8. Testimonials Masonry (Dynamic Reviews from Database) */}
             <ScrollReveal>
-                <TestimonialsMasonry products={featuredBestSellers} />
+                <TestimonialsMasonry reviews={reviews} products={featuredBestSellers} />
             </ScrollReveal>
         </main>
     );

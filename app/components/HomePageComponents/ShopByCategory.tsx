@@ -20,22 +20,20 @@ const ShopByCategory = async ({ mainBrands }: ShopByCategoryProps) => {
     const { t, language } = await getI18n();
 
     // Desired order for the 4 main categories
-    const categoryOrder = ['ruby-beauty', 'accessories', 'watches', 'makeup'];
+    const categoryOrder = ['pasta-grains', 'canned-fish', 'sauces-condiments', 'frozen-foods'];
 
     const defaultImages: Record<string, string> = {
-        'ruby-beauty': 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=400',
-        'makeup': 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=400',
-        'perfumes': 'https://images.unsplash.com/photo-1541643600914-78b084683601?w=400',
-        'accessories': 'https://images.unsplash.com/photo-1606760227091-3dd870d97f1d?w=400',
-        'watches': 'https://images.unsplash.com/photo-1524592094714-0f0654e20314?w=400',
+        'pasta-grains': 'https://images.unsplash.com/photo-1621996346565-e3d5d6281290?w=400',
+        'canned-fish': 'https://images.unsplash.com/photo-1534483509719-3feaee7c30da?w=400',
+        'sauces-condiments': 'https://images.unsplash.com/photo-1472476443507-c7a5948772fc?w=400',
+        'frozen-foods': 'https://images.unsplash.com/photo-1544025162-d76694265947?w=400',
     };
 
     const localizedNames: Record<string, { en: string; ar: string }> = {
-        'ruby-beauty': { en: 'Ruby Beauty', ar: 'روبي بيوتي' },
-        'makeup': { en: 'Makeup', ar: 'مكياج' },
-        'perfumes': { en: 'Perfumes', ar: 'عطور' },
-        'accessories': { en: 'Accessories', ar: 'اكسسوارات' },
-        'watches': { en: 'Watches', ar: 'ساعات' },
+        'pasta-grains': { en: 'Pasta & Grains', ar: 'المعكرونة والحبوب' },
+        'canned-fish': { en: 'Canned Fish & Tuna', ar: 'التونة والأسماك المعلبة' },
+        'sauces-condiments': { en: 'Sauces & Condiments', ar: 'الصلصات والتوابل' },
+        'frozen-foods': { en: 'Frozen Foods', ar: 'المفرزات والبحريات' },
     };
 
     const getLocalizedName = (slug: string): string => {
@@ -49,7 +47,7 @@ const ShopByCategory = async ({ mainBrands }: ShopByCategoryProps) => {
         const brand = mainBrands.find(b => b.slug === slug);
         const image = brand?.image
             ? brand.image
-            : defaultImages[slug] || 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=400';
+            : defaultImages[slug] || 'https://images.unsplash.com/photo-1621996346565-e3d5d6281290?w=400';
 
         return {
             id: brand?.id || slug,
@@ -69,7 +67,7 @@ const ShopByCategory = async ({ mainBrands }: ShopByCategoryProps) => {
                     {displayCategories.map((category) => (
                         <Link
                             key={category.id}
-                            href={`/brands/${category.slug}`}
+                            href={`/categories/${category.slug}`}
                             className="group flex flex-col items-center gap-3 transition-all duration-300"
                         >
                             {/* Card Image Container - Rectangular like the design */}

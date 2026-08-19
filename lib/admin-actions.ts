@@ -4,20 +4,26 @@ import { prisma } from "./prisma";
 import { revalidatePath } from "next/cache";
 import { BrandGroup, OrderStatus } from "@prisma/client";
 import { generateUniqueCategorySlug } from "./category-utils";
-import { generateUniqueBrandSlug, getRubyBeautyBrandId } from "./brand-utils";
+import { generateUniqueBrandSlug, getZadLandBrandId } from "./brand-utils";
 
 interface ProductInput {
     name: string;
-    description?: string;
+    nameAr?: string | null;
+    nameEn?: string | null;
+    description?: string | null;
+    descriptionAr?: string | null;
+    descriptionEn?: string | null;
     price: string | number;
     discountPrice?: string | number | null;
     discountType?: string | null;
     discountValue?: string | number | null;
     stock: string | number;
-    sku?: string;
+    options?: string | null;
+    sku?: string | null;
     images: string;
     brandId: string;
     categoryId: string;
+    mainCategoryId?: string | null;
 }
 
 interface CategoryInput {
@@ -519,33 +525,45 @@ export async function getAdminProducts() {
             include: {
                 category: true,
                 brand: true,
+                mainCategory: true,
             }
         });
 
         return products.map(product => ({
             id: product.id,
             name: product.name,
+            nameAr: product.nameAr || null,
+            nameEn: product.nameEn || product.name || null,
             slug: product.slug,
             images: product.images,
             sku: product.sku,
             description: product.description,
+            descriptionAr: product.descriptionAr || null,
+            descriptionEn: product.descriptionEn || product.description || null,
             price: Number(product.price),
             discountPrice: product.discountPrice ? Number(product.discountPrice) : null,
             discountType: product.discountType,
             discountValue: product.discountValue ? Number(product.discountValue) : null,
             stock: Number(product.stock),
+            options: product.options || null,
             brandId: product.brandId,
             categoryId: product.categoryId,
+            mainCategoryId: product.mainCategoryId || null,
             brand: product.brand ? {
                 id: product.brand.id,
                 name: product.brand.name,
                 slug: product.brand.slug,
                 group: product.brand.group,
             } : null,
-            category: {
+            category: product.category ? {
                 id: product.category.id,
                 name: product.category.name
-            },
+            } : null,
+            mainCategory: product.mainCategory ? {
+                id: product.mainCategory.id,
+                name: product.mainCategory.name,
+                slug: product.mainCategory.slug,
+            } : null,
             createdAt: product.createdAt.toISOString(),
             updatedAt: product.updatedAt.toISOString(),
             isTrending: product.isTrending,
@@ -630,6 +648,7 @@ export async function getAdminOrders(page = 1, limit = 50) {
                             id: true,
                             quantity: true,
                             price: true,
+                            options: true,
                             product: {
                                 select: {
                                     id: true,
@@ -687,60 +706,70 @@ export async function createProduct(data: ProductInput) {
     try {
         const category = await prisma.category.findUnique({
             where: { id: data.categoryId },
-            select: { brandId: true },
+            select: { brandId: true, mainCategoryId: true },
         });
 
         if (!category || category.brandId !== data.brandId) {
             return { success: false, error: "Product category must belong to the selected brand" };
         }
 
-        let slug = data.name.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
-        
-        // Check for slug collision
-        const existingWithSlug = await prisma.product.findUnique({
-            where: { slug }
-        });
-
-        if (existingWithSlug) {
-            slug = `${slug}-${Math.random().toString(36).substring(2, 7)}`;
+        const primaryName = data.nameEn || data.name || data.nameAr || "product";
+        let baseSlug = primaryName.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
+        if (!baseSlug || baseSlug.length < 2) {
+            baseSlug = 'product';
         }
+        let slug = `${baseSlug}-${Math.random().toString(36).substring(2, 7)}`;
 
         const product = await prisma.product.create({
             data: {
-                name: data.name,
+                name: primaryName,
+                nameAr: data.nameAr || null,
+                nameEn: data.nameEn || primaryName,
                 slug: slug,
-                description: data.description,
+                description: data.description || data.descriptionEn || data.descriptionAr || null,
+                descriptionAr: data.descriptionAr || null,
+                descriptionEn: data.descriptionEn || data.description || null,
                 price: parseFloat(data.price as string),
                 discountPrice: data.discountPrice ? parseFloat(data.discountPrice as string) : null,
                 discountType: data.discountType,
                 discountValue: data.discountValue ? parseFloat(data.discountValue as string) : null,
-                stock: parseInt(data.stock as string),
-                sku: data.sku,
+                stock: parseInt(data.stock as string) || 0,
+                options: data.options || null,
+                sku: data.sku || null,
                 images: data.images,
                 brandId: data.brandId,
                 categoryId: data.categoryId,
+                mainCategoryId: data.mainCategoryId || category.mainCategoryId || null,
             }
         });
 
         revalidatePath('/admin/products');
+        revalidatePath('/products');
+        revalidatePath('/');
 
         return {
             success: true,
             product: {
                 id: product.id,
                 name: product.name,
+                nameAr: product.nameAr,
+                nameEn: product.nameEn,
                 slug: product.slug,
                 images: product.images,
                 sku: product.sku,
                 isTrending: product.isTrending,
                 description: product.description,
+                descriptionAr: product.descriptionAr,
+                descriptionEn: product.descriptionEn,
                 price: Number(product.price),
                 discountPrice: product.discountPrice ? Number(product.discountPrice) : null,
                 discountType: product.discountType,
                 discountValue: product.discountValue ? Number(product.discountValue) : null,
                 stock: Number(product.stock),
+                options: product.options,
                 brandId: product.brandId,
                 categoryId: product.categoryId,
+                mainCategoryId: product.mainCategoryId,
                 createdAt: product.createdAt.toISOString(),
                 updatedAt: product.updatedAt.toISOString(),
             }
@@ -755,72 +784,73 @@ export async function updateProduct(id: string, data: ProductInput & { isTrendin
     try {
         const category = await prisma.category.findUnique({
             where: { id: data.categoryId },
-            select: { brandId: true },
+            select: { brandId: true, mainCategoryId: true },
         });
 
         if (!category || category.brandId !== data.brandId) {
             return { success: false, error: "Product category must belong to the selected brand" };
         }
 
-        let slug = data.name.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
-        
-        // Check if this slug is used by ANOTHER product
-        const slugConflict = await prisma.product.findFirst({
-            where: {
-                slug: slug,
-                id: { not: id }
-            }
-        });
-
-        if (slugConflict) {
-            slug = `${slug}-${Math.random().toString(36).substring(2, 7)}`;
-        }
+        const primaryName = data.nameEn || data.name || data.nameAr || "product";
 
         const product = await prisma.product.update({
             where: { id },
             data: {
-                name: data.name,
-                slug: slug,
-                description: data.description,
+                name: primaryName,
+                nameAr: data.nameAr || null,
+                nameEn: data.nameEn || primaryName,
+                description: data.description || data.descriptionEn || data.descriptionAr || null,
+                descriptionAr: data.descriptionAr || null,
+                descriptionEn: data.descriptionEn || data.description || null,
                 price: parseFloat(data.price as string),
                 discountPrice: data.discountPrice ? parseFloat(data.discountPrice as string) : null,
                 discountType: data.discountType,
                 discountValue: data.discountValue ? parseFloat(data.discountValue as string) : null,
-                stock: parseInt(data.stock as string),
-                sku: data.sku,
+                stock: parseInt(data.stock as string) || 0,
+                options: data.options || null,
+                sku: data.sku || null,
                 images: data.images,
                 brandId: data.brandId,
                 categoryId: data.categoryId,
+                mainCategoryId: data.mainCategoryId || category.mainCategoryId || null,
                 isTrending: data.isTrending,
             }
         });
 
         revalidatePath('/admin/products');
+        revalidatePath('/products');
+        revalidatePath('/');
 
         return {
             success: true,
             product: {
                 id: product.id,
                 name: product.name,
+                nameAr: product.nameAr,
+                nameEn: product.nameEn,
                 slug: product.slug,
                 images: product.images,
                 sku: product.sku,
                 isTrending: product.isTrending,
                 description: product.description,
+                descriptionAr: product.descriptionAr,
+                descriptionEn: product.descriptionEn,
                 price: Number(product.price),
                 discountPrice: product.discountPrice ? Number(product.discountPrice) : null,
                 discountType: product.discountType,
                 discountValue: product.discountValue ? Number(product.discountValue) : null,
                 stock: Number(product.stock),
+                options: product.options,
                 brandId: product.brandId,
                 categoryId: product.categoryId,
+                mainCategoryId: product.mainCategoryId,
                 createdAt: product.createdAt.toISOString(),
                 updatedAt: product.updatedAt.toISOString(),
             }
         };
     } catch (error) {
         console.error("Failed to update product:", error);
-        return { success: false, error: `Failed to update product: ${error instanceof Error ? error.message : String(error)}` };
+        return { success: false, error: "Failed to update product" };
     }
 }
 
@@ -913,7 +943,7 @@ export async function deleteOrder(id: string) {
 
 export async function createCategory(data: CategoryInput) {
     try {
-        const brandId = data.brandId || await getRubyBeautyBrandId();
+        const brandId = data.brandId || await getZadLandBrandId();
         const slug = await generateUniqueCategorySlug(data.name);
 
         const category = await prisma.category.create({
@@ -949,7 +979,7 @@ export async function createCategory(data: CategoryInput) {
 
 export async function updateCategory(id: string, data: CategoryInput) {
     try {
-        const brandId = data.brandId || await getRubyBeautyBrandId();
+        const brandId = data.brandId || await getZadLandBrandId();
         const slug = await generateUniqueCategorySlug(data.name, id);
 
         const category = await prisma.category.update({
@@ -1028,12 +1058,168 @@ export async function toggleCategoryFeatured(id: string, isFeatured: boolean) {
     }
 }
 
+export async function getHomeRailCategories() {
+    try {
+        const mainCats = await prisma.mainCategory.findMany({
+            where: {
+                isActive: true,
+                NOT: [
+                    { image: null },
+                    { image: '/placeholder.svg' },
+                    { image: '' }
+                ]
+            },
+            orderBy: { navOrder: 'asc' },
+            include: {
+                products: {
+                    where: {
+                        price: { gt: 0 },
+                        NOT: [
+                            { images: '/placeholder.svg' },
+                            { images: '' }
+                        ]
+                    },
+                    take: 1,
+                    select: { images: true }
+                }
+            }
+        });
+        return mainCats.map(mc => {
+            const productImg = mc.products[0]?.images ? mc.products[0].images.split(',')[0].trim() : null;
+            return {
+                id: mc.id,
+                name: mc.description || mc.name,
+                nameAr: mc.name,
+                slug: mc.slug,
+                image: mc.image || productImg || ''
+            };
+        }).filter(c => c.image && c.image !== '/placeholder.svg');
+    } catch (error) {
+        console.error("Failed to fetch rail categories:", error);
+        return [];
+    }
+}
+
+export async function getCategoryHighlightCardsData() {
+    try {
+        const topMainCats = await prisma.mainCategory.findMany({
+            where: {
+                isActive: true,
+                NOT: [
+                    { image: null },
+                    { image: '/placeholder.svg' },
+                    { image: '' }
+                ],
+                products: {
+                    some: {
+                        price: { gt: 0 },
+                        NOT: [
+                            { images: '/placeholder.svg' },
+                            { images: '' }
+                        ]
+                    }
+                }
+            },
+            take: 4,
+            orderBy: { navOrder: 'asc' },
+            include: {
+                products: {
+                    where: {
+                        price: { gt: 0 },
+                        NOT: [
+                            { images: '/placeholder.svg' },
+                            { images: '' }
+                        ]
+                    },
+                    take: 1,
+                    orderBy: { isTrending: 'desc' },
+                    select: {
+                        id: true,
+                        name: true,
+                        nameAr: true,
+                        nameEn: true,
+                        price: true,
+                        images: true,
+                        slug: true
+                    }
+                },
+                brands: {
+                    take: 2,
+                    select: { name: true }
+                }
+            }
+        });
+        return topMainCats.map(mc => {
+            const firstProd = mc.products[0];
+            const brandNames = mc.brands.map(b => b.name).join(' & ');
+            const prodImg = firstProd?.images ? firstProd.images.split(',')[0].trim() : (mc.image || '');
+            return {
+                id: mc.id,
+                slug: mc.slug,
+                subheadingAr: mc.name,
+                subheadingEn: mc.description || mc.name,
+                headingAr: brandNames || mc.name,
+                headingEn: brandNames || mc.description || mc.name,
+                productNameAr: firstProd?.nameAr || firstProd?.name || mc.name,
+                productNameEn: firstProd?.nameEn || firstProd?.name || mc.description || mc.name,
+                priceText: firstProd?.price && Number(firstProd.price) > 0 ? `$${Number(firstProd.price).toFixed(2)}` : '',
+                heroImage: mc.image || prodImg,
+                productThumb: prodImg,
+                productSlug: firstProd?.slug || ''
+            };
+        });
+    } catch (error) {
+        console.error("Failed to fetch highlight cards data:", error);
+        return [];
+    }
+}
+
+export async function getApprovedReviews() {
+    try {
+        const reviews = await prisma.review.findMany({
+            where: { isApproved: true },
+            take: 6,
+            orderBy: { createdAt: 'desc' },
+            include: {
+                product: {
+                    select: {
+                        id: true,
+                        name: true,
+                        nameAr: true,
+                        nameEn: true,
+                        images: true,
+                        slug: true
+                    }
+                }
+            }
+        });
+        return reviews.map(r => ({
+            id: r.id,
+            name: r.name,
+            feedback: r.feedback || '',
+            rating: r.rating,
+            image: r.product?.images ? r.product.images.split(',')[0].trim() : '/placeholder.svg',
+            productNameAr: r.product?.nameAr || r.product?.name || '',
+            productNameEn: r.product?.nameEn || r.product?.name || '',
+            productSlug: r.product?.slug || ''
+        }));
+    } catch (error) {
+        console.error("Failed to fetch reviews:", error);
+        return [];
+    }
+}
+
 export async function getFeaturedCategories() {
     try {
         const categories = await prisma.category.findMany({
             where: {
                 isFeatured: true,
                 brand: { isActive: true },
+                NOT: [
+                    { image: null },
+                    { image: '/placeholder.svg' },
+                    { image: '' }
+                ]
             },
             take: 12,
             orderBy: { updatedAt: 'desc' }
@@ -1329,6 +1515,11 @@ export async function getBestSellerProducts() {
                 isTrending: true,
                 brand: { isActive: true },
                 stock: { gt: 0 },
+                price: { gt: 0 },
+                NOT: [
+                    { images: '/placeholder.svg' },
+                    { images: '' }
+                ],
             },
             take: 10,
             include: { category: true, brand: true },
@@ -1368,6 +1559,11 @@ export async function getNewArrivalProducts() {
             where: {
                 brand: { isActive: true },
                 stock: { gt: 0 },
+                price: { gt: 0 },
+                NOT: [
+                    { images: '/placeholder.svg' },
+                    { images: '' }
+                ],
             },
             take: 10,
             include: { category: true, brand: true },
@@ -1407,6 +1603,11 @@ export async function getTrendingWeeklyProducts() {
             where: {
                 brand: { isActive: true },
                 stock: { gt: 0 },
+                price: { gt: 0 },
+                NOT: [
+                    { images: '/placeholder.svg' },
+                    { images: '' }
+                ],
             },
             take: 9,
             include: { category: true, brand: true },
@@ -1473,65 +1674,124 @@ export async function bulkFixCategoryNames(mapping: { id: string, newName: strin
 
 export async function bulkCreateProducts(products: ProductImportRow[]) {
     try {
-        const rubyBeautyBrandId = await getRubyBeautyBrandId();
+        const zadLandBrandId = await getZadLandBrandId();
+        
+        // Cache main categories, brands, categories
+        const mainCategories = await prisma.mainCategory.findMany();
+        const mainCategoryMap = new Map(mainCategories.map(mc => [mc.name.trim().toLowerCase(), mc]));
+
         const brands = await prisma.brand.findMany();
         const brandMap = new Map(brands.map((brand) => [brand.name.trim().toLowerCase(), brand]));
+
         const categories = await prisma.category.findMany();
-        const categoryMap = new Map(categories.map(c => [`${c.brandId}:${c.name.trim().toLowerCase()}`, c.id]));
+        const categoryMap = new Map(categories.map(c => [`${c.brandId}:${c.name.trim().toLowerCase()}`, c]));
 
         const results = await Promise.all(products.map(async (p) => {
-            const productName = String(p.Name || "").trim();
-            if (!productName) {
+            // Helper to get case-insensitive row values
+            const getVal = (keys: string[]) => {
+                for (const key of keys) {
+                    if (p[key] !== undefined && p[key] !== null && String(p[key]).trim() !== "") {
+                        return String(p[key]).trim();
+                    }
+                }
+                return "";
+            };
+
+            const mainCategoryLabel = getVal(["Main Category", "mainCategory", "MainCategory", "main_category", "القسم الرئيسي"]);
+            const subCategoryLabel = getVal(["Sub Category", "subCategory", "SubCategory", "Category", "category", "الفئة", "القسم الفرعي"]) || "General";
+            const brandLabel = getVal(["Brand Name", "brandName", "Brand", "brand", "الشركة", "الماركة", "العلامة التجارية"]) || "Zad Land";
+            const nameAr = getVal(["Name ar", "nameAr", "Name Ar", "Name AR", "الاسم بالعربي", "اسم المنتج بالعربي"]);
+            const nameEn = getVal(["Name en", "nameEn", "Name En", "Name EN", "Name", "name", "الاسم بالانجليزي", "اسم المنتج بالانجليزي"]);
+            const descriptionAr = getVal(["description ar", "descriptionAr", "Description Ar", "الوصف بالعربي", "وصف المنتج بالعربي"]);
+            const descriptionEn = getVal(["description en", "descriptionEn", "Description En", "Description", "description", "الوصف بالانجليزي", "وصف المنتج بالانجليزي"]);
+            const priceStr = getVal(["Price", "price", "السعر"]) || "0";
+            const quantityStr = getVal(["Quantity", "quantity", "Stock", "stock", "الكمية", "المخزون"]) || "0";
+            const optionsStr = getVal(["Options", "options", "Variants", "variants", "الخيارات", "الألوان والأحجام"]);
+            const imagesStr = getVal(["Images", "images", "Image", "image", "الصور", "رابط الصورة"]);
+            const skuStr = getVal(["SKU", "sku", "رمز المنتج"]);
+            const isTrending = getVal(["Is Trending", "isTrending", "مميز"]) === "Yes" || getVal(["Is Trending", "isTrending", "مميز"]) === "true";
+
+            const primaryName = nameEn || nameAr || getVal(["Name", "name"]) || "Product";
+            if (!primaryName && !nameAr) {
                 throw new Error("Product name is required");
             }
-            const brandLabel = String(p.Brand || "Ruby Beauty").trim() || "Ruby Beauty";
+
+            // 1. Handle Main Category
+            let mainCategoryId: string | null = null;
+            if (mainCategoryLabel) {
+                const mcKey = mainCategoryLabel.toLowerCase();
+                let mainCat = mainCategoryMap.get(mcKey);
+                if (!mainCat) {
+                    const slug = await generateUniqueCategorySlug(mainCategoryLabel);
+                    mainCat = await prisma.mainCategory.create({
+                        data: {
+                            name: mainCategoryLabel,
+                            slug: slug,
+                            isActive: true,
+                        }
+                    });
+                    mainCategoryMap.set(mcKey, mainCat);
+                }
+                mainCategoryId = mainCat.id;
+            }
+
+            // 2. Handle Brand
             const brandKey = brandLabel.toLowerCase();
             let brand = brandMap.get(brandKey);
-            const brandGroup = String(p["Brand Group"] || "").trim().toUpperCase();
-
             if (!brand) {
-                const isMainGroup = brandGroup === "MAIN";
+                const slug = await generateUniqueBrandSlug(brandLabel);
                 brand = await prisma.brand.create({
                     data: {
                         name: brandLabel,
-                        slug: await generateUniqueBrandSlug(brandLabel),
-                        group: isMainGroup ? BrandGroup.MAIN : BrandGroup.DIFFERENT,
+                        slug: slug,
+                        group: BrandGroup.DIFFERENT,
                         isActive: true,
-                        isFeatured: isMainGroup,
+                        isFeatured: false,
+                        mainCategoryId: mainCategoryId || null,
                     }
                 });
                 brandMap.set(brandKey, brand);
             }
+            const brandId = brand.id;
 
-            const brandId = brand?.id || rubyBeautyBrandId;
-            const categoryLabel = String(p.Category || 'Uncategorized').trim() || 'Uncategorized';
-            const categoryKey = `${brandId}:${categoryLabel.toLowerCase()}`;
-            let categoryId = categoryMap.get(categoryKey);
-
-            if (!categoryId) {
-                const newCat = await prisma.category.create({
+            // 3. Handle Category (Sub Category)
+            const categoryKey = `${brandId}:${subCategoryLabel.toLowerCase()}`;
+            let category = categoryMap.get(categoryKey);
+            if (!category) {
+                const slug = await generateUniqueCategorySlug(subCategoryLabel);
+                category = await prisma.category.create({
                     data: {
-                        name: categoryLabel,
-                        slug: await generateUniqueCategorySlug(categoryLabel),
-                        brandId,
+                        name: subCategoryLabel,
+                        slug: slug,
+                        brandId: brandId,
+                        mainCategoryId: mainCategoryId || brand.mainCategoryId || null,
                     }
                 });
-                categoryMap.set(categoryKey, newCat.id);
-                categoryId = newCat.id;
+                categoryMap.set(categoryKey, category);
             }
+
+            let baseSlug = (nameEn || primaryName).toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '');
+            if (!baseSlug || baseSlug.length < 2) baseSlug = 'product';
+            const slug = `${baseSlug}-${Math.random().toString(36).substring(2, 7)}`;
 
             return prisma.product.create({
                 data: {
-                    name: productName,
-                    slug: productName.toLowerCase().replace(/ /g, '-').replace(/[^\w-]+/g, '') + '-' + Math.random().toString(36).substr(2, 5),
-                    description: String(p.Description || ""),
-                    price: parseFloat(String(p.Price || "0")),
-                    stock: parseInt(String(p.Stock || "0")),
-                    sku: String(p.SKU || ""),
-                    images: String(p.Images || "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=800"),
-                    brandId,
-                    categoryId: categoryId,
-                    isTrending: p["Is Trending"] === "Yes"
+                    name: primaryName,
+                    nameAr: nameAr || null,
+                    nameEn: nameEn || primaryName,
+                    slug: slug,
+                    description: descriptionEn || descriptionAr || primaryName,
+                    descriptionAr: descriptionAr || null,
+                    descriptionEn: descriptionEn || null,
+                    price: parseFloat(priceStr) || 0,
+                    stock: parseInt(quantityStr) || 0,
+                    options: optionsStr || null,
+                    sku: skuStr || null,
+                    images: imagesStr || "https://images.unsplash.com/photo-1551462147-ff29053bfc14?w=800",
+                    brandId: brandId,
+                    categoryId: category.id,
+                    mainCategoryId: mainCategoryId || category.mainCategoryId || brand.mainCategoryId || null,
+                    isTrending: isTrending,
                 }
             });
         }));
@@ -1539,6 +1799,8 @@ export async function bulkCreateProducts(products: ProductImportRow[]) {
         revalidatePath('/admin/products');
         revalidatePath('/admin/brands');
         revalidatePath('/admin/categories');
+        revalidatePath('/admin/main-categories');
+        revalidatePath('/products');
         revalidatePath('/');
         return { success: true, count: results.length };
     } catch (error) {
@@ -1930,20 +2192,20 @@ export async function getSiteSettings() {
             // Return default settings if not found
             return {
                 id: "site-settings",
-                categoriesCtaTitle: "Need expert advice?",
-                categoriesCtaDesc: "Our beauty consultants are here to help you find the perfect products for your skin type and concerns.",
-                categoriesCtaTitleAr: "هل تحتاجين إلى نصيحة الخبراء؟",
-                categoriesCtaDescAr: "مستشارو التجميل لدينا هنا لمساعدتك في العثور على المنتجات المثالية لنوع بشرتك واحتياجاتها.",
+                categoriesCtaTitle: "Looking for specific wholesale brands?",
+                categoriesCtaDesc: "Our wholesale team is ready to provide custom pricing and scheduled deliveries for your business.",
+                categoriesCtaTitleAr: "تبحث عن شركات أو منتجات محددة؟",
+                categoriesCtaDescAr: "فريق المبيعات لدينا جاهز لتزويدكم بأفضل أسعار الجملة وجداول التوزيع المنتظمة.",
                 categoriesCtaImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuC-S_GMsoebb73JIEWcxtvH2G-vVgkfypE8ysWpGMNiiiwyTno8rIbMCpHR-fsa76ZQL49aYswb7bGZh-kgwc6z9lv0VwUSUrStxNWz2qU3RuIb75ShOMAKZMRyrOXZHZjEBgtxfW7r97FEEshOkEd2MqgE6FpGYrmKa8msLtMOQxXBsmhr3ZGGEtL7jpzgMYbgrAXhiHcMfCspdvD5FRNuSbgFY9_xGqcJM9KbgG0MoC4Ie4WkkmCR4FsuavfglcnY13G2ADZxlK8F",
-                footerBrandTitle: "Ruby Beauty",
-                footerBrandTitleAr: "Ruby Beauty",
-                footerBrandDescription: "Premium botanical skincare designed to reveal your natural radiance. Cruelty-free, vegan, and sustainable.",
-                footerBrandDescriptionAr: "منتجات عناية بالبشرة نباتية فاخرة مصممة لإظهار إشراقتك الطبيعية. خالية من القسوة، نباتية ومستدامة.",
-                footerCopyright: "© 2026 Ruby Beauty. All rights reserved.",
-                footerCopyrightAr: "© 2026 روبي بيوتي. جميع الحقوق محفوظة.",
-                footerInstagramUrl: "https://www.instagram.com/ruby.beauty.sy",
-                footerFacebookUrl: "https://www.facebook.com/share/1HzXdo7sLG/?mibextid=wwXIfr",
-                footerWhatsappUrl: "https://wa.me/963933254796",
+                footerBrandTitle: "Zad Land",
+                footerBrandTitleAr: "زاد لاند",
+                footerBrandDescription: "Your trusted partner in wholesale food and consumer goods distribution from top international brands.",
+                footerBrandDescriptionAr: "شريككم الموثوق لتوزيع البضائع والمواد الغذائية من أفضل الشركات العالمية.",
+                footerCopyright: "© 2026 Zad Land. All rights reserved.",
+                footerCopyrightAr: "© 2026 زاد لاند. جميع الحقوق محفوظة.",
+                footerInstagramUrl: "#",
+                footerFacebookUrl: "#",
+                footerWhatsappUrl: "#",
                 footerShopTitle: "Shop",
                 footerShopTitleAr: "المتجر",
                 footerSupportTitle: "Support",
@@ -1952,13 +2214,13 @@ export async function getSiteSettings() {
                 footerCompanyTitleAr: "الشركة",
                 footerSupportLink1Label: "Help Center",
                 footerSupportLink1LabelAr: "مركز المساعدة",
-                footerSupportLink1Url: "https://wa.me/963933254796",
+                footerSupportLink1Url: "#",
                 footerSupportLink2Label: "Shipping & Returns",
-                footerSupportLink2LabelAr: "الشحن والإرجاع",
+                footerSupportLink2LabelAr: "التوزيع والتسليم",
                 footerSupportLink2Url: "/shipping-returns",
                 footerSupportLink3Label: "Contact Us",
                 footerSupportLink3LabelAr: "اتصل بنا",
-                footerSupportLink3Url: "https://wa.me/963933254796",
+                footerSupportLink3Url: "#",
                 footerCompanyLink1Label: "About Us",
                 footerCompanyLink1LabelAr: "من نحن",
                 footerCompanyLink1Url: "/about-us",
@@ -1972,57 +2234,57 @@ export async function getSiteSettings() {
                 footerCategory2Id: null,
                 footerCategory3Id: null,
                 footerCategory4Id: null,
-                shippingTitle: "Fast & Reliable Shipping",
-                shippingDesc: "We ensure your beauty essentials reach you in perfect condition, wherever you are in the world.",
-                shippingTitleAr: "شحن سريع وموثوق",
-                shippingDescAr: "نحن نضمن وصول مستلزمات التجميل الخاصة بك إليك في حالة ممتازة، أينما كنت في العالم.",
+                shippingTitle: "Fast & Reliable Distribution",
+                shippingDesc: "We ensure wholesale goods reach your business in perfect condition.",
+                shippingTitleAr: "توزيع سريع وموثوق",
+                shippingDescAr: "نحن نضمن وصول بضائع الجملة إلى نشاطكم التجاري في أفضل حالة.",
                 verificationTitle: "Verification Process",
-                verificationDesc: "Orders are processed within 24-48 hours. You will receive a confirmation email once your package has shipped.",
+                verificationDesc: "Orders are verified and scheduled immediately with our logistics fleet.",
                 verificationTitleAr: "عملية التحقق",
-                verificationDescAr: "يتم معالجة الطلبات في غضون 24-48 ساعة. ستتلقى رسالة تأكيد بالبريد الإلكتروني بمجرد شحن طردك.",
-                standardShippingTime: "3-5 Business Days",
-                expressShippingTime: "1-2 Business Days",
-                returnsTitle: "Returns & Exchanges",
-                returnsDesc: "Your satisfaction is our priority. If you're not happy with your purchase, we're here to help.",
-                returnsTitleAr: "المرتجعات والاستبدال",
-                returnsDescAr: "رضاكم هو أولويتنا. إذا لم تكن راضيًا عن مشترياتك، فنحن هنا للمساعدة.",
-                finalSaleTitle: "Final Sale Items",
-                finalSaleDesc: "Certain items like opened skincare and personalized products are final sale for hygiene reasons.",
-                finalSaleTitleAr: "أصناف البيع النهائي",
-                finalSaleDescAr: "بعض العناصر مثل منتجات العناية بالبشرة المفتوحة والمنتجات المخصصة هي بيع نهائي لأسباب صحية.",
-                hygieneTitle: "Hygiene & Safety Protocols",
-                hygieneDesc: "For your safety and to maintain the highest hygiene standards, we follow strict protocols for handling beauty products.",
-                hygieneTitleAr: "بروتوكولات النظافة والسلامة",
-                hygieneDescAr: "من أجل سلامتك وللحفاظ على أعلى معايير النظافة، نتبع بروتوكولات صارمة للتعامل مع منتجات التجميل.",
+                verificationDescAr: "يتم التحقق من الطلبات وجدولتها فوراً مع أسطولنا اللوجستي.",
+                standardShippingTime: "1-3 Business Days",
+                expressShippingTime: "24 Hours",
+                returnsTitle: "Wholesale Support",
+                returnsDesc: "We are committed to full satisfaction and verified shipment handling.",
+                returnsTitleAr: "دعم الجملة",
+                returnsDescAr: "نحن ملتزمون بالجودة والمطابقة التامة للشحنات.",
+                finalSaleTitle: "Wholesale Delivery Terms",
+                finalSaleDesc: "All goods are shipped in factory-sealed cases conforming to international standards.",
+                finalSaleTitleAr: "شروط تسليم الجملة",
+                finalSaleDescAr: "يتم تسليم البضائع في كراتين المصنع الأصلية والمطابقة للمواصفات القياسية.",
+                hygieneTitle: "Safety & Temperature Storage",
+                hygieneDesc: "Our temperature-controlled warehouses ensure optimal quality preservation.",
+                hygieneTitleAr: "بروتوكولات السلامة والتخزين",
+                hygieneDescAr: "تضمن مستودعاتنا وشاحناتنا درجات حرارة وبيئة تخزين مثالية حتى نقطة التسليم.",
                 shippingReturnsImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuC1GmfD6bueEsJqlHNPjDWHMlhsLZSm2Jmp21TUCLKvobkcd7oAPMMdwzfm8BOHC5XtR0EP6tLI7DT5hhyLxuijsbpX2kQf6iNlqROU-8k-DrqZAUqdc7-0lE4nxuCcLaEb0fEaXVBxc_yXkiUlyhfvaYJ1FfHZtngnoJbeanLgsf7rcxqON6rjkoC4BQv6FhlwLNKZrMbxjCugphq-bo5GCqBoLfmjjZSuH0N5eV-Kz33xFQTD5jSYCTsVYAwOkwhLQsQiPD_lnD9U",
                 
                 aboutHeroTitle: "Our Story",
                 aboutHeroTitleAr: "قصتنا",
-                aboutHeroSubtitle: "Redefining beauty with clean, conscious care that honors your skin and the earth.",
-                aboutHeroSubtitleAr: "إعادة تعريف الجمال بعناية نظيفة وواعية تكرم بشرتك والأرض.",
-                middleBanner1Image: "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=1200",
+                aboutHeroSubtitle: "Your trusted partner for distributing top quality global goods and food products.",
+                aboutHeroSubtitleAr: "شريككم الموثوق لتوزيع البضائع والمواد الغذائية من أفضل الشركات العالمية.",
+                middleBanner1Image: "https://images.unsplash.com/photo-1621996346565-e3d5d6281290?w=1200",
                 middleBanner1Link: "/products",
-                middleBanner2Image: "https://images.unsplash.com/photo-1547887538-e3a2f32cb1cc?w=1200",
+                middleBanner2Image: "https://images.unsplash.com/photo-1544025162-d76694265947?w=1200",
                 middleBanner2Link: "/products",
-                middleBanner2Title: "Luxury Fragrances",
-                middleBanner2TitleAr: "عطور فاخرة",
-                middleBanner2Subtitle: "Discover scents that last all day and leave a mark.",
-                middleBanner2SubtitleAr: "اكتشف الروائح التي تدوم طوال اليوم وتترك أثراً.",
-                middleBanner2ButtonText: "Shop Perfumes",
-                middleBanner2ButtonTextAr: "تسوق العطور",
+                middleBanner2Title: "Global Brands",
+                middleBanner2TitleAr: "شركات عالمية",
+                middleBanner2Subtitle: "Discover the best products from around the world.",
+                middleBanner2SubtitleAr: "اكتشف أفضل المنتجات من كبرى الشركات العالمية.",
+                middleBanner2ButtonText: "Explore Catalog",
+                middleBanner2ButtonTextAr: "تصفح الكتالوج",
                 exchangeRate: 135,
                 aboutHeroImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuAz8qN2iAHz-UZeEQfqOY49U5OCZ5z4ejVm7ILFjFSl9S5xg_6UuBa61qOmrkMPrBa4CuXDzHa9EN3-LNyUxi5IDK5A9TvJWkNuG-tt_RRyvJH8LvynO1daOEkTk47KDtkW3Md2ugZYShZJdxolsjiJUtDdOOz4Q7-6TNrexIvyClP0ADf1TWdbCUk1kBn8bfzhTC1cn8s9jG3yt0tDDht7__J5YKKf690SmKN4WIJX_pc2LOj3x1CnYk5JuqEu0Bzp2vGwsrYLaJWb",
                 
-                aboutNarrativeTitle: "Our Mission for Clean Beauty",
-                aboutNarrativeTitleAr: "مهمتنا للجمال النظيف",
-                aboutNarrativeFounded: "Founded in 2024",
-                aboutNarrativeFoundedAr: "تأسست في 2024",
-                aboutNarrativeDesc1: "We believe that beauty should be kind—to your skin, your spirit, and the planet. Our journey started in a sun-drenched studio with a simple, radical goal: to create high-performance skincare without compromising on ethics or transparency.",
-                aboutNarrativeDesc1Ar: "نؤمن بأن الجمال يجب أن يكون لطيفًا - على بشرتك، وروحك، والكوكب. بدأت رحلتنا في استوديو مشمس بهدف بسيط وجذري: إنشاء عناية بالبشرة عالية الأداء دون المساومة على الأخلاق أو الشفافية.",
-                aboutNarrativeDesc2: "For too long, the industry was clouded by hidden ingredients and unsustainable practices. Ruby Beauty was born to bring light back to your ritual. Every formula is meticulously crafted with botanical extracts and clean science, ensuring that what you put on your body is as pure as the results it delivers.",
-                aboutNarrativeDesc2Ar: "لفترة طويلة، كانت الصناعة ملبدة بالمكونات الخفية والممارسات غير المستدامة. ولدت روبي بيوتي لإعادة النور إلى طقوسك. يتم صياغة كل تركيبة بدقة باستخدام المستخلصات النباتية والعلوم النظيفة، مما يضمن أن ما تضعه على جسمك نقي بقدر النتائج التي يقدمها.",
-                aboutNarrativeQuote: "Naturally inspired, scientifically proven.",
-                aboutNarrativeQuoteAr: "مستوحى طبيعياً، مثبت علمياً.",
+                aboutNarrativeTitle: "Our Mission for Quality Distribution",
+                aboutNarrativeTitleAr: "مهمتنا في التوزيع الموثوق",
+                aboutNarrativeFounded: "Founded with Trust",
+                aboutNarrativeFoundedAr: "تأسست على الثقة",
+                aboutNarrativeDesc1: "At Zad Land, we bridge the gap between world-renowned international brands and local markets. We believe in providing retailers and businesses with seamless access to authentic, top-tier goods at competitive wholesale prices.",
+                aboutNarrativeDesc1Ar: "في زاد لاند، نعمل كجسر موثوق يربط بين كبرى الشركات والعلامات التجارية العالمية والأسواق المحلية.",
+                aboutNarrativeDesc2: "With rigorous quality control, modern logistics, and a commitment to reliability, Zad Land has established itself as the trusted partner for food and consumer goods distribution across all governorates.",
+                aboutNarrativeDesc2Ar: "بفضل أسطول التوزيع المنظم والمستودعات المجهزة، أثبتت زاد لاند مكانتها كشركة رائدة وموثوقة لتوزيع البضائع الغذائية والاستهلاكية في جميع المحافظات.",
+                aboutNarrativeQuote: "Connecting you with the world's finest brands.",
+                aboutNarrativeQuoteAr: "جودة مضمونة وخدمة توزيع موثوقة.",
                 aboutNarrativeImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuC4yp4c_LJLNPwaV2ay8DZ6xRHD0UF1WqXU8eDtrdDoiVjtq9oNRc9Cn6cnbqsNwOLO-y-99jnkiLnCsGLs2rQqthU8TPqhAh2Msisbst1UyfyrILBR5fRO7KYu90u1FEoeRRjGceGVbB5vz2SJAtjzUrLLtA6BmR8VN5a5Seo4MraBJj7i4Gs4QPEZbURtSN-F7wbJsu4WNj3pEaWlye2SuJvokQhYXJ27gnAoabHg5_0_4DZY49qyKnQuMHHL9atOIILRIMD3FkeZ",
                 
                 aboutValuesTitle: "Our Core Values",

@@ -5,48 +5,50 @@ import Link from 'next/link';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useProductRail } from './useProductRail';
 
+import { MdRestaurant, MdSetMeal, MdAcUnit, MdLocalCafe, MdBakeryDining, MdFastfood } from 'react-icons/md';
+
 const CATEGORIES = [
     {
-        id: 'hair',
-        nameAr: 'الشعر',
-        nameEn: 'Hair',
-        slug: 'hair',
-        icon: '//sourcebeauty.com/cdn/shop/files/Category_Icons_SVG_20X20-01.svg?v=1766502650&width=20'
+        id: 'pasta-grains',
+        nameAr: 'المعكرونة والحبوب',
+        nameEn: 'Pasta & Grains',
+        slug: 'pasta-grains',
+        icon: MdRestaurant
     },
     {
-        id: 'korean-beauty',
-        nameAr: 'منتجات الجمال الكوري',
-        nameEn: 'Korean Beauty',
-        slug: 'korean-beauty',
-        icon: '//sourcebeauty.com/cdn/shop/files/Category_Icons_SVG_20X20-03.svg?v=1766502649&width=20'
+        id: 'canned-fish',
+        nameAr: 'التونة والأسماك المعلبة',
+        nameEn: 'Canned Fish & Tuna',
+        slug: 'canned-fish',
+        icon: MdSetMeal
     },
     {
-        id: 'fragrance',
-        nameAr: 'العطور',
-        nameEn: 'Fragrance',
-        slug: 'fragrance',
-        icon: '//sourcebeauty.com/cdn/shop/files/Category_Icons_SVG_20X20-02.svg?v=1766502652&width=20'
+        id: 'sauces-condiments',
+        nameAr: 'الصلصات والتوابل',
+        nameEn: 'Sauces & Condiments',
+        slug: 'sauces-condiments',
+        icon: MdFastfood
     },
     {
-        id: 'skincare',
-        nameAr: 'البشرة',
-        nameEn: 'Skincare',
-        slug: 'skincare',
-        icon: '//sourcebeauty.com/cdn/shop/files/Category_Icons_SVG_20X20-05.svg?v=1766502650&width=20'
+        id: 'frozen-foods',
+        nameAr: 'المفرزات والبحريات',
+        nameEn: 'Frozen Foods',
+        slug: 'frozen-foods',
+        icon: MdAcUnit
     },
     {
-        id: 'makeup',
-        nameAr: 'مكياچ',
-        nameEn: 'Makeup',
-        slug: 'makeup',
-        icon: '//sourcebeauty.com/cdn/shop/files/Category_Icons_SVG_20X20-06.svg?v=1766502650&width=20'
+        id: 'coffee-hot-drinks',
+        nameAr: 'القهوة والمشروبات',
+        nameEn: 'Coffee & Beverages',
+        slug: 'coffee-hot-drinks',
+        icon: MdLocalCafe
     },
     {
-        id: 'body-wellbeing',
-        nameAr: 'الجسم و العناية بالصحة',
-        nameEn: 'Body & Wellbeing',
-        slug: 'body-wellbeing',
-        icon: '//sourcebeauty.com/cdn/shop/files/Category_Icons_SVG_20X20-04.svg?v=1766502650&width=20'
+        id: 'biscuits-sweets',
+        nameAr: 'البسكويت والحلويات',
+        nameEn: 'Biscuits & Sweets',
+        slug: 'biscuits-sweets',
+        icon: MdBakeryDining
     }
 ];
 
@@ -57,10 +59,10 @@ const CategoryPills = () => {
     return (
         <section className="container-custom py-10 md:py-16">
             <div className="flex flex-col items-center text-center mb-8 md:mb-12 max-w-3xl mx-auto px-4">
-                <h2 className="text-2xl md:text-4xl font-bold text-[rgb(46,46,46)] leading-tight">
+                <h2 className="text-2xl md:text-4xl font-bold text-[rgb(46,46,46)] dark:text-white leading-tight">
                     {language === 'ar'
-                        ? 'اعطي لجسمك الاهتمام المحتاجه , جربي تجربة الجمال على طريقة روبي بيوتي'
-                        : 'Give your body the care it needs, experience beauty the Ruby Beauty way'}
+                        ? 'شركتكم الموثوقة لتوزيع البضائع من أفضل الشركات العالمية'
+                        : 'Your trusted partner for distributing goods from leading global brands'}
                 </h2>
             </div>
 
@@ -86,16 +88,12 @@ const CategoryPills = () => {
                             <Link
                                 key={category.id}
                                 href={`/categories/${category.slug}`}
-                                className="flex-shrink-0 flex items-center gap-3 bg-white border border-gray-200 hover:border-[#f1f1f1] hover:bg-[#f1f1f1] text-[rgb(46,46,46)] hover:text-[rgb(46,46,46)] rounded-full px-6 py-3 transition-all duration-300"
+                                className="flex-shrink-0 flex items-center gap-2.5 bg-white border border-gray-200 hover:border-primary/40 hover:bg-gray-50 text-[rgb(46,46,46)] rounded-full px-5 py-2.5 transition-all duration-300 shadow-xs"
                             >
-                                <div className="w-5 h-5 flex items-center justify-center shrink-0">
-                                    <img
-                                        src={category.icon}
-                                        alt={language === 'ar' ? category.nameAr : category.nameEn}
-                                        className="w-full h-full object-contain"
-                                    />
+                                <div className="w-5 h-5 flex items-center justify-center shrink-0 text-primary">
+                                    <category.icon size={20} />
                                 </div>
-                                <span className="font-medium text-sm md:text-base whitespace-nowrap">
+                                <span className="font-semibold text-xs md:text-sm whitespace-nowrap">
                                     {language === 'ar' ? category.nameAr : category.nameEn}
                                 </span>
                             </Link>

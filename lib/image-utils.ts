@@ -1,5 +1,29 @@
 export const IMAGE_PLACEHOLDER_SRC = "/placeholder.svg";
 
+export const isValidImageSrc = (url: string | null | undefined): boolean => {
+    if (!url || typeof url !== 'string') return false;
+    const trimmed = url.trim();
+    if (!trimmed) return false;
+    
+    // Valid relative path
+    if (trimmed.startsWith('/')) return true;
+    
+    // Valid data URI
+    if (trimmed.startsWith('data:image/')) return true;
+
+    // Must start with http:// or https://
+    if (/^https?:\/\//i.test(trimmed)) {
+        try {
+            new URL(trimmed);
+            return true;
+        } catch {
+            return false;
+        }
+    }
+
+    return false;
+};
+
 const isRemoteImageUrl = (url: string) => /^https?:\/\//i.test(url);
 
 const getProxyImageUrl = (url: string) => `/_next/image?url=${encodeURIComponent(url)}&w=1080&q=75`;
@@ -24,7 +48,7 @@ const cleanUrl = (url: string): string => {
  * Checks if an image URL needs to be proxied to bypass regional blocks (e.g., Shopify CDN in Syria).
  */
 export const getSafeImageUrl = (url: string | null | undefined): string => {
-    if (!url) return IMAGE_PLACEHOLDER_SRC;
+    if (!url || !isValidImageSrc(url)) return IMAGE_PLACEHOLDER_SRC;
 
     const trimmedUrl = cleanUrl(url);
 
@@ -44,7 +68,7 @@ export const parseImageList = (images: string | null | undefined): string[] => {
     return images
         .split(",")
         .map((img) => img.trim())
-        .filter(Boolean);
+        .filter(isValidImageSrc);
 };
 
 export const getPrimaryImage = (images: string | null | undefined): string =>
@@ -54,13 +78,13 @@ export const getImageSourceCandidates = (
     url: string | null | undefined,
     fallbackSrc: string = IMAGE_PLACEHOLDER_SRC
 ): string[] => {
-    if (!url) {
+    if (!url || !isValidImageSrc(url)) {
         return [fallbackSrc];
     }
 
     const trimmedUrl = cleanUrl(url);
 
-    if (!trimmedUrl) {
+    if (!trimmedUrl || !isValidImageSrc(trimmedUrl)) {
         return [fallbackSrc];
     }
 
@@ -73,5 +97,5 @@ export const getImageSourceCandidates = (
 
     candidates.push(fallbackSrc);
 
-    return [...new Set(candidates.filter(Boolean))];
+    return [...new Set(candidates.filter(isValidImageSrc))];
 };

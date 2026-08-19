@@ -33,8 +33,8 @@ export async function generateMetadata(
         };
     }
 
-    const title = `${product.name} | Ruby Beauty`;
-    const description = product.description || `Buy ${product.name} at Ruby Beauty.`;
+    const title = `${product.name} | Zad Land`;
+    const description = product.description || `Buy ${product.name} at Zad Land.`;
     const mainImage = (product.images as string).split(',').map((img: string) => img.trim()).filter(Boolean)[0];
 
     return {
@@ -44,7 +44,6 @@ export async function generateMetadata(
             title,
             description,
             type: 'website',
-            url: `https://ruby-beauty.com/products/${product.slug}`,
             images: [
                 {
                     url: mainImage,
@@ -103,10 +102,12 @@ const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
     const averageRating = reviewStats._avg.rating || 0;
     const totalReviews = reviewStats._count.id || 0;
 
+    const displayName = (language === 'ar' ? product.nameAr : product.nameEn) || product.name || product.nameAr || '';
+
     return (
         <main className="grow w-full mx-auto container-custom py-4 lg:py-8">
             <Breadcrumbs
-                productName={product.name}
+                productName={displayName}
                 categoryName={product.category?.name}
                 categorySlug={product.category?.slug}
             />
@@ -124,6 +125,8 @@ const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
                 <div className="w-full lg:w-[41.5%] lg:sticky lg:top-[140px] self-start flex flex-col gap-1">
                     <ProductHeader
                         name={product.name}
+                        nameAr={product.nameAr}
+                        nameEn={product.nameEn}
                         brandName={product.brand?.name}
                         categoryName={product.category?.name}
                         averageRating={averageRating}
@@ -139,14 +142,25 @@ const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
                         product={{
                             id: product.id,
                             name: product.name,
+                            nameAr: product.nameAr,
+                            nameEn: product.nameEn,
                             price: Number(product.discountPrice || product.price),
                             image: (product.images as string).split(',').map((img: string) => img.trim()).filter(Boolean)[0],
-                            slug: product.slug
+                            slug: product.slug,
+                            options: product.options,
+                            description: product.description,
+                            descriptionAr: product.descriptionAr,
+                            descriptionEn: product.descriptionEn,
                         }}
                         stock={product.stock}
                     />
 
-                    <ProductAccordions description={product.description} />
+                    <ProductAccordions 
+                        description={product.description}
+                        descriptionAr={product.descriptionAr}
+                        descriptionEn={product.descriptionEn}
+                        options={product.options}
+                    />
 
                     {/* Social Share */}
                     <div className="flex items-center justify-start mt-6 pt-6 border-t border-gray-200 dark:border-white/10 gap-3">
@@ -154,7 +168,7 @@ const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
                             {language === 'ar' ? 'مشاركة:' : 'Share:'}
                         </span>
                         <a
-                            href="https://wa.me/963933254796"
+                            href="#"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="w-9 h-9 flex items-center justify-center rounded-full bg-gray-100 text-zinc-900 dark:bg-zinc-800 dark:text-white hover:bg-zinc-900 hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors"
@@ -163,7 +177,7 @@ const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
                             <FaWhatsapp className="text-base" />
                         </a>
                         <a
-                            href="https://www.instagram.com/ruby.beauty.sy"
+                            href="#"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="w-9 h-9 flex items-center justify-center rounded-full bg-gray-100 text-zinc-900 dark:bg-zinc-800 dark:text-white hover:bg-zinc-900 hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors"
@@ -172,7 +186,7 @@ const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
                             <FaInstagram className="text-base" />
                         </a>
                         <a
-                            href="https://www.facebook.com/share/1HzXdo7sLG/?mibextid=wwXIfr"
+                            href="#"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="w-9 h-9 flex items-center justify-center rounded-full bg-gray-100 text-zinc-900 dark:bg-zinc-800 dark:text-white hover:bg-zinc-900 hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors"

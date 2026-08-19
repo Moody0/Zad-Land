@@ -16,7 +16,7 @@ export default function NotFound() {
             <h1 className="text-9xl md:text-[140px] font-black text-gray-200 dark:text-gray-800 leading-none mb-2">
               404
             </h1>
-            <div className="h-1 w-20 bg-gradient-to-r from-pink-500 to-pink-300 mx-auto mb-6"></div>
+            <div className="h-1 w-20 bg-gradient-to-r from-amber-600 to-amber-400 mx-auto mb-6"></div>
           </div>
 
           {/* Message */}
@@ -31,7 +31,7 @@ export default function NotFound() {
           <div className={`flex flex-col sm:flex-row gap-4 justify-center ${dir === 'rtl' ? 'flex-row-reverse' : ''}`}>
             <Link 
               href="/" 
-              className="inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white font-semibold rounded-lg transition-all duration-300"
+              className="inline-flex items-center justify-center px-8 py-4 bg-primary hover:bg-[#9a7009] text-white font-semibold rounded-lg transition-all duration-300 shadow-md"
             >
               {t('notFound.homeCta')}
             </Link>

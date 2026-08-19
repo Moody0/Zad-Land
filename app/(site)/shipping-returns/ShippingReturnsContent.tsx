@@ -26,7 +26,7 @@ export default function ShippingReturnsContent({ siteSettings }: ShippingReturns
     };
 
     return (
-        <main className="flex-1 bg-white dark:bg-[#1a0d11]" dir={dir}>
+        <main className="flex-1 bg-white dark:bg-background-dark" dir={dir}>
             <header className="container-custom text-center py-12 md:py-20">
                 <h1 className="text-4xl md:text-6xl font-display italic mb-6">
                     {t('shippingReturnsPage.title')}

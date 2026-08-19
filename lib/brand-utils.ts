@@ -37,9 +37,9 @@ export async function generateUniqueBrandSlug(name: string, excludeId?: string) 
     return slug;
 }
 
-export async function getRubyBeautyBrandId() {
+export async function getZadLandBrandId() {
     const brand = await prisma.brand.findUnique({
-        where: { slug: "ruby-beauty" },
+        where: { slug: "zad-land" },
         select: { id: true },
     });
 
@@ -47,9 +47,9 @@ export async function getRubyBeautyBrandId() {
 
     const created = await prisma.brand.create({
         data: {
-            id: "brand-ruby-beauty",
-            name: "Ruby Beauty",
-            slug: "ruby-beauty",
+            id: "brand-zad-land",
+            name: "Zad Land",
+            slug: "zad-land",
             group: "MAIN",
             isActive: true,
             isFeatured: true,

@@ -12,7 +12,12 @@ interface Product {
     id: string;
     slug: string;
     name: string;
+    nameAr?: string | null;
+    nameEn?: string | null;
     description: string | null;
+    descriptionAr?: string | null;
+    descriptionEn?: string | null;
+    options?: string | null;
     price: number;
     discountPrice?: number | null;
     images: string;

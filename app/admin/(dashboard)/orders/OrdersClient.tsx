@@ -26,6 +26,7 @@ interface Order {
         id: string;
         quantity: number;
         price: number;
+        options?: string | null;
         product: {
             name: string;
             images: string;

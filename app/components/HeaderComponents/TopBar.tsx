@@ -31,13 +31,13 @@ const TopBar = ({ isVisible }: TopBarProps) => {
 
                     {/* Socials */}
                     <div className="flex items-center gap-3">
-                        <a href="https://www.facebook.com/share/1HzXdo7sLG/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer" className="text-zinc-900 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors" aria-label="Facebook">
+                        <a href="#" target="_blank" rel="noopener noreferrer" className="text-zinc-900 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors" aria-label="Facebook">
                             <FaFacebook className="text-base" />
                         </a>
-                        <a href="https://www.instagram.com/ruby.beauty.sy" target="_blank" rel="noopener noreferrer" className="text-zinc-900 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors" aria-label="Instagram">
+                        <a href="#" target="_blank" rel="noopener noreferrer" className="text-zinc-900 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors" aria-label="Instagram">
                             <FaInstagram className="text-base" />
                         </a>
-                        <a href="https://wa.me/963933254796" target="_blank" rel="noopener noreferrer" className="text-zinc-900 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors" aria-label="WhatsApp">
+                        <a href="#" target="_blank" rel="noopener noreferrer" className="text-zinc-900 dark:text-gray-300 hover:text-black dark:hover:text-white transition-colors" aria-label="WhatsApp">
                             <FaWhatsapp className="text-base" />
                         </a>
                     </div>

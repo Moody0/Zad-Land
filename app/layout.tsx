@@ -28,37 +28,37 @@ const metadataBase =
 export const metadata: Metadata = {
   metadataBase: new URL(metadataBase),
   title: {
-    default: "Ruby Beauty - Premium Botanical Skincare Store",
-    template: "%s | Ruby Beauty"
+    default: "Zad Land - Wholesale Food & Goods Distribution",
+    template: "%s | Zad Land"
   },
-  description: "Discover Ruby Beauty's premium botanical skincare collection. Natural, healthy glow from within with our cruelty-free and vegan products.",
-  keywords: ["skincare", "beauty", "botanical", "natural beauty", "ruby beauty", "serum", "moisturizer", "vegan skincare"],
-  authors: [{ name: "Ruby Beauty" }],
+  description: "Zad Land is your trusted wholesale distributor for premium food and consumer goods from leading global brands.",
+  keywords: ["wholesale", "distribution", "food distribution", "zad land", "global brands", "grocery wholesale", "توزيع مواد غذائية", "زاد لاند"],
+  authors: [{ name: "Zad Land" }],
   openGraph: {
     type: "website",
-    locale: "en_US",
-    siteName: "Ruby Beauty",
-    title: "Ruby Beauty - Premium Botanical Skincare Store",
-    description: "Discover our new botanical collection designed for a natural, healthy glow.",
+    locale: "ar_SA",
+    siteName: "Zad Land",
+    title: "Zad Land - Wholesale Food & Goods Distribution",
+    description: "Your trusted partner in wholesale food distribution from top international brands.",
     images: [
       {
-        url: "/Ruby-Beauty-Logo.jpeg",
+        url: "/logo.jpeg",
         width: 1200,
         height: 630,
-        alt: "Ruby Beauty Logo",
+        alt: "Zad Land Logo",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Ruby Beauty - Premium Botanical Skincare Store",
-    description: "Discover our new botanical collection designed for a natural, healthy glow.",
-    images: ["/Ruby-Beauty-Logo.jpeg"],
+    title: "Zad Land - Wholesale Food & Goods Distribution",
+    description: "Your trusted partner in wholesale food distribution from top international brands.",
+    images: ["/logo.jpeg"],
   },
   icons: {
-    icon: "/Ruby-Beauty-Logo.jpeg",
-    shortcut: "/Ruby-Beauty-Logo.jpeg",
-    apple: "/Ruby-Beauty-Logo.jpeg",
+    icon: "/logo.jpeg",
+    shortcut: "/logo.jpeg",
+    apple: "/logo.jpeg",
   },
 };
 
@@ -103,7 +103,7 @@ export default async function RootLayout({
         <div id="initial-page-loader" aria-hidden="true">
           <div className="initial-page-loader__panel">
             <div className="initial-page-loader__spinner" />
-            <p className="initial-page-loader__brand">Ruby Beauty</p>
+            <p className="initial-page-loader__brand">Zad Land</p>
           </div>
         </div>
         <div id="app-shell">

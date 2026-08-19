@@ -8,8 +8,8 @@ import { getSafeImageUrl } from '@/lib/image-utils';
 
 interface CartItemProps {
     item: CartItemType;
-    removeItem: (id: string) => void;
-    updateQuantity: (id: string, quantity: number) => void;
+    removeItem: (id: string, selectedOption?: string) => void;
+    updateQuantity: (id: string, quantity: number, selectedOption?: string) => void;
 }
 
 const CartItem = ({ item, removeItem, updateQuantity }: CartItemProps) => {
@@ -19,8 +19,8 @@ const CartItem = ({ item, removeItem, updateQuantity }: CartItemProps) => {
         <div className="flex items-center gap-4 md:gap-6 py-6 transition-all hover:bg-gray-50/50 dark:hover:bg-white/[0.02]">
             {/* Remove Button */}
             <button
-                onClick={() => removeItem(item.id)}
-                className="cursor-pointer text-gray-400 hover:text-black dark:hover:text-white transition-colors p-2 shrink-0 flex items-center justify-center"
+                onClick={() => removeItem(item.id, item.selectedOption)}
+                className="cursor-pointer text-gray-400 hover:text-red-500 transition-colors p-2 shrink-0 flex items-center justify-center"
                 aria-label="Remove item"
             >
                 <span className="text-3xl font-light leading-none mb-1">×</span>
@@ -42,9 +42,14 @@ const CartItem = ({ item, removeItem, updateQuantity }: CartItemProps) => {
             <div className="flex flex-col md:flex-row md:items-center justify-between flex-1 min-w-0 gap-4 md:gap-8">
                 {/* Product Info */}
                 <div className="flex flex-col gap-1 min-w-0">
-                    <Link href={`/products/${item.slug}`} className="text-sm md:text-base font-bold text-zinc-900 dark:text-white transition-colors hover:underline line-clamp-2">
+                    <Link href={`/products/${item.slug}`} className="text-sm md:text-base font-bold text-[#072835] dark:text-white transition-colors hover:text-[#B8860B] dark:hover:text-[#E5B54A] line-clamp-2">
                         {item.name}
                     </Link>
+                    {item.selectedOption && (
+                        <span className="text-xs font-bold text-[#B8860B] bg-[#B8860B]/10 border border-[#B8860B]/20 px-2 py-0.5 rounded w-fit">
+                            {item.selectedOption}
+                        </span>
+                    )}
                     <p dir="ltr" className="text-xs md:text-sm font-extrabold text-zinc-900 dark:text-white w-fit">
                         {formatPrice(item.price)}
                     </p>
@@ -55,15 +60,15 @@ const CartItem = ({ item, removeItem, updateQuantity }: CartItemProps) => {
                     {/* Pill Quantity */}
                     <div className="flex items-center border border-gray-200 dark:border-white/10 rounded-xl h-10 px-1 w-[110px] bg-gray-50 dark:bg-zinc-800 shrink-0">
                         <button
-                            onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                            className="w-8 h-full flex items-center justify-center text-gray-500 hover:text-black dark:hover:text-white transition-colors text-base"
+                            onClick={() => updateQuantity(item.id, item.quantity - 1, item.selectedOption)}
+                            className="w-8 h-full flex items-center justify-center text-gray-500 hover:text-[#B8860B] transition-colors text-base cursor-pointer font-bold"
                         >−</button>
                         <span className="flex-1 text-center font-bold text-sm text-zinc-900 dark:text-white select-none">
                             {item.quantity}
                         </span>
                         <button
-                            onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                            className="w-8 h-full flex items-center justify-center text-gray-500 hover:text-black dark:hover:text-white transition-colors text-base"
+                            onClick={() => updateQuantity(item.id, item.quantity + 1, item.selectedOption)}
+                            className="w-8 h-full flex items-center justify-center text-gray-500 hover:text-[#B8860B] transition-colors text-base cursor-pointer font-bold"
                         >+</button>
                     </div>
 
