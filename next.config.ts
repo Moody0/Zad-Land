@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
     removeConsole: process.env.NODE_ENV === 'production',
   },
   experimental: {
-    optimizePackageImports: ['react-icons', 'md-react-icons'],
+    optimizePackageImports: ['react-icons'],
   },
   images: {
     minimumCacheTTL: 31536000,
