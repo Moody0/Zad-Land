@@ -1896,8 +1896,10 @@ export interface BannerInput {
     subtitleAr?: string;
     image: string;
     buttonText?: string;
+    buttonTextAr?: string;
     link?: string;
     badge?: string;
+    badgeAr?: string;
     isActive?: boolean;
 }
 
@@ -1930,8 +1932,10 @@ export async function createBanner(data: BannerInput) {
                 subtitleAr: data.subtitleAr,
                 image: data.image,
                 buttonText: data.buttonText || "Shop Now",
+                buttonTextAr: data.buttonTextAr || "تسوق الآن",
                 link: data.link || "/products",
-                badge: data.badge || "New Collection",
+                badge: data.badge || "Certified Wholesale",
+                badgeAr: data.badgeAr || "توزيع جملة معتمد",
                 isActive: data.isActive ?? true,
             }
         });
@@ -1964,8 +1968,10 @@ export async function updateBanner(id: string, data: BannerInput) {
                 subtitleAr: data.subtitleAr,
                 image: data.image,
                 buttonText: data.buttonText,
+                buttonTextAr: data.buttonTextAr,
                 link: data.link,
                 badge: data.badge,
+                badgeAr: data.badgeAr,
                 isActive: data.isActive,
             }
         });

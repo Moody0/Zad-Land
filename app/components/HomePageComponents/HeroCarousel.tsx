@@ -22,8 +22,10 @@ interface Banner {
     subtitleAr: string | null;
     image: string;
     buttonText: string | null;
+    buttonTextAr?: string | null;
     link: string | null;
     badge: string | null;
+    badgeAr?: string | null;
     isActive: boolean;
 }
 
@@ -42,9 +44,11 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
         titleAr: 'توزيع بضائع من كبرى الشركات العالمية',
         subtitleAr: 'شريككم المعتمد لأجود المنتجات والمواد الغذائية مع أسرع خدمات الشحن والتوزيع.',
         image: "https://lh3.googleusercontent.com/aida-public/AB6AXuB8pRgU38opDPgidWmDRVHh18-R0XsEouLP3xdxsGLZz4BX3nQjc-9PXhgFNDVECMvP80S7ZtFmpA-QwwrnKgOR8B7WY0FlM3qJCAf1J8cxpwvyt6V15oxTZz-uhtroLEp-87KWQzsp-6-2mVURrFG_Q6mWjJ5YGqT0gqwmcLOPMK6pDk77rqmdXEvvM82qGkXdLNmSeXBPXY9j9zwnT_PjJ5YAOzWa2PqrFvo1SOjMCtz71ZHQraBSPlt7TKx00ccpwm4TTWoB6b0y",
-        buttonText: language === 'ar' ? 'تصفح المنتجات' : 'Explore Products',
+        buttonText: 'Explore Products',
+        buttonTextAr: 'تصفح المنتجات',
         link: "/products",
-        badge: language === 'ar' ? 'توزيع جملة معتمد' : 'Wholesale Distribution',
+        badge: 'Certified Wholesale',
+        badgeAr: 'توزيع جملة معتمد',
         isActive: true
     };
 
@@ -58,22 +62,16 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
 
     const getBannerButtonText = (banner: Banner): string => {
         if (language === 'ar') {
-            return banner.buttonText || 'تصفح المنتجات';
+            return banner.buttonTextAr || banner.buttonText || 'تصفح المنتجات';
         }
-        if (!banner.buttonText || /[\u0600-\u06FF]/.test(banner.buttonText)) {
-            return 'Shop Now';
-        }
-        return banner.buttonText;
+        return banner.buttonText || banner.buttonTextAr || 'Explore Products';
     };
 
     const getBannerBadge = (banner: Banner): string => {
         if (language === 'ar') {
-            return banner.badge || 'توزيع جملة معتمد';
+            return banner.badgeAr || banner.badge || 'توزيع جملة معتمد';
         }
-        if (!banner.badge || /[\u0600-\u06FF]/.test(banner.badge)) {
-            return 'Certified Wholesale';
-        }
-        return banner.badge;
+        return banner.badge || banner.badgeAr || 'Certified Wholesale';
     };
 
     const displayBanners = banners && banners.length > 0 ? banners : [DEFAULT_BANNER];

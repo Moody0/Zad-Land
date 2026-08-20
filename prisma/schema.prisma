@@ -138,18 +138,20 @@ model Order {
 }
 
 model Banner {
-  id         String   @id @default(cuid())
-  title      String?
-  subtitle   String?
-  titleAr    String?
-  subtitleAr String?
-  image      String
-  buttonText String?  @default("Shop Now")
-  link       String?  @default("/products")
-  badge      String?  @default("New Collection")
-  isActive   Boolean  @default(true)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id           String   @id @default(cuid())
+  title        String?
+  subtitle     String?
+  titleAr      String?
+  subtitleAr   String?
+  image        String
+  buttonText   String?  @default("Shop Now")
+  buttonTextAr String?  @default("تسوق الآن")
+  link         String?  @default("/products")
+  badge        String?  @default("Certified Wholesale")
+  badgeAr      String?  @default("توزيع جملة معتمد")
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
 
 model PromoCode {
