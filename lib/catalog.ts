@@ -153,6 +153,40 @@ export async function getCategoryBySlug(slug: string) {
     });
 }
 
+export async function getCatalogMainCategories() {
+    const mainCategories = await prisma.mainCategory.findMany({
+        where: {
+            isActive: true,
+            products: {
+                some: {
+                    stock: { gt: 0 },
+                    brand: { isActive: true },
+                },
+            },
+        },
+        orderBy: [
+            { navOrder: "asc" },
+            { name: "asc" },
+        ],
+        select: {
+            id: true,
+            name: true,
+            slug: true,
+            description: true,
+            image: true,
+        },
+    });
+
+    return mainCategories.map((mc) => ({
+        id: mc.id,
+        name: mc.name,
+        nameEn: mc.description || mc.name,
+        slug: mc.slug,
+        description: mc.description,
+        image: mc.image,
+    }));
+}
+
 export async function getCatalogInitialData(categoryId?: string, brandId?: string, mainCategoryId?: string) {
     const whereClause: {
         stock: { gt: number };
@@ -178,7 +212,7 @@ export async function getCatalogInitialData(categoryId?: string, brandId?: strin
     }
 
     const [categories, products, totalProducts] = await Promise.all([
-        getCatalogCategories(brandId),
+        getCatalogMainCategories(),
         prisma.product.findMany({
             where: whereClause,
             take: 12,

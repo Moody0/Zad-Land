@@ -6,37 +6,39 @@ import { useLanguage } from "@/app/context/LanguageContext";
 import { MdGridView, MdChevronLeft, MdChevronRight } from "react-icons/md";
 import ResilientImage from "@/app/components/ResilientImage";
 
-interface Category {
+interface MainCategoryItem {
     id: string;
     name: string;
+    nameEn?: string;
     slug: string;
     description: string | null;
     image: string | null;
 }
 
 interface CategorySelectorProps {
-    categories: Category[];
-    activeCategory?: Category | null;
+    categories: MainCategoryItem[];
+    activeCategory?: { id: string; name: string; slug: string } | null;
     activeMainCategory?: { id: string; name: string; slug: string } | null;
 }
 
 function getCategoryHref(slug?: string | null) {
-    return slug ? `/categories/${slug}` : "/products";
+    return slug ? `/department/${slug}` : "/products";
 }
 
-const CategorySelector = ({ categories, activeCategory = null }: CategorySelectorProps) => {
-    const { t, dir } = useLanguage();
+const CategorySelector = ({ categories, activeCategory = null, activeMainCategory = null }: CategorySelectorProps) => {
+    const { t, dir, language } = useLanguage();
+    const isArabic = language === 'ar';
     const scrollContainerRef = useRef<HTMLDivElement>(null);
     const [showLeftArrow, setShowLeftArrow] = useState(false);
     const [showRightArrow, setShowRightArrow] = useState(false);
 
     const isRtl = dir === 'rtl';
+    const isAllActive = !activeCategory && !activeMainCategory;
 
     const updateArrowVisibility = () => {
         if (scrollContainerRef.current) {
             const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
             
-            // Check if scrollable
             const isScrollable = scrollWidth > clientWidth;
             if (!isScrollable) {
                 setShowLeftArrow(false);
@@ -74,15 +76,16 @@ const CategorySelector = ({ categories, activeCategory = null }: CategorySelecto
     }, [categories, isRtl]);
 
     useEffect(() => {
-        if (activeCategory && scrollContainerRef.current) {
-            const activeEl = document.getElementById(`category-item-${activeCategory.slug}`);
+        const activeSlug = activeMainCategory?.slug || activeCategory?.slug;
+        if (activeSlug && scrollContainerRef.current) {
+            const activeEl = document.getElementById(`category-item-${activeSlug}`);
             if (activeEl) {
                 setTimeout(() => {
                     activeEl.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
                 }, 100);
             }
         }
-    }, [activeCategory]);
+    }, [activeCategory, activeMainCategory]);
 
     const handleScroll = (direction: 'left' | 'right') => {
         if (scrollContainerRef.current) {
@@ -103,7 +106,7 @@ const CategorySelector = ({ categories, activeCategory = null }: CategorySelecto
                     type="button"
                     onClick={() => handleScroll('left')}
                     aria-label="Scroll left"
-                    className="hidden sm:flex absolute left-0 top-1/2 -translate-y-1/2 -translate-x-3 w-9 h-9 rounded-full bg-white dark:bg-zinc-800 border border-gray-200 dark:border-white/10 text-zinc-900 dark:text-white hover:bg-[#B8860B] hover:text-white hover:border-[#B8860B] dark:hover:bg-[#B8860B] dark:hover:text-white items-center justify-center transition-all cursor-pointer z-20"
+                    className="hidden sm:flex absolute left-0 top-1/2 -translate-y-1/2 -translate-x-3 w-9 h-9 rounded-full bg-white dark:bg-zinc-800 border border-gray-200 dark:border-white/10 text-zinc-900 dark:text-white hover:bg-[#B8860B] hover:text-white hover:border-[#B8860B] dark:hover:bg-[#B8860B] dark:hover:text-white items-center justify-center transition-all cursor-pointer z-20 shadow-xs"
                 >
                     <MdChevronLeft className="text-2xl" />
                 </button>
@@ -112,7 +115,7 @@ const CategorySelector = ({ categories, activeCategory = null }: CategorySelecto
             {/* Scroll Container */}
             <div 
                 ref={scrollContainerRef}
-                className="flex items-center gap-4 sm:gap-5 overflow-x-auto hide-scrollbar py-1 px-0.5 scroll-smooth"
+                className="flex items-start gap-4 sm:gap-6 overflow-x-auto hide-scrollbar py-1 px-0.5 scroll-smooth"
                 style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
                 {/* All Products Circle */}
@@ -121,12 +124,12 @@ const CategorySelector = ({ categories, activeCategory = null }: CategorySelecto
                     className="shrink-0 flex flex-col items-center gap-2 group/item transition-transform duration-200 active:scale-95"
                 >
                     <div className={`w-[64px] h-[64px] sm:w-[72px] sm:h-[72px] rounded-full p-0.5 transition-all duration-300 ${
-                        !activeCategory 
+                        isAllActive 
                         ? 'border-2 border-[#B8860B] ring-2 ring-[#B8860B]/20' 
                         : 'border border-gray-200 dark:border-white/10 group-hover/item:border-[#B8860B]'
                     }`}>
                         <div className={`w-full h-full rounded-full flex items-center justify-center transition-all duration-300 ${
-                            !activeCategory
+                            isAllActive
                             ? 'bg-[#B8860B] text-white'
                             : 'bg-gray-50 dark:bg-zinc-800 text-gray-700 dark:text-gray-300 group-hover/item:text-[#B8860B]'
                         }`}>
@@ -134,20 +137,21 @@ const CategorySelector = ({ categories, activeCategory = null }: CategorySelecto
                         </div>
                     </div>
 
-                    <div className="flex flex-col items-center">
-                        <span className={`text-[11px] sm:text-xs font-semibold text-center leading-tight line-clamp-1 ${
-                            !activeCategory ? 'text-[#B8860B] dark:text-[#E5B54A] font-bold' : 'text-gray-600 dark:text-gray-400 group-hover/item:text-[#B8860B]'
+                    <div className="flex flex-col items-center max-w-[80px] sm:max-w-[96px]">
+                        <span className={`text-[11px] sm:text-xs font-semibold text-center leading-tight line-clamp-2 ${
+                            isAllActive ? 'text-[#B8860B] dark:text-[#E5B54A] font-bold' : 'text-gray-600 dark:text-gray-400 group-hover/item:text-[#B8860B]'
                         }`}>
                             {t("products.allProducts")}
                         </span>
                     </div>
                 </Link>
 
-                {/* Category Circles */}
+                {/* Main Category Circles */}
                 {categories.map((category) => {
-                    const isActive = activeCategory?.slug === category.slug;
+                    const isActive = activeMainCategory?.slug === category.slug || activeCategory?.slug === category.slug;
                     const defaultImage = 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=300';
                     const imageToUse = category.image || defaultImage;
+                    const displayName = isArabic ? category.name : (category.description || category.nameEn || category.name);
                     
                     return (
                         <Link
@@ -164,20 +168,20 @@ const CategorySelector = ({ categories, activeCategory = null }: CategorySelecto
                                 <div className="w-full h-full rounded-full overflow-hidden bg-gray-50 dark:bg-zinc-900">
                                     <ResilientImage 
                                         src={imageToUse} 
-                                        alt={category.name} 
+                                        alt={displayName} 
                                         className="w-full h-full object-cover rounded-full transition-transform duration-500 group-hover/item:scale-110"
                                     />
                                 </div>
                             </div>
 
                             {/* Label */}
-                            <div className="flex flex-col items-center max-w-[72px] sm:max-w-[80px]">
-                                <span className={`text-[11px] sm:text-xs font-semibold text-center leading-tight line-clamp-1 transition-colors duration-200 ${
+                            <div className="flex flex-col items-center max-w-[80px] sm:max-w-[96px]">
+                                <span className={`text-[11px] sm:text-xs font-semibold text-center leading-tight line-clamp-2 transition-colors duration-200 ${
                                     isActive 
                                     ? 'text-[#B8860B] dark:text-[#E5B54A] font-bold' 
                                     : 'text-gray-600 dark:text-gray-400 group-hover/item:text-[#B8860B] dark:group-hover/item:text-[#E5B54A]'
                                 }`}>
-                                    {category.name}
+                                    {displayName}
                                 </span>
                             </div>
                         </Link>
@@ -191,7 +195,7 @@ const CategorySelector = ({ categories, activeCategory = null }: CategorySelecto
                     type="button"
                     onClick={() => handleScroll('right')}
                     aria-label="Scroll right"
-                    className="hidden sm:flex absolute right-0 top-1/2 -translate-y-1/2 translate-x-3 w-9 h-9 rounded-full bg-white dark:bg-zinc-800 border border-gray-200 dark:border-white/10 text-zinc-900 dark:text-white hover:bg-[#B8860B] hover:text-white hover:border-[#B8860B] dark:hover:bg-[#B8860B] dark:hover:text-white items-center justify-center transition-all cursor-pointer z-20"
+                    className="hidden sm:flex absolute right-0 top-1/2 -translate-y-1/2 translate-x-3 w-9 h-9 rounded-full bg-white dark:bg-zinc-800 border border-gray-200 dark:border-white/10 text-zinc-900 dark:text-white hover:bg-[#B8860B] hover:text-white hover:border-[#B8860B] dark:hover:bg-[#B8860B] dark:hover:text-white items-center justify-center transition-all cursor-pointer z-20 shadow-xs"
                 >
                     <MdChevronRight className="text-2xl" />
                 </button>
