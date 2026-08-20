@@ -15,7 +15,7 @@ interface CurrencyContextType {
 const CurrencyContext = createContext<CurrencyContextType | undefined>(undefined);
 
 export function CurrencyProvider({ children, initialExchangeRate }: { children: React.ReactNode, initialExchangeRate: number }) {
-    const [currency, setCurrencyState] = useState<Currency>('SYP');
+    const [currency, setCurrencyState] = useState<Currency>('USD');
     const [mounted, setMounted] = useState(false);
     const { language } = useLanguage();
 
@@ -33,18 +33,18 @@ export function CurrencyProvider({ children, initialExchangeRate }: { children: 
     };
 
     const formatPrice = (usdPrice: number) => {
+        const num = Number(usdPrice || 0);
         const symbol = language === 'ar' ? 'ل.س' : 'SYP';
         const locale = language === 'ar' ? 'ar-SY-u-nu-latn' : 'en-US';
         
         if (!mounted) {
-            const price = Math.round(usdPrice * initialExchangeRate);
-            return language === 'ar' ? `${symbol} ${price.toLocaleString(locale)}` : `${price.toLocaleString(locale)} ${symbol}`;
+            return `$${num.toFixed(2)}`;
         }
 
         if (currency === 'USD') {
-            return `$${usdPrice.toFixed(2)}`;
+            return `$${num.toFixed(2)}`;
         } else {
-            const price = Math.round(usdPrice * initialExchangeRate);
+            const price = Math.round(num * initialExchangeRate);
             return language === 'ar' ? `${symbol} ${price.toLocaleString(locale)}` : `${price.toLocaleString(locale)} ${symbol}`;
         }
     };
