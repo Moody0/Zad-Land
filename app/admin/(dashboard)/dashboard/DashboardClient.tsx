@@ -57,9 +57,9 @@ export default function DashboardClient({ stats }: { stats: DashboardStats }) {
 
     // SVG Chart Geometry Calculations
     const chartData = stats.salesTrend || [];
-    const chartWidth = 600;
-    const chartHeight = 280;
-    const chartPadding = { top: 25, right: 20, bottom: 35, left: 45 };
+    const chartWidth = 800;
+    const chartHeight = 240;
+    const chartPadding = { top: 25, right: 30, bottom: 40, left: 55 };
 
     const hasSalesData = useMemo(() => {
         return chartData.some(d => d.revenue > 0 || d.orders > 0);
@@ -369,38 +369,24 @@ export default function DashboardClient({ stats }: { stats: DashboardStats }) {
                                         </button>
                                     </div>
                                 </div>
-
-                                {/* Active Scrub Inspection Banner */}
-                                {hoveredPointIndex !== null && chartPoints[hoveredPointIndex] && (
-                                    <div className="flex items-center justify-between px-3.5 py-1.5 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/60 dark:border-white/5 mb-2 transition-all">
-                                        <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
-                                            {chartPoints[hoveredPointIndex].data.date}
-                                        </span>
-                                        <span className={`text-xs font-black ${chartMode === 'revenue' ? 'text-emerald-600 dark:text-emerald-400' : 'text-sky-600 dark:text-sky-400'}`}>
-                                            {chartMode === 'revenue' 
-                                                ? `$${chartPoints[hoveredPointIndex].data.revenue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` 
-                                                : `${chartPoints[hoveredPointIndex].data.orders} ${t('admin.totalOrders')}`}
-                                        </span>
-                                    </div>
-                                )}
                             </div>
 
                             {/* SVG Chart Graphic */}
-                            <div className="relative w-full overflow-hidden my-2 sm:my-3">
+                            <div className="relative w-full h-[200px] sm:h-[220px] my-1">
                                 {chartData.length > 0 ? (
-                                    <div className="w-full">
+                                    <div className="w-full h-full relative">
                                         <svg 
                                             viewBox={`0 0 ${chartWidth} ${chartHeight}`} 
-                                            className="w-full h-auto max-h-[300px] overflow-visible select-none"
+                                            className="w-full h-full overflow-visible select-none"
                                         >
                                             <defs>
                                                 <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
-                                                    <stop offset="0%" stopColor="#10b981" stopOpacity="0.45" />
-                                                    <stop offset="100%" stopColor="#10b981" stopOpacity="0.02" />
+                                                    <stop offset="0%" stopColor="#10b981" stopOpacity="0.4" />
+                                                    <stop offset="100%" stopColor="#10b981" stopOpacity="0.0" />
                                                 </linearGradient>
                                                 <linearGradient id="ordersGradient" x1="0" y1="0" x2="0" y2="1">
-                                                    <stop offset="0%" stopColor="#0284c7" stopOpacity="0.45" />
-                                                    <stop offset="100%" stopColor="#0284c7" stopOpacity="0.02" />
+                                                    <stop offset="0%" stopColor="#0284c7" stopOpacity="0.4" />
+                                                    <stop offset="100%" stopColor="#0284c7" stopOpacity="0.0" />
                                                 </linearGradient>
                                             </defs>
 
@@ -425,7 +411,7 @@ export default function DashboardClient({ stats }: { stats: DashboardStats }) {
                                                             x={chartPadding.left - 10} 
                                                             y={y + 4} 
                                                             textAnchor="end" 
-                                                            fontSize="12"
+                                                            fontSize="11"
                                                             fontWeight="600"
                                                             className="fill-slate-400"
                                                         >
@@ -446,28 +432,29 @@ export default function DashboardClient({ stats }: { stats: DashboardStats }) {
                                                 d={svgPathD} 
                                                 fill="none" 
                                                 stroke={chartMode === 'revenue' ? "#10b981" : "#0284c7"} 
-                                                strokeWidth="3.5" 
+                                                strokeWidth="2.5" 
                                                 strokeLinecap="round" 
                                                 strokeLinejoin="round" 
                                             />
 
-                                            {/* 4 Legible X-Axis Date Labels */}
+                                            {/* X-Axis Date Labels (Adaptive 4 on mobile, 7-8 on desktop) */}
                                             {chartPoints.map((p, idx) => {
-                                                const isKeyDate = idx === 0 || 
+                                                const isMobileKey = idx === 0 || 
                                                     idx === Math.floor(chartPoints.length / 3) || 
                                                     idx === Math.floor((chartPoints.length * 2) / 3) || 
                                                     idx === chartPoints.length - 1;
+                                                const isDesktopKey = idx % 2 === 0 || idx === chartPoints.length - 1;
                                                 
-                                                if (!isKeyDate) return null;
+                                                if (!isDesktopKey) return null;
                                                 return (
                                                     <text 
                                                         key={`lbl-${idx}`}
                                                         x={p.x} 
                                                         y={chartHeight - 10} 
                                                         textAnchor="middle" 
-                                                        fontSize="12"
-                                                        fontWeight="700"
-                                                        className="fill-slate-500 dark:fill-slate-400"
+                                                        fontSize="11"
+                                                        fontWeight="600"
+                                                        className={`fill-slate-400 dark:fill-slate-500 ${isMobileKey ? 'block' : 'hidden sm:inline'}`}
                                                     >
                                                         {p.data.label}
                                                     </text>
@@ -485,7 +472,7 @@ export default function DashboardClient({ stats }: { stats: DashboardStats }) {
                                                             x2={p.x}
                                                             y2={chartHeight - chartPadding.bottom}
                                                             stroke={chartMode === 'revenue' ? '#10b981' : '#0284c7'}
-                                                            strokeWidth="2"
+                                                            strokeWidth="1.5"
                                                             strokeDasharray="3 3"
                                                             opacity="0.8"
                                                         />
@@ -495,13 +482,13 @@ export default function DashboardClient({ stats }: { stats: DashboardStats }) {
                                                     <circle
                                                         cx={p.x}
                                                         cy={p.y}
-                                                        r={hoveredPointIndex === idx ? 7 : 4.5}
+                                                        r={hoveredPointIndex === idx ? 6 : 3.5}
                                                         fill={hoveredPointIndex === idx 
                                                             ? (chartMode === 'revenue' ? '#10b981' : '#0284c7') 
                                                             : '#ffffff'
                                                         }
                                                         stroke={chartMode === 'revenue' ? '#10b981' : '#0284c7'}
-                                                        strokeWidth={hoveredPointIndex === idx ? 3 : 2.5}
+                                                        strokeWidth={hoveredPointIndex === idx ? 2.5 : 2}
                                                         className="transition-all duration-150 pointer-events-none"
                                                     />
 
@@ -523,15 +510,15 @@ export default function DashboardClient({ stats }: { stats: DashboardStats }) {
                                         {/* Floating Hover Tooltip (Clamped to Screen) */}
                                         {hoveredPointIndex !== null && chartPoints[hoveredPointIndex] && (
                                             <div 
-                                                className="absolute -top-1 transform -translate-x-1/2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-3.5 py-1.5 rounded-xl text-xs font-bold shadow-xl pointer-events-none z-10 whitespace-nowrap transition-all duration-75"
+                                                className="absolute -top-3 transform -translate-x-1/2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-3 py-1.5 rounded-xl text-xs font-bold shadow-xl pointer-events-none z-10 whitespace-nowrap transition-all duration-75"
                                                 style={{
-                                                    left: `${Math.max(16, Math.min(84, (chartPoints[hoveredPointIndex].x / chartWidth) * 100))}%`
+                                                    left: `${Math.max(12, Math.min(88, (chartPoints[hoveredPointIndex].x / chartWidth) * 100))}%`
                                                 }}
                                             >
                                                 <p className="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-wider">
                                                     {chartPoints[hoveredPointIndex].data.date}
                                                 </p>
-                                                <p className="font-extrabold text-sm">
+                                                <p className="font-extrabold text-xs sm:text-sm">
                                                     {chartMode === 'revenue' 
                                                         ? `$${chartPoints[hoveredPointIndex].data.revenue.toFixed(2)}` 
                                                         : `${chartPoints[hoveredPointIndex].data.orders} ${t('admin.totalOrders')}`}
