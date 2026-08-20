@@ -136,14 +136,14 @@ const ProductCard = ({ product, badge, showBadge = true }: ProductCardProps) => 
                     <MdSearch className="text-sm sm:text-base" />
                 </button>
 
-                {/* Image Area (Square, optimized padding) */}
-                <div className="relative w-full aspect-square overflow-hidden rounded-xl bg-gray-50/80 dark:bg-zinc-800/40 p-2 flex items-center justify-center">
-                    <Link href={`/products/${product.slug}`} className="absolute inset-0 block w-full h-full p-2" aria-label={product.name}>
+                {/* Image Area (Square, fills container with rounded border radius) */}
+                <div className="relative w-full aspect-square overflow-hidden rounded-xl bg-gray-50/80 dark:bg-zinc-800/40">
+                    <Link href={`/products/${product.slug}`} className="absolute inset-0 block w-full h-full" aria-label={product.name}>
                         {/* Primary Image Wrapper */}
-                        <div className={`absolute inset-2 transition-all duration-500 z-10 ${hasSecondaryImage && isSecondaryLoaded ? 'group-hover:opacity-0' : ''}`}>
+                        <div className={`absolute inset-0 transition-all duration-500 z-10 ${hasSecondaryImage && isSecondaryLoaded ? 'group-hover:opacity-0' : ''}`}>
                             <ResilientImage
                                 alt={product.name}
-                                className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
+                                className="w-full h-full object-cover rounded-xl transition-transform duration-500 group-hover:scale-105"
                                 src={primaryImage}
                                 loading="lazy"
                             />
@@ -151,10 +151,10 @@ const ProductCard = ({ product, badge, showBadge = true }: ProductCardProps) => 
                         
                         {/* Secondary Image Wrapper */}
                         {hasSecondaryImage && (
-                            <div className="absolute inset-2 transition-all duration-500 opacity-0 group-hover:opacity-100 z-0">
+                            <div className="absolute inset-0 transition-all duration-500 opacity-0 group-hover:opacity-100 z-0">
                                 <ResilientImage
                                     alt={product.name}
-                                    className="w-full h-full object-contain transition-transform duration-500 scale-100 group-hover:scale-105"
+                                    className="w-full h-full object-cover rounded-xl transition-transform duration-500 scale-100 group-hover:scale-105"
                                     src={secondaryImage}
                                     loading="lazy"
                                     onLoad={() => setIsSecondaryLoaded(true)}
