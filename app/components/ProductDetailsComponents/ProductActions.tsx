@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
-import { useRouter } from "next/navigation";
+import React, { useState } from 'react';
 import { useCart } from "@/app/context/CartContext";
 import { useLanguage } from "@/app/context/LanguageContext";
 import { MdRemove, MdAdd, MdShoppingBag } from "react-icons/md";
-import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
+import toast from 'react-hot-toast';
 
 interface ProductActionsProps {
     product: {
@@ -30,19 +30,28 @@ const ProductActions = ({ product, stock }: ProductActionsProps) => {
     const router = useRouter();
     const [quantity, setQuantity] = useState(1);
 
-    const displayName = (language === 'ar' ? product.nameAr : product.nameEn) || product.name || product.nameAr || '';
+    // Options parsing
+    const parsedOptions = product.options 
+        ? product.options.split(',').map(o => o.trim()).filter(Boolean)
+        : [];
+    const [selectedOption, setSelectedOption] = useState<string>(
+        parsedOptions.length > 0 ? parsedOptions[0] : ""
+    );
 
+    const displayName = (language === 'ar' ? product.nameAr : product.nameEn) || product.name || product.nameAr || '';
     const displayDesc = language === 'ar'
         ? (product.descriptionAr || product.description)
         : (product.descriptionEn || product.description);
 
-    const parsedOptions = product.options
-        ? product.options.split(',').map(o => o.trim()).filter(Boolean)
-        : [];
-    const [selectedOption, setSelectedOption] = useState<string>(parsedOptions[0] || "");
+    const handleDecrement = () => {
+        if (quantity > 1) {
+            setQuantity(quantity - 1);
+        }
+    };
 
-    const handleIncrement = () => setQuantity(prev => prev + 1);
-    const handleDecrement = () => setQuantity(prev => (prev > 1 ? prev - 1 : 1));
+    const handleIncrement = () => {
+        setQuantity(quantity + 1);
+    };
 
     const handleAddToCart = () => {
         addItem({
@@ -55,10 +64,7 @@ const ProductActions = ({ product, stock }: ProductActionsProps) => {
             description: displayDesc || undefined,
             selectedOption: selectedOption || undefined,
         });
-        toast.success(language === 'ar'
-            ? `تمت إضافة ${quantity} ${displayName} إلى السلة`
-            : `Added ${quantity} ${displayName} to cart`
-        );
+        toast.success(language === 'ar' ? 'تمت إضافة المنتج إلى السلة' : 'Added to cart');
     };
 
     const handleBuyNow = () => {
@@ -75,7 +81,7 @@ const ProductActions = ({ product, stock }: ProductActionsProps) => {
         router.push("/place-order");
     };
 
-    const displayStock = stock !== undefined ? stock : 3;
+    const displayStock = stock !== undefined ? stock : 1;
 
     return (
         <div className="flex flex-col gap-4 my-2">
@@ -87,7 +93,7 @@ const ProductActions = ({ product, stock }: ProductActionsProps) => {
                             {language === 'ar' ? 'الخيارات والأحجام:' : 'Options / Sizes:'}
                         </span>
                         {selectedOption && (
-                            <span className="text-xs font-bold text-primary">
+                            <span className="text-xs font-bold text-[#B8860B]">
                                 {selectedOption}
                             </span>
                         )}
@@ -110,65 +116,80 @@ const ProductActions = ({ product, stock }: ProductActionsProps) => {
                     </div>
                 </div>
             )}
-            {/* Stock Indicator */}
-            {displayStock > 0 && (
-                <div className="w-full">
-                    <div className="flex items-center justify-start mb-1.5">
-                        <div className="flex items-center gap-2 font-bold text-xs sm:text-sm text-zinc-900 dark:text-white">
-                            <span className="inline-flex rounded-full h-2.5 w-2.5 bg-[#2E7D32]"></span>
-                            <span>
-                                {language === 'ar'
-                                    ? `متوفر في المخزون (${stock || displayStock} قطعة)`
-                                    : `In Stock (${stock || displayStock} items left)`}
-                            </span>
-                        </div>
+
+            {/* Wholesale Packaging & Availability Badge */}
+            <div className="w-full rounded-2xl bg-[#FAF6EC] dark:bg-zinc-800/60 border border-[#B8860B]/25 dark:border-white/10 p-3.5 flex flex-col gap-2 shadow-2xs">
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2 text-xs sm:text-sm font-bold text-[#072835] dark:text-white">
+                        <span className="inline-flex rounded-full h-2.5 w-2.5 bg-[#2E7D32]"></span>
+                        <span>
+                            {language === 'ar' ? 'متوفر للتوريد المباشر بالجملة' : 'In Stock for Wholesale Supply'}
+                        </span>
                     </div>
-                    <div className="w-full h-1.5 bg-gray-100 dark:bg-white/10 rounded-full overflow-hidden">
-                        <div
-                            className="h-full bg-[#2E7D32] transition-all duration-1000 ease-out"
-                            style={{ width: `${Math.min(100, (displayStock / 15) * 100)}%` }}
-                        ></div>
-                    </div>
+                    <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-[#2E7D32]/10 text-[#2E7D32] dark:bg-[#2E7D32]/20 dark:text-[#4ade80]">
+                        {language === 'ar' ? 'بيع بالجملة' : 'Wholesale B2B'}
+                    </span>
                 </div>
-            )}
+
+                {displayStock > 0 && (
+                    <div className="flex items-center gap-2 text-xs text-slate-700 dark:text-gray-300 font-semibold pt-2 border-t border-[#B8860B]/15 dark:border-white/5">
+                        <span className="text-base">📦</span>
+                        <span>
+                            {language === 'ar' 
+                                ? `مواصفات التعبئة: ${stock || displayStock} قطعة في الطرد / الكرتونة (البيع بالطرد الكامل)` 
+                                : `Packaging Unit: ${stock || displayStock} Pieces per Carton / Box (Sold by Full Carton)`}
+                        </span>
+                    </div>
+                )}
+            </div>
 
             {/* Quantity and Add to Cart Row */}
-            <div className="flex items-center gap-3">
-                {/* Quantity Controls */}
-                <div className="flex items-center h-12 border border-gray-200 dark:border-white/10 rounded-xl bg-gray-50 dark:bg-zinc-800/50 px-2 shrink-0">
+            <div className="flex flex-col gap-1.5 mt-1">
+                <div className="flex items-center justify-between text-xs font-bold text-slate-600 dark:text-gray-300 px-0.5">
+                    <span>{language === 'ar' ? 'عدد الطرود / الكراتين المطلوبة:' : 'Quantity (Full Cartons):'}</span>
+                    {displayStock > 0 && (
+                        <span className="text-[#B8860B] dark:text-[#E5B54A] font-semibold">
+                            {quantity * (stock || displayStock)} {language === 'ar' ? 'قطعة إجمالاً' : 'Total Pieces'}
+                        </span>
+                    )}
+                </div>
+                <div className="flex items-center gap-3">
+                    {/* Quantity Controls */}
+                    <div className="flex items-center h-12 border border-gray-200 dark:border-white/10 rounded-xl bg-gray-50 dark:bg-zinc-800/50 px-2 shrink-0">
+                        <button
+                            onClick={handleDecrement}
+                            className="w-8 h-8 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:text-[#B8860B] transition-colors cursor-pointer"
+                            aria-label="Decrease quantity"
+                        >
+                            <MdRemove size={18} />
+                        </button>
+                        <span className="w-8 text-center text-sm font-extrabold text-zinc-900 dark:text-white select-none">{quantity}</span>
+                        <button
+                            onClick={handleIncrement}
+                            className="w-8 h-8 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:text-[#B8860B] transition-colors cursor-pointer"
+                            aria-label="Increase quantity"
+                        >
+                            <MdAdd size={18} />
+                        </button>
+                    </div>
+
+                    {/* Add to Cart Button */}
                     <button
-                        onClick={handleDecrement}
-                        className="w-8 h-8 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:text-[#B8860B] transition-colors"
-                        aria-label="Decrease quantity"
+                        onClick={handleAddToCart}
+                        className="flex-1 h-12 bg-[#072835] hover:bg-[#0c4054] dark:bg-[#B8860B] dark:hover:bg-[#9a7009] text-white rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all shadow-sm active:scale-[0.99] cursor-pointer"
                     >
-                        <MdRemove size={18} />
-                    </button>
-                    <span className="w-8 text-center text-sm font-extrabold text-zinc-900 dark:text-white select-none">{quantity}</span>
-                    <button
-                        onClick={handleIncrement}
-                        className="w-8 h-8 flex items-center justify-center text-gray-600 dark:text-gray-300 hover:text-[#B8860B] transition-colors"
-                        aria-label="Increase quantity"
-                    >
-                        <MdAdd size={18} />
+                        <MdShoppingBag className="text-lg" />
+                        <span>{language === 'ar' ? 'إضافة للطلبية' : 'Add to Cart'}</span>
                     </button>
                 </div>
-
-                {/* Add to Cart Button */}
-                <button
-                    onClick={handleAddToCart}
-                    className="flex-1 h-12 bg-[#072835] hover:bg-[#0c4054] text-white rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all duration-200 active:scale-[0.98]"
-                >
-                    <MdShoppingBag size={18} className="text-[#B8860B]" />
-                    <span>{language === 'ar' ? 'إضافة للسلة' : 'Add to Cart'}</span>
-                </button>
             </div>
 
             {/* Buy Now Button */}
             <button
                 onClick={handleBuyNow}
-                className="w-full h-12 bg-[#2E7D32] hover:bg-[#236327] text-white rounded-xl font-bold text-sm transition-all duration-200 active:scale-[0.98]"
+                className="w-full h-12 bg-[#2E7D32] hover:bg-[#236327] text-white rounded-xl font-bold text-sm transition-all duration-200 active:scale-[0.98] shadow-sm cursor-pointer"
             >
-                {language === 'ar' ? 'شراء الآن' : 'Buy Now'}
+                {language === 'ar' ? 'شراء وتثبيت الطلب' : 'Buy Now'}
             </button>
         </div>
     );

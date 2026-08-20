@@ -197,16 +197,23 @@ const ProductCard = ({ product, badge, showBadge = true }: ProductCardProps) => 
                         </div>
                     )}
 
-                    {/* Price */}
-                    <div className="mt-auto flex items-baseline gap-1.5 sm:gap-2 text-zinc-900 dark:text-white">
-                        {product.discountPrice && Number(product.discountPrice) < Number(product.price) ? (
-                            <>
-                                <span className="text-xs sm:text-base font-extrabold text-[#2E7D32] dark:text-[#4ade80]">{formatPrice(Number(product.discountPrice))}</span>
-                                <span className="text-[10px] sm:text-xs text-gray-400 line-through font-normal">{formatPrice(Number(product.price))}</span>
-                            </>
-                        ) : (
-                            <span className="text-xs sm:text-base font-extrabold text-[#072835] dark:text-white">{formatPrice(Number(product.price))}</span>
-                        )}
+                    {/* Price and Packaging */}
+                    <div className="mt-auto flex items-baseline justify-between gap-1 text-zinc-900 dark:text-white">
+                        <div className="flex items-baseline gap-1.5 sm:gap-2">
+                            {product.discountPrice && Number(product.discountPrice) < Number(product.price) ? (
+                                <>
+                                    <span className="text-xs sm:text-base font-extrabold text-[#2E7D32] dark:text-[#4ade80]">{formatPrice(Number(product.discountPrice))}</span>
+                                    <span className="text-[10px] sm:text-xs text-gray-400 line-through font-normal">{formatPrice(Number(product.price))}</span>
+                                </>
+                            ) : (
+                                <span className="text-xs sm:text-base font-extrabold text-[#072835] dark:text-white">{formatPrice(Number(product.price))}</span>
+                            )}
+                        </div>
+                        {product.stock && product.stock > 0 ? (
+                            <span className="text-[10px] sm:text-[11px] font-bold text-slate-500 dark:text-gray-400 shrink-0">
+                                {product.stock} {language === 'ar' ? 'قطعة/طرد' : 'pcs/ctn'}
+                            </span>
+                        ) : null}
                     </div>
 
                     {/* Mobile-Optimized Touch Target Add to Cart / Quantity Controller */}
