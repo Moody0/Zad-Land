@@ -21,51 +21,54 @@ interface LanguageContextType {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
-    const [language, setLanguageState] = useState<Language>('ar');
-    const [translations, setTranslations] = useState<TranslationObject>(ar);
+    // Initialize language from document HTML attribute or default to 'ar'
+    const [language, setLanguageState] = useState<Language>(() => {
+        if (typeof document !== 'undefined') {
+            const docLang = document.documentElement.lang as Language;
+            if (docLang === 'en' || docLang === 'ar') return docLang;
+        }
+        return 'ar';
+    });
+
+    const [translations, setTranslations] = useState<TranslationObject>(() => language === 'en' ? en : ar);
     const [mounted, setMounted] = useState(false);
 
-    // Load language preference from localStorage on mount
+    // Sync language on client mount if user had a saved preference
     useEffect(() => {
         const savedLang = localStorage.getItem('language') as Language;
-        if (savedLang && (savedLang === 'en' || savedLang === 'ar')) {
+        if (savedLang && (savedLang === 'en' || savedLang === 'ar') && savedLang !== language) {
+            // Update state, cookie, and document direction
             setLanguageState(savedLang);
-        } else {
-            // Check browser language as fallback
-            const browserLang = typeof navigator !== 'undefined' ? navigator.language.split('-')[0] : 'ar';
-            if (browserLang === 'en' || browserLang === 'ar') {
-                setLanguageState(browserLang as Language);
+            document.cookie = `language=${savedLang}; path=/; max-age=31536000`;
+            document.documentElement.lang = savedLang;
+            document.documentElement.dir = savedLang === 'ar' ? 'rtl' : 'ltr';
+            // Reload if there's a mismatch with server-rendered language
+            if (document.documentElement.lang !== savedLang) {
+                window.location.reload();
             }
         }
         setMounted(true);
     }, []);
 
-    // Load translations
+    // Load translations whenever language changes
     useEffect(() => {
         setTranslations(language === 'ar' ? ar : en as any);
+        document.documentElement.lang = language;
+        document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
     }, [language]);
-
-    // Save language preference and update document direction
-    useEffect(() => {
-        if (mounted) {
-            localStorage.setItem('language', language);
-            document.cookie = `language=${language}; path=/; max-age=31536000`; // 1 year
-            document.documentElement.lang = language;
-            document.documentElement.dir = language === 'ar' ? 'rtl' : 'ltr';
-        }
-    }, [language, mounted]);
 
     const setLanguage = useCallback((lang: Language) => {
         try {
             localStorage.setItem('language', lang);
             document.cookie = `language=${lang}; path=/; max-age=31536000`;
+            document.documentElement.lang = lang;
+            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
         } catch (e) {
             console.warn('Could not persist language immediately', e);
         }
 
         if (typeof window !== 'undefined') {
-            // Reload the page so the entire app (including server-rendered parts)
-            // reflects the new language only after the navigation completes.
+            // Reload page so all server and client components match the new language and direction
             window.location.reload();
         }
     }, []);
@@ -79,12 +82,9 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
         for (const k of keys) {
             if (typeof result === 'object' && result !== null && !Array.isArray(result)) {
-                // Try exact match first
                 if (k in result) {
                     result = result[k];
-                } 
-                // Fallback: search case-insensitively
-                else {
+                } else {
                     const foundKey = Object.keys(result).find(
                         existingKey => existingKey.toLowerCase() === k.toLowerCase()
                     );
@@ -105,17 +105,21 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     const dir = language === 'ar' ? 'rtl' : 'ltr';
 
     return (
-        <LanguageContext.Provider value={{ language, setLanguage, t, dir, isLoaded: !!translations }}>
-            <div key={language} dir={dir}>
-                {children}
-            </div>
+        <LanguageContext.Provider value={{
+            language,
+            setLanguage,
+            t,
+            dir,
+            isLoaded: mounted
+        }}>
+            {children}
         </LanguageContext.Provider>
     );
 }
 
 export function useLanguage() {
     const context = useContext(LanguageContext);
-    if (context === undefined) {
+    if (!context) {
         throw new Error('useLanguage must be used within a LanguageProvider');
     }
     return context;
