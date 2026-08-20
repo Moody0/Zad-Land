@@ -103,13 +103,13 @@ const FeaturedCategoriesGrid = ({ categories }: FeaturedCategoriesGridProps) => 
                                 href={`/products?category=${category.slug}`}
                                 className="group relative flex flex-col h-full bg-[#FAF9F5] dark:bg-[#1E1E16] rounded-2xl overflow-hidden border border-[#B8860B]/15 hover:border-[#B8860B]/50 transition-all duration-300 hover:shadow-md p-2.5 sm:p-3.5"
                             >
-                                {/* Category Image Container */}
-                                <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-white dark:bg-zinc-900 border border-gray-100 dark:border-white/5 mb-2.5 flex items-center justify-center p-2">
+                                {/* Category Image Container (fills container with rounded border radius) */}
+                                <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-white dark:bg-zinc-900 border border-gray-100 dark:border-white/5 mb-2.5">
                                     {category.image ? (
                                         <ResilientImage
                                             src={category.image}
                                             alt={displayName}
-                                            className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
+                                            className="w-full h-full object-cover rounded-xl transition-transform duration-500 group-hover:scale-105"
                                             loading="lazy"
                                         />
                                     ) : (

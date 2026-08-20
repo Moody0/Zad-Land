@@ -57,9 +57,9 @@ export default function DashboardClient({ stats }: { stats: DashboardStats }) {
 
     // SVG Chart Geometry Calculations
     const chartData = stats.salesTrend || [];
-    const chartWidth = 700;
-    const chartHeight = 240;
-    const chartPadding = { top: 25, right: 30, bottom: 45, left: 55 };
+    const chartWidth = 600;
+    const chartHeight = 280;
+    const chartPadding = { top: 25, right: 20, bottom: 35, left: 45 };
 
     const hasSalesData = useMemo(() => {
         return chartData.some(d => d.revenue > 0 || d.orders > 0);
@@ -329,69 +329,84 @@ export default function DashboardClient({ stats }: { stats: DashboardStats }) {
 
                     {/* Middle Row: Sales Velocity Chart (65%) & Fulfillment Pipeline (35%) */}
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                        
-                        {/* Interactive Sales Velocity Chart */}
-                        <div className="lg:col-span-8 flex flex-col justify-between rounded-2xl p-6 bg-white dark:bg-[#0f172a] border border-slate-200/80 dark:border-white/10 shadow-xs">
-                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
-                                <div>
-                                    <div className="flex items-center gap-2">
-                                        <MdShowChart className="text-xl text-emerald-600" />
-                                        <h3 className="text-slate-900 dark:text-white text-base sm:text-lg font-bold tracking-tight">
-                                            {t('admin.salesVelocity')}
-                                        </h3>
+                                             {/* Interactive Sales Velocity Chart */}
+                        <div className="lg:col-span-8 flex flex-col justify-between rounded-xl sm:rounded-2xl p-4 sm:p-6 bg-white dark:bg-[#0f172a] border border-slate-200/80 dark:border-white/10 shadow-xs">
+                            <div>
+                                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-3">
+                                    <div>
+                                        <div className="flex items-center gap-2">
+                                            <MdShowChart className="text-xl text-emerald-600" />
+                                            <h3 className="text-slate-900 dark:text-white text-base sm:text-lg font-bold tracking-tight">
+                                                {t('admin.salesVelocity')}
+                                            </h3>
+                                        </div>
+                                        <p className="text-xs text-slate-500 dark:text-slate-400 font-medium mt-0.5">
+                                            {t('admin.salesVelocityDesc')}
+                                        </p>
                                     </div>
-                                    <p className="text-xs text-slate-500 dark:text-slate-400 font-medium mt-0.5">
-                                        {t('admin.salesVelocityDesc')}
-                                    </p>
+
+                                    {/* Mode Switcher */}
+                                    <div className="flex items-center p-1 bg-slate-100 dark:bg-slate-800 rounded-xl self-start sm:self-auto">
+                                        <button
+                                            onClick={() => setChartMode('revenue')}
+                                            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                                                chartMode === 'revenue'
+                                                    ? 'bg-white dark:bg-[#0f172a] text-emerald-600 dark:text-emerald-400 shadow-xs'
+                                                    : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+                                            }`}
+                                        >
+                                            {t('admin.revenueView')}
+                                        </button>
+                                        <button
+                                            onClick={() => setChartMode('orders')}
+                                            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                                                chartMode === 'orders'
+                                                    ? 'bg-white dark:bg-[#0f172a] text-sky-600 dark:text-sky-400 shadow-xs'
+                                                    : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+                                            }`}
+                                        >
+                                            {t('admin.ordersView')}
+                                        </button>
+                                    </div>
                                 </div>
 
-                                {/* Mode Switcher */}
-                                <div className="flex items-center p-1 bg-slate-100 dark:bg-slate-800 rounded-xl self-start sm:self-auto">
-                                    <button
-                                        onClick={() => setChartMode('revenue')}
-                                        className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                                            chartMode === 'revenue'
-                                                ? 'bg-white dark:bg-[#0f172a] text-emerald-600 dark:text-emerald-400 shadow-xs'
-                                                : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
-                                        }`}
-                                    >
-                                        {t('admin.revenueView')}
-                                    </button>
-                                    <button
-                                        onClick={() => setChartMode('orders')}
-                                        className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                                            chartMode === 'orders'
-                                                ? 'bg-white dark:bg-[#0f172a] text-sky-600 dark:text-sky-400 shadow-xs'
-                                                : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
-                                        }`}
-                                    >
-                                        {t('admin.ordersView')}
-                                    </button>
-                                </div>
+                                {/* Active Scrub Inspection Banner */}
+                                {hoveredPointIndex !== null && chartPoints[hoveredPointIndex] && (
+                                    <div className="flex items-center justify-between px-3.5 py-1.5 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200/60 dark:border-white/5 mb-2 transition-all">
+                                        <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                                            {chartPoints[hoveredPointIndex].data.date}
+                                        </span>
+                                        <span className={`text-xs font-black ${chartMode === 'revenue' ? 'text-emerald-600 dark:text-emerald-400' : 'text-sky-600 dark:text-sky-400'}`}>
+                                            {chartMode === 'revenue' 
+                                                ? `$${chartPoints[hoveredPointIndex].data.revenue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` 
+                                                : `${chartPoints[hoveredPointIndex].data.orders} ${t('admin.totalOrders')}`}
+                                        </span>
+                                    </div>
+                                )}
                             </div>
 
                             {/* SVG Chart Graphic */}
-                            <div className="relative w-full overflow-hidden min-h-[220px]">
+                            <div className="relative w-full overflow-hidden my-2 sm:my-3">
                                 {chartData.length > 0 ? (
                                     <div className="w-full">
                                         <svg 
                                             viewBox={`0 0 ${chartWidth} ${chartHeight}`} 
-                                            className="w-full h-auto overflow-visible select-none"
+                                            className="w-full h-auto max-h-[300px] overflow-visible select-none"
                                         >
                                             <defs>
                                                 <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
-                                                    <stop offset="0%" stopColor="#10b981" stopOpacity="0.35" />
-                                                    <stop offset="100%" stopColor="#10b981" stopOpacity="0.0" />
+                                                    <stop offset="0%" stopColor="#10b981" stopOpacity="0.45" />
+                                                    <stop offset="100%" stopColor="#10b981" stopOpacity="0.02" />
                                                 </linearGradient>
                                                 <linearGradient id="ordersGradient" x1="0" y1="0" x2="0" y2="1">
-                                                    <stop offset="0%" stopColor="#0284c7" stopOpacity="0.35" />
-                                                    <stop offset="100%" stopColor="#0284c7" stopOpacity="0.0" />
+                                                    <stop offset="0%" stopColor="#0284c7" stopOpacity="0.45" />
+                                                    <stop offset="100%" stopColor="#0284c7" stopOpacity="0.02" />
                                                 </linearGradient>
                                             </defs>
 
-                                            {/* Horizontal Grid lines */}
-                                            {[0, 0.25, 0.5, 0.75, 1].map((ratio, i) => {
-                                                const y = chartPadding.top + (chartHeight - chartPadding.top - chartPadding.bottom) * (1 - ratio);
+                                            {/* 3 Horizontal Reference Gridlines */}
+                                            {[0, 0.5, 1].map((ratio, i) => {
+                                                const y = chartPadding.top + usableHeight * (1 - ratio);
                                                 const valueLabel = chartMode === 'revenue' 
                                                     ? `$${Math.round(maxChartValue * ratio)}` 
                                                     : Math.round(maxChartValue * ratio);
@@ -407,10 +422,12 @@ export default function DashboardClient({ stats }: { stats: DashboardStats }) {
                                                             className="text-slate-200 dark:text-slate-800" 
                                                         />
                                                         <text 
-                                                            x={chartPadding.left - 8} 
-                                                            y={y + 3} 
+                                                            x={chartPadding.left - 10} 
+                                                            y={y + 4} 
                                                             textAnchor="end" 
-                                                            className="text-[10px] fill-slate-400 font-semibold"
+                                                            fontSize="12"
+                                                            fontWeight="600"
+                                                            className="fill-slate-400"
                                                         >
                                                             {valueLabel}
                                                         </text>
@@ -429,51 +446,86 @@ export default function DashboardClient({ stats }: { stats: DashboardStats }) {
                                                 d={svgPathD} 
                                                 fill="none" 
                                                 stroke={chartMode === 'revenue' ? "#10b981" : "#0284c7"} 
-                                                strokeWidth="2.5" 
+                                                strokeWidth="3.5" 
                                                 strokeLinecap="round" 
                                                 strokeLinejoin="round" 
                                             />
 
-                                            {/* Data Points & Interactive Hover */}
+                                            {/* 4 Legible X-Axis Date Labels */}
+                                            {chartPoints.map((p, idx) => {
+                                                const isKeyDate = idx === 0 || 
+                                                    idx === Math.floor(chartPoints.length / 3) || 
+                                                    idx === Math.floor((chartPoints.length * 2) / 3) || 
+                                                    idx === chartPoints.length - 1;
+                                                
+                                                if (!isKeyDate) return null;
+                                                return (
+                                                    <text 
+                                                        key={`lbl-${idx}`}
+                                                        x={p.x} 
+                                                        y={chartHeight - 10} 
+                                                        textAnchor="middle" 
+                                                        fontSize="12"
+                                                        fontWeight="700"
+                                                        className="fill-slate-500 dark:fill-slate-400"
+                                                    >
+                                                        {p.data.label}
+                                                    </text>
+                                                );
+                                            })}
+
+                                            {/* Data Points, Guidelines & Scrub Touch Zones */}
                                             {chartPoints.map((p, idx) => (
-                                                <g key={idx} className="cursor-pointer">
-                                                    {/* X-Axis labels on every 2nd point to prevent overlap */}
-                                                    {(idx % 2 === 0 || idx === chartPoints.length - 1) && (
-                                                        <text 
-                                                            x={p.x} 
-                                                            y={chartHeight - 10} 
-                                                            textAnchor="middle" 
-                                                            className="text-[10px] fill-slate-400 font-medium"
-                                                        >
-                                                            {p.data.label}
-                                                        </text>
+                                                <g key={`pt-${idx}`}>
+                                                    {/* Active vertical dotted guideline */}
+                                                    {hoveredPointIndex === idx && (
+                                                        <line
+                                                            x1={p.x}
+                                                            y1={chartPadding.top}
+                                                            x2={p.x}
+                                                            y2={chartHeight - chartPadding.bottom}
+                                                            stroke={chartMode === 'revenue' ? '#10b981' : '#0284c7'}
+                                                            strokeWidth="2"
+                                                            strokeDasharray="3 3"
+                                                            opacity="0.8"
+                                                        />
                                                     )}
 
-                                                    {/* Outer Hover Ring */}
+                                                    {/* Visible point circle */}
                                                     <circle
                                                         cx={p.x}
                                                         cy={p.y}
-                                                        r={hoveredPointIndex === idx ? 7 : 4}
+                                                        r={hoveredPointIndex === idx ? 7 : 4.5}
                                                         fill={hoveredPointIndex === idx 
                                                             ? (chartMode === 'revenue' ? '#10b981' : '#0284c7') 
                                                             : '#ffffff'
                                                         }
                                                         stroke={chartMode === 'revenue' ? '#10b981' : '#0284c7'}
-                                                        strokeWidth={hoveredPointIndex === idx ? 2 : 2}
-                                                        className="transition-all duration-150"
+                                                        strokeWidth={hoveredPointIndex === idx ? 3 : 2.5}
+                                                        className="transition-all duration-150 pointer-events-none"
+                                                    />
+
+                                                    {/* Invisible wide touch hit-target for phone scrub */}
+                                                    <rect
+                                                        x={p.x - stepX / 2}
+                                                        y={0}
+                                                        width={stepX}
+                                                        height={chartHeight}
+                                                        fill="transparent"
+                                                        className="cursor-pointer"
                                                         onMouseEnter={() => setHoveredPointIndex(idx)}
-                                                        onMouseLeave={() => setHoveredPointIndex(null)}
+                                                        onTouchStart={() => setHoveredPointIndex(idx)}
                                                     />
                                                 </g>
                                             ))}
                                         </svg>
 
-                                        {/* Floating Hover Tooltip */}
+                                        {/* Floating Hover Tooltip (Clamped to Screen) */}
                                         {hoveredPointIndex !== null && chartPoints[hoveredPointIndex] && (
                                             <div 
-                                                className="absolute -top-2 transform -translate-x-1/2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-3 py-1.5 rounded-xl text-xs font-bold shadow-lg pointer-events-none z-10 whitespace-nowrap"
+                                                className="absolute -top-1 transform -translate-x-1/2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-3.5 py-1.5 rounded-xl text-xs font-bold shadow-xl pointer-events-none z-10 whitespace-nowrap transition-all duration-75"
                                                 style={{
-                                                    left: `${(chartPoints[hoveredPointIndex].x / chartWidth) * 100}%`
+                                                    left: `${Math.max(16, Math.min(84, (chartPoints[hoveredPointIndex].x / chartWidth) * 100))}%`
                                                 }}
                                             >
                                                 <p className="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-wider">
@@ -496,16 +548,22 @@ export default function DashboardClient({ stats }: { stats: DashboardStats }) {
                             </div>
 
                             {/* Chart Footer Indicator */}
-                            {peakDay && (
-                                <div className="flex items-center justify-between mt-3 pt-3 border-t border-slate-100 dark:border-white/5 text-xs text-slate-500">
-                                    <span className="font-medium">
-                                        {t('admin.peakDay')}: <strong className="text-slate-800 dark:text-slate-200">{peakDay.label}</strong>
+                            <div className="flex items-center justify-between mt-3 pt-3 border-t border-slate-100 dark:border-white/5 text-xs text-slate-500">
+                                {hasSalesData && peakDay && (peakDay.revenue > 0 || peakDay.orders > 0) ? (
+                                    <>
+                                        <span className="font-medium">
+                                            {t('admin.peakDay')}: <strong className="text-slate-800 dark:text-slate-200">{peakDay.label}</strong>
+                                        </span>
+                                        <span className="font-bold text-emerald-600 dark:text-emerald-400">
+                                            ${peakDay.revenue.toFixed(2)} ({peakDay.orders} {t('admin.totalOrders')})
+                                        </span>
+                                    </>
+                                ) : (
+                                    <span className="text-slate-400 dark:text-slate-500 font-medium italic">
+                                        {isArabic ? "لا توجد حركات بيع مسجلة في آخر 14 يوماً" : "No sales activity in the last 14 days"}
                                     </span>
-                                    <span className="font-bold text-emerald-600 dark:text-emerald-400">
-                                        ${peakDay.revenue.toFixed(2)} ({peakDay.orders} orders)
-                                    </span>
-                                </div>
-                            )}
+                                )}
+                            </div>
                         </div>
 
                         {/* Order Fulfillment Pipeline (35%) */}
