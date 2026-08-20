@@ -1503,7 +1503,10 @@ export async function getCategoryHighlightCardsData() {
                 }
             },
             take: 4,
-            orderBy: { navOrder: 'asc' },
+            orderBy: [
+                { isFeatured: 'desc' },
+                { navOrder: 'asc' }
+            ],
             include: {
                 products: {
                     where: {
