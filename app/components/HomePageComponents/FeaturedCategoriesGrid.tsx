@@ -22,13 +22,29 @@ interface FeaturedCategoriesGridProps {
 
 const FeaturedCategoriesGrid = ({ categories }: FeaturedCategoriesGridProps) => {
     const { language, dir } = useLanguage();
+    const isArabic = language === 'ar';
 
     if (!categories || categories.length === 0) {
         return null;
     }
 
+    const formatCategoryTitle = (category: Category) => {
+        if (!isArabic) {
+            if (category.description && !/[\u0600-\u06FF]/.test(category.description)) {
+                return category.description;
+            }
+            if (category.slug) {
+                return category.slug
+                    .split('-')
+                    .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
+                    .join(' ');
+            }
+        }
+        return category.name;
+    };
+
     return (
-        <section className="container-custom py-10 md:py-14">
+        <section className="container-custom py-6 md:py-14">
             <motion.div 
                 initial="hidden"
                 whileInView="visible"
@@ -36,7 +52,7 @@ const FeaturedCategoriesGrid = ({ categories }: FeaturedCategoriesGridProps) => 
                 variants={{
                     visible: { transition: { staggerChildren: 0.05 } }
                 }}
-                className={`flex flex-col md:flex-row gap-2 ${dir === 'rtl' ? '' : 'md:flex-row-reverse'}`}
+                className={`flex flex-col md:flex-row gap-3 ${dir === 'rtl' ? '' : 'md:flex-row-reverse'}`}
             >
                 {/* Hero Card - Navigation to All Categories */}
                 <motion.div 
@@ -48,31 +64,34 @@ const FeaturedCategoriesGrid = ({ categories }: FeaturedCategoriesGridProps) => 
                 >
                     <Link
                         href="/products"
-                        className="group relative block w-full h-[280px] md:h-full rounded-[10px] overflow-hidden bg-[#072835]"
+                        className="group relative block w-full h-[220px] md:h-full rounded-2xl overflow-hidden bg-[#072835] shadow-xs"
                     >
-                        {/* Solid Background with subtle pattern or gradient */}
+                        {/* Background gradient */}
                         <div className="absolute inset-0 bg-gradient-to-br from-[#072835] to-[#0a3a4d]" />
 
                         {/* Content Overlay */}
-                        <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6 py-8">
+                        <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6 py-6">
+                            <span className="text-[11px] font-bold text-[#E5B54A] uppercase tracking-widest mb-1.5">
+                                {isArabic ? 'منتجات أصلية معتمدة' : 'Verified Wholesale'}
+                            </span>
                             <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-white mb-2 leading-tight">
-                                {language === 'ar' ? 'أهم الفئات والأكثر طلباً' : 'Top Categories. Best Sellers'}
+                                {isArabic ? 'أهم الفئات والأكثر طلباً' : 'Top Categories & Best Sellers'}
                             </h2>
-                            <p className="text-xs md:text-sm text-white/80 max-w-[280px] mb-5">
-                                {language === 'ar'
+                            <p className="text-xs md:text-sm text-white/80 max-w-[280px] mb-4">
+                                {isArabic
                                     ? 'من المواد الغذائية إلى المعلبات والحلويات، اكتشف أفضل المنتجات العالمية'
                                     : 'From premium foods to canned goods and sweets, discover top global brands'}
                             </p>
-                            <span className="px-6 py-2.5 bg-[#B8860B] hover:bg-[#9E7309] text-white font-bold text-xs md:text-sm rounded-full transition-transform group-hover:scale-105">
-                                {language === 'ar' ? 'تصفح كافة الأقسام' : 'Explore All Categories'}
+                            <span className="px-6 py-2 bg-[#B8860B] hover:bg-[#9E7309] text-white font-bold text-xs md:text-sm rounded-full transition-transform group-hover:scale-105 shadow-xs">
+                                {isArabic ? 'تصفح كافة الأقسام' : 'Explore All Categories'}
                             </span>
                         </div>
                     </Link>
                 </motion.div>
 
-                {/* Category Cards Grid - All 12 items */}
+                {/* Category Cards Grid - Responsive 2 columns on mobile for maximum legibility */}
                 <div className="flex-1">
-                    <div className="grid grid-cols-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2.5 sm:gap-3">
                         {categories.slice(0, 12).map((category) => (
                             <motion.div
                                 key={category.id}
@@ -83,13 +102,13 @@ const FeaturedCategoriesGrid = ({ categories }: FeaturedCategoriesGridProps) => 
                             >
                                 <Link
                                     href={`/products?category=${category.slug}`}
-                                    className="group relative block aspect-square rounded-[10px] overflow-hidden h-full w-full border border-transparent hover:border-[#B8860B]/80 transition-colors duration-300 shadow-2xs"
+                                    className="group relative block aspect-square rounded-xl overflow-hidden h-full w-full border border-gray-200/60 dark:border-white/5 hover:border-[#B8860B]/80 transition-all duration-300 shadow-2xs"
                                 >
                                     {/* Category Image */}
                                     {category.image ? (
                                         <ResilientImage
                                             src={category.image}
-                                            alt={category.name}
+                                            alt={formatCategoryTitle(category)}
                                             className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                                             loading="lazy"
                                         />
@@ -98,12 +117,12 @@ const FeaturedCategoriesGrid = ({ categories }: FeaturedCategoriesGridProps) => 
                                     )}
 
                                     {/* Bottom gradient overlay */}
-                                    <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+                                    <div className="absolute inset-x-0 bottom-0 h-3/5 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
 
                                     {/* Category Name */}
-                                    <div className="absolute inset-x-0 bottom-0 flex items-end justify-center pb-3 px-2">
-                                        <span className="text-white text-xs md:text-sm font-semibold text-center leading-tight group-hover:text-[#E5B54A] transition-colors">
-                                            {category.name}
+                                    <div className="absolute inset-x-0 bottom-0 flex items-end justify-center pb-2.5 px-2">
+                                        <span className="text-white text-xs sm:text-sm font-bold text-center leading-snug group-hover:text-[#E5B54A] transition-colors drop-shadow-xs line-clamp-2">
+                                            {formatCategoryTitle(category)}
                                         </span>
                                     </div>
                                 </Link>

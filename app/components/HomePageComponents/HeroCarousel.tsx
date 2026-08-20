@@ -2,11 +2,10 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { MdArrowForward, MdChevronLeft, MdChevronRight } from 'react-icons/md';
+import { MdChevronLeft, MdChevronRight } from 'react-icons/md';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation, Pagination } from 'swiper/modules';
-import { getSafeImageUrl } from '@/lib/image-utils';
 import Image from 'next/image';
 
 // Import Swiper styles
@@ -34,7 +33,8 @@ interface HeroCarouselProps {
 }
 
 const HeroCarousel = ({ banners }: HeroCarouselProps) => {
-    const { t, dir, language } = useLanguage();
+    const { dir, language } = useLanguage();
+    const isArabic = dir === 'rtl';
     const wrapperRef = React.useRef<HTMLElement>(null);
     
     const DEFAULT_BANNER: Banner = {
@@ -53,22 +53,22 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
     };
 
     const getBannerTitle = (banner: Banner): string => {
-        return language === 'ar' ? (banner.titleAr || banner.title || '') : (banner.title || banner.titleAr || '');
+        return isArabic ? (banner.titleAr || banner.title || '') : (banner.title || banner.titleAr || '');
     };
 
     const getBannerSubtitle = (banner: Banner): string => {
-        return language === 'ar' ? (banner.subtitleAr || banner.subtitle || '') : (banner.subtitle || banner.subtitleAr || '');
+        return isArabic ? (banner.subtitleAr || banner.subtitle || '') : (banner.subtitle || banner.subtitleAr || '');
     };
 
     const getBannerButtonText = (banner: Banner): string => {
-        if (language === 'ar') {
+        if (isArabic) {
             return banner.buttonTextAr || banner.buttonText || 'تصفح المنتجات';
         }
         return banner.buttonText || banner.buttonTextAr || 'Explore Products';
     };
 
     const getBannerBadge = (banner: Banner): string => {
-        if (language === 'ar') {
+        if (isArabic) {
             return banner.badgeAr || banner.badge || 'توزيع جملة معتمد';
         }
         return banner.badge || banner.badgeAr || 'Certified Wholesale';
@@ -77,10 +77,10 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
     const displayBanners = banners && banners.length > 0 ? banners : [DEFAULT_BANNER];
 
     return (
-        <section ref={wrapperRef} className="container-custom pt-4 md:pt-6 pb-4 md:pb-6 group hero-carousel">
+        <section ref={wrapperRef} className="container-custom pt-3 md:pt-6 pb-3 md:pb-6 group hero-carousel">
             <div className="w-full relative">
-                {/* Responsive Height: Image only on mobile, sleek banner on desktop */}
-                <div className="relative overflow-hidden rounded-[10px] bg-[#F5ECD7] dark:bg-[#1a1a1a] h-[150px] md:h-[400px] lg:h-[480px]">
+                {/* Responsive Height: Rich banner with overlay on mobile, split-banner on desktop */}
+                <div className="relative overflow-hidden rounded-2xl bg-[#FAF6EC] dark:bg-[#1a1a1a] h-[210px] sm:h-[260px] md:h-[400px] lg:h-[480px] shadow-xs">
                     <Swiper
                         modules={[Autoplay, Navigation, Pagination]}
                         spaceBetween={0}
@@ -111,51 +111,70 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                     >
                         {displayBanners.map((banner, index) => (
                             <SwiperSlide key={banner.id} className="h-full w-full">
-                                <div className="flex flex-col md:flex-row rtl:md:flex-row-reverse h-full w-full">
+                                <div className="flex flex-col md:flex-row rtl:md:flex-row-reverse h-full w-full relative">
                                     
                                     {/* Image Container - Full width/height on mobile, left side on desktop */}
-                                    <Link 
-                                        href={banner.link || "/products"} 
-                                        className="w-full h-full md:w-1/2 relative shrink-0 block group/mobile overflow-hidden active:scale-[0.98] md:active:scale-100 transition-transform duration-300"
-                                    >
+                                    <div className="w-full h-full md:w-1/2 relative shrink-0 block overflow-hidden">
                                         <Image
                                             src={banner.image}
                                             alt={getBannerTitle(banner)}
                                             fill
                                             priority={index === 0}
-                                            sizes="100vw"
-                                            className="object-cover object-center transition-transform duration-700 md:group-hover/mobile:scale-105"
+                                            sizes="(max-width: 768px) 100vw, 50vw"
+                                            className="object-cover object-center transition-transform duration-700 md:group-hover:scale-105"
                                         />
                                         
-                                        {/* Mobile Click Indicator - Hidden on Desktop */}
-                                        <div className="absolute bottom-2.5 ltr:right-2.5 rtl:left-2.5 md:hidden z-10 pointer-events-none">
-                                            <span className="bg-white/95 backdrop-blur-md text-black text-[10px] font-bold py-1 px-3 rounded-full flex items-center gap-1.5 border border-white/20">
-                                                {getBannerButtonText(banner)}
-                                                <svg className={`w-2.5 h-2.5 ${dir === 'rtl' ? 'rotate-180' : ''}`} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path d="M7.5 3.75L13.75 10L7.5 16.25" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-                                                </svg>
-                                            </span>
-                                        </div>
-                                    </Link>
-
-                                    {/* Content Container - Hidden on mobile, Right side on desktop */}
-                                    <div className="relative z-10 hidden md:flex w-full md:h-full md:w-1/2 flex-col items-center justify-center text-center md:px-12 lg:px-20 bg-[#FAF6EC] dark:bg-[#1A1A14]">
-                                        <div className="animate-fadeInUp w-full max-w-[320px] md:max-w-md flex flex-col items-center text-center">
+                                        {/* Mobile Visual Overlay: Gradient, Badge, Title & Button */}
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent md:hidden flex flex-col justify-end p-4 pb-6">
+                                            <div className="flex items-center gap-1.5 mb-1.5">
+                                                <span className="bg-[#B8860B] text-white px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide shadow-xs">
+                                                    {getBannerBadge(banner)}
+                                                </span>
+                                            </div>
                                             
+                                            <h2 className="text-white text-base sm:text-lg font-bold leading-tight mb-2.5 drop-shadow-sm line-clamp-2">
+                                                {getBannerTitle(banner)}
+                                            </h2>
+
+                                            <div className="flex items-center gap-2">
+                                                <Link 
+                                                    href={banner.link || "/products"} 
+                                                    className="inline-flex items-center gap-1.5 bg-white text-[#072835] hover:bg-[#FAF6EC] px-3.5 py-1.5 rounded-full text-[11px] font-bold transition-all active:scale-95 shadow-sm"
+                                                >
+                                                    <span>{getBannerButtonText(banner)}</span>
+                                                    <svg className={`w-3 h-3 ${isArabic ? 'rotate-180' : ''}`} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M7.5 3.75L13.75 10L7.5 16.25" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                                                    </svg>
+                                                </Link>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Desktop Content Container - Hidden on mobile, Right side on desktop */}
+                                    <div className="relative z-10 hidden md:flex w-full md:h-full md:w-1/2 flex-col items-center justify-center text-center md:px-10 lg:px-16 bg-[#FAF6EC] dark:bg-[#1A1A14]">
+                                        <div className="animate-fadeInUp w-full max-w-[340px] md:max-w-md flex flex-col items-center text-center">
+                                            
+                                            {/* Badge */}
+                                            <div className="mb-3">
+                                                <span className="bg-amber-100/80 text-[#B8860B] dark:bg-amber-950/40 dark:text-[#E5B54A] px-3.5 py-1 rounded-full text-xs font-bold tracking-wider">
+                                                    {getBannerBadge(banner)}
+                                                </span>
+                                            </div>
+
                                             {/* Title */}
-                                            <h2 className="text-[32px] md:text-[38px] lg:text-[44px] font-bold leading-[1.2] mb-3 md:mb-5 text-[#072835] dark:text-[#F5F0E0]">
+                                            <h2 className="text-[28px] md:text-[34px] lg:text-[40px] font-bold leading-[1.2] mb-3 md:mb-4 text-[#072835] dark:text-[#F5F0E0]">
                                                 {getBannerTitle(banner)}
                                             </h2>
                                             
                                             {/* Description */}
-                                            <p className="text-[14px] md:text-base lg:text-[17px] text-[#5A5A48] dark:text-[#C4B89A] mb-5 md:mb-8 leading-relaxed font-medium">
+                                            <p className="text-[13px] md:text-sm lg:text-[15px] text-[#5A5A48] dark:text-[#C4B89A] mb-5 md:mb-7 leading-relaxed font-medium line-clamp-2">
                                                 {getBannerSubtitle(banner)}
                                             </p>
                                             
                                             {/* Button */}
                                             <Link
                                                 href={banner.link || "/products"}
-                                                className="px-8 py-3 bg-[#B8860B] hover:bg-[#9E7309] text-white rounded-full font-bold text-[15px] md:text-base transition-all flex items-center justify-center gap-3 w-fit group/btn active:scale-95"
+                                                className="px-7 py-2.5 bg-[#B8860B] hover:bg-[#9E7309] text-white rounded-full font-bold text-sm transition-all flex items-center justify-center gap-2 w-fit group/btn active:scale-95 shadow-xs"
                                             >
                                                 <span>{getBannerButtonText(banner)}</span>
                                             </Link>
@@ -167,7 +186,7 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                     </Swiper>
 
                     {/* Navigation and Pagination Group - Centered on Mobile, Bottom Right on Desktop */}
-                    <div className="absolute bottom-2.5 left-1/2 -translate-x-1/2 md:translate-x-0 md:left-auto md:bottom-6 md:right-6 z-20 flex items-center pointer-events-none">
+                    <div className="absolute bottom-2 left-1/2 -translate-x-1/2 md:translate-x-0 md:left-auto md:bottom-5 md:right-6 z-20 flex items-center pointer-events-none">
                         
                         <button className="swiper-button-prev-hero pointer-events-auto hidden md:flex items-center justify-center text-[#4A4A4A] hover:text-black transition-colors mr-2">
                             <svg className="w-4 h-4 rtl:scale-x-[-1]" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -188,17 +207,17 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
 
             <style jsx global>{`
                 .hero-carousel .swiper-pagination-bullet {
-                    width: 7px;
-                    height: 7px;
-                    background: rgba(184, 134, 11, 0.35);
+                    width: 6px;
+                    height: 6px;
+                    background: rgba(184, 134, 11, 0.4);
                     opacity: 1;
                     transition: all 0.3s;
                     border-radius: 99px;
-                    margin: 0 4px !important;
+                    margin: 0 3px !important;
                 }
                 .hero-carousel .swiper-pagination-bullet-active {
-                    width: 48px;
-                    background: rgba(184, 134, 11, 0.15) !important;
+                    width: 36px;
+                    background: rgba(184, 134, 11, 0.25) !important;
                     position: relative;
                     overflow: hidden;
                 }

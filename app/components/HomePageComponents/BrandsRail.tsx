@@ -38,16 +38,16 @@ export default function BrandsRail({ brands = [] }: BrandsRailProps) {
                         ref={railRef}
                         className="-mx-4 overflow-x-auto px-4 scrollbar-hide sm:mx-0 sm:px-0"
                     >
-                        <div className="flex snap-x snap-mandatory gap-6 md:gap-10 pb-2">
+                        <div className="flex snap-x snap-mandatory gap-4 sm:gap-6 md:gap-10 pb-2">
                             {brands.map((brand, index) => {
                                 const displayName = language === 'ar' ? brand.nameAr : brand.name;
                                 return (
                                     <div key={brand.id || brand.slug}>
                                         <Link
                                             href={`/brands/${brand.slug}`}
-                                            className="flex flex-col items-center gap-2 w-[100px] md:w-[120px] flex-none snap-start group/card"
+                                            className="flex flex-col items-center gap-1.5 w-[80px] sm:w-[95px] md:w-[120px] flex-none snap-start group/card"
                                         >
-                                            <div className="w-[64px] h-[64px] md:w-[84px] md:h-[84px] rounded-full p-0.5 transition-all duration-300 border border-gray-200 dark:border-white/10 group-hover/card:border-[#B8860B] group-hover/card:ring-2 group-hover/card:ring-[#B8860B]/20 shrink-0">
+                                            <div className="w-[56px] h-[56px] sm:w-[68px] sm:h-[68px] md:w-[84px] md:h-[84px] rounded-full p-0.5 transition-all duration-300 border border-gray-200 dark:border-white/10 group-hover/card:border-[#B8860B] group-hover/card:ring-2 group-hover/card:ring-[#B8860B]/20 shrink-0">
                                                 <div className="w-full h-full rounded-full overflow-hidden relative bg-gray-50 dark:bg-zinc-900">
                                                     <Image
                                                         src={brand.image}
