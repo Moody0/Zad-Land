@@ -53,7 +53,7 @@ interface ProductsClientProps {
     initialTotal: number;
     activeCategory?: Category | null;
     activeBrand?: Brand | null;
-    activeMainCategory?: { id: string; name: string; slug: string } | null;
+    activeMainCategory?: { id: string; name: string; slug: string; description?: string | null; image?: string | null } | null;
 }
 
 const ProductsClient = ({

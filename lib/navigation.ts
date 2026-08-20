@@ -146,14 +146,22 @@ export async function getNavigationData(): Promise<NavMainCategory[]> {
             const aggregatedBrands = Array.from(brandMap.values()).sort((a, b) => a.name.localeCompare(b.name));
 
             // Separate trending products (max 3) from top products
+            const formatProduct = (p: typeof mc.products[0]) => ({
+                id: p.id,
+                name: p.name,
+                nameAr: p.nameAr || null,
+                nameEn: p.nameEn || null,
+                slug: p.slug,
+                images: p.images,
+                price: Number(p.price),
+                discountPrice: p.discountPrice ? Number(p.discountPrice) : null,
+                brand: p.brand ? { name: p.brand.name } : null,
+            });
+
             const trendingProducts = mc.products
                 .filter((p) => p.isTrending)
                 .slice(0, 3)
-                .map((p) => ({
-                    ...p,
-                    price: Number(p.price),
-                    discountPrice: p.discountPrice ? Number(p.discountPrice) : null,
-                }));
+                .map(formatProduct);
 
             // If we don't have 3 trending, fill with latest products
             const topProducts = mc.products
@@ -171,11 +179,7 @@ export async function getNavigationData(): Promise<NavMainCategory[]> {
                 const remaining = mc.products
                     .filter((p) => !trendingProducts.some((tp) => tp.id === p.id))
                     .slice(0, 3 - trendingProducts.length)
-                    .map((p) => ({
-                        ...p,
-                        price: Number(p.price),
-                        discountPrice: p.discountPrice ? Number(p.discountPrice) : null,
-                    }));
+                    .map(formatProduct);
                 trendingProducts.push(...remaining);
             }
 
