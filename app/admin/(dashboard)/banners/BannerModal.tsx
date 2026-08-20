@@ -5,6 +5,7 @@ import { MdClose } from "react-icons/md";
 import { createBanner, updateBanner, BannerInput } from "../../../../lib/admin-actions";
 import { toast } from "react-hot-toast";
 import { useLanguage } from "@/app/context/LanguageContext";
+import ImageUploadField from "../../components/ImageUploadField";
 
 interface BannerModalProps {
     isOpen: boolean;
@@ -211,34 +212,14 @@ export default function BannerModal({ isOpen, onClose, banner }: BannerModalProp
                         />
                     </div>
 
-                    <div className="flex flex-col gap-2">
-                        <label className={`text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400 ${dir === 'rtl' ? 'me-1' : 'ms-1'}`}>
-                            {t('admin.imageUrl')}
-                            <span className="block text-[10px] text-primary/70 font-normal">
-                                {t('admin.recommendedResolution')}: {t('admin.resHero')}
-                            </span>
-                        </label>
-                        <input
-                            type="text"
-                            value={image}
-                            onChange={(e) => setImage(e.target.value)}
-                            placeholder="https://example.com/image.jpg"
-                            required
-                            className="w-full px-4 py-2.5 rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
-                        />
-                        {image && (
-                            <div className="relative aspect-21/9 w-full bg-gray-100 dark:bg-gray-800 rounded-xl overflow-hidden border-2 border-dashed border-gray-300 dark:border-white/[0.04] hover:border-primary dark:hover:border-primary transition-colors cursor-pointer group">
-                                <img
-                                    src={image}
-                                    alt={t('admin.preview')}
-                                    className="w-full h-full object-cover"
-                                    onError={(e) => {
-                                        (e.target as HTMLImageElement).src = "https://placehold.co/1200x500?text=Invalid+Image+URL";
-                                    }}
-                                />
-                            </div>
-                        )}
-                    </div>
+                    <ImageUploadField
+                        label={t('admin.imageUrl') || "Banner Image"}
+                        folder="banners"
+                        value={image}
+                        onChange={(url) => setImage(url)}
+                        placeholder="https://example.com/banner.jpg"
+                        required
+                    />
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="flex flex-col gap-2">

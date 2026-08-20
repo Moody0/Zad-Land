@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { MdClose, MdExpandMore, MdSync, MdCheckCircle } from "react-icons/md";
+import { useState, useEffect, useRef } from "react";
+import { MdClose, MdExpandMore, MdSync, MdCheckCircle, MdCloudUpload } from "react-icons/md";
 import { createProduct, updateProduct } from "../../../../lib/admin-actions";
 import { useLanguage } from "@/app/context/LanguageContext";
 import { toast } from "react-hot-toast";
@@ -80,6 +80,40 @@ export default function AddProductModal({ isOpen, onClose, categories, brands, m
     });
 
     const [imageLink, setImageLink] = useState("");
+    const [isUploadingImage, setIsUploadingImage] = useState(false);
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const handleProductFileUpload = async (files: FileList | null) => {
+        if (!files || files.length === 0) return;
+        setIsUploadingImage(true);
+        try {
+            const uploadedUrls: string[] = [];
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                if (!file.type.startsWith("image/")) continue;
+                const fd = new FormData();
+                fd.append("file", file);
+                fd.append("folder", "products");
+                const res = await fetch("/api/upload", { method: "POST", body: fd });
+                const data = await res.json();
+                if (res.ok && data.url) {
+                    uploadedUrls.push(data.url);
+                }
+            }
+            if (uploadedUrls.length > 0) {
+                const currentImages = formData.images ? formData.images.split(',').filter(Boolean) : [];
+                const newImages = [...currentImages, ...uploadedUrls].filter(Boolean).join(',');
+                setFormData(prev => ({ ...prev, images: newImages }));
+                toast.success(language === 'ar' ? `تم رفع ${uploadedUrls.length} صورة بنجاح` : `Uploaded ${uploadedUrls.length} image(s)`);
+            }
+        } catch (error) {
+            console.error("Upload error:", error);
+            toast.error(language === 'ar' ? "فشل رفع الصورة" : "Failed to upload image");
+        } finally {
+            setIsUploadingImage(false);
+            if (fileInputRef.current) fileInputRef.current.value = "";
+        }
+    };
 
     // Effect to pre-fill data when editing
     useEffect(() => {
@@ -257,23 +291,51 @@ export default function AddProductModal({ isOpen, onClose, categories, brands, m
                             </div>
                         )}
 
-                        <div className="flex flex-col gap-4">
-                            <div className="flex gap-2">
-                                <input
-                                    className="flex-1 h-12 rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-gray-50/50 dark:bg-black/20 focus:bg-white dark:focus:bg-surface-dark focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all px-4 text-sm font-medium dark:text-white outline-none"
-                                    placeholder={language === 'ar' ? 'ضع رابط الصورة هنا (https://...)' : 'Paste image URL here (https://...)'}
-                                    type="text"
-                                    value={imageLink}
-                                    onChange={(e) => setImageLink(e.target.value)}
-                                    onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addImageLink())}
-                                />
+                        <div className="flex flex-col gap-3">
+                            <div className="flex flex-col sm:flex-row gap-2">
                                 <button
                                     type="button"
-                                    onClick={addImageLink}
-                                    className="px-4 h-12 rounded-xl bg-primary/10 text-primary font-bold text-sm hover:bg-primary/20 transition-colors cursor-pointer"
+                                    onClick={() => fileInputRef.current?.click()}
+                                    disabled={isUploadingImage}
+                                    className="px-4 h-12 rounded-xl bg-[#072835] hover:bg-[#0c4054] text-white font-bold text-sm flex items-center justify-center gap-2 transition-all cursor-pointer disabled:opacity-50 shrink-0"
                                 >
-                                    {language === 'ar' ? 'إضافة رابط' : 'Add Link'}
+                                    {isUploadingImage ? (
+                                        <>
+                                            <MdSync className="text-lg animate-spin text-[#E5B54A]" />
+                                            <span>{language === 'ar' ? 'جاري الرفع...' : 'Uploading...'}</span>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <MdCloudUpload className="text-lg text-[#E5B54A]" />
+                                            <span>{language === 'ar' ? 'رفع صور من الجهاز' : 'Upload from PC'}</span>
+                                        </>
+                                    )}
                                 </button>
+                                <input
+                                    ref={fileInputRef}
+                                    type="file"
+                                    multiple
+                                    accept="image/*"
+                                    onChange={(e) => handleProductFileUpload(e.target.files)}
+                                    className="hidden"
+                                />
+                                <div className="flex-1 flex gap-2">
+                                    <input
+                                        className="flex-1 h-12 rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-gray-50/50 dark:bg-black/20 focus:bg-white dark:focus:bg-surface-dark focus:ring-4 focus:ring-primary/10 focus:border-primary transition-all px-4 text-sm font-medium dark:text-white outline-none"
+                                        placeholder={language === 'ar' ? 'أو ضع رابط صورة هنا (https://...)' : 'Or paste image URL here (https://...)'}
+                                        type="text"
+                                        value={imageLink}
+                                        onChange={(e) => setImageLink(e.target.value)}
+                                        onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addImageLink())}
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={addImageLink}
+                                        className="px-4 h-12 rounded-xl bg-primary/10 text-primary font-bold text-sm hover:bg-primary/20 transition-colors cursor-pointer shrink-0"
+                                    >
+                                        {language === 'ar' ? 'إضافة رابط' : 'Add Link'}
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -5,6 +5,7 @@ import { MdClose, MdSync } from "react-icons/md";
 import { createBrand, updateBrand } from "../../../../lib/admin-actions";
 import { toast } from "react-hot-toast";
 import { useLanguage } from "@/app/context/LanguageContext";
+import ImageUploadField from "../../components/ImageUploadField";
 
 interface Brand {
     id: string;
@@ -29,7 +30,8 @@ interface BrandModalProps {
 }
 
 export default function BrandModal({ isOpen, onClose, brand }: BrandModalProps) {
-    const { t } = useLanguage();
+    const { t, language } = useLanguage();
+    const isArabic = language === 'ar';
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [mainCategories, setMainCategories] = useState<MainCategoryOption[]>([]);
     const [formData, setFormData] = useState({
@@ -104,44 +106,44 @@ export default function BrandModal({ isOpen, onClose, brand }: BrandModalProps) 
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
-            <div className="relative w-full max-w-xl overflow-hidden rounded-2xl border border-black/[0.04] dark:border-white/[0.04] bg-white shadow-2xl dark:border-white/[0.04] dark:bg-surface-dark">
-                <div className="flex items-center justify-between border-b border-black/[0.04] dark:border-white/[0.04] p-6 dark:border-white/[0.04]">
-                    <h2 className="text-xl font-bold text-text-main dark:text-white">
+            <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-xs" onClick={onClose} />
+            <div className="relative w-full max-w-xl overflow-hidden rounded-2xl border border-slate-200/80 dark:border-white/10 bg-white dark:bg-[#0f172a] shadow-2xl">
+                <div className="flex items-center justify-between border-b border-slate-200/80 dark:border-white/10 p-6">
+                    <h2 className="text-xl font-bold text-slate-900 dark:text-white">
                         {brand ? t("admin.editBrand") : t("admin.addBrand")}
                     </h2>
-                    <button onClick={onClose} className="rounded-lg p-1 text-gray-500 transition-colors hover:bg-gray-100 dark:hover:bg-gray-800">
+                    <button onClick={onClose} className="rounded-lg p-1.5 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
                         <MdClose className="text-xl" />
                     </button>
                 </div>
 
                 <form onSubmit={handleSubmit} className="flex max-h-[80vh] flex-col gap-5 overflow-y-auto p-6">
                     <label className="flex flex-col gap-2">
-                        <span className="text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400">{t("admin.brandName")}</span>
+                        <span className="text-[11px] font-bold uppercase tracking-widest text-slate-500 dark:text-gray-400">{t("admin.brandName")} *</span>
                         <input
                             required
                             value={formData.name}
                             onChange={(event) => setFormData({ ...formData, name: event.target.value })}
-                            className="rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-white px-4 py-3 text-text-main outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-white/[0.04] dark:bg-gray-900 dark:text-white"
+                            placeholder={isArabic ? "مثال: American Garden - اميركان جاردن" : "e.g. American Garden"}
+                            className="rounded-xl border border-slate-200/80 dark:border-white/10 bg-slate-50 dark:bg-gray-800 px-4 py-2.5 text-sm text-slate-900 dark:text-white outline-none transition-all focus:border-[#072835] focus:ring-2 focus:ring-[#072835]/15"
                         />
                     </label>
 
-                    <label className="flex flex-col gap-2">
-                        <span className="text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400">{t("admin.imageUrl")}</span>
-                        <input
-                            value={formData.image}
-                            onChange={(event) => setFormData({ ...formData, image: event.target.value })}
-                            placeholder="https://example.com/brand.jpg"
-                            className="rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-white px-4 py-3 text-text-main outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-white/[0.04] dark:bg-gray-900 dark:text-white"
-                        />
-                    </label>
+                    {/* Image Upload Component (Direct PC upload + URL link support) */}
+                    <ImageUploadField
+                        label={t("admin.imageUrl") || "Brand Logo / Image"}
+                        folder="brands"
+                        value={formData.image}
+                        onChange={(url) => setFormData({ ...formData, image: url })}
+                        placeholder="https://example.com/brand-logo.png"
+                    />
 
                     <label className="flex flex-col gap-2">
-                        <span className="text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400">Main Category</span>
+                        <span className="text-[11px] font-bold uppercase tracking-widest text-slate-500 dark:text-gray-400">Main Category</span>
                         <select
                             value={formData.mainCategoryId}
                             onChange={(event) => setFormData({ ...formData, mainCategoryId: event.target.value })}
-                            className="rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-white px-4 py-3 text-text-main outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-white/[0.04] dark:bg-gray-900 dark:text-white"
+                            className="rounded-xl border border-slate-200/80 dark:border-white/10 bg-slate-50 dark:bg-gray-800 px-4 py-2.5 text-sm text-slate-900 dark:text-white outline-none transition-all focus:border-[#072835] focus:ring-2 focus:ring-[#072835]/15 cursor-pointer"
                         >
                             <option value="">-- No Main Category --</option>
                             {mainCategories.map((mc) => (
@@ -153,54 +155,55 @@ export default function BrandModal({ isOpen, onClose, brand }: BrandModalProps) 
                     </label>
 
                     <label className="flex flex-col gap-2">
-                        <span className="text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400">{t("admin.brandGroup")}</span>
+                        <span className="text-[11px] font-bold uppercase tracking-widest text-slate-500 dark:text-gray-400">{t("admin.brandGroup")}</span>
                         <select
                             value={formData.group}
                             onChange={(event) => setFormData({ ...formData, group: event.target.value as "MAIN" | "DIFFERENT" })}
-                            className="rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-white px-4 py-3 text-text-main outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-white/[0.04] dark:bg-gray-900 dark:text-white"
+                            className="rounded-xl border border-slate-200/80 dark:border-white/10 bg-slate-50 dark:bg-gray-800 px-4 py-2.5 text-sm text-slate-900 dark:text-white outline-none transition-all focus:border-[#072835] focus:ring-2 focus:ring-[#072835]/15 cursor-pointer"
                         >
-                            <option value="MAIN">{t("brands.mainBrands")}</option>
-                            <option value="DIFFERENT">{t("brands.differentBrands")}</option>
+                            <option value="MAIN">{t("brands.mainBrands") || "Main Brands"}</option>
+                            <option value="DIFFERENT">{t("brands.differentBrands") || "Different Brands"}</option>
                         </select>
                     </label>
 
                     <label className="flex flex-col gap-2">
-                        <span className="text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400">{t("admin.description")}</span>
+                        <span className="text-[11px] font-bold uppercase tracking-widest text-slate-500 dark:text-gray-400">{t("admin.description")}</span>
                         <textarea
                             value={formData.description}
                             onChange={(event) => setFormData({ ...formData, description: event.target.value })}
                             rows={3}
-                            className="resize-none rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-white px-4 py-3 text-text-main outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-white/[0.04] dark:bg-gray-900 dark:text-white"
+                            placeholder={isArabic ? "نبذة عن الماركة ومنتجاتها..." : "Short description about the brand..."}
+                            className="resize-none rounded-xl border border-slate-200/80 dark:border-white/10 bg-slate-50 dark:bg-gray-800 px-4 py-2.5 text-sm text-slate-900 dark:text-white outline-none transition-all focus:border-[#072835] focus:ring-2 focus:ring-[#072835]/15"
                         />
                     </label>
 
                     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                        <label className="flex items-center gap-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-background-light p-4 dark:border-white/[0.04] dark:bg-gray-800/50">
+                        <label className="flex items-center gap-3 rounded-xl border border-slate-200/80 dark:border-white/10 bg-slate-50 dark:bg-gray-800/50 p-3.5 cursor-pointer">
                             <input
                                 type="checkbox"
                                 checked={formData.isActive}
                                 onChange={(event) => setFormData({ ...formData, isActive: event.target.checked })}
-                                className="size-4 rounded border-gray-300 text-primary focus:ring-primary"
+                                className="size-4 rounded border-gray-300 text-[#072835] focus:ring-[#072835]"
                             />
-                            <span className="text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400">{t("admin.active")}</span>
+                            <span className="text-xs font-bold text-slate-700 dark:text-slate-200">{t("admin.active")}</span>
                         </label>
-                        <label className={`flex items-center gap-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-background-light p-4 dark:border-white/[0.04] dark:bg-gray-800/50 ${formData.group !== "MAIN" ? "opacity-50" : ""}`}>
+                        <label className={`flex items-center gap-3 rounded-xl border border-slate-200/80 dark:border-white/10 bg-slate-50 dark:bg-gray-800/50 p-3.5 cursor-pointer ${formData.group !== "MAIN" ? "opacity-50" : ""}`}>
                             <input
                                 type="checkbox"
                                 disabled={formData.group !== "MAIN"}
                                 checked={formData.isFeatured}
                                 onChange={(event) => setFormData({ ...formData, isFeatured: event.target.checked })}
-                                className="size-4 rounded border-gray-300 text-primary focus:ring-primary"
+                                className="size-4 rounded border-gray-300 text-[#072835] focus:ring-[#072835]"
                             />
-                            <span className="text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400">{t("admin.featured")}</span>
+                            <span className="text-xs font-bold text-slate-700 dark:text-slate-200">{t("admin.featured")}</span>
                         </label>
                     </div>
 
                     <div className="flex gap-3 pt-2">
-                        <button type="button" onClick={onClose} className="flex-1 rounded-xl border border-black/[0.04] dark:border-white/[0.04] px-4 py-3 font-bold text-text-main transition-colors hover:bg-gray-50 dark:border-white/[0.04] dark:text-white dark:hover:bg-gray-800">
+                        <button type="button" onClick={onClose} className="flex-1 rounded-xl border border-slate-200/80 dark:border-white/10 px-4 py-2.5 font-bold text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
                             {t("admin.cancel")}
                         </button>
-                        <button type="submit" disabled={isSubmitting} className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 font-bold text-white transition-all hover:bg-primary/90 disabled:opacity-50">
+                        <button type="submit" disabled={isSubmitting} className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#072835] hover:bg-[#0c4054] text-white px-4 py-2.5 font-bold text-sm transition-all disabled:opacity-50">
                             {isSubmitting && <MdSync className="animate-spin text-lg" />}
                             {brand ? t("admin.updateBrand") : t("admin.createBrand")}
                         </button>

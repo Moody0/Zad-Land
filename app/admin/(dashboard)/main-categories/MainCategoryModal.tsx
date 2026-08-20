@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { MdClose, MdSync } from "react-icons/md";
 import { createMainCategory, updateMainCategory } from "../../../../lib/admin-actions";
 import { toast } from "react-hot-toast";
+import ImageUploadField from "../../components/ImageUploadField";
 
 interface MainCategory {
     id: string;
@@ -107,15 +108,13 @@ export default function MainCategoryModal({ isOpen, onClose, mainCategory }: Mai
                         />
                     </label>
 
-                    <label className="flex flex-col gap-2">
-                        <span className="text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400">Image URL</span>
-                        <input
-                            value={formData.image}
-                            onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                            placeholder="https://example.com/image.jpg"
-                            className="rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-white px-4 py-3 text-text-main outline-none transition-all focus:border-primary focus:ring-2 focus:ring-primary/20 dark:border-white/[0.04] dark:bg-gray-900 dark:text-white"
-                        />
-                    </label>
+                    <ImageUploadField
+                        label="Department Image"
+                        folder="main-categories"
+                        value={formData.image}
+                        onChange={(url) => setFormData({ ...formData, image: url })}
+                        placeholder="https://example.com/image.jpg"
+                    />
 
                     <label className="flex flex-col gap-2">
                         <span className="text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400">Description</span>

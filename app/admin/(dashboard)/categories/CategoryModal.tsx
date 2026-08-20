@@ -5,6 +5,7 @@ import { MdClose } from "react-icons/md";
 import { createCategory, updateCategory } from "../../../../lib/admin-actions";
 import { toast } from "react-hot-toast";
 import { useLanguage } from "@/app/context/LanguageContext";
+import ImageUploadField from "../../components/ImageUploadField";
 
 interface CategoryModalProps {
     isOpen: boolean;
@@ -130,30 +131,13 @@ export default function CategoryModal({ isOpen, onClose, category, brands }: Cat
                         </select>
                     </div>
 
-                    <div className="flex flex-col gap-2">
-                        <label className={`text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400 ${dir === 'rtl' ? 'me-1' : 'ms-1'}`}>
-                            {t('admin.imageUrl')}
-                        </label>
-                        <input
-                            type="text"
-                            value={image}
-                            onChange={(e) => setImage(e.target.value)}
-                            placeholder="https://example.com/image.jpg"
-                            className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
-                        />
-                        {image && (
-                            <div className="mt-2 relative aspect-video w-full rounded-xl overflow-hidden border border-black/[0.04] dark:border-white/[0.04] bg-gray-50/50 dark:bg-black/20">
-                                <img
-                                    src={image}
-                                    alt={t('admin.preview')}
-                                    className="w-full h-full object-cover"
-                                    onError={(e) => {
-                                        (e.target as HTMLImageElement).src = "https://placehold.co/600x400?text=Invalid+Image+URL";
-                                    }}
-                                />
-                            </div>
-                        )}
-                    </div>
+                    <ImageUploadField
+                        label={t('admin.imageUrl') || "Category Image"}
+                        folder="categories"
+                        value={image}
+                        onChange={(url) => setImage(url)}
+                        placeholder="https://example.com/category.jpg"
+                    />
 
                     <div className="flex flex-col gap-2">
                         <label className={`text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400 ${dir === 'rtl' ? 'me-1' : 'ms-1'}`}>
