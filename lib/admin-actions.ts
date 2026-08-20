@@ -698,24 +698,37 @@ export async function getAdminMainCategories() {
     }
 }
 
+function generateMainCategorySlug(name: string, description?: string | null, existingSlug?: string) {
+    if (existingSlug && existingSlug !== "-" && existingSlug !== "--" && existingSlug.trim().length > 0) {
+        return existingSlug;
+    }
+    const source = (description && description.trim().length > 0) ? description : name;
+    let s = source
+        .toLowerCase()
+        .trim()
+        .replace(/&/g, "and")
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "");
+    if (!s) {
+        s = `dept-${Date.now().toString(36)}`;
+    }
+    return s;
+}
+
 export async function createMainCategory(data: MainCategoryInput) {
     try {
-        const slug = data.name
-            .toLowerCase()
-            .trim()
-            .replace(/\s+/g, "-")
-            .replace(/[^\w-]+/g, "");
+        let slug = generateMainCategorySlug(data.name, data.description);
 
         const existing = await prisma.mainCategory.findUnique({ where: { slug } });
         if (existing) {
-            return { success: false, error: "A main category with this name already exists" };
+            slug = `${slug}-${Math.random().toString(36).substring(2, 6)}`;
         }
 
         const mainCategory = await prisma.mainCategory.create({
             data: {
                 name: data.name.trim(),
                 slug,
-                description: data.description,
+                description: data.description ? data.description.trim() : null,
                 image: data.image,
                 isActive: data.isActive ?? true,
                 isFeatured: data.isFeatured ?? false,
@@ -742,17 +755,14 @@ export async function createMainCategory(data: MainCategoryInput) {
 
 export async function updateMainCategory(id: string, data: MainCategoryInput) {
     try {
-        const slug = data.name
-            .toLowerCase()
-            .trim()
-            .replace(/\s+/g, "-")
-            .replace(/[^\w-]+/g, "");
+        const current = await prisma.mainCategory.findUnique({ where: { id } });
+        let slug = generateMainCategorySlug(data.name, data.description, current?.slug);
 
         const conflict = await prisma.mainCategory.findFirst({
             where: { slug, id: { not: id } },
         });
         if (conflict) {
-            return { success: false, error: "A main category with this name already exists" };
+            slug = `${slug}-${Math.random().toString(36).substring(2, 6)}`;
         }
 
         const mainCategory = await prisma.mainCategory.update({
@@ -760,7 +770,7 @@ export async function updateMainCategory(id: string, data: MainCategoryInput) {
             data: {
                 name: data.name.trim(),
                 slug,
-                description: data.description,
+                description: data.description ? data.description.trim() : null,
                 image: data.image,
                 isActive: data.isActive ?? true,
                 isFeatured: data.isFeatured ?? false,
@@ -805,6 +815,22 @@ export async function deleteMainCategory(id: string) {
     } catch (error) {
         console.error("Failed to delete main category:", error);
         return { success: false, error: "Failed to delete main category" };
+    }
+}
+
+export async function toggleMainCategoryFeatured(id: string, isFeatured: boolean) {
+    try {
+        await prisma.mainCategory.update({
+            where: { id },
+            data: { isFeatured },
+        });
+
+        revalidatePath("/");
+        revalidatePath("/admin/main-categories");
+        return { success: true };
+    } catch (error) {
+        console.error("Failed to toggle main category featured status:", error);
+        return { success: false, error: "Failed to toggle featured status" };
     }
 }
 
