@@ -209,17 +209,31 @@ export default function MegaMenu({ data, onClose, onMouseEnter, onMouseLeave }: 
                                 {language === "ar" ? "الماركات" : "Brands"}
                             </h3>
                             <ul className="flex flex-col gap-2">
-                                {data.brands.length > 0 ? data.brands.map((brand) => (
-                                    <li key={brand.id}>
-                                        <Link 
-                                            href={`/brands/${brand.slug}`} 
-                                            onClick={onClose}
-                                            className="text-[15px] font-medium text-[rgb(46,46,46)] dark:text-gray-300 hover:text-black dark:hover:text-white leading-relaxed inline hover-underline-animated"
-                                        >
-                                            {brand.name}
-                                        </Link>
-                                    </li>
-                                )) : (
+                                {data.brands.length > 0 ? data.brands.map((brand) => {
+                                    const formatBrandName = (name: string) => {
+                                        if (!name.includes('-')) return name.trim();
+                                        const parts = name.split('-').map(s => s.trim());
+                                        if (parts.length >= 2) {
+                                            const arabicPart = parts.find(p => /[\u0600-\u06FF]/.test(p));
+                                            const englishPart = parts.find(p => !/[\u0600-\u06FF]/.test(p));
+                                            if (language === 'ar' && arabicPart) return arabicPart;
+                                            if (language !== 'ar' && englishPart) return englishPart;
+                                        }
+                                        return name;
+                                    };
+
+                                    return (
+                                        <li key={brand.id}>
+                                            <Link 
+                                                href={`/brands/${brand.slug}`} 
+                                                onClick={onClose}
+                                                className="text-[15px] font-medium text-[rgb(46,46,46)] dark:text-gray-300 hover:text-[#072835] dark:hover:text-[#E5B54A] leading-relaxed inline hover-underline-animated"
+                                            >
+                                                {formatBrandName(brand.name)}
+                                            </Link>
+                                        </li>
+                                    );
+                                }) : (
                                     <li className="text-[15px] font-medium text-[rgb(46,46,46)]/50 dark:text-gray-500">
                                         {language === "ar" ? "لا توجد ماركات" : "No brands yet"}
                                     </li>

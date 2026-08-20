@@ -21,8 +21,8 @@ export async function GET() {
                         id: true,
                         name: true,
                         slug: true,
+                        image: true,
                     },
-                    take: 10,
                 },
                 categories: {
                     orderBy: { name: "asc" },
@@ -30,8 +30,17 @@ export async function GET() {
                         id: true,
                         name: true,
                         slug: true,
+                        brand: {
+                            select: {
+                                id: true,
+                                name: true,
+                                slug: true,
+                                image: true,
+                                isActive: true,
+                            },
+                        },
                     },
-                    take: 10,
+                    take: 20,
                 },
                 products: {
                     orderBy: { createdAt: "desc" },
@@ -47,16 +56,54 @@ export async function GET() {
                         isTrending: true,
                         brand: {
                             select: {
+                                id: true,
                                 name: true,
+                                slug: true,
+                                image: true,
+                                isActive: true,
                             },
                         },
                     },
-                    take: 20,
+                    take: 30,
                 },
             },
         });
 
         const result = mainCategories.map((mc) => {
+            // Aggregate all active brands for this department:
+            // 1. Direct brands (assigned to this MainCategory)
+            // 2. Brands linked via categories in this MainCategory
+            // 3. Brands linked via products in this MainCategory
+            const brandMap = new Map<string, { id: string; name: string; slug: string; image?: string | null }>();
+
+            for (const b of mc.brands) {
+                brandMap.set(b.id, b);
+            }
+
+            for (const cat of mc.categories) {
+                if (cat.brand && cat.brand.isActive && !brandMap.has(cat.brand.id)) {
+                    brandMap.set(cat.brand.id, {
+                        id: cat.brand.id,
+                        name: cat.brand.name,
+                        slug: cat.brand.slug,
+                        image: cat.brand.image,
+                    });
+                }
+            }
+
+            for (const prod of mc.products) {
+                if (prod.brand && prod.brand.isActive && !brandMap.has(prod.brand.id)) {
+                    brandMap.set(prod.brand.id, {
+                        id: prod.brand.id,
+                        name: prod.brand.name,
+                        slug: prod.brand.slug,
+                        image: prod.brand.image,
+                    });
+                }
+            }
+
+            const aggregatedBrands = Array.from(brandMap.values()).sort((a, b) => a.name.localeCompare(b.name));
+
             // Separate trending products (max 3) from top products
             const trendingProducts = mc.products
                 .filter((p) => p.isTrending)
@@ -98,8 +145,8 @@ export async function GET() {
                 nameEn: mc.description || mc.name,
                 slug: mc.slug,
                 image: mc.image,
-                brands: mc.brands,
-                categories: mc.categories,
+                brands: aggregatedBrands,
+                categories: mc.categories.map((c) => ({ id: c.id, name: c.name, slug: c.slug })),
                 topProducts,
                 trendingProducts: trendingProducts.slice(0, 3),
             };
@@ -108,7 +155,7 @@ export async function GET() {
         const response = NextResponse.json(result);
         response.headers.set(
             "Cache-Control",
-            "public, max-age=300, stale-while-revalidate=600"
+            "public, max-age=60, stale-while-revalidate=120"
         );
         return response;
     } catch (error) {
