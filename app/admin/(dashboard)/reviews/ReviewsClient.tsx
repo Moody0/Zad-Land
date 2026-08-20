@@ -125,19 +125,19 @@ export default function ReviewsClient() {
                         </div>
                     </div>
 
-                    {/* Stats Cards */}
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                        <div className="bg-white dark:bg-[#0f172a] p-5 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-xs transition-all duration-300 hover:shadow-md flex flex-col gap-1">
-                            <p className="text-slate-500 dark:text-slate-400 text-[11px] font-bold uppercase tracking-widest">{t('admin.totalReviews') || "Total Reviews"}</p>
-                            <p className="text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">{reviews.length}</p>
+                    {/* Stats Cards (2-cols on mobile, 3-cols on sm) */}
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 sm:gap-4">
+                        <div className="bg-white dark:bg-[#0f172a] p-3.5 sm:p-5 rounded-xl sm:rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-xs transition-all duration-300 hover:shadow-md flex flex-col gap-1">
+                            <p className="text-slate-500 dark:text-slate-400 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider truncate">{t('admin.totalReviews') || "Total Reviews"}</p>
+                            <p className="text-lg sm:text-2xl lg:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">{reviews.length}</p>
                         </div>
-                        <div className="bg-white dark:bg-[#0f172a] p-5 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-xs transition-all duration-300 hover:shadow-md flex flex-col gap-1">
-                            <p className="text-slate-500 dark:text-slate-400 text-[11px] font-bold uppercase tracking-widest">{t('admin.pendingReviews') || "Pending"}</p>
-                            <p className="text-2xl md:text-3xl font-extrabold tracking-tight text-amber-500">{reviews.filter(r => !r.isApproved).length}</p>
+                        <div className="bg-white dark:bg-[#0f172a] p-3.5 sm:p-5 rounded-xl sm:rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-xs transition-all duration-300 hover:shadow-md flex flex-col gap-1">
+                            <p className="text-slate-500 dark:text-slate-400 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider truncate">{t('admin.pendingReviews') || "Pending"}</p>
+                            <p className="text-lg sm:text-2xl lg:text-3xl font-extrabold tracking-tight text-amber-500">{reviews.filter(r => !r.isApproved).length}</p>
                         </div>
-                        <div className="bg-white dark:bg-[#0f172a] p-5 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-xs transition-all duration-300 hover:shadow-md flex flex-col gap-1">
-                            <p className="text-slate-500 dark:text-slate-400 text-[11px] font-bold uppercase tracking-widest">{t('admin.approvedReviews') || "Approved"}</p>
-                            <p className="text-2xl md:text-3xl font-extrabold tracking-tight text-[#2E7D32] dark:text-[#4ade80]">{reviews.filter(r => r.isApproved).length}</p>
+                        <div className="bg-white dark:bg-[#0f172a] p-3.5 sm:p-5 rounded-xl sm:rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-xs transition-all duration-300 hover:shadow-md flex flex-col gap-1 col-span-2 sm:col-span-1">
+                            <p className="text-slate-500 dark:text-slate-400 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider truncate">{t('admin.approvedReviews') || "Approved"}</p>
+                            <p className="text-lg sm:text-2xl lg:text-3xl font-extrabold tracking-tight text-[#2E7D32] dark:text-[#4ade80]">{reviews.filter(r => r.isApproved).length}</p>
                         </div>
                     </div>
 

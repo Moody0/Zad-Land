@@ -126,17 +126,17 @@ export default function PromoCodesClient({ promoCodes }: { promoCodes: PromoCode
                         promoCode={selectedPromoCode}
                     />
 
-                    {/* Stats Summary */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-8">
-                        <div className="bg-white dark:bg-[#0f172a] p-5 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-xs transition-all duration-300 hover:shadow-md flex flex-col gap-1">
-                            <p className="text-slate-500 dark:text-slate-400 text-[11px] font-bold uppercase tracking-widest">{t('admin.totalSales')}</p>
-                            <p className="text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+                    {/* Stats Summary (2-cols on mobile, 3-cols on md) */}
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-2.5 sm:gap-4 mb-6">
+                        <div className="bg-white dark:bg-[#0f172a] p-3.5 sm:p-5 rounded-xl sm:rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-xs transition-all duration-300 hover:shadow-md flex flex-col gap-1">
+                            <p className="text-slate-500 dark:text-slate-400 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider truncate">{t('admin.totalSales')}</p>
+                            <p className="text-lg sm:text-2xl lg:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
                                 ${promoCodes.reduce((sum, pc) => sum + pc.totalSales, 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
                             </p>
                         </div>
-                        <div className="bg-white dark:bg-[#0f172a] p-5 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-xs transition-all duration-300 hover:shadow-md flex flex-col gap-1">
-                            <p className="text-slate-500 dark:text-slate-400 text-[11px] font-bold uppercase tracking-widest">{t('admin.activeCodes')}</p>
-                            <p className="text-2xl md:text-3xl font-extrabold tracking-tight text-[#2E7D32] dark:text-[#4ade80]">
+                        <div className="bg-white dark:bg-[#0f172a] p-3.5 sm:p-5 rounded-xl sm:rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-xs transition-all duration-300 hover:shadow-md flex flex-col gap-1">
+                            <p className="text-slate-500 dark:text-slate-400 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider truncate">{t('admin.activeCodes')}</p>
+                            <p className="text-lg sm:text-2xl lg:text-3xl font-extrabold tracking-tight text-[#2E7D32] dark:text-[#4ade80]">
                                 {promoCodes.filter(pc => pc.isActive).length}
                             </p>
                         </div>

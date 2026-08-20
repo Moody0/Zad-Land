@@ -5,15 +5,22 @@ import Link from 'next/link';
 import { useLanguage } from '@/app/context/LanguageContext';
 import ResilientImage from '@/app/components/ResilientImage';
 import { motion } from 'framer-motion';
+import { MdChevronRight } from 'react-icons/md';
 
 interface Category {
     id: string;
     name: string;
+    nameEn?: string;
     slug: string;
     description: string | null;
     image: string | null;
     brandId: string;
     isFeatured: boolean;
+    brand?: {
+        id: string;
+        name: string;
+        slug: string;
+    } | null;
 }
 
 interface FeaturedCategoriesGridProps {
@@ -28,108 +35,110 @@ const FeaturedCategoriesGrid = ({ categories }: FeaturedCategoriesGridProps) => 
         return null;
     }
 
-    const formatCategoryTitle = (category: Category) => {
-        if (!isArabic) {
-            if (category.description && !/[\u0600-\u06FF]/.test(category.description)) {
-                return category.description;
-            }
-            if (category.slug) {
-                return category.slug
-                    .split('-')
-                    .map((s) => s.charAt(0).toUpperCase() + s.slice(1))
-                    .join(' ');
-            }
+    const getDisplayName = (cat: Category) => {
+        if (isArabic) {
+            return cat.name;
         }
-        return category.name;
+        return cat.description || cat.nameEn || cat.name;
+    };
+
+    const getBrandName = (cat: Category) => {
+        if (!cat.brand?.name) return null;
+        if (isArabic) {
+            return cat.brand.name.split('-')[1]?.trim() || cat.brand.name.split('-')[0]?.trim();
+        }
+        return cat.brand.name.split('-')[0]?.trim();
     };
 
     return (
-        <section className="container-custom py-6 md:py-14">
+        <section className="container-custom py-6 md:py-12">
+            {/* Section Header */}
+            <div className="flex flex-col md:flex-row md:items-end justify-between mb-6 md:mb-8 gap-4 px-1">
+                <div>
+                    <span className="text-[11px] sm:text-xs font-bold uppercase tracking-widest text-[#B8860B] dark:text-[#E5B54A] block mb-1">
+                        {isArabic ? 'كتالوج التوريد والمنتجات المعتمدة' : 'Verified Wholesale Catalog'}
+                    </span>
+                    <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-[#072835] dark:text-white leading-tight">
+                        {isArabic ? 'أهم الفئات والأكثر طلباً' : 'Top Categories & Best Sellers'}
+                    </h2>
+                    <p className="text-xs sm:text-sm text-slate-500 dark:text-gray-400 mt-1 max-w-xl">
+                        {isArabic
+                            ? 'مستوردة وموزعة مباشرة من كبرى المصانع العالمية مع أفضل خصومات الجملة.'
+                            : 'Sourced directly from certified global food manufacturers with bulk wholesale pricing.'}
+                    </p>
+                </div>
+
+                <Link
+                    href="/products"
+                    className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-[#072835] dark:text-[#E5B54A] hover:text-[#B8860B] transition-colors whitespace-nowrap self-start md:self-end"
+                >
+                    <span>{isArabic ? 'تصفح كافة الأقسام' : 'View All Categories'}</span>
+                    <MdChevronRight className={`text-lg transition-transform ${isArabic ? 'rotate-180' : ''}`} />
+                </Link>
+            </div>
+
+            {/* Symmetrical 5-Column Grid on Desktop, 2-Column on Mobile */}
             <motion.div 
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true, margin: "-50px" }}
                 variants={{
-                    visible: { transition: { staggerChildren: 0.05 } }
+                    visible: { transition: { staggerChildren: 0.04 } }
                 }}
-                className={`flex flex-col md:flex-row gap-3 ${dir === 'rtl' ? '' : 'md:flex-row-reverse'}`}
+                className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4 md:gap-5"
             >
-                {/* Hero Card - Navigation to All Categories */}
-                <motion.div 
-                    variants={{
-                        hidden: { opacity: 0, scale: 0.95 },
-                        visible: { opacity: 1, scale: 1, transition: { duration: 0.6 } }
-                    }}
-                    className="w-full md:w-1/2 lg:w-2/5 xl:w-1/3"
-                >
-                    <Link
-                        href="/products"
-                        className="group relative block w-full h-[220px] md:h-full rounded-2xl overflow-hidden bg-[#072835] shadow-xs"
-                    >
-                        {/* Background gradient */}
-                        <div className="absolute inset-0 bg-gradient-to-br from-[#072835] to-[#0a3a4d]" />
+                {categories.map((category) => {
+                    const brandName = getBrandName(category);
+                    const displayName = getDisplayName(category);
 
-                        {/* Content Overlay */}
-                        <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-6 py-6">
-                            <span className="text-[11px] font-bold text-[#E5B54A] uppercase tracking-widest mb-1.5">
-                                {isArabic ? 'منتجات أصلية معتمدة' : 'Verified Wholesale'}
-                            </span>
-                            <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-white mb-2 leading-tight">
-                                {isArabic ? 'أهم الفئات والأكثر طلباً' : 'Top Categories & Best Sellers'}
-                            </h2>
-                            <p className="text-xs md:text-sm text-white/80 max-w-[280px] mb-4">
-                                {isArabic
-                                    ? 'من المواد الغذائية إلى المعلبات والحلويات، اكتشف أفضل المنتجات العالمية'
-                                    : 'From premium foods to canned goods and sweets, discover top global brands'}
-                            </p>
-                            <span className="px-6 py-2 bg-[#B8860B] hover:bg-[#9E7309] text-white font-bold text-xs md:text-sm rounded-full transition-transform group-hover:scale-105 shadow-xs">
-                                {isArabic ? 'تصفح كافة الأقسام' : 'Explore All Categories'}
-                            </span>
-                        </div>
-                    </Link>
-                </motion.div>
-
-                {/* Category Cards Grid - Responsive 2 columns on mobile for maximum legibility */}
-                <div className="flex-1">
-                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2.5 sm:gap-3">
-                        {categories.slice(0, 12).map((category) => (
-                            <motion.div
-                                key={category.id}
-                                variants={{
-                                    hidden: { opacity: 0, scale: 0.8, y: 20 },
-                                    visible: { opacity: 1, scale: 1, y: 0, transition: { type: "spring", stiffness: 200, damping: 20 } }
-                                }}
+                    return (
+                        <motion.div
+                            key={category.id}
+                            variants={{
+                                hidden: { opacity: 0, scale: 0.95, y: 15 },
+                                visible: { opacity: 1, scale: 1, y: 0, transition: { duration: 0.4, ease: [0.16, 1, 0.3, 1] } }
+                            }}
+                        >
+                            <Link
+                                href={`/products?category=${category.slug}`}
+                                className="group relative flex flex-col h-full bg-[#FAF9F5] dark:bg-[#1E1E16] rounded-2xl overflow-hidden border border-[#B8860B]/15 hover:border-[#B8860B]/50 transition-all duration-300 hover:shadow-md p-2.5 sm:p-3.5"
                             >
-                                <Link
-                                    href={`/products?category=${category.slug}`}
-                                    className="group relative block aspect-square rounded-xl overflow-hidden h-full w-full border border-gray-200/60 dark:border-white/5 hover:border-[#B8860B]/80 transition-all duration-300 shadow-2xs"
-                                >
-                                    {/* Category Image */}
+                                {/* Category Image Container */}
+                                <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-white dark:bg-zinc-900 border border-gray-100 dark:border-white/5 mb-2.5 flex items-center justify-center p-2">
                                     {category.image ? (
                                         <ResilientImage
                                             src={category.image}
-                                            alt={formatCategoryTitle(category)}
-                                            className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                            alt={displayName}
+                                            className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
                                             loading="lazy"
                                         />
                                     ) : (
-                                        <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200" />
+                                        <div className="w-full h-full bg-gray-100 dark:bg-zinc-800 rounded-lg" />
                                     )}
+                                </div>
 
-                                    {/* Bottom gradient overlay */}
-                                    <div className="absolute inset-x-0 bottom-0 h-3/5 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
-
-                                    {/* Category Name */}
-                                    <div className="absolute inset-x-0 bottom-0 flex items-end justify-center pb-2.5 px-2">
-                                        <span className="text-white text-xs sm:text-sm font-bold text-center leading-snug group-hover:text-[#E5B54A] transition-colors drop-shadow-xs line-clamp-2">
-                                            {formatCategoryTitle(category)}
-                                        </span>
+                                {/* Content Details */}
+                                <div className="flex flex-col flex-1 justify-between text-center px-1 pb-1">
+                                    <div>
+                                        {brandName && (
+                                            <span className="text-[10px] font-bold uppercase tracking-wider text-[#B8860B] dark:text-[#E5B54A] block mb-0.5 truncate">
+                                                {brandName}
+                                            </span>
+                                        )}
+                                        <h3 className="text-xs sm:text-sm font-bold text-[#072835] dark:text-white leading-snug group-hover:text-[#B8860B] transition-colors line-clamp-2">
+                                            {displayName}
+                                        </h3>
                                     </div>
-                                </Link>
-                            </motion.div>
-                        ))}
-                    </div>
-                </div>
+
+                                    <div className="mt-2 pt-2 border-t border-gray-200/50 dark:border-white/5 flex items-center justify-center gap-1 text-[11px] font-semibold text-[#2E7D32] dark:text-[#4ade80] opacity-90 group-hover:opacity-100">
+                                        <span>{isArabic ? 'تسوق القسم' : 'Shop Category'}</span>
+                                        <span className={`transition-transform duration-300 group-hover:translate-x-1 ${isArabic ? 'rotate-180 group-hover:-translate-x-1' : ''}`}>➔</span>
+                                    </div>
+                                </div>
+                            </Link>
+                        </motion.div>
+                    );
+                })}
             </motion.div>
         </section>
     );

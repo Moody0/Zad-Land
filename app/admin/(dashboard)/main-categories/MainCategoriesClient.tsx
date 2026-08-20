@@ -128,7 +128,7 @@ export default function MainCategoriesClient({ mainCategories }: { mainCategorie
                         entityName={relatedModalInfo.entityName}
                     />
 
-                    <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
                         {filtered.map((mc) => (
                             <article key={mc.id} className="overflow-hidden rounded-2xl border border-slate-200/80 dark:border-white/10 bg-white dark:bg-[#0f172a] shadow-xs transition-all duration-300 hover:shadow-md">
                                 <div className="flex h-36 items-center justify-center bg-gray-50 dark:bg-gray-800">

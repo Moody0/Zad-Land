@@ -162,7 +162,7 @@ export default function BrandsClient({ brands }: { brands: Brand[] }) {
                         entityName={relatedModalInfo.entityName}
                     />
 
-                    <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
                         {filteredBrands.map((brand) => (
                             <article key={brand.id} className="overflow-hidden rounded-2xl border border-slate-200/80 dark:border-white/10 bg-white dark:bg-[#0f172a] shadow-xs transition-all duration-300 hover:shadow-md flex flex-col justify-between">
                                 <div>

@@ -1604,10 +1604,31 @@ export async function getFeaturedCategories() {
                 ]
             },
             take: 12,
-            orderBy: { updatedAt: 'desc' }
+            orderBy: { updatedAt: 'desc' },
+            include: {
+                brand: {
+                    select: {
+                        id: true,
+                        name: true,
+                        slug: true,
+                    }
+                }
+            }
         });
         return categories.map(category => ({
-            ...category,
+            id: category.id,
+            name: category.name,
+            nameEn: category.description || category.name,
+            description: category.description,
+            image: category.image,
+            slug: category.slug,
+            brandId: category.brandId,
+            isFeatured: category.isFeatured,
+            brand: category.brand ? {
+                id: category.brand.id,
+                name: category.brand.name.split('-')[0].trim(),
+                slug: category.brand.slug,
+            } : null,
             createdAt: category.createdAt.toISOString(),
             updatedAt: category.updatedAt.toISOString(),
         }));

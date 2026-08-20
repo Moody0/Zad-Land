@@ -169,46 +169,46 @@ export default function OrdersClient({ orders }: { orders: Order[] }) {
             <div className="flex-1 overflow-y-auto bg-background-light dark:bg-background-dark p-4 md:p-8">
                 <div className="max-w-[1400px] mx-auto flex flex-col gap-8">
 
-                    {/* Stats Grid */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-                        <div className="bg-white dark:bg-[#0f172a] p-6 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-xs transition-all hover:shadow-md">
-                            <div className="flex justify-between items-start mb-4">
-                                <div className="p-3 bg-amber-50 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 rounded-xl">
-                                    <MdPendingActions className="text-2xl" />
+                    {/* Stats Grid (2-cols on mobile, 4-cols on lg) */}
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4 lg:gap-6">
+                        <div className="bg-white dark:bg-[#0f172a] p-3.5 sm:p-5 lg:p-6 rounded-xl sm:rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-xs transition-all hover:shadow-md flex flex-col justify-between">
+                            <div className="flex justify-between items-center gap-1 mb-2 sm:mb-4">
+                                <p className="text-slate-500 dark:text-slate-400 text-[10px] sm:text-xs font-bold uppercase tracking-wider truncate">{t('admin.pendingOrders')}</p>
+                                <div className="p-1.5 sm:p-2.5 bg-amber-50 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 rounded-lg sm:rounded-xl shrink-0">
+                                    <MdPendingActions className="text-lg sm:text-2xl" />
                                 </div>
                             </div>
-                            <p className="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-widest">{t('admin.pendingOrders')}</p>
-                            <h3 className="text-slate-900 dark:text-white text-2xl sm:text-3xl font-extrabold tracking-tight mt-1">{stats.pending}</h3>
+                            <h3 className="text-slate-900 dark:text-white text-lg sm:text-2xl lg:text-3xl font-extrabold tracking-tight mt-1">{stats.pending}</h3>
                         </div>
 
-                        <div className="bg-white dark:bg-[#0f172a] p-6 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-xs transition-all hover:shadow-md">
-                            <div className="flex justify-between items-start mb-4">
-                                <div className="p-3 bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 rounded-xl">
-                                    <MdLocalShipping className="text-2xl" />
+                        <div className="bg-white dark:bg-[#0f172a] p-3.5 sm:p-5 lg:p-6 rounded-xl sm:rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-xs transition-all hover:shadow-md flex flex-col justify-between">
+                            <div className="flex justify-between items-center gap-1 mb-2 sm:mb-4">
+                                <p className="text-slate-500 dark:text-slate-400 text-[10px] sm:text-xs font-bold uppercase tracking-wider truncate">{t('admin.shippedToday')}</p>
+                                <div className="p-1.5 sm:p-2.5 bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 rounded-lg sm:rounded-xl shrink-0">
+                                    <MdLocalShipping className="text-lg sm:text-2xl" />
                                 </div>
                             </div>
-                            <p className="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-widest">{t('admin.shippedToday')}</p>
-                            <h3 className="text-slate-900 dark:text-white text-2xl sm:text-3xl font-extrabold tracking-tight mt-1">{stats.shippedToday}</h3>
+                            <h3 className="text-slate-900 dark:text-white text-lg sm:text-2xl lg:text-3xl font-extrabold tracking-tight mt-1">{stats.shippedToday}</h3>
                         </div>
 
-                        <div className="bg-white dark:bg-[#0f172a] p-6 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-xs transition-all hover:shadow-md">
-                            <div className="flex justify-between items-start mb-4">
-                                <div className="p-3 bg-emerald-50 dark:bg-emerald-950/50 text-[#2E7D32] dark:text-[#4ade80] rounded-xl">
-                                    <MdTaskAlt className="text-2xl" />
+                        <div className="bg-white dark:bg-[#0f172a] p-3.5 sm:p-5 lg:p-6 rounded-xl sm:rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-xs transition-all hover:shadow-md flex flex-col justify-between">
+                            <div className="flex justify-between items-center gap-1 mb-2 sm:mb-4">
+                                <p className="text-slate-500 dark:text-slate-400 text-[10px] sm:text-xs font-bold uppercase tracking-wider truncate">{t('admin.deliveredMtd')}</p>
+                                <div className="p-1.5 sm:p-2.5 bg-emerald-50 dark:bg-emerald-950/50 text-[#2E7D32] dark:text-[#4ade80] rounded-lg sm:rounded-xl shrink-0">
+                                    <MdTaskAlt className="text-lg sm:text-2xl" />
                                 </div>
                             </div>
-                            <p className="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-widest">{t('admin.deliveredMtd')}</p>
-                            <h3 className="text-slate-900 dark:text-white text-2xl sm:text-3xl font-extrabold tracking-tight mt-1">{stats.deliveredMTD}</h3>
+                            <h3 className="text-slate-900 dark:text-white text-lg sm:text-2xl lg:text-3xl font-extrabold tracking-tight mt-1">{stats.deliveredMTD}</h3>
                         </div>
 
-                        <div className="bg-white dark:bg-[#0f172a] p-6 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-xs transition-all hover:shadow-md">
-                            <div className="flex justify-between items-start mb-4">
-                                <div className="p-3 bg-[#072835]/10 dark:bg-[#E5B54A]/10 text-[#072835] dark:text-[#E5B54A] rounded-xl">
-                                    <MdPayments className="text-2xl" />
+                        <div className="bg-white dark:bg-[#0f172a] p-3.5 sm:p-5 lg:p-6 rounded-xl sm:rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-xs transition-all hover:shadow-md flex flex-col justify-between">
+                            <div className="flex justify-between items-center gap-1 mb-2 sm:mb-4">
+                                <p className="text-slate-500 dark:text-slate-400 text-[10px] sm:text-xs font-bold uppercase tracking-wider truncate">{t('admin.totalRevenue')}</p>
+                                <div className="p-1.5 sm:p-2.5 bg-[#072835]/10 dark:bg-[#E5B54A]/10 text-[#072835] dark:text-[#E5B54A] rounded-lg sm:rounded-xl shrink-0">
+                                    <MdPayments className="text-lg sm:text-2xl" />
                                 </div>
                             </div>
-                            <p className="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-widest">{t('admin.totalRevenue')}</p>
-                            <h3 className="text-slate-900 dark:text-white text-2xl sm:text-3xl font-extrabold tracking-tight mt-1">
+                            <h3 className="text-slate-900 dark:text-white text-lg sm:text-2xl lg:text-3xl font-extrabold tracking-tight mt-1">
                                 ${stats.totalRevenue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                             </h3>
                         </div>

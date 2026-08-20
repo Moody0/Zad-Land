@@ -657,31 +657,31 @@ export default function ProductsClient({
                         product={selectedProduct}
                     />
 
-                    {/* Stats Cards */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
-                        <div className="bg-white dark:bg-surface-dark p-5 rounded-2xl border border-black/[0.04] dark:border-white/[0.04] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.02)] transition-all duration-300 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.04)] flex flex-col gap-1">
-                            <p className="text-text-sub dark:text-gray-400 text-[11px] font-bold uppercase tracking-widest">{t('admin.totalProducts')}</p>
-                            <p className="text-2xl md:text-3xl font-bold tracking-tight text-text-main dark:text-white">{stats.total.toLocaleString()}</p>
+                    {/* Stats Cards (2-cols on mobile, 3-cols on sm, 6-cols on lg) */}
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 sm:gap-4">
+                        <div className="bg-white dark:bg-surface-dark p-3.5 sm:p-5 rounded-xl sm:rounded-2xl border border-black/[0.04] dark:border-white/[0.04] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.02)] transition-all duration-300 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.04)] flex flex-col gap-1">
+                            <p className="text-text-sub dark:text-gray-400 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider truncate">{t('admin.totalProducts')}</p>
+                            <p className="text-lg sm:text-2xl lg:text-3xl font-black tracking-tight text-text-main dark:text-white">{stats.total.toLocaleString()}</p>
                         </div>
-                        <div className="bg-white dark:bg-surface-dark p-5 rounded-2xl border border-black/[0.04] dark:border-white/[0.04] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.02)] transition-all duration-300 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.04)] flex flex-col gap-1">
-                            <p className="text-text-sub dark:text-gray-400 text-[11px] font-bold uppercase tracking-widest">{t('admin.trending')}</p>
-                            <p className="text-2xl md:text-3xl font-bold tracking-tight text-amber-500">{products.filter(p => p.isTrending).length} / 8</p>
+                        <div className="bg-white dark:bg-surface-dark p-3.5 sm:p-5 rounded-xl sm:rounded-2xl border border-black/[0.04] dark:border-white/[0.04] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.02)] transition-all duration-300 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.04)] flex flex-col gap-1">
+                            <p className="text-text-sub dark:text-gray-400 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider truncate">{t('admin.trending')}</p>
+                            <p className="text-lg sm:text-2xl lg:text-3xl font-black tracking-tight text-amber-500">{products.filter(p => p.isTrending).length} / 8</p>
                         </div>
-                        <div className="bg-white dark:bg-surface-dark p-5 rounded-2xl border border-black/[0.04] dark:border-white/[0.04] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.02)] transition-all duration-300 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.04)] flex flex-col gap-1">
-                            <p className="text-text-sub dark:text-gray-400 text-[11px] font-bold uppercase tracking-widest">{t('admin.outOfStock')}</p>
-                            <p className="text-2xl md:text-3xl font-bold tracking-tight text-red-500">{stats.outOfStock.toLocaleString()}</p>
+                        <div className="bg-white dark:bg-surface-dark p-3.5 sm:p-5 rounded-xl sm:rounded-2xl border border-black/[0.04] dark:border-white/[0.04] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.02)] transition-all duration-300 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.04)] flex flex-col gap-1">
+                            <p className="text-text-sub dark:text-gray-400 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider truncate">{t('admin.outOfStock')}</p>
+                            <p className="text-lg sm:text-2xl lg:text-3xl font-black tracking-tight text-red-500">{stats.outOfStock.toLocaleString()}</p>
                         </div>
-                        <div className="bg-white dark:bg-surface-dark p-5 rounded-2xl border border-black/[0.04] dark:border-white/[0.04] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.02)] transition-all duration-300 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.04)] flex flex-col gap-1">
-                            <p className="text-text-sub dark:text-gray-400 text-[11px] font-bold uppercase tracking-widest">{t('admin.lowInventory')}</p>
-                            <p className="text-2xl md:text-3xl font-bold tracking-tight text-orange-500">{stats.lowStock.toLocaleString()}</p>
+                        <div className="bg-white dark:bg-surface-dark p-3.5 sm:p-5 rounded-xl sm:rounded-2xl border border-black/[0.04] dark:border-white/[0.04] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.02)] transition-all duration-300 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.04)] flex flex-col gap-1">
+                            <p className="text-text-sub dark:text-gray-400 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider truncate">{t('admin.lowInventory')}</p>
+                            <p className="text-lg sm:text-2xl lg:text-3xl font-black tracking-tight text-orange-500">{stats.lowStock.toLocaleString()}</p>
                         </div>
-                        <div className="bg-white dark:bg-surface-dark p-5 rounded-2xl border border-black/[0.04] dark:border-white/[0.04] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.02)] transition-all duration-300 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.04)] flex flex-col gap-1">
-                            <p className="text-text-sub dark:text-gray-400 text-[11px] font-bold uppercase tracking-widest">{t('admin.categories')}</p>
-                            <p className="text-2xl md:text-3xl font-bold tracking-tight text-text-main dark:text-white">{stats.categories.toLocaleString()}</p>
+                        <div className="bg-white dark:bg-surface-dark p-3.5 sm:p-5 rounded-xl sm:rounded-2xl border border-black/[0.04] dark:border-white/[0.04] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.02)] transition-all duration-300 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.04)] flex flex-col gap-1">
+                            <p className="text-text-sub dark:text-gray-400 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider truncate">{t('admin.categories')}</p>
+                            <p className="text-lg sm:text-2xl lg:text-3xl font-black tracking-tight text-text-main dark:text-white">{stats.categories.toLocaleString()}</p>
                         </div>
-                        <div className="bg-white dark:bg-surface-dark p-5 rounded-2xl border border-black/[0.04] dark:border-white/[0.04] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.02)] transition-all duration-300 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.04)] flex flex-col gap-1">
-                            <p className="text-text-sub dark:text-gray-400 text-[11px] font-bold uppercase tracking-widest">{t('admin.onSale')}</p>
-                            <p className="text-2xl md:text-3xl font-bold tracking-tight text-emerald-500">{stats.onSale.toLocaleString()}</p>
+                        <div className="bg-white dark:bg-surface-dark p-3.5 sm:p-5 rounded-xl sm:rounded-2xl border border-black/[0.04] dark:border-white/[0.04] shadow-[0_4px_20px_-4px_rgba(0,0,0,0.02)] transition-all duration-300 hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.04)] flex flex-col gap-1">
+                            <p className="text-text-sub dark:text-gray-400 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider truncate">{t('admin.onSale')}</p>
+                            <p className="text-lg sm:text-2xl lg:text-3xl font-black tracking-tight text-emerald-500">{stats.onSale.toLocaleString()}</p>
                         </div>
                     </div>
 

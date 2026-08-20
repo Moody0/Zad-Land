@@ -58,8 +58,12 @@ export default function DashboardClient({ stats }: { stats: DashboardStats }) {
     // SVG Chart Geometry Calculations
     const chartData = stats.salesTrend || [];
     const chartWidth = 700;
-    const chartHeight = 220;
-    const chartPadding = { top: 20, right: 25, bottom: 35, left: 45 };
+    const chartHeight = 240;
+    const chartPadding = { top: 25, right: 30, bottom: 45, left: 55 };
+
+    const hasSalesData = useMemo(() => {
+        return chartData.some(d => d.revenue > 0 || d.orders > 0);
+    }, [chartData]);
 
     const maxChartValue = useMemo(() => {
         if (chartData.length === 0) return 100;
@@ -67,11 +71,12 @@ export default function DashboardClient({ stats }: { stats: DashboardStats }) {
         return max > 0 ? max * 1.15 : 100;
     }, [chartData, chartMode]);
 
+    const usableWidth = chartWidth - chartPadding.left - chartPadding.right;
+    const usableHeight = chartHeight - chartPadding.top - chartPadding.bottom;
+    const stepX = chartData.length > 1 ? usableWidth / (chartData.length - 1) : usableWidth;
+
     const chartPoints = useMemo(() => {
         if (chartData.length === 0) return [];
-        const usableWidth = chartWidth - chartPadding.left - chartPadding.right;
-        const usableHeight = chartHeight - chartPadding.top - chartPadding.bottom;
-        const stepX = chartData.length > 1 ? usableWidth / (chartData.length - 1) : 0;
 
         return chartData.map((d, index) => {
             const val = chartMode === 'revenue' ? d.revenue : d.orders;
@@ -79,7 +84,7 @@ export default function DashboardClient({ stats }: { stats: DashboardStats }) {
             const y = chartPadding.top + usableHeight - (val / maxChartValue) * usableHeight;
             return { x, y, data: d, val };
         });
-    }, [chartData, chartMode, maxChartValue, chartWidth, chartHeight, chartPadding]);
+    }, [chartData, chartMode, maxChartValue, chartWidth, chartHeight, chartPadding, usableHeight, stepX]);
 
     // Generate smooth SVG path
     const svgPathD = useMemo(() => {
@@ -98,10 +103,10 @@ export default function DashboardClient({ stats }: { stats: DashboardStats }) {
 
     const svgAreaD = useMemo(() => {
         if (chartPoints.length === 0) return "";
-        const usableHeight = chartHeight - chartPadding.bottom;
+        const baselineY = chartHeight - chartPadding.bottom;
         const first = chartPoints[0];
         const last = chartPoints[chartPoints.length - 1];
-        return `${svgPathD} L ${last.x} ${usableHeight} L ${first.x} ${usableHeight} Z`;
+        return `${svgPathD} L ${last.x} ${baselineY} L ${first.x} ${baselineY} Z`;
     }, [svgPathD, chartPoints, chartHeight, chartPadding]);
 
     return (
@@ -152,21 +157,21 @@ export default function DashboardClient({ stats }: { stats: DashboardStats }) {
                     </div>
 
                     {/* Operational Alert Banners */}
-                    <div className="flex flex-col gap-3">
+                    <div className="flex flex-col gap-2.5">
                         {stats.pipeline.pending > 0 && (
-                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900/50 shadow-xs">
-                                <div className="flex items-center gap-3">
-                                    <span className="flex h-3 w-3 relative shrink-0">
+                            <div className="flex items-center justify-between gap-3 p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900/50 shadow-xs">
+                                <div className="flex items-center gap-2.5 min-w-0">
+                                    <span className="flex h-2.5 w-2.5 relative shrink-0">
                                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
-                                        <span className="relative inline-flex rounded-full h-3 w-3 bg-amber-500"></span>
+                                        <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-amber-500"></span>
                                     </span>
-                                    <p className="text-xs sm:text-sm font-bold text-amber-900 dark:text-amber-200">
+                                    <p className="text-xs sm:text-sm font-bold text-amber-900 dark:text-amber-200 truncate">
                                         {t('admin.reviewPendingAlert').replace('{count}', stats.pipeline.pending.toString())}
                                     </p>
                                 </div>
                                 <Link
                                     href="/admin/orders"
-                                    className="inline-flex items-center justify-center px-4 py-2 rounded-xl bg-[#072835] text-white text-xs font-bold hover:bg-[#0c4054] transition-all whitespace-nowrap self-start sm:self-auto"
+                                    className="inline-flex items-center justify-center px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg sm:rounded-xl bg-[#072835] text-white text-[11px] sm:text-xs font-bold hover:bg-[#0c4054] transition-all whitespace-nowrap shrink-0"
                                 >
                                     {t('admin.reviewPendingBtn')}
                                 </Link>
@@ -174,10 +179,10 @@ export default function DashboardClient({ stats }: { stats: DashboardStats }) {
                         )}
 
                         {(stats.inventory.lowStockCount > 0 || stats.inventory.outOfStockCount > 0) && (
-                            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 p-4 rounded-2xl bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900/50 shadow-xs">
-                                <div className="flex items-center gap-3">
-                                    <MdWarningAmber className="text-xl text-rose-600 dark:text-rose-400 shrink-0" />
-                                    <p className="text-xs sm:text-sm font-bold text-rose-900 dark:text-rose-200">
+                            <div className="flex items-center justify-between gap-3 p-3 sm:p-4 rounded-xl sm:rounded-2xl bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900/50 shadow-xs">
+                                <div className="flex items-center gap-2 min-w-0">
+                                    <MdWarningAmber className="text-lg sm:text-xl text-rose-600 dark:text-rose-400 shrink-0" />
+                                    <p className="text-xs sm:text-sm font-bold text-rose-900 dark:text-rose-200 truncate">
                                         {t('admin.lowStockAlertRibbon').replace(
                                             '{count}', 
                                             (stats.inventory.lowStockCount + stats.inventory.outOfStockCount).toString()
@@ -186,7 +191,7 @@ export default function DashboardClient({ stats }: { stats: DashboardStats }) {
                                 </div>
                                 <Link
                                     href="/admin/products"
-                                    className="inline-flex items-center justify-center px-4 py-2 rounded-xl bg-rose-700 hover:bg-rose-800 text-white text-xs font-bold transition-all whitespace-nowrap self-start sm:self-auto"
+                                    className="inline-flex items-center justify-center px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg sm:rounded-xl bg-rose-700 hover:bg-rose-800 text-white text-[11px] sm:text-xs font-bold transition-all whitespace-nowrap shrink-0"
                                 >
                                     {t('admin.manageStockBtn')}
                                 </Link>
@@ -194,114 +199,114 @@ export default function DashboardClient({ stats }: { stats: DashboardStats }) {
                         )}
                     </div>
 
-                    {/* 4 Core Executive Metric Cards */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+                    {/* 4 Core Executive Metric Cards (2-cols on mobile, 4-cols on lg) */}
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4 lg:gap-6">
                         
                         {/* Card 1: Total Completed Revenue */}
-                        <div className="flex flex-col justify-between rounded-2xl p-6 bg-white dark:bg-[#0f172a] border border-slate-200/80 dark:border-white/10 shadow-xs hover:shadow-md transition-all">
+                        <div className="flex flex-col justify-between rounded-xl sm:rounded-2xl p-3.5 sm:p-5 lg:p-6 bg-white dark:bg-[#0f172a] border border-slate-200/80 dark:border-white/10 shadow-xs hover:shadow-md transition-all">
                             <div>
-                                <div className="flex justify-between items-center">
-                                    <p className="text-slate-500 dark:text-slate-400 text-xs font-extrabold uppercase tracking-wider">
+                                <div className="flex justify-between items-center gap-1">
+                                    <p className="text-slate-500 dark:text-slate-400 text-[10px] sm:text-xs font-extrabold uppercase tracking-wider truncate">
                                         {t('admin.totalRevenue')}
                                     </p>
-                                    <div className="p-2.5 bg-emerald-50 dark:bg-emerald-950/50 rounded-xl text-emerald-600 dark:text-emerald-400">
-                                        <MdAttachMoney className="text-2xl" />
+                                    <div className="p-1.5 sm:p-2.5 bg-emerald-50 dark:bg-emerald-950/50 rounded-lg sm:rounded-xl text-emerald-600 dark:text-emerald-400 shrink-0">
+                                        <MdAttachMoney className="text-lg sm:text-2xl" />
                                     </div>
                                 </div>
-                                <div className="mt-2">
-                                    <h3 className="text-slate-900 dark:text-white text-2xl sm:text-3xl font-black tracking-tight">
+                                <div className="mt-1 sm:mt-2">
+                                    <h3 className="text-slate-900 dark:text-white text-lg sm:text-2xl lg:text-3xl font-black tracking-tight">
                                         ${stats.totalRevenue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                     </h3>
                                 </div>
                             </div>
-                            <div className="flex items-center justify-between mt-4 pt-3 border-t border-slate-100 dark:border-white/5 text-xs">
-                                <span className="text-slate-500 dark:text-slate-400 font-medium">
+                            <div className="flex items-center justify-between mt-2 sm:mt-4 pt-2 sm:pt-3 border-t border-slate-100 dark:border-white/5 text-[10px] sm:text-xs">
+                                <span className="text-slate-500 dark:text-slate-400 font-medium truncate">
                                     {t('admin.allTime')}
                                 </span>
-                                <span className="font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
-                                    <MdTrendingUp className="text-sm" />
+                                <span className="font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-0.5 shrink-0">
+                                    <MdTrendingUp className="text-xs sm:text-sm" />
                                     {stats.deliveredOrdersCount} {t('admin.delivered')}
                                 </span>
                             </div>
                         </div>
 
                         {/* Card 2: Total Orders & Processing Rate */}
-                        <div className="flex flex-col justify-between rounded-2xl p-6 bg-white dark:bg-[#0f172a] border border-slate-200/80 dark:border-white/10 shadow-xs hover:shadow-md transition-all">
+                        <div className="flex flex-col justify-between rounded-xl sm:rounded-2xl p-3.5 sm:p-5 lg:p-6 bg-white dark:bg-[#0f172a] border border-slate-200/80 dark:border-white/10 shadow-xs hover:shadow-md transition-all">
                             <div>
-                                <div className="flex justify-between items-center">
-                                    <p className="text-slate-500 dark:text-slate-400 text-xs font-extrabold uppercase tracking-wider">
+                                <div className="flex justify-between items-center gap-1">
+                                    <p className="text-slate-500 dark:text-slate-400 text-[10px] sm:text-xs font-extrabold uppercase tracking-wider truncate">
                                         {t('admin.totalOrders')}
                                     </p>
-                                    <div className="p-2.5 bg-sky-50 dark:bg-sky-950/50 rounded-xl text-[#072835] dark:text-sky-300">
-                                        <MdInventory2 className="text-2xl" />
+                                    <div className="p-1.5 sm:p-2.5 bg-sky-50 dark:bg-sky-950/50 rounded-lg sm:rounded-xl text-[#072835] dark:text-sky-300 shrink-0">
+                                        <MdInventory2 className="text-lg sm:text-2xl" />
                                     </div>
                                 </div>
-                                <div className="mt-2">
-                                    <h3 className="text-slate-900 dark:text-white text-2xl sm:text-3xl font-black tracking-tight">
+                                <div className="mt-1 sm:mt-2">
+                                    <h3 className="text-slate-900 dark:text-white text-lg sm:text-2xl lg:text-3xl font-black tracking-tight">
                                         {stats.totalOrders}
                                     </h3>
                                 </div>
                             </div>
-                            <div className="flex items-center justify-between mt-4 pt-3 border-t border-slate-100 dark:border-white/5 text-xs">
-                                <span className="text-slate-500 dark:text-slate-400 font-medium">
+                            <div className="flex items-center justify-between mt-2 sm:mt-4 pt-2 sm:pt-3 border-t border-slate-100 dark:border-white/5 text-[10px] sm:text-xs">
+                                <span className="text-slate-500 dark:text-slate-400 font-medium truncate">
                                     {t('admin.fulfillmentRate')}
                                 </span>
-                                <span className="font-bold text-sky-700 dark:text-sky-300">
-                                    {fulfillmentRate}% ({stats.pipeline.delivered}/{stats.totalOrders})
+                                <span className="font-bold text-sky-700 dark:text-sky-300 shrink-0">
+                                    {fulfillmentRate}% ({stats.pipeline.delivered})
                                 </span>
                             </div>
                         </div>
 
                         {/* Card 3: Average Order Value (AOV) */}
-                        <div className="flex flex-col justify-between rounded-2xl p-6 bg-white dark:bg-[#0f172a] border border-slate-200/80 dark:border-white/10 shadow-xs hover:shadow-md transition-all">
+                        <div className="flex flex-col justify-between rounded-xl sm:rounded-2xl p-3.5 sm:p-5 lg:p-6 bg-white dark:bg-[#0f172a] border border-slate-200/80 dark:border-white/10 shadow-xs hover:shadow-md transition-all">
                             <div>
-                                <div className="flex justify-between items-center">
-                                    <p className="text-slate-500 dark:text-slate-400 text-xs font-extrabold uppercase tracking-wider">
+                                <div className="flex justify-between items-center gap-1">
+                                    <p className="text-slate-500 dark:text-slate-400 text-[10px] sm:text-xs font-extrabold uppercase tracking-wider truncate">
                                         {t('admin.averageOrderValue')}
                                     </p>
-                                    <div className="p-2.5 bg-amber-50 dark:bg-amber-950/50 rounded-xl text-amber-600 dark:text-amber-400">
-                                        <MdTrendingUp className="text-2xl" />
+                                    <div className="p-1.5 sm:p-2.5 bg-amber-50 dark:bg-amber-950/50 rounded-lg sm:rounded-xl text-amber-600 dark:text-amber-400 shrink-0">
+                                        <MdTrendingUp className="text-lg sm:text-2xl" />
                                     </div>
                                 </div>
-                                <div className="mt-2">
-                                    <h3 className="text-slate-900 dark:text-white text-2xl sm:text-3xl font-black tracking-tight">
+                                <div className="mt-1 sm:mt-2">
+                                    <h3 className="text-slate-900 dark:text-white text-lg sm:text-2xl lg:text-3xl font-black tracking-tight">
                                         ${stats.averageOrderValue.toFixed(2)}
                                     </h3>
                                 </div>
                             </div>
-                            <div className="flex items-center justify-between mt-4 pt-3 border-t border-slate-100 dark:border-white/5 text-xs">
-                                <span className="text-slate-500 dark:text-slate-400 font-medium">
+                            <div className="flex items-center justify-between mt-2 sm:mt-4 pt-2 sm:pt-3 border-t border-slate-100 dark:border-white/5 text-[10px] sm:text-xs">
+                                <span className="text-slate-500 dark:text-slate-400 font-medium truncate">
                                     {t('admin.perDeliveredOrder')}
                                 </span>
-                                <span className="font-bold text-amber-600 dark:text-amber-400">
-                                    ${(stats.averageOrderValue * 0.9).toFixed(0)} Basket Index
+                                <span className="font-bold text-amber-600 dark:text-amber-400 shrink-0">
+                                    {stats.averageOrderValue > 0 ? `$${stats.averageOrderValue.toFixed(0)}` : "$0.00"}
                                 </span>
                             </div>
                         </div>
 
                         {/* Card 4: Inventory Health */}
-                        <div className="flex flex-col justify-between rounded-2xl p-6 bg-white dark:bg-[#0f172a] border border-slate-200/80 dark:border-white/10 shadow-xs hover:shadow-md transition-all">
+                        <div className="flex flex-col justify-between rounded-xl sm:rounded-2xl p-3.5 sm:p-5 lg:p-6 bg-white dark:bg-[#0f172a] border border-slate-200/80 dark:border-white/10 shadow-xs hover:shadow-md transition-all">
                             <div>
-                                <div className="flex justify-between items-center">
-                                    <p className="text-slate-500 dark:text-slate-400 text-xs font-extrabold uppercase tracking-wider">
+                                <div className="flex justify-between items-center gap-1">
+                                    <p className="text-slate-500 dark:text-slate-400 text-[10px] sm:text-xs font-extrabold uppercase tracking-wider truncate">
                                         {t('admin.inventoryHealth')}
                                     </p>
-                                    <div className={`p-2.5 rounded-xl ${
+                                    <div className={`p-1.5 sm:p-2.5 rounded-lg sm:rounded-xl shrink-0 ${
                                         stats.inventory.lowStockCount > 0 || stats.inventory.outOfStockCount > 0
                                             ? "bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400"
                                             : "bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400"
                                     }`}>
-                                        <MdStorefront className="text-2xl" />
+                                        <MdStorefront className="text-lg sm:text-2xl" />
                                     </div>
                                 </div>
-                                <div className="mt-2">
-                                    <h3 className="text-slate-900 dark:text-white text-2xl sm:text-3xl font-black tracking-tight">
-                                        {stats.inventory.inStockCount} <span className="text-sm font-semibold text-slate-400">/ {stats.inventory.totalProducts}</span>
+                                <div className="mt-1 sm:mt-2">
+                                    <h3 className="text-slate-900 dark:text-white text-lg sm:text-2xl lg:text-3xl font-black tracking-tight">
+                                        {stats.inventory.inStockCount} <span className="text-xs sm:text-sm font-semibold text-slate-400">/ {stats.inventory.totalProducts}</span>
                                     </h3>
                                 </div>
                             </div>
-                            <div className="flex items-center justify-between mt-4 pt-3 border-t border-slate-100 dark:border-white/5 text-xs">
-                                <span className="text-slate-500 dark:text-slate-400 font-medium">
+                            <div className="flex items-center justify-between mt-2 sm:mt-4 pt-2 sm:pt-3 border-t border-slate-100 dark:border-white/5 text-[10px] sm:text-xs">
+                                <span className="text-slate-500 dark:text-slate-400 font-medium truncate">
                                     {stats.inventory.lowStockCount + stats.inventory.outOfStockCount > 0 ? (
                                         <span className="text-rose-600 dark:text-rose-400 font-bold">
                                             ⚠️ {stats.inventory.lowStockCount + stats.inventory.outOfStockCount} {t('admin.unitsLeft')}
@@ -314,7 +319,7 @@ export default function DashboardClient({ stats }: { stats: DashboardStats }) {
                                 </span>
                                 <Link 
                                     href="/admin/products"
-                                    className="font-bold text-slate-700 dark:text-slate-300 hover:underline"
+                                    className="font-bold text-slate-700 dark:text-slate-300 hover:underline shrink-0"
                                 >
                                     {stats.totalCategories} {t('admin.categories')}
                                 </Link>
