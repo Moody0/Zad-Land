@@ -101,15 +101,22 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
             {/* Mobile Overlay */}
             {isOpen && (
                 <div
-                    className="fixed inset-0 bg-black/50 backdrop-blur-xs z-40 lg:hidden transition-opacity"
+                    className="fixed inset-0 bg-black/50 backdrop-blur-xs z-40 lg:hidden transition-opacity duration-300"
                     onClick={onClose}
+                    aria-hidden="true"
                 />
             )}
 
             {/* Sidebar */}
             <aside
-                className={`fixed lg:static inset-y-0 ${dir === 'rtl' ? 'end-0 border-s' : 'start-0 border-e'} z-50 w-[270px] shrink-0 border-slate-200/80 dark:border-white/10 bg-white dark:bg-[#0f172a] flex flex-col transition-transform duration-300 ease-in-out shadow-lg lg:shadow-none ${
-                    isOpen ? "translate-x-0" : (dir === 'rtl' ? "translate-x-full lg:translate-x-0" : "-translate-x-full lg:translate-x-0")
+                className={`fixed lg:static inset-y-0 ${
+                    dir === 'rtl' ? 'right-0 border-s' : 'left-0 border-e'
+                } z-50 w-[270px] max-w-[85vw] shrink-0 border-slate-200/80 dark:border-white/10 bg-white dark:bg-[#0f172a] flex flex-col transition-transform duration-300 ease-in-out shadow-2xl lg:shadow-none ${
+                    isOpen
+                        ? "translate-x-0 pointer-events-auto"
+                        : dir === 'rtl'
+                            ? "translate-x-full pointer-events-none lg:pointer-events-auto lg:translate-x-0"
+                            : "-translate-x-full pointer-events-none lg:pointer-events-auto lg:translate-x-0"
                 }`}
             >
                 <div className="h-full flex flex-col justify-between py-5 px-4 overflow-y-auto scrollbar-hide">
@@ -134,11 +141,12 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
 
                             {/* Close button for mobile */}
                             <button
+                                type="button"
                                 onClick={onClose}
-                                className="lg:hidden p-1.5 rounded-lg text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                                className="lg:hidden p-2 rounded-xl text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
                                 aria-label="Close Sidebar"
                             >
-                                <MdClose className="text-xl" />
+                                <MdClose className="text-2xl" />
                             </button>
                         </div>
 
