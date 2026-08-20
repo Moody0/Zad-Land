@@ -4,6 +4,7 @@ import FooterInfoBar from "../components/FooterInfoBar";
 import AnnouncementBar from "../components/AnnouncementBar";
 import { getI18n } from "@/lib/i18n";
 import { getCatalogCategories } from "@/lib/catalog";
+import { getNavigationData } from "@/lib/navigation";
 
 async function getCategories() {
     try {
@@ -19,13 +20,21 @@ export default async function SiteLayout({
 }: {
     children: React.ReactNode;
 }) {
-    const categories = await getCategories();
-    const { t, dir, language } = await getI18n();
+    const [categories, navData, { t, dir, language }] = await Promise.all([
+        getCategories(),
+        getNavigationData(),
+        getI18n(),
+    ]);
 
     return (
         <div className="min-h-screen flex flex-col" dir={dir}>
-            {/* Header */}
-            <Header initialCategories={categories} dir={dir} language={language} />
+            {/* Header with Server-Side Pre-rendered Navigation Data */}
+            <Header
+                initialCategories={categories}
+                initialNavData={navData}
+                dir={dir}
+                language={language}
+            />
 
             {/* Main Content */}
             <main className="flex-1">
@@ -34,8 +43,6 @@ export default async function SiteLayout({
 
             {/* Footer */}
             <Footer t={t} language={language} />
-
-
         </div>
     );
 }

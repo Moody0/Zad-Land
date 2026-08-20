@@ -24,11 +24,12 @@ interface HeaderCategory {
 
 interface HeaderProps {
     initialCategories?: HeaderCategory[];
+    initialNavData?: NavMainCategory[];
     dir: 'ltr' | 'rtl';
     language: 'en' | 'ar';
 }
 
-const Header = ({ initialCategories = [], dir }: HeaderProps) => {
+const Header = ({ initialCategories = [], initialNavData = [], dir }: HeaderProps) => {
     const { language } = useLanguage();
     const { totalItems, openDrawer } = useCart();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -39,7 +40,7 @@ const Header = ({ initialCategories = [], dir }: HeaderProps) => {
     const isScrolledRef = useRef(false);
 
     // Mega menu state
-    const [navData, setNavData] = useState<NavMainCategory[]>([]);
+    const [navData, setNavData] = useState<NavMainCategory[]>(initialNavData);
     const [activeMegaMenu, setActiveMegaMenu] = useState<string | null>(null);
     const closeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -85,15 +86,18 @@ const Header = ({ initialCategories = [], dir }: HeaderProps) => {
         }, 120);
     };
 
-    // Fetch navigation data on mount
+    // Sync navigation data from server or fetch fresh
     useEffect(() => {
-        fetch('/api/navigation')
+        if (initialNavData && initialNavData.length > 0) {
+            setNavData(initialNavData);
+        }
+        fetch('/api/navigation', { cache: 'no-store' })
             .then((res) => res.json())
             .then((data) => {
-                if (Array.isArray(data)) setNavData(data);
+                if (Array.isArray(data) && data.length > 0) setNavData(data);
             })
             .catch(() => {});
-    }, []);
+    }, [initialNavData]);
 
     React.useEffect(() => {
         let lastScrollY = window.scrollY;
