@@ -1,12 +1,33 @@
-import { cookies } from 'next/headers';
+import { cookies, headers } from 'next/headers';
 import en from '@/app/locales/en.json';
 import ar from '@/app/locales/ar.json';
 
 export async function getI18n() {
     const cookieStore = await cookies();
-    const language = (cookieStore.get('language')?.value || 'ar') as 'en' | 'ar';
+    let language: 'en' | 'ar' = 'ar';
+
+    const cookieLang = cookieStore.get('language')?.value;
+    if (cookieLang === 'en' || cookieLang === 'ar') {
+        language = cookieLang;
+    } else {
+        // Fallback: check accept-language header for first-time visitors
+        try {
+            const headersList = await headers();
+            const acceptLang = headersList.get('accept-language')?.toLowerCase() || '';
+            if (acceptLang.startsWith('en')) {
+                language = 'en';
+            } else if (acceptLang.startsWith('ar')) {
+                language = 'ar';
+            } else {
+                language = 'ar';
+            }
+        } catch {
+            language = 'ar';
+        }
+    }
+
     const translations = language === 'ar' ? ar : en;
-    const dir = (language === 'ar' ? 'rtl' : 'ltr') as 'rtl' | 'ltr';
+    const dir: 'rtl' | 'ltr' = language === 'ar' ? 'rtl' : 'ltr';
 
     const t = (key: string): string => {
         const keys = key.split('.');
@@ -14,12 +35,9 @@ export async function getI18n() {
 
         for (const k of keys) {
             if (result && typeof result === 'object') {
-                // Try exact match first
                 if (k in result) {
                     result = result[k];
-                } 
-                // Fallback: search case-insensitively
-                else {
+                } else {
                     const foundKey = Object.keys(result).find(
                         existingKey => existingKey.toLowerCase() === k.toLowerCase()
                     );

@@ -33,19 +33,16 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     const [translations, setTranslations] = useState<TranslationObject>(() => language === 'en' ? en : ar);
     const [mounted, setMounted] = useState(false);
 
-    // Sync language on client mount if user had a saved preference
+    // Sync language on client mount if user had a saved preference that differs from server render
     useEffect(() => {
         const savedLang = localStorage.getItem('language') as Language;
-        if (savedLang && (savedLang === 'en' || savedLang === 'ar') && savedLang !== language) {
-            // Update state, cookie, and document direction
+        const currentDocLang = (document.documentElement.lang || 'ar') as Language;
+        if (savedLang && (savedLang === 'en' || savedLang === 'ar') && savedLang !== currentDocLang) {
             setLanguageState(savedLang);
             document.cookie = `language=${savedLang}; path=/; max-age=31536000`;
             document.documentElement.lang = savedLang;
             document.documentElement.dir = savedLang === 'ar' ? 'rtl' : 'ltr';
-            // Reload if there's a mismatch with server-rendered language
-            if (document.documentElement.lang !== savedLang) {
-                window.location.reload();
-            }
+            window.location.reload();
         }
         setMounted(true);
     }, []);
