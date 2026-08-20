@@ -4,6 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { useLanguage } from '@/app/context/LanguageContext';
 import ResilientImage from '@/app/components/ResilientImage';
+import { MdChevronRight } from 'react-icons/md';
 import type { RailBrand } from '@/lib/admin-actions';
 
 interface BrandsRailProps {
@@ -55,13 +56,46 @@ export default function BrandsRail({ brands = [] }: BrandsRailProps) {
         return nameParts[0]?.trim() || brand.name;
     };
 
+    // On wide desktop: Display 16 premier brands in 2 balanced rows of 8
+    const desktopBrands = brands.slice(0, 16);
+
+    const renderBrandCard = (brand: RailBrand, isCompact = false) => {
+        const brandLabel = getBrandLabel(brand);
+
+        return (
+            <Link
+                key={brand.id || brand.slug}
+                href={`/brands/${brand.slug}`}
+                className={`group flex flex-col items-center justify-between bg-white dark:bg-[#1A1A14] border border-[#B8860B]/20 dark:border-white/10 hover:border-[#B8860B] hover:shadow-md hover:-translate-y-0.5 rounded-xl sm:rounded-2xl transition-all duration-300 ${
+                    isCompact ? 'p-2 min-h-[92px] w-full snap-start' : 'p-2.5 sm:p-3 min-h-[105px] sm:min-h-[115px]'
+                }`}
+            >
+                {/* Brand Logo Container with High Visual Impact */}
+                <div className={`relative w-full flex items-center justify-center overflow-hidden ${
+                    isCompact ? 'h-[38px]' : 'h-[44px] sm:h-[50px] md:h-[54px]'
+                }`}>
+                    <ResilientImage
+                        src={brand.image}
+                        alt={brand.name}
+                        className="h-full w-full object-contain transition-transform duration-300 group-hover:scale-108"
+                    />
+                </div>
+
+                {/* Brand Subtitle / Category Label */}
+                <span className="text-[10px] sm:text-[11px] md:text-[12px] font-bold text-slate-800 dark:text-gray-200 text-center line-clamp-1 group-hover:text-[#B8860B] dark:group-hover:text-[#E5B54A] transition-colors mt-1 leading-snug">
+                    {brandLabel}
+                </span>
+            </Link>
+        );
+    };
+
     return (
         <section className="w-full bg-white dark:bg-[#121212] pt-4 pb-6 md:pt-6 md:pb-8 border-b border-gray-100 dark:border-white/5">
             <div className="container-custom">
                 {/* Ornamental Section Header: ─────── 🌾 الشركات العالمية 🌾 ─────── */}
-                <div className="flex items-center justify-center gap-3 sm:gap-4 md:gap-6 mb-6 md:mb-8">
+                <div className="flex items-center justify-center gap-3 sm:gap-4 md:gap-6 mb-5 sm:mb-6 md:mb-7">
                     {/* Left Ornamental Line */}
-                    <div className="h-[1.5px] flex-1 max-w-[80px] sm:max-w-[140px] md:max-w-[220px] bg-gradient-to-r from-transparent via-[#C5A059]/40 to-[#B8860B] dark:to-[#E5B54A]" />
+                    <div className="h-[1.5px] flex-1 max-w-[60px] sm:max-w-[120px] md:max-w-[200px] bg-gradient-to-r from-transparent via-[#C5A059]/40 to-[#B8860B] dark:to-[#E5B54A]" />
 
                     {/* Wheat / Olive Leaf Left */}
                     <svg
@@ -76,7 +110,7 @@ export default function BrandsRail({ brands = [] }: BrandsRailProps) {
                     </svg>
 
                     {/* Section Title */}
-                    <h2 className="text-lg sm:text-2xl md:text-[28px] font-extrabold text-[#072835] dark:text-white tracking-tight whitespace-nowrap px-1">
+                    <h2 className="text-base sm:text-2xl md:text-[28px] font-extrabold text-[#072835] dark:text-white tracking-tight whitespace-nowrap px-1">
                         {isArabic ? 'الشركات العالمية' : 'Global Partner Brands'}
                     </h2>
 
@@ -93,36 +127,36 @@ export default function BrandsRail({ brands = [] }: BrandsRailProps) {
                     </svg>
 
                     {/* Right Ornamental Line */}
-                    <div className="h-[1.5px] flex-1 max-w-[80px] sm:max-w-[140px] md:max-w-[220px] bg-gradient-to-l from-transparent via-[#C5A059]/40 to-[#B8860B] dark:to-[#E5B54A]" />
+                    <div className="h-[1.5px] flex-1 max-w-[60px] sm:max-w-[120px] md:max-w-[200px] bg-gradient-to-l from-transparent via-[#C5A059]/40 to-[#B8860B] dark:to-[#E5B54A]" />
                 </div>
 
-                {/* Symmetrical Brand Cards Grid (8 columns per row on desktop, 4 on tablet, 3-4 on mobile) */}
-                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2 sm:gap-3 md:gap-3.5">
-                    {brands.map((brand) => {
-                        const brandLabel = getBrandLabel(brand);
+                {/* 1. Mobile Experience (< md): Compact 2-Row Horizontal Swipe (Zero Scroll Fatigue) */}
+                <div className="md:hidden">
+                    <div className="-mx-4 px-4 overflow-x-auto scrollbar-hide py-1">
+                        <div className="grid grid-rows-2 grid-flow-col auto-cols-[125px] sm:auto-cols-[140px] gap-2.5 snap-x">
+                            {brands.map((brand) => renderBrandCard(brand, true))}
+                        </div>
+                    </div>
+                </div>
 
-                        return (
+                {/* 2. Desktop & Tablet Experience (>= md): Symmetrical 8-Column Grid (2 Balanced Rows of 8) */}
+                <div className="hidden md:block">
+                    <div className="grid grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 md:gap-3.5">
+                        {desktopBrands.map((brand) => renderBrandCard(brand, false))}
+                    </div>
+
+                    {/* Subtle "Explore All Brands" Action Pill */}
+                    {brands.length > 16 && (
+                        <div className="mt-5 flex justify-center">
                             <Link
-                                key={brand.id || brand.slug}
-                                href={`/brands/${brand.slug}`}
-                                className="group flex flex-col items-center justify-between bg-white dark:bg-[#1A1A14] border border-[#B8860B]/20 dark:border-white/10 hover:border-[#B8860B] hover:shadow-md hover:-translate-y-0.5 rounded-xl sm:rounded-2xl p-2 sm:p-2.5 md:p-3 transition-all duration-300"
+                                href="/brands"
+                                className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-bold text-[#072835] dark:text-[#E5B54A] hover:text-[#B8860B] bg-[#FAF6EC] dark:bg-white/5 border border-[#B8860B]/20 hover:border-[#B8860B]/50 transition-all duration-200 shadow-2xs hover:shadow-xs group"
                             >
-                                {/* Brand Logo Container */}
-                                <div className="relative w-full h-[36px] sm:h-[46px] md:h-[50px] flex items-center justify-center overflow-hidden">
-                                    <ResilientImage
-                                        src={brand.image}
-                                        alt={brand.name}
-                                        className="h-full w-full object-contain transition-transform duration-300 group-hover:scale-105"
-                                    />
-                                </div>
-
-                                {/* Brand Subtitle / Category Label */}
-                                <span className="text-[10px] sm:text-[11px] md:text-[11.5px] font-semibold text-slate-700 dark:text-gray-300 text-center line-clamp-1 group-hover:text-[#B8860B] dark:group-hover:text-[#E5B54A] transition-colors mt-1.5 leading-tight">
-                                    {brandLabel}
-                                </span>
+                                <span>{isArabic ? `تصفح كافة الشركات والعلامات (${brands.length}+)` : `View All Partner Brands (${brands.length}+)`}</span>
+                                <MdChevronRight className={`text-base transition-transform group-hover:translate-x-0.5 ${isArabic ? 'rotate-180 group-hover:-translate-x-0.5' : ''}`} />
                             </Link>
-                        );
-                    })}
+                        </div>
+                    )}
                 </div>
             </div>
         </section>
