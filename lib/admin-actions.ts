@@ -90,31 +90,172 @@ export interface HomeBrand {
     };
 }
 
-export async function getDashboardStats() {
+export interface DashboardStats {
+    totalRevenue: number;
+    totalOrders: number;
+    totalProducts: number;
+    totalCategories: number;
+    averageOrderValue: number;
+    deliveredOrdersCount: number;
+    pipeline: {
+        pending: number;
+        processing: number;
+        shipped: number;
+        delivered: number;
+        cancelled: number;
+    };
+    inventory: {
+        totalProducts: number;
+        lowStockCount: number;
+        outOfStockCount: number;
+        inStockCount: number;
+    };
+    lowStockProducts: {
+        id: string;
+        name: string;
+        nameAr: string | null;
+        stock: number;
+        price: number;
+        image: string;
+        categoryName: string;
+    }[];
+    topProducts: {
+        id: string;
+        name: string;
+        nameAr: string | null;
+        image: string;
+        unitsSold: number;
+        revenue: number;
+        stock: number;
+        price: number;
+    }[];
+    salesTrend: {
+        date: string;
+        label: string;
+        revenue: number;
+        orders: number;
+    }[];
+    topCities: {
+        city: string;
+        orderCount: number;
+        totalRevenue: number;
+    }[];
+    recentOrders: {
+        id: string;
+        Name: string;
+        customer: string;
+        phone: string;
+        streetAddress: string;
+        city: string;
+        product: string;
+        date: string;
+        createdAt: string;
+        amount: string;
+        totalAmount: number;
+        status: string;
+        statusColor: string;
+        items: {
+            id: string;
+            quantity: number;
+            price: number;
+            product: {
+                name: string;
+                images: string;
+            } | null;
+        }[];
+    }[];
+}
+
+export async function getDashboardStats(): Promise<DashboardStats> {
     try {
+        const fourteenDaysAgo = new Date();
+        fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() - 13);
+        fourteenDaysAgo.setHours(0, 0, 0, 0);
+
         const [
-            totalRevenue,
-            totalOrders,
-            totalProducts,
-            totalCategories,
-            recentOrders
+            deliveredRevenueAgg,
+            allOrdersCount,
+            pendingOrdersCount,
+            processingOrdersCount,
+            shippedOrdersCount,
+            deliveredOrdersCount,
+            cancelledOrdersCount,
+            totalProductsCount,
+            outOfStockProductsCount,
+            lowStockProductsCount,
+            totalCategoriesCount,
+            criticalStockProducts,
+            trendOrders,
+            allOrderItemsForTopSales,
+            recentOrders,
+            allCityOrders
         ] = await Promise.all([
+            // Delivered revenue
             prisma.order.aggregate({
-                where: {
-                    status: 'DELIVERED'
-                },
-                _sum: {
-                    totalAmount: true
+                where: { status: 'DELIVERED' },
+                _sum: { totalAmount: true }
+            }),
+            // Status counts
+            prisma.order.count(),
+            prisma.order.count({ where: { status: 'PENDING' } }),
+            prisma.order.count({ where: { status: 'PROCESSING' } }),
+            prisma.order.count({ where: { status: 'SHIPPED' } }),
+            prisma.order.count({ where: { status: 'DELIVERED' } }),
+            prisma.order.count({ where: { status: 'CANCELLED' } }),
+            // Product inventory counts
+            prisma.product.count(),
+            prisma.product.count({ where: { stock: { lte: 0 } } }),
+            prisma.product.count({ where: { stock: { gt: 0, lte: 5 } } }),
+            prisma.category.count(),
+            // Critical stock watchlist
+            prisma.product.findMany({
+                where: { stock: { lte: 5 } },
+                orderBy: { stock: 'asc' },
+                take: 5,
+                include: {
+                    category: {
+                        select: { name: true }
+                    }
                 }
             }),
-            prisma.order.count(),
-            prisma.product.count(),
-            prisma.category.count(),
+            // Trend orders over last 14 days
             prisma.order.findMany({
-                take: 5,
-                orderBy: {
-                    createdAt: 'desc'
+                where: {
+                    createdAt: { gte: fourteenDaysAgo },
+                    status: { not: 'CANCELLED' }
                 },
+                select: {
+                    createdAt: true,
+                    totalAmount: true,
+                    status: true
+                },
+                orderBy: { createdAt: 'asc' }
+            }),
+            // Top selling order items
+            prisma.orderItem.findMany({
+                where: {
+                    order: {
+                        status: { not: 'CANCELLED' }
+                    }
+                },
+                include: {
+                    product: {
+                        select: {
+                            id: true,
+                            name: true,
+                            nameAr: true,
+                            images: true,
+                            stock: true,
+                            price: true
+                        }
+                    }
+                },
+                take: 300
+            }),
+            // Recent 6 orders
+            prisma.order.findMany({
+                take: 6,
+                orderBy: { createdAt: 'desc' },
                 include: {
                     items: {
                         include: {
@@ -122,14 +263,167 @@ export async function getDashboardStats() {
                         }
                     }
                 }
+            }),
+            // City demand aggregation
+            prisma.order.findMany({
+                where: { status: { not: 'CANCELLED' } },
+                select: {
+                    city: true,
+                    totalAmount: true
+                },
+                take: 200
             })
         ]);
 
+        const totalRevenueNumber = Number(deliveredRevenueAgg._sum.totalAmount) || 0;
+        const avgOrderValue = deliveredOrdersCount > 0 
+            ? totalRevenueNumber / deliveredOrdersCount 
+            : allOrdersCount > 0 
+                ? (await prisma.order.aggregate({ where: { status: { not: 'CANCELLED' } }, _sum: { totalAmount: true } }))._sum.totalAmount ? Number((await prisma.order.aggregate({ where: { status: { not: 'CANCELLED' } }, _sum: { totalAmount: true } }))._sum.totalAmount) / (allOrdersCount - cancelledOrdersCount || 1) : 0
+                : 0;
+
+        // 14-day daily sales trend map
+        const trendMap: { [key: string]: { revenue: number; orders: number } } = {};
+        for (let i = 13; i >= 0; i--) {
+            const d = new Date();
+            d.setDate(d.getDate() - i);
+            const dateKey = d.toISOString().split('T')[0];
+            trendMap[dateKey] = { revenue: 0, orders: 0 };
+        }
+
+        trendOrders.forEach(o => {
+            const dateKey = new Date(o.createdAt).toISOString().split('T')[0];
+            if (trendMap[dateKey]) {
+                trendMap[dateKey].orders += 1;
+                trendMap[dateKey].revenue += Number(o.totalAmount) || 0;
+            }
+        });
+
+        const salesTrend = Object.keys(trendMap).map(dateKey => {
+            const d = new Date(dateKey + 'T00:00:00');
+            return {
+                date: dateKey,
+                label: d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+                revenue: Number(trendMap[dateKey].revenue.toFixed(2)),
+                orders: trendMap[dateKey].orders
+            };
+        });
+
+        // Calculate Top 5 best-selling products
+        const productSalesMap = new Map<string, {
+            id: string;
+            name: string;
+            nameAr: string | null;
+            image: string;
+            unitsSold: number;
+            revenue: number;
+            stock: number;
+            price: number;
+        }>();
+
+        allOrderItemsForTopSales.forEach(item => {
+            if (!item.product) return;
+            const existing = productSalesMap.get(item.productId);
+            const itemRevenue = Number(item.price) * item.quantity;
+            let firstImg = "";
+            try {
+                if (item.product.images) {
+                    const parsed = JSON.parse(item.product.images);
+                    firstImg = Array.isArray(parsed) ? parsed[0] : parsed;
+                }
+            } catch {
+                firstImg = item.product.images ? item.product.images.split(',')[0].trim() : "";
+            }
+
+            if (existing) {
+                existing.unitsSold += item.quantity;
+                existing.revenue += itemRevenue;
+            } else {
+                productSalesMap.set(item.productId, {
+                    id: item.product.id,
+                    name: item.product.name,
+                    nameAr: item.product.nameAr,
+                    image: firstImg || "",
+                    unitsSold: item.quantity,
+                    revenue: itemRevenue,
+                    stock: item.product.stock,
+                    price: Number(item.product.price)
+                });
+            }
+        });
+
+        const topProducts = Array.from(productSalesMap.values())
+            .sort((a, b) => b.unitsSold - a.unitsSold)
+            .slice(0, 5);
+
+        // Low stock products watchlist
+        const lowStockProducts = criticalStockProducts.map(p => {
+            let firstImg = "";
+            try {
+                if (p.images) {
+                    const parsed = JSON.parse(p.images);
+                    firstImg = Array.isArray(parsed) ? parsed[0] : parsed;
+                }
+            } catch {
+                firstImg = p.images ? p.images.split(',')[0].trim() : "";
+            }
+
+            return {
+                id: p.id,
+                name: p.name,
+                nameAr: p.nameAr,
+                stock: p.stock,
+                price: Number(p.price),
+                image: firstImg || "",
+                categoryName: p.category?.name || "Uncategorized"
+            };
+        });
+
+        // Top delivery cities
+        const cityMap = new Map<string, { orderCount: number; totalRevenue: number }>();
+        allCityOrders.forEach(o => {
+            const rawCity = (o.city || "Unknown").trim();
+            if (!rawCity) return;
+            const city = rawCity.charAt(0).toUpperCase() + rawCity.slice(1);
+            const current = cityMap.get(city) || { orderCount: 0, totalRevenue: 0 };
+            current.orderCount += 1;
+            current.totalRevenue += Number(o.totalAmount) || 0;
+            cityMap.set(city, current);
+        });
+
+        const topCities = Array.from(cityMap.entries())
+            .map(([city, val]) => ({
+                city,
+                orderCount: val.orderCount,
+                totalRevenue: Number(val.totalRevenue.toFixed(2))
+            }))
+            .sort((a, b) => b.orderCount - a.orderCount)
+            .slice(0, 4);
+
         return {
-            totalRevenue: Number(totalRevenue._sum.totalAmount) || 0,
-            totalOrders,
-            totalProducts,
-            totalCategories,
+            totalRevenue: totalRevenueNumber,
+            totalOrders: allOrdersCount,
+            totalProducts: totalProductsCount,
+            totalCategories: totalCategoriesCount,
+            averageOrderValue: Number(avgOrderValue.toFixed(2)),
+            deliveredOrdersCount,
+            pipeline: {
+                pending: pendingOrdersCount,
+                processing: processingOrdersCount,
+                shipped: shippedOrdersCount,
+                delivered: deliveredOrdersCount,
+                cancelled: cancelledOrdersCount
+            },
+            inventory: {
+                totalProducts: totalProductsCount,
+                lowStockCount: lowStockProductsCount,
+                outOfStockCount: outOfStockProductsCount,
+                inStockCount: Math.max(0, totalProductsCount - lowStockProductsCount - outOfStockProductsCount)
+            },
+            lowStockProducts,
+            topProducts,
+            salesTrend,
+            topCities,
             recentOrders: recentOrders.map(order => ({
                 id: order.id,
                 Name: order.Name,
@@ -166,6 +460,14 @@ export async function getDashboardStats() {
             totalOrders: 0,
             totalProducts: 0,
             totalCategories: 0,
+            averageOrderValue: 0,
+            deliveredOrdersCount: 0,
+            pipeline: { pending: 0, processing: 0, shipped: 0, delivered: 0, cancelled: 0 },
+            inventory: { totalProducts: 0, lowStockCount: 0, outOfStockCount: 0, inStockCount: 0 },
+            lowStockProducts: [],
+            topProducts: [],
+            salesTrend: [],
+            topCities: [],
             recentOrders: []
         };
     }
@@ -182,7 +484,7 @@ function getStatusColor(status: string) {
         case 'CANCELLED':
             return 'red';
         case 'SHIPPED':
-            return 'blue';
+            return 'indigo';
         default:
             return 'gray';
     }

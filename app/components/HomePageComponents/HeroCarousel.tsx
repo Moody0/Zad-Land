@@ -124,8 +124,8 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                                             className="object-cover object-center transition-transform duration-700 md:group-hover:scale-105"
                                         />
                                         
-                                        {/* Mobile Visual Overlay: Gradient, Badge, Title & Button */}
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent md:hidden flex flex-col justify-end p-4 pb-6">
+                                        {/* Mobile Visual Overlay: Rich Dark Gradient, Badge, Title & Button */}
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/75 to-black/35 md:hidden flex flex-col justify-end p-4 pb-6">
                                             <div className="flex items-center gap-1.5 mb-1.5">
                                                 <span className="bg-[#B8860B] text-white px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide shadow-xs">
                                                     {getBannerBadge(banner)}
