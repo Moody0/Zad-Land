@@ -6,7 +6,7 @@ import { useLanguage } from "@/app/context/LanguageContext";
 import { MdGridView, MdChevronLeft, MdChevronRight } from "react-icons/md";
 import ResilientImage from "@/app/components/ResilientImage";
 
-interface MainCategoryItem {
+interface CategoryItem {
     id: string;
     name: string;
     nameEn?: string;
@@ -16,16 +16,18 @@ interface MainCategoryItem {
 }
 
 interface CategorySelectorProps {
-    categories: MainCategoryItem[];
+    categories: CategoryItem[];
     activeCategory?: { id: string; name: string; slug: string } | null;
     activeMainCategory?: { id: string; name: string; slug: string } | null;
+    activeBrand?: { id: string; name: string; slug: string; image?: string | null } | null;
 }
 
-function getCategoryHref(slug?: string | null) {
-    return slug ? `/department/${slug}` : "/products";
-}
-
-const CategorySelector = ({ categories, activeCategory = null, activeMainCategory = null }: CategorySelectorProps) => {
+const CategorySelector = ({ 
+    categories, 
+    activeCategory = null, 
+    activeMainCategory = null,
+    activeBrand = null 
+}: CategorySelectorProps) => {
     const { t, dir, language } = useLanguage();
     const isArabic = language === 'ar';
     const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -34,6 +36,24 @@ const CategorySelector = ({ categories, activeCategory = null, activeMainCategor
 
     const isRtl = dir === 'rtl';
     const isAllActive = !activeCategory && !activeMainCategory;
+
+    // If on a brand page and brand has 0 subcategories, hide rail to avoid empty bar
+    if (activeBrand && (!categories || categories.length === 0)) {
+        return null;
+    }
+
+    const allHref = activeBrand ? `/brands/${activeBrand.slug}` : "/products";
+    const brandShortName = activeBrand ? activeBrand.name.split('-')[0].trim() : '';
+    const allLabel = activeBrand 
+        ? (isArabic ? `كافة منتجات ${brandShortName}` : `All ${brandShortName}`)
+        : t("products.allProducts");
+
+    const getCategoryHref = (cat: CategoryItem) => {
+        if (activeBrand) {
+            return `/categories/${cat.slug}`;
+        }
+        return `/department/${cat.slug}`;
+    };
 
     const updateArrowVisibility = () => {
         if (scrollContainerRef.current) {
@@ -118,9 +138,9 @@ const CategorySelector = ({ categories, activeCategory = null, activeMainCategor
                 className="flex items-start gap-4 sm:gap-6 overflow-x-auto hide-scrollbar py-1 px-0.5 scroll-smooth"
                 style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
-                {/* All Products Circle */}
+                {/* All / Brand All Circle */}
                 <Link
-                    href="/products"
+                    href={allHref}
                     className="shrink-0 flex flex-col items-center gap-2 group/item transition-transform duration-200 active:scale-95"
                 >
                     <div className={`w-[64px] h-[64px] sm:w-[72px] sm:h-[72px] rounded-full p-0.5 transition-all duration-300 ${
@@ -141,12 +161,12 @@ const CategorySelector = ({ categories, activeCategory = null, activeMainCategor
                         <span className={`text-[11px] sm:text-xs font-semibold text-center leading-tight line-clamp-2 ${
                             isAllActive ? 'text-[#B8860B] dark:text-[#E5B54A] font-bold' : 'text-gray-600 dark:text-gray-400 group-hover/item:text-[#B8860B]'
                         }`}>
-                            {t("products.allProducts")}
+                            {allLabel}
                         </span>
                     </div>
                 </Link>
 
-                {/* Main Category Circles */}
+                {/* Category / Subcategory Circles */}
                 {categories.map((category) => {
                     const isActive = activeMainCategory?.slug === category.slug || activeCategory?.slug === category.slug;
                     const defaultImage = 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=300';
@@ -157,7 +177,7 @@ const CategorySelector = ({ categories, activeCategory = null, activeMainCategor
                         <Link
                             key={category.id}
                             id={`category-item-${category.slug}`}
-                            href={getCategoryHref(category.slug)}
+                            href={getCategoryHref(category)}
                             className="shrink-0 flex flex-col items-center gap-2 group/item transition-transform duration-200 active:scale-95"
                         >
                             <div className={`w-[64px] h-[64px] sm:w-[72px] sm:h-[72px] rounded-full p-0.5 transition-all duration-300 ${

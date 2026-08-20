@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState, useRef } from "react";
 import ProductsBreadcrumbs from "@/app/components/ProductsPageComponents/ProductsBreadcrumbs";
+import BrandHeroHeader from "@/app/components/ProductsPageComponents/BrandHeroHeader";
 import ProductsHeader from "@/app/components/ProductsPageComponents/ProductsHeader";
 import CategorySelector from "@/app/components/ProductsPageComponents/CategorySelector";
 import EditorialProductCard from "@/app/components/ProductsPageComponents/EditorialProductCard";
@@ -163,9 +164,24 @@ const ProductsClient = ({
 
     return (
         <div className="flex-1 container-custom py-4 md:py-6">
-            <ProductsBreadcrumbs activeCategory={activeCategory} />
-            <ProductsHeader />
-            <CategorySelector categories={initialCategories} activeCategory={activeCategory} activeMainCategory={activeMainCategory} />
+            <ProductsBreadcrumbs 
+                activeCategory={activeCategory} 
+                activeBrand={activeBrand}
+                activeMainCategory={activeMainCategory}
+            />
+
+            {activeBrand ? (
+                <BrandHeroHeader brand={activeBrand} totalProducts={totalProducts} />
+            ) : (
+                <ProductsHeader />
+            )}
+
+            <CategorySelector 
+                categories={initialCategories} 
+                activeCategory={activeCategory} 
+                activeMainCategory={activeMainCategory}
+                activeBrand={activeBrand}
+            />
 
             <div className="flex-1 mt-4">
                 {/* Title & Sort Bar */}

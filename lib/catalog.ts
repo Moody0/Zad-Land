@@ -211,8 +211,12 @@ export async function getCatalogInitialData(categoryId?: string, brandId?: strin
         whereClause.mainCategoryId = mainCategoryId;
     }
 
+    const categoriesPromise = brandId 
+        ? getCatalogCategories(brandId) 
+        : getCatalogMainCategories();
+
     const [categories, products, totalProducts] = await Promise.all([
-        getCatalogMainCategories(),
+        categoriesPromise,
         prisma.product.findMany({
             where: whereClause,
             take: 12,
