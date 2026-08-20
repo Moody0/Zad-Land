@@ -100,7 +100,7 @@ const FeaturedCategoriesGrid = ({ categories }: FeaturedCategoriesGridProps) => 
                             }}
                         >
                             <Link
-                                href={`/products?category=${category.slug}`}
+                                href={`/categories/${category.slug}`}
                                 className="group relative flex flex-col h-full bg-[#FAF9F5] dark:bg-[#1E1E16] rounded-2xl overflow-hidden border border-[#B8860B]/15 hover:border-[#B8860B]/50 transition-all duration-300 hover:shadow-md p-2.5 sm:p-3.5"
                             >
                                 {/* Category Image Container (fills container with rounded border radius) */}

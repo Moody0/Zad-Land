@@ -162,6 +162,23 @@ const ProductsClient = ({
         { id: "price_desc", label: language === 'ar' ? 'السعر: الأعلى للأقل' : 'Price: High to Low' },
     ];
 
+    const getHeadingTitle = () => {
+        if (activeCategory) {
+            return language === 'ar' 
+                ? activeCategory.name 
+                : (activeCategory.description || (activeCategory as any).nameEn || activeCategory.name);
+        }
+        if (activeMainCategory) {
+            return language === 'ar' 
+                ? activeMainCategory.name 
+                : (activeMainCategory.description || activeMainCategory.name);
+        }
+        if (activeBrand) {
+            return activeBrand.name;
+        }
+        return t("products.allProducts");
+    };
+
     return (
         <div className="flex-1 container-custom py-4 md:py-6">
             <ProductsBreadcrumbs 
@@ -188,7 +205,7 @@ const ProductsClient = ({
                 <div className="flex items-center justify-between gap-4 mb-6 pb-3 border-b border-gray-100 dark:border-white/10">
                     <div>
                         <h1 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
-                            {activeCategory ? activeCategory.name : activeBrand ? activeBrand.name : t("products.allProducts")}
+                            {getHeadingTitle()}
                         </h1>
                         <p className="text-xs text-gray-500 dark:text-gray-400 font-medium mt-0.5">
                             {products.length} / {totalProducts} {t("products.results")}

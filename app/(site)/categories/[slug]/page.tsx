@@ -61,7 +61,10 @@ export default async function CategoryPage(
         notFound();
     }
 
-    const { categories, products, totalProducts } = await getCatalogInitialData(activeCategory.id);
+    const { categories, products, totalProducts } = await getCatalogInitialData(
+        activeCategory.id,
+        activeCategory.brandId || undefined
+    );
 
     return (
         <Suspense fallback={<div className="flex min-h-screen items-center justify-center">Loading...</div>}>
@@ -71,6 +74,7 @@ export default async function CategoryPage(
                 initialProducts={products}
                 initialTotal={totalProducts}
                 activeCategory={activeCategory}
+                activeBrand={activeCategory.brand}
             />
         </Suspense>
     );

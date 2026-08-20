@@ -64,7 +64,7 @@ const CategoryHighlightCards = ({ cards = [] }: CategoryHighlightCardsProps) => 
                             className="flex-none w-[170px] sm:w-[190px] md:flex-1 min-w-0 snap-start"
                         >
                             <Link
-                                href={`/products?category=${card.slug}`}
+                                href={`/department/${card.slug}`}
                                 className="group relative block w-full bg-[#FDFCF8] dark:bg-[#1a1a1a] rounded-[14px] overflow-hidden border border-gray-200/70 dark:border-white/5 hover:border-[#B8860B]/50 hover:shadow-md transition-all duration-300"
                             >
                                 {/* Image Container */}

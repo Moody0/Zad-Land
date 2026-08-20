@@ -8,6 +8,8 @@ interface ProductsBreadcrumbsProps {
     activeCategory?: {
         name: string;
         slug?: string;
+        description?: string | null;
+        nameEn?: string | null;
     } | null;
     activeBrand?: {
         name: string;
@@ -16,6 +18,7 @@ interface ProductsBreadcrumbsProps {
     activeMainCategory?: {
         name: string;
         slug?: string;
+        description?: string | null;
     } | null;
 }
 
@@ -27,6 +30,21 @@ const ProductsBreadcrumbs = ({
     const { language } = useLanguage();
     const isArabic = language === 'ar';
 
+    const getCategoryName = () => {
+        if (!activeCategory) return '';
+        if (isArabic) return activeCategory.name;
+        return activeCategory.description || activeCategory.nameEn || activeCategory.name;
+    };
+
+    const getMainCategoryName = () => {
+        if (!activeMainCategory) return '';
+        if (isArabic) return activeMainCategory.name;
+        return activeMainCategory.description || activeMainCategory.name;
+    };
+
+    const categoryName = getCategoryName();
+    const mainCategoryName = getMainCategoryName();
+
     return (
         <nav className="flex items-center flex-wrap gap-y-2 text-[11px] md:text-[12px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-6" aria-label="Breadcrumb">
             <Link href="/" className="text-[#072835] dark:text-white/80 hover:text-[#B8860B] transition-colors">
@@ -35,7 +53,22 @@ const ProductsBreadcrumbs = ({
             
             <span className="mx-2 md:mx-3 text-gray-300 dark:text-white/20">/</span>
 
-            {activeBrand ? (
+            {/* If inside both Brand & Category: Home > Brands > Brand > Category */}
+            {activeBrand && activeCategory ? (
+                <>
+                    <Link href="/brands" className="text-[#072835] dark:text-white/80 hover:text-[#B8860B] transition-colors">
+                        {isArabic ? 'العلامات التجارية' : 'Brands'}
+                    </Link>
+                    <span className="mx-2 md:mx-3 text-gray-300 dark:text-white/20">/</span>
+                    <Link href={`/brands/${activeBrand.slug}`} className="text-[#072835] dark:text-white/80 hover:text-[#B8860B] transition-colors truncate max-w-[160px] md:max-w-none">
+                        {activeBrand.name}
+                    </Link>
+                    <span className="mx-2 md:mx-3 text-gray-300 dark:text-white/20">/</span>
+                    <span className="text-[#B8860B] dark:text-[#E5B54A] truncate max-w-[200px] md:max-w-none">
+                        {categoryName}
+                    </span>
+                </>
+            ) : activeBrand ? (
                 <>
                     <Link href="/brands" className="text-[#072835] dark:text-white/80 hover:text-[#B8860B] transition-colors">
                         {isArabic ? 'العلامات التجارية' : 'Brands'}
@@ -52,7 +85,7 @@ const ProductsBreadcrumbs = ({
                     </Link>
                     <span className="mx-2 md:mx-3 text-gray-300 dark:text-white/20">/</span>
                     <span className="text-[#B8860B] dark:text-[#E5B54A] truncate max-w-[200px] md:max-w-none">
-                        {activeMainCategory.name}
+                        {mainCategoryName}
                     </span>
                 </>
             ) : activeCategory ? (
@@ -62,7 +95,7 @@ const ProductsBreadcrumbs = ({
                     </Link>
                     <span className="mx-2 md:mx-3 text-gray-300 dark:text-white/20">/</span>
                     <span className="text-[#B8860B] dark:text-[#E5B54A] truncate max-w-[200px] md:max-w-none">
-                        {activeCategory.name}
+                        {categoryName}
                     </span>
                 </>
             ) : (
