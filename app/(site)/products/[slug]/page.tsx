@@ -7,7 +7,7 @@ import ProductHeader from '@/app/components/ProductDetailsComponents/ProductHead
 import ProductPrice from '@/app/components/ProductDetailsComponents/ProductPrice';
 import ProductActions from '@/app/components/ProductDetailsComponents/ProductActions';
 import ProductAccordions from '@/app/components/ProductDetailsComponents/ProductAccordions';
-import { FaInstagram, FaFacebook, FaWhatsapp } from 'react-icons/fa';
+import ProductShareButtons from '@/app/components/ProductDetailsComponents/ProductShareButtons';
 import RelatedProducts from '@/app/components/ProductDetailsComponents/RelatedProducts';
 import Breadcrumbs from '@/app/components/ProductDetailsComponents/Breadcrumbs';
 import ProductReviews from '@/app/components/ProductDetailsComponents/ProductReviews';
@@ -24,26 +24,35 @@ export async function generateMetadata(
         },
         include: {
             brand: true,
+            category: true,
         },
     });
 
     if (!product) {
         return {
-            title: 'Product Not Found',
+            title: 'Product Not Found | Zad Land',
         };
     }
 
-    const title = `${product.name} | Zad Land`;
-    const description = product.description || `Buy ${product.name} at Zad Land.`;
-    const mainImage = (product.images as string).split(',').map((img: string) => img.trim()).filter(Boolean)[0];
+    const title = `${product.name} | Zad Land - زاد لاند`;
+    const brandName = product.brand?.name ? product.brand.name.split('-')[0].trim() : 'Zad Land';
+    const description = product.description 
+        ? `${product.name} من ${brandName}. متوفر للطلب والبيع بالجملة مع شحن موثوق عبر منصة زاد لاند. ${product.description.slice(0, 120)}`
+        : `اشترِ ${product.name} من ${brandName} بأفضل أسعار الجملة المعتمدة من شركة زاد لاند لتجارة وتوزيع المواد الغذائية.`;
+
+    const mainImage = (product.images as string).split(',').map((img: string) => img.trim()).filter(Boolean)[0] || '/logo.jpeg';
 
     return {
         title,
         description,
+        alternates: {
+            canonical: `/products/${product.slug}`,
+        },
         openGraph: {
             title,
             description,
-            type: 'website',
+            type: 'article',
+            url: `/products/${product.slug}`,
             images: [
                 {
                     url: mainImage,
@@ -103,9 +112,44 @@ const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
     const totalReviews = reviewStats._count.id || 0;
 
     const displayName = (language === 'ar' ? product.nameAr : product.nameEn) || product.name || product.nameAr || '';
+    const mainImage = (product.images as string).split(',').map((img: string) => img.trim()).filter(Boolean)[0] || '';
+
+    // Schema.org Product Structured Data
+    const productSchema = {
+        "@context": "https://schema.org/",
+        "@type": "Product",
+        "name": displayName,
+        "image": mainImage ? [mainImage] : [],
+        "description": product.description || displayName,
+        "sku": product.id,
+        "brand": {
+            "@type": "Brand",
+            "name": product.brand?.name || "Zad Land",
+        },
+        "offers": {
+            "@type": "Offer",
+            "url": `https://zadland.com/products/${product.slug}`,
+            "priceCurrency": "SYP",
+            "price": Number(product.discountPrice || product.price),
+            "availability": product.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+            "itemCondition": "https://schema.org/NewCondition",
+        },
+        ...(totalReviews > 0 ? {
+            "aggregateRating": {
+                "@type": "AggregateRating",
+                "ratingValue": averageRating,
+                "reviewCount": totalReviews,
+            }
+        } : {})
+    };
 
     return (
         <main className="grow w-full mx-auto container-custom py-4 lg:py-8">
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
+            />
+
             <Breadcrumbs
                 productName={displayName}
                 categoryName={product.category?.name}
@@ -145,7 +189,7 @@ const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
                             nameAr: product.nameAr,
                             nameEn: product.nameEn,
                             price: Number(product.discountPrice || product.price),
-                            image: (product.images as string).split(',').map((img: string) => img.trim()).filter(Boolean)[0],
+                            image: mainImage,
                             slug: product.slug,
                             options: product.options,
                             description: product.description,
@@ -162,39 +206,11 @@ const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
                         options={product.options}
                     />
 
-                    {/* Social Share */}
-                    <div className="flex items-center justify-start mt-6 pt-6 border-t border-gray-200 dark:border-white/10 gap-3">
-                        <span className="text-xs font-bold tracking-widest uppercase text-gray-400 mr-2">
-                            {language === 'ar' ? 'مشاركة:' : 'Share:'}
-                        </span>
-                        <a
-                            href="#"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="w-9 h-9 flex items-center justify-center rounded-full bg-gray-100 text-zinc-900 dark:bg-zinc-800 dark:text-white hover:bg-zinc-900 hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors"
-                            aria-label="Share on WhatsApp"
-                        >
-                            <FaWhatsapp className="text-base" />
-                        </a>
-                        <a
-                            href="#"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="w-9 h-9 flex items-center justify-center rounded-full bg-gray-100 text-zinc-900 dark:bg-zinc-800 dark:text-white hover:bg-zinc-900 hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors"
-                            aria-label="Share on Instagram"
-                        >
-                            <FaInstagram className="text-base" />
-                        </a>
-                        <a
-                            href="#"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="w-9 h-9 flex items-center justify-center rounded-full bg-gray-100 text-zinc-900 dark:bg-zinc-800 dark:text-white hover:bg-zinc-900 hover:text-white dark:hover:bg-white dark:hover:text-black transition-colors"
-                            aria-label="Share on Facebook"
-                        >
-                            <FaFacebook className="text-base" />
-                        </a>
-                    </div>
+                    {/* Social Share & Link Sharing */}
+                    <ProductShareButtons
+                        productName={displayName}
+                        productSlug={product.slug}
+                    />
                 </div>
             </div>
 
@@ -213,7 +229,7 @@ const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
                 <ProductReviews
                     productId={product.id}
                     productName={product.name}
-                    productImage={(product.images as string).split(',').map((img: string) => img.trim()).filter(Boolean)[0]}
+                    productImage={mainImage}
                 />
             </div>
         </main>

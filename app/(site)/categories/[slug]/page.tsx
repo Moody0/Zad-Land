@@ -16,9 +16,38 @@ export async function generateMetadata(
         };
     }
 
+    const title = `${category.name} | Zad Land - زاد لاند`;
+    const description = category.description 
+        ? `${category.name} (${category.description}). تسوق منتجات القسم بأسعار الجملة المعتمدة لدى شركة زاد لاند.`
+        : `تصفح تشكيلة ${category.name} بأسعار الجملة المعتمدة لدى شركة زاد لاند لتجارة وتوزيع المواد الغذائية.`;
+    const image = category.image || '/og-image.jpg';
+
     return {
-        title: `${category.name} | Zad Land`,
-        description: category.description || `Shop the ${category.name} collection at Zad Land.`,
+        title,
+        description,
+        alternates: {
+            canonical: `/categories/${category.slug}`,
+        },
+        openGraph: {
+            title,
+            description,
+            type: 'website',
+            url: `/categories/${category.slug}`,
+            images: [
+                {
+                    url: image,
+                    width: 1200,
+                    height: 630,
+                    alt: category.name,
+                },
+            ],
+        },
+        twitter: {
+            card: 'summary_large_image',
+            title,
+            description,
+            images: [image],
+        },
     };
 }
 

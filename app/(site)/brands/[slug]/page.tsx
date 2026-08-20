@@ -15,9 +15,36 @@ export async function generateMetadata(
         };
     }
 
+    const title = `${brand.name} | Zad Land - زاد لاند`;
+    const description = brand.description || `تصفح كتالوج منتجات ${brand.name} بأسعار الجملة المعتمدة لدى شركة زاد لاند لتجارة وتوزيع المواد الغذائية.`;
+    const image = brand.image || '/og-image.jpg';
+
     return {
-        title: `${brand.name} | Zad Land`,
-        description: brand.description || `Shop ${brand.name} products at Zad Land.`,
+        title,
+        description,
+        alternates: {
+            canonical: `/brands/${brand.slug}`,
+        },
+        openGraph: {
+            title,
+            description,
+            type: 'website',
+            url: `/brands/${brand.slug}`,
+            images: [
+                {
+                    url: image,
+                    width: 1200,
+                    height: 630,
+                    alt: brand.name,
+                },
+            ],
+        },
+        twitter: {
+            card: 'summary_large_image',
+            title,
+            description,
+            images: [image],
+        },
     };
 }
 

@@ -4,6 +4,35 @@ import ProductsClient from "./ProductsClient";
 import { getCatalogInitialData } from "@/lib/catalog";
 import { findCategoryByIdentifier } from "@/lib/category-utils";
 
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "كتالوج المنتجات وعروض الجملة | Products Catalog - Zad Land",
+    description: "تصفح كافة منتجات المواد الغذائية، المعلبات، اللحوم، الباستا، الحلويات، والمشروبات بأسعار الجملة المعتمدة لدى شركة زاد لاند.",
+    alternates: {
+        canonical: "/products",
+    },
+    openGraph: {
+        title: "كتالوج المنتجات وعروض الجملة | Zad Land",
+        description: "تصفح كافة منتجات المواد الغذائية والاستهلاكية بأسعار الجملة المعتمدة لدى شركة زاد لاند.",
+        url: "/products",
+        images: [
+            {
+                url: "/og-image.jpg",
+                width: 1200,
+                height: 630,
+                alt: "Zad Land Product Catalog",
+            },
+        ],
+    },
+    twitter: {
+        card: "summary_large_image",
+        title: "كتالوج المنتجات وعروض الجملة | Zad Land",
+        description: "تصفح كافة منتجات المواد الغذائية والاستهلاكية بأسعار الجملة المعتمدة لدى شركة زاد لاند.",
+        images: ["/og-image.jpg"],
+    },
+};
+
 export default async function ProductsPage({
     searchParams,
 }: {

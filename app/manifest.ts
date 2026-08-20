@@ -1,0 +1,25 @@
+import { MetadataRoute } from 'next';
+
+export default function manifest(): MetadataRoute.Manifest {
+    return {
+        name: 'Zad Land | زاد لاند لتجارة وتوزيع المواد الغذائية',
+        short_name: 'Zad Land',
+        description: 'شركة زاد لاند - منصة تجارة وتوزيع المواد الغذائية والمنتجات الاستهلاكية بالجملة من كبرى العلامات العالمية.',
+        start_url: '/',
+        display: 'standalone',
+        background_color: '#FAF6EC',
+        theme_color: '#072835',
+        icons: [
+            {
+                src: '/logo.jpeg',
+                sizes: '192x192',
+                type: 'image/jpeg',
+            },
+            {
+                src: '/logo.jpeg',
+                sizes: '512x512',
+                type: 'image/jpeg',
+            },
+        ],
+    };
+}

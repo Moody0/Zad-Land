@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Figtree, Noto_Sans_Arabic } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
@@ -23,43 +23,107 @@ const noto_sans_arabic = Noto_Sans_Arabic({
 const metadataBase =
   process.env.NEXT_PUBLIC_SITE_URL ||
   process.env.NEXTAUTH_URL ||
-  "http://localhost:3000";
+  "https://zadland.com";
+
+export const viewport: Viewport = {
+  themeColor: "#072835",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL(metadataBase),
   title: {
-    default: "Zad Land - Wholesale Food & Goods Distribution",
-    template: "%s | Zad Land"
+    default: "Zad Land | Wholesale Food & Goods Trading - زاد لاند لتجارة وتوزيع المواد الغذائية",
+    template: "%s | Zad Land - زاد لاند",
   },
-  description: "Zad Land is your trusted wholesale distributor for premium food and consumer goods from leading global brands.",
-  keywords: ["wholesale", "distribution", "food distribution", "zad land", "global brands", "grocery wholesale", "توزيع مواد غذائية", "زاد لاند"],
-  authors: [{ name: "Zad Land" }],
+  description:
+    "شركة زاد لاند - المنصة الرائدة في استيراد وتوزيع المواد الغذائية والمنتجات الاستهلاكية بالجملة. موزعون معتمدون لكبرى العلامات العالمية (أمريكانا، تات، دي سيكو، سانتي، علي كافيه). توريد مباشر، جودة عالية، وأفضل أسعار الجملة.",
+  keywords: [
+    "Zad Land",
+    "زاد لاند",
+    "تجارة جملة مواد غذائية",
+    "توزيع مواد غذائية سوريا",
+    "استيراد مواد غذائية",
+    "عروض جملة",
+    "أمريكانا جملة",
+    "تات معجون طماطم",
+    "دي سيكو باستا",
+    "سانتي حبوب إفطار",
+    "علي كافيه جملة",
+    "مواد استهلاكية جملة",
+    "تجار جملة دمشق",
+    "wholesale food distributor",
+    "FMCG wholesale Syria",
+    "food importer",
+    "bulk food supply",
+    "Americana wholesale",
+    "Tat wholesale",
+    "De Cecco wholesale",
+    "grocery wholesale B2B"
+  ],
+  authors: [{ name: "Zad Land", url: metadataBase }],
+  creator: "Zad Land",
+  publisher: "Zad Land",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  alternates: {
+    canonical: "/",
+    languages: {
+      "ar-SY": "/",
+      "en-US": "/?lang=en",
+      "x-default": "/",
+    },
+  },
   openGraph: {
     type: "website",
-    locale: "ar_SA",
-    siteName: "Zad Land",
-    title: "Zad Land - Wholesale Food & Goods Distribution",
-    description: "Your trusted partner in wholesale food distribution from top international brands.",
+    locale: "ar_SY",
+    alternateLocale: ["en_US", "ar_SA"],
+    siteName: "Zad Land | زاد لاند",
+    title: "Zad Land | Wholesale Food & Goods Trading - زاد لاند",
+    description:
+      "شركة زاد لاند لتجارة وتوزيع المواد الغذائية بالجملة. توريد مباشر من كبرى الشركات العالمية بأفضل الأسعار المعتمدة.",
+    url: metadataBase,
     images: [
       {
-        url: "/logo.jpeg",
+        url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "Zad Land Logo",
+        alt: "Zad Land Wholesale Food & Goods Distribution",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Zad Land - Wholesale Food & Goods Distribution",
-    description: "Your trusted partner in wholesale food distribution from top international brands.",
-    images: ["/logo.jpeg"],
+    title: "Zad Land | Wholesale Food & Goods Trading - زاد لاند",
+    description:
+      "شركة زاد لاند لتجارة وتوزيع المواد الغذائية بالجملة. توريد مباشر من كبرى الشركات العالمية بأفضل الأسعار المعتمدة.",
+    images: ["/og-image.jpg"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
   },
   icons: {
-    icon: "/logo.jpeg",
+    icon: [
+      { url: "/logo.jpeg", type: "image/jpeg" },
+      { url: "/rounded-favicon.svg", type: "image/svg+xml" },
+    ],
     shortcut: "/logo.jpeg",
     apple: "/logo.jpeg",
   },
+  category: "food & beverage",
 };
 
 export default async function RootLayout({
@@ -75,9 +139,30 @@ export default async function RootLayout({
   });
   const exchangeRate = settings?.exchangeRate ? Number(settings.exchangeRate) : 135;
 
+  const organizationSchema = {
+    "@context": "https://schema.org",
+    "@type": "WholesaleStore",
+    "name": "Zad Land - زاد لاند",
+    "url": metadataBase,
+    "logo": `${metadataBase}/logo.jpeg`,
+    "image": `${metadataBase}/og-image.jpg`,
+    "description": "شركة زاد لاند لتجارة وتوزيع المواد الغذائية والمنتجات الاستهلاكية بالجملة.",
+    "currenciesAccepted": "SYP, USD",
+    "paymentAccepted": "Cash, Bank Transfer",
+    "areaServed": "Syria",
+    "address": {
+      "@type": "PostalAddress",
+      "addressCountry": "SY"
+    }
+  };
+
   return (
     <html lang={language} dir={dir} suppressHydrationWarning className={`${figtree.variable} ${noto_sans_arabic.variable}`}>
       <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+        />
         <script
           suppressHydrationWarning
           dangerouslySetInnerHTML={{
