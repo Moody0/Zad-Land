@@ -12,7 +12,7 @@ interface Brand {
     name: string;
     description: string | null;
     image: string | null;
-    group: "MAIN" | "DIFFERENT";
+    group?: "MAIN" | "DIFFERENT";
     isActive: boolean;
     isFeatured: boolean;
     mainCategoryId?: string | null;
@@ -38,7 +38,7 @@ export default function BrandModal({ isOpen, onClose, brand }: BrandModalProps) 
         name: "",
         description: "",
         image: "",
-        group: "DIFFERENT" as "MAIN" | "DIFFERENT",
+        group: "MAIN" as "MAIN" | "DIFFERENT",
         isActive: true,
         isFeatured: false,
         mainCategoryId: "",
@@ -58,7 +58,7 @@ export default function BrandModal({ isOpen, onClose, brand }: BrandModalProps) 
                 name: brand.name,
                 description: brand.description || "",
                 image: brand.image || "",
-                group: brand.group,
+                group: brand.group || "MAIN",
                 isActive: brand.isActive,
                 isFeatured: brand.isFeatured,
                 mainCategoryId: brand.mainCategoryId || "",
@@ -68,7 +68,7 @@ export default function BrandModal({ isOpen, onClose, brand }: BrandModalProps) 
                 name: "",
                 description: "",
                 image: "",
-                group: "DIFFERENT",
+                group: "MAIN",
                 isActive: true,
                 isFeatured: false,
                 mainCategoryId: "",
@@ -85,7 +85,8 @@ export default function BrandModal({ isOpen, onClose, brand }: BrandModalProps) 
         try {
             const payload = {
                 ...formData,
-                isFeatured: formData.group === "MAIN" ? formData.isFeatured : false,
+                group: "MAIN" as const,
+                isFeatured: formData.isFeatured,
                 mainCategoryId: formData.mainCategoryId || undefined,
             };
             const result = brand ? await updateBrand(brand.id, payload) : await createBrand(payload);
@@ -139,30 +140,20 @@ export default function BrandModal({ isOpen, onClose, brand }: BrandModalProps) 
                     />
 
                     <label className="flex flex-col gap-2">
-                        <span className="text-[11px] font-bold uppercase tracking-widest text-slate-500 dark:text-gray-400">Main Category</span>
+                        <span className="text-[11px] font-bold uppercase tracking-widest text-slate-500 dark:text-gray-400">
+                            {isArabic ? "القسم الرئيسي (Department)" : "Main Category / Department"}
+                        </span>
                         <select
                             value={formData.mainCategoryId}
                             onChange={(event) => setFormData({ ...formData, mainCategoryId: event.target.value })}
                             className="rounded-xl border border-slate-200/80 dark:border-white/10 bg-slate-50 dark:bg-gray-800 px-4 py-2.5 text-sm text-slate-900 dark:text-white outline-none transition-all focus:border-[#072835] focus:ring-2 focus:ring-[#072835]/15 cursor-pointer"
                         >
-                            <option value="">-- No Main Category --</option>
+                            <option value="">-- {isArabic ? "اختر القسم الرئيسي" : "Select Main Category"} --</option>
                             {mainCategories.map((mc) => (
                                 <option key={mc.id} value={mc.id}>
                                     {mc.name}
                                 </option>
                             ))}
-                        </select>
-                    </label>
-
-                    <label className="flex flex-col gap-2">
-                        <span className="text-[11px] font-bold uppercase tracking-widest text-slate-500 dark:text-gray-400">{t("admin.brandGroup")}</span>
-                        <select
-                            value={formData.group}
-                            onChange={(event) => setFormData({ ...formData, group: event.target.value as "MAIN" | "DIFFERENT" })}
-                            className="rounded-xl border border-slate-200/80 dark:border-white/10 bg-slate-50 dark:bg-gray-800 px-4 py-2.5 text-sm text-slate-900 dark:text-white outline-none transition-all focus:border-[#072835] focus:ring-2 focus:ring-[#072835]/15 cursor-pointer"
-                        >
-                            <option value="MAIN">{t("brands.mainBrands") || "Main Brands"}</option>
-                            <option value="DIFFERENT">{t("brands.differentBrands") || "Different Brands"}</option>
                         </select>
                     </label>
 
@@ -178,24 +169,29 @@ export default function BrandModal({ isOpen, onClose, brand }: BrandModalProps) 
                     </label>
 
                     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                        <label className="flex items-center gap-3 rounded-xl border border-slate-200/80 dark:border-white/10 bg-slate-50 dark:bg-gray-800/50 p-3.5 cursor-pointer">
+                        <label className="flex items-center gap-3 rounded-xl border border-slate-200/80 dark:border-white/10 bg-slate-50 dark:bg-gray-800/50 p-3.5 cursor-pointer hover:bg-slate-100 dark:hover:bg-gray-800 transition-colors">
                             <input
                                 type="checkbox"
                                 checked={formData.isActive}
                                 onChange={(event) => setFormData({ ...formData, isActive: event.target.checked })}
                                 className="size-4 rounded border-gray-300 text-[#072835] focus:ring-[#072835]"
                             />
-                            <span className="text-xs font-bold text-slate-700 dark:text-slate-200">{t("admin.active")}</span>
+                            <div>
+                                <span className="text-xs font-bold text-slate-700 dark:text-slate-200 block">{t("admin.active") || "Active"}</span>
+                                <span className="text-[11px] text-slate-400 block">{isArabic ? "عرض الماركة في المتجر" : "Visible in store"}</span>
+                            </div>
                         </label>
-                        <label className={`flex items-center gap-3 rounded-xl border border-slate-200/80 dark:border-white/10 bg-slate-50 dark:bg-gray-800/50 p-3.5 cursor-pointer ${formData.group !== "MAIN" ? "opacity-50" : ""}`}>
+                        <label className="flex items-center gap-3 rounded-xl border border-slate-200/80 dark:border-white/10 bg-slate-50 dark:bg-gray-800/50 p-3.5 cursor-pointer hover:bg-slate-100 dark:hover:bg-gray-800 transition-colors">
                             <input
                                 type="checkbox"
-                                disabled={formData.group !== "MAIN"}
                                 checked={formData.isFeatured}
                                 onChange={(event) => setFormData({ ...formData, isFeatured: event.target.checked })}
                                 className="size-4 rounded border-gray-300 text-[#072835] focus:ring-[#072835]"
                             />
-                            <span className="text-xs font-bold text-slate-700 dark:text-slate-200">{t("admin.featured")}</span>
+                            <div>
+                                <span className="text-xs font-bold text-slate-700 dark:text-slate-200 block">{t("admin.featured") || "Featured Brand"}</span>
+                                <span className="text-[11px] text-slate-400 block">{isArabic ? "إبراز في أعلى القائمة والمقدمة" : "Highlight in top rail & lists"}</span>
+                            </div>
                         </label>
                     </div>
 

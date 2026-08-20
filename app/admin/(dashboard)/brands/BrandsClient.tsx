@@ -17,10 +17,14 @@ interface Brand {
     slug: string;
     description: string | null;
     image: string | null;
-    group: "MAIN" | "DIFFERENT";
+    group?: "MAIN" | "DIFFERENT";
     isActive: boolean;
     isFeatured: boolean;
     mainCategoryId?: string | null;
+    mainCategory?: {
+        id: string;
+        name: string;
+    } | null;
     _count: {
         products: number;
         categories: number;
@@ -30,13 +34,14 @@ interface Brand {
 export default function BrandsClient({ brands }: { brands: Brand[] }) {
     const { openSidebar } = useAdminSidebar();
     const { data: session } = useSession();
-    const { t } = useLanguage();
+    const { t, language } = useLanguage();
+    const isArabic = language === 'ar';
     const canManage = session?.user?.role === "SUPER_ADMIN" || session?.user?.canManageBrands;
     const canDelete = session?.user?.role === "SUPER_ADMIN" || session?.user?.canDeleteBrands;
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedBrand, setSelectedBrand] = useState<Brand | null>(null);
     const [searchQuery, setSearchQuery] = useState("");
-    const [groupFilter, setGroupFilter] = useState("ALL");
+    const [statusFilter, setStatusFilter] = useState("ALL");
     const [loadingMap, setLoadingMap] = useState<Record<string, boolean>>({});
 
     const [relatedModalInfo, setRelatedModalInfo] = useState<{
@@ -55,10 +60,15 @@ export default function BrandsClient({ brands }: { brands: Brand[] }) {
         return brands.filter((brand) => {
             const matchesSearch = brand.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                 (brand.description || "").toLowerCase().includes(searchQuery.toLowerCase());
-            const matchesGroup = groupFilter === "ALL" || brand.group === groupFilter;
-            return matchesSearch && matchesGroup;
+            
+            if (!matchesSearch) return false;
+
+            if (statusFilter === "FEATURED") return brand.isFeatured;
+            if (statusFilter === "ACTIVE") return brand.isActive;
+            if (statusFilter === "DRAFT") return !brand.isActive;
+            return true;
         });
-    }, [brands, searchQuery, groupFilter]);
+    }, [brands, searchQuery, statusFilter]);
 
     const handleAdd = () => {
         setSelectedBrand(null);
@@ -90,7 +100,6 @@ export default function BrandsClient({ brands }: { brands: Brand[] }) {
     };
 
     const handleToggleFeatured = async (brand: Brand) => {
-        if (brand.group !== "MAIN") return;
         setLoadingMap((current) => ({ ...current, [`featured:${brand.id}`]: true }));
         const result = await toggleBrandFeatured(brand.id, !brand.isFeatured);
         if (result.success) toast.success(t("admin.brandUpdated"));
@@ -120,16 +129,17 @@ export default function BrandsClient({ brands }: { brands: Brand[] }) {
                                 />
                             </div>
                             <select
-                                value={groupFilter}
-                                onChange={(event) => setGroupFilter(event.target.value)}
-                                className="h-11 rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-white px-4 text-sm font-medium outline-none focus:border-primary focus:ring-1 focus:ring-primary dark:border-white/[0.04] dark:bg-surface-dark dark:text-white"
+                                value={statusFilter}
+                                onChange={(event) => setStatusFilter(event.target.value)}
+                                className="h-11 rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-white px-4 text-sm font-medium outline-none focus:border-primary focus:ring-1 focus:ring-primary dark:border-white/[0.04] dark:bg-surface-dark dark:text-white cursor-pointer"
                             >
-                                <option value="ALL">{t("admin.allBrands")}</option>
-                                <option value="MAIN">{t("brands.mainBrands")}</option>
-                                <option value="DIFFERENT">{t("brands.differentBrands")}</option>
+                                <option value="ALL">{t("admin.allBrands") || "All Brands"}</option>
+                                <option value="FEATURED">{t("admin.featured") || "Featured Brands"}</option>
+                                <option value="ACTIVE">{t("admin.active") || "Active Brands"}</option>
+                                <option value="DRAFT">{t("admin.draft") || "Drafts"}</option>
                             </select>
                             {canManage && (
-                                <button onClick={handleAdd} className="flex h-11 items-center justify-center gap-2 rounded-xl bg-[#072835] hover:bg-[#0c4054] px-5 text-sm font-bold text-white transition-all shadow-xs">
+                                <button onClick={handleAdd} className="flex h-11 items-center justify-center gap-2 rounded-xl bg-[#072835] hover:bg-[#0c4054] px-5 text-sm font-bold text-white transition-all shadow-xs cursor-pointer">
                                     <MdAdd className="text-xl" />
                                     {t("admin.addBrand")}
                                 </button>
@@ -154,62 +164,82 @@ export default function BrandsClient({ brands }: { brands: Brand[] }) {
 
                     <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
                         {filteredBrands.map((brand) => (
-                            <article key={brand.id} className="overflow-hidden rounded-2xl border border-slate-200/80 dark:border-white/10 bg-white dark:bg-[#0f172a] shadow-xs transition-all duration-300 hover:shadow-md">
-                                <div className="flex h-36 items-center justify-center bg-gray-50 dark:bg-gray-800">
-                                    {brand.image ? (
-                                        <img src={brand.image} alt={brand.name} className="h-full w-full object-contain" />
-                                    ) : (
-                                        <MdImage className="text-5xl text-text-sub/30" />
-                                    )}
-                                </div>
-                                <div className="p-5">
-                                    <div className="mb-3 flex items-start justify-between gap-3">
-                                        <div className="min-w-0">
-                                            <h3 className="truncate text-lg font-bold text-text-main dark:text-white">{brand.name}</h3>
-                                            <p className="text-xs font-bold uppercase tracking-wider text-primary">{brand.group}</p>
+                            <article key={brand.id} className="overflow-hidden rounded-2xl border border-slate-200/80 dark:border-white/10 bg-white dark:bg-[#0f172a] shadow-xs transition-all duration-300 hover:shadow-md flex flex-col justify-between">
+                                <div>
+                                    <div className="flex h-36 items-center justify-center bg-slate-50 dark:bg-gray-800 p-4">
+                                        {brand.image ? (
+                                            <img src={brand.image} alt={brand.name} className="h-full w-full object-contain" />
+                                        ) : (
+                                            <MdImage className="text-5xl text-text-sub/30" />
+                                        )}
+                                    </div>
+                                    <div className="p-5">
+                                        <div className="mb-3 flex items-start justify-between gap-3">
+                                            <div className="min-w-0">
+                                                <h3 className="truncate text-lg font-bold text-slate-900 dark:text-white">{brand.name}</h3>
+                                                {brand.mainCategory?.name ? (
+                                                    <span className="inline-block mt-0.5 text-xs font-semibold text-[#072835] dark:text-[#E5B54A] bg-[#072835]/5 dark:bg-white/5 px-2 py-0.5 rounded-md">
+                                                        {brand.mainCategory.name}
+                                                    </span>
+                                                ) : (
+                                                    <span className="inline-block mt-0.5 text-xs text-slate-400">
+                                                        {isArabic ? "بدون قسم رئيسي" : "General"}
+                                                    </span>
+                                                )}
+                                            </div>
+                                            <div className="flex items-center gap-1.5 shrink-0">
+                                                {brand.isFeatured && (
+                                                    <span className="rounded-full px-2 py-0.5 text-[10px] font-bold bg-amber-50 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300 flex items-center gap-0.5 border border-amber-200 dark:border-amber-700/50">
+                                                        <MdStar className="text-xs" />
+                                                        {t("admin.featured") || "Featured"}
+                                                    </span>
+                                                )}
+                                                <span className={`rounded-full px-2.5 py-1 text-[10px] font-bold ${brand.isActive ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-300" : "bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400"}`}>
+                                                    {brand.isActive ? t("admin.active") : t("admin.draft")}
+                                                </span>
+                                            </div>
                                         </div>
-                                        <span className={`rounded-full px-2.5 py-1 text-[10px] font-bold ${brand.isActive ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-300" : "bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400"}`}>
-                                            {brand.isActive ? t("admin.active") : t("admin.draft")}
-                                        </span>
+
+                                        <p className="mb-4 line-clamp-2 min-h-[40px] text-sm text-text-sub dark:text-gray-400">
+                                            {brand.description || t("admin.noDescription")}
+                                        </p>
+
+                                        <div className="mb-4 flex gap-2 text-xs font-bold text-text-sub dark:text-gray-400">
+                                            <button 
+                                                onClick={() => setRelatedModalInfo({ isOpen: true, type: "products", entityId: brand.id, entityName: brand.name })}
+                                                className="cursor-pointer rounded-full bg-primary/10 px-3 py-1 text-primary hover:bg-primary/20 transition-colors"
+                                            >
+                                                {brand._count.products} {t("admin.products")}
+                                            </button>
+                                            <button 
+                                                onClick={() => setRelatedModalInfo({ isOpen: true, type: "categories", entityId: brand.id, entityName: brand.name })}
+                                                className="cursor-pointer rounded-full bg-gray-100 px-3 py-1 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                                            >
+                                                {brand._count.categories} {t("admin.categories")}
+                                            </button>
+                                        </div>
                                     </div>
+                                </div>
 
-                                    <p className="mb-4 line-clamp-2 min-h-[40px] text-sm text-text-sub dark:text-gray-400">
-                                        {brand.description || t("admin.noDescription")}
-                                    </p>
-
-                                    <div className="mb-4 flex gap-2 text-xs font-bold text-text-sub dark:text-gray-400">
-                                        <button 
-                                            onClick={() => setRelatedModalInfo({ isOpen: true, type: "products", entityId: brand.id, entityName: brand.name })}
-                                            className="cursor-pointer rounded-full bg-primary/10 px-3 py-1 text-primary hover:bg-primary/20 transition-colors"
-                                        >
-                                            {brand._count.products} {t("admin.products")}
-                                        </button>
-                                        <button 
-                                            onClick={() => setRelatedModalInfo({ isOpen: true, type: "categories", entityId: brand.id, entityName: brand.name })}
-                                            className="cursor-pointer rounded-full bg-gray-100 px-3 py-1 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-                                        >
-                                            {brand._count.categories} {t("admin.categories")}
-                                        </button>
-                                    </div>
-
-                                    <div className="flex items-center justify-end gap-2 border-t border-black/[0.04] dark:border-white/[0.04] pt-4 dark:border-white/[0.04]">
+                                <div className="p-5 pt-0">
+                                    <div className="flex items-center justify-end gap-2 border-t border-slate-100 dark:border-white/5 pt-4">
                                         {canManage && (
-                                            <button onClick={() => handleToggleActive(brand)} className="rounded-lg p-2 text-text-sub transition-colors hover:bg-primary/10 hover:text-primary" title={t("admin.active")}>
+                                            <button onClick={() => handleToggleActive(brand)} className="rounded-lg p-2 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer" title={t("admin.active")}>
                                                 {loadingMap[`active:${brand.id}`] ? <MdSync className="animate-spin text-xl" /> : brand.isActive ? <MdToggleOn className="text-2xl text-emerald-500" /> : <MdToggleOff className="text-2xl" />}
                                             </button>
                                         )}
-                                        {canManage && brand.group === "MAIN" && (
-                                            <button onClick={() => handleToggleFeatured(brand)} className="rounded-lg p-2 text-text-sub transition-colors hover:bg-amber-50 hover:text-amber-500 dark:hover:bg-amber-900/10" title={t("admin.featured")}>
+                                        {canManage && (
+                                            <button onClick={() => handleToggleFeatured(brand)} className="rounded-lg p-2 text-slate-500 hover:text-amber-500 hover:bg-amber-50 dark:hover:bg-amber-900/10 transition-colors cursor-pointer" title={t("admin.featured")}>
                                                 {loadingMap[`featured:${brand.id}`] ? <MdSync className="animate-spin text-xl" /> : brand.isFeatured ? <MdStar className="text-xl text-amber-500" /> : <MdStarBorder className="text-xl" />}
                                             </button>
                                         )}
                                         {canManage && (
-                                            <button onClick={() => handleEdit(brand)} className="rounded-lg p-2 text-text-sub transition-colors hover:bg-primary/10 hover:text-primary" title={t("admin.editBrand")}>
+                                            <button onClick={() => handleEdit(brand)} className="rounded-lg p-2 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer" title={t("admin.editBrand")}>
                                                 <MdEdit className="text-xl" />
                                             </button>
                                         )}
                                         {canDelete && (
-                                            <button onClick={() => handleDelete(brand)} className="rounded-lg p-2 text-text-sub transition-colors hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-900/10" title={t("admin.deleteBrand")}>
+                                            <button onClick={() => handleDelete(brand)} className="rounded-lg p-2 text-slate-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors cursor-pointer" title={t("admin.deleteBrand")}>
                                                 <MdDelete className="text-xl" />
                                             </button>
                                         )}

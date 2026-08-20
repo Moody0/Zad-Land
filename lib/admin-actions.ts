@@ -192,10 +192,16 @@ export async function getAdminBrands() {
     try {
         const brands = await prisma.brand.findMany({
             orderBy: [
-                { group: "asc" },
+                { isFeatured: "desc" },
                 { name: "asc" },
             ],
             include: {
+                mainCategory: {
+                    select: {
+                        id: true,
+                        name: true,
+                    },
+                },
                 _count: {
                     select: {
                         categories: true,
@@ -229,7 +235,7 @@ export async function createBrand(data: BrandInput) {
                 image: data.image,
                 group,
                 isActive: data.isActive ?? true,
-                isFeatured: group === BrandGroup.MAIN ? (data.isFeatured ?? false) : false,
+                isFeatured: data.isFeatured ?? false,
                 mainCategoryId: data.mainCategoryId || null,
             },
         });
@@ -266,7 +272,7 @@ export async function updateBrand(id: string, data: BrandInput) {
                 image: data.image,
                 group,
                 isActive: data.isActive ?? true,
-                isFeatured: group === BrandGroup.MAIN ? (data.isFeatured ?? false) : false,
+                isFeatured: data.isFeatured ?? false,
                 mainCategoryId: data.mainCategoryId || null,
             },
         });

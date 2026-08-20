@@ -68,7 +68,6 @@ export async function getCatalogBrands() {
     return prisma.brand.findMany({
         where: { isActive: true },
         orderBy: [
-            { group: "asc" },
             { isFeatured: "desc" },
             { name: "asc" },
         ],
