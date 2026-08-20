@@ -582,7 +582,7 @@ export default function AddProductModal({ isOpen, onClose, categories, brands, m
                     <button
                         onClick={handleSubmit}
                         disabled={isLoading}
-                        className="bg-primary hover:bg-primary/90 disabled:opacity-50 text-white h-12 px-8 rounded-xl font-bold text-sm flex items-center gap-2 transition-all transform active:scale-[0.98] cursor-pointer"
+                        className="bg-[#072835] hover:bg-[#0c4054] dark:bg-[#B8860B] dark:hover:bg-[#9a7009] disabled:opacity-50 text-white h-12 px-8 rounded-xl font-bold text-sm flex items-center gap-2 transition-all shadow-sm transform active:scale-[0.98] cursor-pointer"
                     >
                         {isLoading ? (
                             <MdSync className="animate-spin text-[20px]" />

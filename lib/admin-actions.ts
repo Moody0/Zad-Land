@@ -916,6 +916,7 @@ export async function getAdminCategories(page = 1, limit = 500) {
                 select: {
                     id: true,
                     name: true,
+                    slug: true,
                     description: true,
                     image: true,
                     brandId: true,

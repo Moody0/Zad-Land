@@ -106,7 +106,8 @@ export default function ProductsClient({
     mainCategories?: MainCategory[]
 }) {
     const { data: session } = useSession();
-    const { t, dir } = useLanguage();
+    const { t, dir, language } = useLanguage();
+    const isArabic = language === 'ar';
     const canDelete = session?.user?.role === 'SUPER_ADMIN' || session?.user?.canDeleteProducts;
     const canEdit = session?.user?.role === 'SUPER_ADMIN' || session?.user?.canManageProducts;
 
@@ -573,25 +574,31 @@ export default function ProductsClient({
             <div className="flex-1 overflow-y-auto p-3 sm:p-5 md:p-8">
                 <div className="max-w-[1400px] mx-auto flex flex-col gap-6 md:gap-8 pb-10">
 
-                    {/* Page Heading & Breadcrumbs */}
-                    <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-                        <div className="flex flex-col gap-1">
-                            {/* Breadcrumbs */}
-                            <div className="flex items-center gap-2 text-sm text-text-sub dark:text-gray-400 mb-1">
-                                <Link href="/admin/dashboard" className="hover:text-primary cursor-pointer transition-colors">{t('admin.dashboard')}</Link>
-                                <MdChevronRight className={`text-[12px] ${dir === 'rtl' ? 'rotate-180' : ''}`} />
-                                <span className="text-text-main dark:text-white font-medium">{t('admin.products')}</span>
+                    {/* Page Heading & Header */}
+                    <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                        <div>
+                            <div className="flex items-center gap-2 mb-1">
+                                <span className="h-2.5 w-2.5 rounded-full bg-[#B8860B]" />
+                                <span className="text-xs font-bold uppercase tracking-wider text-[#B8860B] dark:text-[#E5B54A]">
+                                    {isArabic ? 'إدارة كتالوج المنتجات والمخزون' : 'Food Wholesale Product Inventory'}
+                                </span>
                             </div>
-                            <h2 className="text-3xl font-extrabold text-text-main dark:text-white tracking-tight">{t('admin.products')}</h2>
-                            <p className="text-text-sub dark:text-gray-400">{t('admin.manageCatalog')}</p>
+                            <h1 className="text-2xl sm:text-3xl font-extrabold text-[#072835] dark:text-white tracking-tight">
+                                {t('admin.products')}
+                            </h1>
+                            <p className="mt-1 text-xs sm:text-sm text-slate-500 dark:text-gray-400">
+                                {isArabic 
+                                    ? 'إدارة المنتجات، الأسعار، صور العبوات، والتحكم بالمنتجات الرائجة (Trending) والعروض.' 
+                                    : 'Manage product items, prices, wholesale packaging, stock inventory, and trending highlights.'}
+                            </p>
                         </div>
                         <div className="flex flex-wrap items-center gap-3">
                             <div className="relative">
                                 <button
                                     onClick={() => setIsExportMenuOpen(!isExportMenuOpen)}
-                                    className="bg-surface-light dark:bg-surface-dark border border-border-color/50 dark:border-white/[0.04] hover:bg-gray-50 dark:hover:bg-gray-800 text-text-main dark:text-white h-12 px-6 rounded-xl font-bold text-sm flex items-center gap-2 transition-all shadow-sm"
+                                    className="bg-white dark:bg-zinc-800 border border-slate-200 dark:border-white/10 hover:border-[#B8860B] text-[#072835] dark:text-white h-11 px-4 sm:px-5 rounded-xl font-bold text-xs sm:text-sm flex items-center gap-2 transition-all shadow-2xs cursor-pointer"
                                 >
-                                    <MdFileUpload className="text-[20px]" />
+                                    <MdFileUpload className="text-[18px]" />
                                     {t('admin.exportData')}
                                     <MdExpandMore className={`text-[18px] transition-transform duration-200 ${isExportMenuOpen ? 'rotate-180' : ''}`} />
                                 </button>
@@ -602,14 +609,14 @@ export default function ProductsClient({
                                         <div className={`absolute top-full mt-2 w-48 bg-white dark:bg-[#1a1a1a] border border-gray-100 dark:border-white/[0.04] rounded-xl shadow-xl z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-200 ${dir === 'rtl' ? 'start-0' : 'end-0'}`}>
                                             <button
                                                 onClick={handleExportCSV}
-                                                className="w-full text-start px-4 py-3 hover:bg-gray-50 dark:hover:bg-white/5 text-sm font-medium text-text-main dark:text-white transition-colors flex items-center gap-3 border-b border-gray-50 dark:border-white/5"
+                                                className="w-full text-start px-4 py-3 hover:bg-gray-50 dark:hover:bg-white/5 text-sm font-medium text-text-main dark:text-white transition-colors flex items-center gap-3 border-b border-gray-50 dark:border-white/5 cursor-pointer"
                                             >
                                                 <span className="bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 text-xs font-bold px-1.5 py-0.5 rounded">CSV</span>
                                                 <span>Export as CSV</span>
                                             </button>
                                             <button
                                                 onClick={handleExportXLSX}
-                                                className="w-full text-start px-4 py-3 hover:bg-gray-50 dark:hover:bg-white/5 text-sm font-medium text-text-main dark:text-white transition-colors flex items-center gap-3"
+                                                className="w-full text-start px-4 py-3 hover:bg-gray-50 dark:hover:bg-white/5 text-sm font-medium text-text-main dark:text-white transition-colors flex items-center gap-3 cursor-pointer"
                                             >
                                                 <span className="bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-xs font-bold px-1.5 py-0.5 rounded">XLSX</span>
                                                 <span>Export as Excel</span>
@@ -619,8 +626,8 @@ export default function ProductsClient({
                                 )}
                             </div>
 
-                            <label className="bg-surface-light dark:bg-surface-dark border border-border-color/50 dark:border-white/[0.04] hover:bg-gray-50 dark:hover:bg-gray-800 text-text-main dark:text-white h-12 px-6 rounded-xl font-bold text-sm flex items-center gap-2 transition-all shadow-sm cursor-pointer">
-                                <MdFileDownload className="text-[20px]" />
+                            <label className="bg-white dark:bg-zinc-800 border border-slate-200 dark:border-white/10 hover:border-[#B8860B] text-[#072835] dark:text-white h-11 px-4 sm:px-5 rounded-xl font-bold text-xs sm:text-sm flex items-center gap-2 transition-all shadow-2xs cursor-pointer">
+                                <MdFileDownload className="text-[18px]" />
                                 {t('admin.importData')}
                                 <input
                                     type="file"
@@ -636,10 +643,10 @@ export default function ProductsClient({
                                         setSelectedProduct(null);
                                         setIsAddModalOpen(true);
                                     }}
-                                    className="bg-[#2E7D32] hover:bg-[#256629] text-white h-12 px-6 rounded-xl font-bold text-sm flex items-center gap-2 transition-all shadow-xs transform hover:-translate-y-0.5 active:translate-y-0"
+                                    className="h-11 px-5 rounded-xl font-bold text-xs sm:text-sm flex items-center gap-2 bg-[#072835] hover:bg-[#0c4054] dark:bg-[#B8860B] dark:hover:bg-[#9a7009] text-white transition-all shadow-sm active:scale-95 cursor-pointer whitespace-nowrap"
                                 >
-                                    <MdAdd className="text-[20px]" />
-                                    {t('admin.addNewProduct')}
+                                    <MdAdd className="text-xl" />
+                                    <span>{t('admin.addNewProduct')}</span>
                                 </button>
                             )}
                         </div>

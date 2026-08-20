@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { MdClose } from "react-icons/md";
+import { MdClose, MdSync, MdStar } from "react-icons/md";
 import { createCategory, updateCategory } from "../../../../lib/admin-actions";
 import { toast } from "react-hot-toast";
 import { useLanguage } from "@/app/context/LanguageContext";
@@ -25,7 +25,8 @@ interface CategoryModalProps {
 }
 
 export default function CategoryModal({ isOpen, onClose, category, brands }: CategoryModalProps) {
-    const { t, dir } = useLanguage();
+    const { t, language } = useLanguage();
+    const isArabic = language === 'ar';
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [image, setImage] = useState("");
@@ -66,10 +67,14 @@ export default function CategoryModal({ isOpen, onClose, category, brands }: Cat
             }
 
             if (result.success) {
-                toast.success(category ? t('admin.categoryUpdated') : t('admin.categoryCreated'));
+                toast.success(
+                    category 
+                        ? (isArabic ? 'تم تحديث الفئة بنجاح' : 'Category updated successfully') 
+                        : (isArabic ? 'تم إنشاء الفئة بنجاح' : 'Category created successfully')
+                );
                 onClose();
             } else {
-                toast.error(result.error || `Failed to ${category ? "update" : "create"} category`);
+                toast.error(result.error || `Failed to save category`);
             }
         } catch (error) {
             console.error("Error submitting category:", error);
@@ -82,117 +87,134 @@ export default function CategoryModal({ isOpen, onClose, category, brands }: Cat
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <div
-                className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+                className="absolute inset-0 bg-black/50 backdrop-blur-xs"
                 onClick={onClose}
             />
 
-            <div className="relative w-full max-w-md bg-white dark:bg-surface-dark rounded-2xl shadow-2xl overflow-hidden border border-black/[0.04] dark:border-white/[0.04]">
-                <div className="p-6 border-b border-black/[0.04] dark:border-white/[0.04] flex items-center justify-between">
-                    <h2 className="text-xl font-bold text-text-main dark:text-white">
-                        {category ? t('admin.editCategory') : t('admin.addNewCategory')}
-                    </h2>
+            <div className="relative w-full max-w-lg bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl overflow-hidden border border-slate-200 dark:border-white/10">
+                {/* Modal Header */}
+                <div className="px-6 py-5 border-b border-slate-100 dark:border-white/10 flex items-center justify-between">
+                    <div>
+                        <h2 className="text-lg font-bold text-[#072835] dark:text-white">
+                            {category 
+                                ? (isArabic ? 'تعديل فئة المنتجات' : 'Edit Subcategory') 
+                                : (isArabic ? 'إضافة فئة منتجات جديدة' : 'Add New Subcategory')}
+                        </h2>
+                        <p className="text-xs text-slate-500 dark:text-gray-400 mt-0.5">
+                            {isArabic 
+                                ? 'الفئات الفرعية التابعة للماركة (مثل التونة، الباستا، الزيوت)' 
+                                : 'Brand product lines & subcategories'}
+                        </p>
+                    </div>
                     <button
+                        type="button"
                         onClick={onClose}
-                        className="p-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
+                        className="rounded-full p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-zinc-800 transition-colors cursor-pointer"
                     >
-                        <MdClose className="text-gray-500 text-xl" />
+                        <MdClose className="text-xl" />
                     </button>
                 </div>
 
                 <form onSubmit={handleSubmit} className="p-6 flex flex-col gap-5 overflow-y-auto max-h-[80vh]">
-                    <div className="flex flex-col gap-2">
-                        <label className={`text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400 ${dir === 'rtl' ? 'me-1' : 'ms-1'}`}>
-                            {t('admin.categoryName')}
+                    {/* Category Name */}
+                    <div className="flex flex-col gap-1.5">
+                        <label className="text-[11px] font-bold uppercase tracking-wider text-slate-600 dark:text-gray-300">
+                            {isArabic ? 'اسم الفئة (بالعربية)' : 'Category Name (Arabic)'}
                         </label>
                         <input
                             type="text"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
-                            placeholder="e.g. Pasta, Sauces, Dairy"
+                            placeholder={isArabic ? 'مثال: سلطعون وقشريات مجمدة' : 'e.g. Pasta, Sauces, Dairy'}
                             required
-                            className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                            className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/50 dark:bg-zinc-800 text-[#072835] dark:text-white focus:ring-2 focus:ring-[#B8860B]/20 focus:border-[#B8860B] transition-all outline-none text-sm"
                         />
                     </div>
 
-                    <div className="flex flex-col gap-2">
-                        <label className={`text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400 ${dir === 'rtl' ? 'me-1' : 'ms-1'}`}>
-                            {t('admin.brands')}
+                    {/* Brand Selection */}
+                    <div className="flex flex-col gap-1.5">
+                        <label className="text-[11px] font-bold uppercase tracking-wider text-slate-600 dark:text-gray-300">
+                            {isArabic ? 'العلامة التجارية التابعة لها (Brand)' : 'Parent Brand'}
                         </label>
                         <select
                             value={brandId}
                             onChange={(e) => setBrandId(e.target.value)}
                             required
-                            className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none"
+                            className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/50 dark:bg-zinc-800 text-[#072835] dark:text-white focus:ring-2 focus:ring-[#B8860B]/20 focus:border-[#B8860B] transition-all outline-none text-sm cursor-pointer"
                         >
-                            <option value="">{t('admin.selectBrand')}</option>
+                            <option value="">{isArabic ? 'اختر العلامة التجارية...' : 'Select a Brand...'}</option>
                             {brands.map((brand) => (
                                 <option key={brand.id} value={brand.id}>{brand.name}</option>
                             ))}
                         </select>
                     </div>
 
+                    {/* Image Upload */}
                     <ImageUploadField
-                        label={t('admin.imageUrl') || "Category Image"}
+                        label={isArabic ? 'صورة الفئة (Category Image)' : 'Category Image'}
                         folder="categories"
                         value={image}
                         onChange={(url) => setImage(url)}
                         placeholder="https://example.com/category.jpg"
                     />
 
-                    <div className="flex flex-col gap-2">
-                        <label className={`text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400 ${dir === 'rtl' ? 'me-1' : 'ms-1'}`}>
-                            {t('admin.featuredOnHomepage')}
-                        </label>
-                        <div className="flex items-center gap-3 h-[46px]">
-                            <button
-                                type="button"
-                                onClick={() => setIsFeatured(!isFeatured)}
-                                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${isFeatured ? 'bg-primary' : 'bg-gray-300 dark:bg-gray-700'}`}
-                            >
-                                <span
-                                    className={`${isFeatured ? (dir === 'rtl' ? '-translate-x-6' : 'translate-x-6') : (dir === 'rtl' ? '-translate-x-1' : 'translate-x-1')} inline-block h-4 w-4 transform rounded-full bg-white transition-transform`}
-                                />
-                            </button>
-                            <span className="text-sm text-text-sub dark:text-gray-400">
-                                {isFeatured ? t('admin.featured') : t('admin.standard')}
+                    {/* Featured Toggle */}
+                    <label className={`flex items-center gap-3 rounded-xl border p-3.5 cursor-pointer transition-all ${
+                        isFeatured 
+                            ? "border-amber-500/50 bg-amber-50/60 dark:bg-amber-950/20" 
+                            : "border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-zinc-800/50"
+                    }`}>
+                        <input
+                            type="checkbox"
+                            checked={isFeatured}
+                            onChange={(e) => setIsFeatured(e.target.checked)}
+                            className="size-4 rounded border-gray-300 text-amber-500 focus:ring-amber-500 cursor-pointer"
+                        />
+                        <div className="flex flex-col">
+                            <span className="text-xs font-bold text-[#072835] dark:text-white flex items-center gap-1">
+                                <MdStar className="text-amber-500 text-sm" />
+                                <span>{isArabic ? 'فئة مميزة في الصفحة الرئيسية' : 'Featured on Homepage'}</span>
+                            </span>
+                            <span className="text-[10px] text-amber-600/90 dark:text-amber-400">
+                                {isArabic ? 'تظهر في قسم الفئات المميزة وشريط الماركة' : 'Highlighted on the home featured categories grid'}
                             </span>
                         </div>
-                    </div>
+                    </label>
 
-                    <div className="flex flex-col gap-2">
-                        <label className={`text-[11px] font-bold uppercase tracking-widest text-text-sub dark:text-gray-400 ${dir === 'rtl' ? 'me-1' : 'ms-1'}`}>
-                            {t('admin.description')}
+                    {/* English Title / Description */}
+                    <div className="flex flex-col gap-1.5">
+                        <label className="text-[11px] font-bold uppercase tracking-wider text-slate-600 dark:text-gray-300">
+                            {isArabic ? 'الاسم بالإنجليزية / الوصف (English Name)' : 'English Name / Description'}
                         </label>
                         <textarea
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
-                            placeholder={t('admin.describeCategory')}
+                            placeholder="e.g. Crab Sticks & Frozen Seafood"
                             rows={3}
-                            className="w-full px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] bg-white dark:bg-gray-900 text-text-main dark:text-white focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all outline-none resize-none"
+                            className="w-full px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50/50 dark:bg-zinc-800 text-[#072835] dark:text-white focus:ring-2 focus:ring-[#B8860B]/20 focus:border-[#B8860B] transition-all outline-none resize-none text-sm"
                         />
                     </div>
 
-                    <div className="flex gap-3 mt-2">
+                    {/* Modal Buttons */}
+                    <div className="flex gap-3 pt-3 border-t border-slate-100 dark:border-white/10">
                         <button
                             type="button"
                             onClick={onClose}
-                            className="flex-1 px-4 py-3 rounded-xl border border-black/[0.04] dark:border-white/[0.04] text-text-main dark:text-white font-bold hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                            className="flex-1 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 text-slate-600 dark:text-gray-300 font-bold hover:bg-slate-50 dark:hover:bg-zinc-800 transition-colors text-sm cursor-pointer"
                         >
-                            {t('admin.cancel')}
+                            {isArabic ? 'إلغاء' : 'Cancel'}
                         </button>
                         <button
                             type="submit"
                             disabled={isSubmitting}
-                            className="flex-2 bg-primary text-white py-3 rounded-xl font-bold hover:bg-primary/90 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                            className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-[#072835] hover:bg-[#0c4054] dark:bg-[#B8860B] dark:hover:bg-[#9a7009] text-white font-bold rounded-xl transition-all shadow-sm active:scale-95 disabled:opacity-50 text-sm cursor-pointer"
                         >
-                            {isSubmitting ? (
-                                <>
-                                    <span className="animate-spin h-5 w-5 border-2 border-white/30 border-t-white rounded-full" />
-                                    {t('admin.saving')}
-                                </>
-                            ) : (
-                                category ? t('admin.updateCategory') : t('admin.createCategory')
-                            )}
+                            {isSubmitting && <MdSync className="animate-spin text-base" />}
+                            <span>
+                                {category 
+                                    ? (isArabic ? 'حفظ التعديلات' : 'Save Changes') 
+                                    : (isArabic ? 'إضافة الفئة' : 'Create Subcategory')}
+                            </span>
                         </button>
                     </div>
                 </form>
