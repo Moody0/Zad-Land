@@ -124,22 +124,22 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                                             className="object-cover object-center transition-transform duration-700 md:group-hover:scale-105"
                                         />
                                         
-                                        {/* Mobile Visual Overlay: Rich Dark Gradient, Badge, Title & Button */}
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/75 to-black/35 md:hidden flex flex-col justify-end p-4 pb-6">
+                                        {/* Mobile Visual Overlay: Clean & Bright (only 10% subtle bottom gradient) */}
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-black/5 to-transparent md:hidden flex flex-col justify-end p-4 pb-6">
                                             <div className="flex items-center gap-1.5 mb-1.5">
-                                                <span className="bg-[#B8860B] text-white px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide shadow-xs">
+                                                <span className="bg-[#B8860B] text-white px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide shadow-sm">
                                                     {getBannerBadge(banner)}
                                                 </span>
                                             </div>
                                             
-                                            <h2 className="text-white text-base sm:text-lg font-bold leading-tight mb-2.5 drop-shadow-sm line-clamp-2">
+                                            <h2 className="text-white text-base sm:text-lg font-bold leading-tight mb-2.5 drop-shadow-[0_2px_4px_rgba(0,0,0,0.7)] line-clamp-2">
                                                 {getBannerTitle(banner)}
                                             </h2>
 
                                             <div className="flex items-center gap-2">
                                                 <Link 
                                                     href={banner.link || "/products"} 
-                                                    className="inline-flex items-center gap-1.5 bg-white text-[#072835] hover:bg-[#FAF6EC] px-3.5 py-1.5 rounded-full text-[11px] font-bold transition-all active:scale-95 shadow-sm"
+                                                    className="inline-flex items-center gap-1.5 bg-white text-[#072835] hover:bg-[#FAF6EC] px-3.5 py-1.5 rounded-full text-[11px] font-bold transition-all active:scale-95 shadow-md"
                                                 >
                                                     <span>{getBannerButtonText(banner)}</span>
                                                     <svg className={`w-3 h-3 ${isArabic ? 'rotate-180' : ''}`} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
