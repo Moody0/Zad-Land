@@ -71,11 +71,13 @@ const ResilientImageInner = ({
         ? currentSrc 
         : (isValidImageSrc(fallbackSrc) ? fallbackSrc : IMAGE_PLACEHOLDER_SRC);
 
+    const isPostImg = typeof safeSrc === 'string' && safeSrc.includes('i.postimg.cc');
+
     return (
         <span className="relative block h-full w-full overflow-hidden">
             <span
                 aria-hidden="true"
-                className={`absolute inset-0 overflow-hidden bg-gray-100 dark:bg-zinc-800 ${skeletonClassName || ""} ${isLoaded ? "opacity-0" : "opacity-100"} transition-opacity duration-500`}
+                className={`absolute inset-0 overflow-hidden bg-gray-100 dark:bg-zinc-800 ${skeletonClassName || ""} ${isLoaded ? "opacity-0" : "opacity-100"} transition-opacity duration-300`}
             >
                 <span className="image-shimmer absolute inset-0" />
             </span>
@@ -84,8 +86,9 @@ const ResilientImageInner = ({
                 alt={alt || ""}
                 src={safeSrc}
                 fill
-                sizes={imgProps.sizes || "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"}
-                className={`${className || ""} block transition-opacity duration-500 ${isLoaded ? "opacity-100" : "opacity-0"}`}
+                unoptimized={imgProps.unoptimized ?? isPostImg}
+                sizes={imgProps.sizes || "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"}
+                className={`${className || ""} block transition-opacity duration-300 ${isLoaded ? "opacity-100" : "opacity-0"}`}
                 onLoad={(event) => {
                     setIsLoaded(true);
                     onLoad?.(event);
