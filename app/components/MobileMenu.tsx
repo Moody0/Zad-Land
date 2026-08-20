@@ -113,8 +113,8 @@ const MobileMenu = ({
                 onClick={() => setIsMobileMenuOpen(false)}
             />
 
-            {/* Sidebar Content */}
-            <div className={`absolute top-0 left-0 right-0 bottom-0 w-full bg-white dark:bg-surface-dark shadow-xl flex flex-col transition-transform duration-300 ease-in-out ${isAnimating ? 'translate-x-0' : 'translate-x-full'} overflow-hidden`}>
+            {/* Sidebar Content (Slides in from the left matching the hamburger button position) */}
+            <div className={`absolute top-0 left-0 right-0 bottom-0 w-full bg-white dark:bg-surface-dark shadow-xl flex flex-col transition-transform duration-300 ease-in-out ${isAnimating ? 'translate-x-0' : '-translate-x-full'} overflow-hidden`}>
 
                 {/* Navigation Container (Sliding Views) */}
                 <div className="flex-1 relative overflow-hidden">
@@ -122,7 +122,6 @@ const MobileMenu = ({
                     {/* Main Menu View */}
                     <div className={`absolute inset-0 transition-transform duration-300 ease-in-out ${activeMainCatSlug ? '-translate-x-full' : 'translate-x-0'}`}>
                         <div className="flex flex-col h-full overflow-y-auto px-2 pt-4">
-
 
                             {/* Dynamic Main Categories */}
                             {navData.map((mc) => (
@@ -132,9 +131,9 @@ const MobileMenu = ({
                                         className="w-full flex items-center justify-between py-4 px-4"
                                     >
                                         <span className="text-[16px] font-semibold text-[rgb(46,46,46)] dark:text-white">
-                                            {mc.name}
+                                            {language === 'ar' ? mc.name : (mc.name || mc.name)}
                                         </span>
-                                        <MdKeyboardArrowLeft className="text-2xl text-[rgb(46,46,46)] dark:text-white" />
+                                        <MdKeyboardArrowRight className="text-2xl text-[rgb(46,46,46)] dark:text-white rtl:rotate-180" />
                                     </button>
                                 </div>
                             ))}
@@ -179,7 +178,7 @@ const MobileMenu = ({
                                         onClick={() => { setActiveMainCatSlug(null); setExpandedSection(null); }}
                                         className="flex items-center gap-2 text-[rgb(46,46,46)] dark:text-white hover:text-black transition-colors"
                                     >
-                                        <MdKeyboardArrowRight className="text-2xl" />
+                                        <MdKeyboardArrowLeft className="text-2xl rtl:rotate-180" />
                                         <span className="text-[16px] font-medium">{activeMainCat.name}</span>
                                     </button>
                                     <Link
