@@ -4,7 +4,6 @@ import Link from "next/link";
 import React, { useRef, useEffect, useState } from "react";
 import { useLanguage } from "@/app/context/LanguageContext";
 import { MdGridView, MdChevronLeft, MdChevronRight } from "react-icons/md";
-import ResilientImage from "@/app/components/ResilientImage";
 
 interface CategoryItem {
     id: string;
@@ -25,7 +24,7 @@ interface CategorySelectorProps {
 const CategorySelector = ({ 
     categories, 
     activeCategory = null, 
-    activeMainCategory = null,
+    activeMainCategory = null, 
     activeBrand = null 
 }: CategorySelectorProps) => {
     const { t, dir, language } = useLanguage();
@@ -37,7 +36,7 @@ const CategorySelector = ({
     const isRtl = dir === 'rtl';
     const isAllActive = !activeCategory && !activeMainCategory;
 
-    // If on a brand page and brand has 0 subcategories, hide rail to avoid empty bar
+    // If on a brand page and brand has 0 subcategories, hide rail
     if (activeBrand && (!categories || categories.length === 0)) {
         return null;
     }
@@ -109,7 +108,7 @@ const CategorySelector = ({
 
     const handleScroll = (direction: 'left' | 'right') => {
         if (scrollContainerRef.current) {
-            const distance = 320;
+            const distance = 300;
             const multiplier = direction === 'left' ? -1 : 1;
             scrollContainerRef.current.scrollBy({
                 left: multiplier * distance * (isRtl ? -1 : 1),
@@ -126,51 +125,34 @@ const CategorySelector = ({
                     type="button"
                     onClick={() => handleScroll('left')}
                     aria-label="Scroll left"
-                    className="hidden sm:flex absolute left-0 top-1/2 -translate-y-1/2 -translate-x-3 w-9 h-9 rounded-full bg-white dark:bg-zinc-800 border border-gray-200 dark:border-white/10 text-zinc-900 dark:text-white hover:bg-[#B8860B] hover:text-white hover:border-[#B8860B] dark:hover:bg-[#B8860B] dark:hover:text-white items-center justify-center transition-all cursor-pointer z-20 shadow-xs"
+                    className="hidden sm:flex absolute left-0 top-1/2 -translate-y-1/2 -translate-x-3 w-8 h-8 rounded-full bg-white dark:bg-zinc-800 border border-gray-200 dark:border-white/10 text-zinc-900 dark:text-white hover:bg-[#B8860B] hover:text-white hover:border-[#B8860B] dark:hover:bg-[#B8860B] dark:hover:text-white items-center justify-center transition-all cursor-pointer z-20 shadow-xs"
                 >
-                    <MdChevronLeft className="text-2xl" />
+                    <MdChevronLeft className="text-xl" />
                 </button>
             )}
 
-            {/* Scroll Container */}
+            {/* Clean Pill-Style Category Filter Strip (No Placeholders) */}
             <div 
                 ref={scrollContainerRef}
-                className="flex items-start gap-4 sm:gap-6 overflow-x-auto hide-scrollbar py-1 px-0.5 scroll-smooth"
+                className="flex items-center gap-2 sm:gap-2.5 overflow-x-auto hide-scrollbar py-1 px-0.5 scroll-smooth"
                 style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
-                {/* All / Brand All Circle */}
+                {/* All Products Tab */}
                 <Link
                     href={allHref}
-                    className="shrink-0 flex flex-col items-center gap-2 group/item transition-transform duration-200 active:scale-95"
+                    className={`shrink-0 inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-semibold transition-all duration-200 active:scale-95 whitespace-nowrap shadow-2xs ${
+                        isAllActive
+                            ? 'bg-[#072835] dark:bg-[#B8860B] text-white font-bold shadow-xs'
+                            : 'bg-white dark:bg-zinc-900 border border-gray-200/80 dark:border-white/10 text-gray-700 dark:text-gray-300 hover:border-[#B8860B] hover:text-[#B8860B] dark:hover:text-[#E5B54A] hover:bg-[#FAF6EC]/60 dark:hover:bg-white/5'
+                    }`}
                 >
-                    <div className={`w-[64px] h-[64px] sm:w-[72px] sm:h-[72px] rounded-full p-0.5 transition-all duration-300 ${
-                        isAllActive 
-                        ? 'border-2 border-[#B8860B] ring-2 ring-[#B8860B]/20' 
-                        : 'border border-gray-200 dark:border-white/10 group-hover/item:border-[#B8860B]'
-                    }`}>
-                        <div className={`w-full h-full rounded-full flex items-center justify-center transition-all duration-300 ${
-                            isAllActive
-                            ? 'bg-[#B8860B] text-white'
-                            : 'bg-gray-50 dark:bg-zinc-800 text-gray-700 dark:text-gray-300 group-hover/item:text-[#B8860B]'
-                        }`}>
-                            <MdGridView className="text-2xl sm:text-3xl" />
-                        </div>
-                    </div>
-
-                    <div className="flex flex-col items-center max-w-[80px] sm:max-w-[96px]">
-                        <span className={`text-[11px] sm:text-xs font-semibold text-center leading-tight line-clamp-2 ${
-                            isAllActive ? 'text-[#B8860B] dark:text-[#E5B54A] font-bold' : 'text-gray-600 dark:text-gray-400 group-hover/item:text-[#B8860B]'
-                        }`}>
-                            {allLabel}
-                        </span>
-                    </div>
+                    <MdGridView className={`text-base ${isAllActive ? 'text-[#E5B54A] dark:text-white' : 'text-gray-500 dark:text-gray-400'}`} />
+                    <span>{allLabel}</span>
                 </Link>
 
-                {/* Category / Subcategory Circles */}
+                {/* Subcategory Pill Tabs */}
                 {categories.map((category) => {
                     const isActive = activeMainCategory?.slug === category.slug || activeCategory?.slug === category.slug;
-                    const defaultImage = 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=300';
-                    const imageToUse = category.image || defaultImage;
                     const displayName = isArabic ? category.name : (category.description || category.nameEn || category.name);
                     
                     return (
@@ -178,32 +160,13 @@ const CategorySelector = ({
                             key={category.id}
                             id={`category-item-${category.slug}`}
                             href={getCategoryHref(category)}
-                            className="shrink-0 flex flex-col items-center gap-2 group/item transition-transform duration-200 active:scale-95"
+                            className={`shrink-0 inline-flex items-center px-3.5 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-semibold transition-all duration-200 active:scale-95 whitespace-nowrap shadow-2xs ${
+                                isActive
+                                    ? 'bg-[#072835] dark:bg-[#B8860B] text-white font-bold shadow-xs'
+                                    : 'bg-white dark:bg-zinc-900 border border-gray-200/80 dark:border-white/10 text-gray-700 dark:text-gray-300 hover:border-[#B8860B] hover:text-[#B8860B] dark:hover:text-[#E5B54A] hover:bg-[#FAF6EC]/60 dark:hover:bg-white/5'
+                            }`}
                         >
-                            <div className={`w-[64px] h-[64px] sm:w-[72px] sm:h-[72px] rounded-full p-0.5 transition-all duration-300 ${
-                                isActive 
-                                ? 'border-2 border-[#B8860B] ring-2 ring-[#B8860B]/25' 
-                                : 'border border-gray-200 dark:border-white/10 group-hover/item:border-[#B8860B]'
-                            }`}>
-                                <div className="w-full h-full rounded-full overflow-hidden bg-gray-50 dark:bg-zinc-900">
-                                    <ResilientImage 
-                                        src={imageToUse} 
-                                        alt={displayName} 
-                                        className="w-full h-full object-cover rounded-full transition-transform duration-500 group-hover/item:scale-110"
-                                    />
-                                </div>
-                            </div>
-
-                            {/* Label */}
-                            <div className="flex flex-col items-center max-w-[80px] sm:max-w-[96px]">
-                                <span className={`text-[11px] sm:text-xs font-semibold text-center leading-tight line-clamp-2 transition-colors duration-200 ${
-                                    isActive 
-                                    ? 'text-[#B8860B] dark:text-[#E5B54A] font-bold' 
-                                    : 'text-gray-600 dark:text-gray-400 group-hover/item:text-[#B8860B] dark:group-hover/item:text-[#E5B54A]'
-                                }`}>
-                                    {displayName}
-                                </span>
-                            </div>
+                            <span>{displayName}</span>
                         </Link>
                     );
                 })}
@@ -215,9 +178,9 @@ const CategorySelector = ({
                     type="button"
                     onClick={() => handleScroll('right')}
                     aria-label="Scroll right"
-                    className="hidden sm:flex absolute right-0 top-1/2 -translate-y-1/2 translate-x-3 w-9 h-9 rounded-full bg-white dark:bg-zinc-800 border border-gray-200 dark:border-white/10 text-zinc-900 dark:text-white hover:bg-[#B8860B] hover:text-white hover:border-[#B8860B] dark:hover:bg-[#B8860B] dark:hover:text-white items-center justify-center transition-all cursor-pointer z-20 shadow-xs"
+                    className="hidden sm:flex absolute right-0 top-1/2 -translate-y-1/2 translate-x-3 w-8 h-8 rounded-full bg-white dark:bg-zinc-800 border border-gray-200 dark:border-white/10 text-zinc-900 dark:text-white hover:bg-[#B8860B] hover:text-white hover:border-[#B8860B] dark:hover:bg-[#B8860B] dark:hover:text-white items-center justify-center transition-all cursor-pointer z-20 shadow-xs"
                 >
-                    <MdChevronRight className="text-2xl" />
+                    <MdChevronRight className="text-xl" />
                 </button>
             )}
         </div>
