@@ -146,6 +146,7 @@ const TrendingWeekly = ({ products }: TrendingWeeklyProps) => {
                                 {/* Arrow Button */}
                                 <Link
                                     href={`/products/${product.slug}`}
+                                    aria-label={isArabic ? `عرض تفاصيل ${product.nameAr || product.name}` : `View details for ${product.nameEn || product.name}`}
                                     className="shrink-0 w-8 h-8 rounded-full bg-white dark:bg-zinc-800 border border-gray-200 dark:border-white/10 flex items-center justify-center text-gray-600 dark:text-gray-300 transition-all group-hover:bg-[#B8860B] group-hover:border-[#B8860B] group-hover:text-white shadow-2xs"
                                 >
                                     <svg className={`w-3.5 h-3.5 ${isArabic ? 'rotate-180' : ''}`} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">

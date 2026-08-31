@@ -120,6 +120,8 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                                             alt={getBannerTitle(banner)}
                                             fill
                                             priority={index === 0}
+                                            loading={index === 0 ? "eager" : "lazy"}
+                                            fetchPriority={index === 0 ? "high" : "low"}
                                             sizes="(max-width: 768px) 100vw, 50vw"
                                             className="object-cover object-center transition-transform duration-700 md:group-hover:scale-105"
                                         />

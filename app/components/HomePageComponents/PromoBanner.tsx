@@ -23,7 +23,7 @@ const PromoBanner = ({ settings, dir = 'rtl' }: PromoBannerProps) => {
                     <div className={`flex flex-col text-center md:text-start flex-grow ${isArabic ? 'md:text-right' : 'md:text-left'}`}>
                         <div className="flex items-center justify-center md:justify-start gap-2 mb-1">
                             <span className="w-2 h-2 rounded-full bg-[#B8860B]"></span>
-                            <span className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-[#B8860B] dark:text-[#E5B54A]">
+                            <span className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-[#876004] dark:text-[#E5B54A]">
                                 {isArabic ? 'عروض التوريد والكميات' : 'Commercial Volume Supply'}
                             </span>
                         </div>

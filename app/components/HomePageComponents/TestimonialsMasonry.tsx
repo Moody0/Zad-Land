@@ -103,9 +103,10 @@ const TestimonialsMasonry = ({ reviews = [], products }: TestimonialsMasonryProp
                                             <div className="w-12 h-12 rounded-xl overflow-hidden bg-white shrink-0 shadow-xs border border-gray-100 p-1">
                                                 <ResilientImage
                                                     src={productImg}
-                                                    alt={productName}
+                                                    alt=""
                                                     sizes="48px"
                                                     className="w-full h-full object-contain"
+                                                    loading="lazy"
                                                 />
                                             </div>
                                             <span className="text-sm font-bold text-[#072835] dark:text-white line-clamp-2 text-right flex-1 group-hover:text-[#B8860B] transition-colors">

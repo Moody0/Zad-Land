@@ -13,9 +13,7 @@ import TestimonialsMasonry from './TestimonialsMasonry';
 import ScrollReveal from '../ScrollReveal';
 import { getI18n } from '@/lib/i18n';
 
-const HeroCarousel = dynamic(() => import('./HeroCarousel'), {
-    ssr: true,
-});
+import HeroCarousel from './HeroCarousel';
 
 interface Banner {
     id: string;

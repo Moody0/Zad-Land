@@ -42,21 +42,28 @@ export default async function Home() {
         getFeaturedCategories(),
     ]);
 
+    const firstBannerImage = banners?.[0]?.image;
+
     return (
-        <section>
-            <Main
-                banners={banners}
-                mainBrands={mainBrands}
-                railBrands={railBrands}
-                highlightCards={highlightCards}
-                reviews={reviews}
-                featuredNewArrivals={featuredNewArrivals}
-                featuredBundles={featuredBundles}
-                featuredBestSellers={featuredBestSellers}
-                settings={settings}
-                trendingWeekly={trendingWeekly}
-                featuredCategories={featuredCategories}
-            />
-        </section>
+        <>
+            {firstBannerImage && (
+                <link rel="preload" as="image" href={firstBannerImage} fetchPriority="high" />
+            )}
+            <section>
+                <Main
+                    banners={banners}
+                    mainBrands={mainBrands}
+                    railBrands={railBrands}
+                    highlightCards={highlightCards}
+                    reviews={reviews}
+                    featuredNewArrivals={featuredNewArrivals}
+                    featuredBundles={featuredBundles}
+                    featuredBestSellers={featuredBestSellers}
+                    settings={settings}
+                    trendingWeekly={trendingWeekly}
+                    featuredCategories={featuredCategories}
+                />
+            </section>
+        </>
     );
 }

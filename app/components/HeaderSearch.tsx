@@ -90,21 +90,22 @@ const HeaderSearch = ({ onSearchSelect, onClose, placeholder, autoFocus = false,
                 charIndex++;
             }
 
-            let delta = isDeleting ? 35 : 70;
+            let delta = isDeleting ? 45 : 90;
 
             if (!isDeleting && charIndex === currentItem.length) {
-                delta = 2200; // Pause when item is fully typed
+                delta = 2500; // Pause when item is fully typed
                 isDeleting = true;
             } else if (isDeleting && charIndex === 0) {
                 isDeleting = false;
                 itemIndex = (itemIndex + 1) % items.length;
-                delta = 350; // Pause before typing next item
+                delta = 450; // Pause before typing next item
             }
 
             timeoutId = setTimeout(tick, delta);
         };
 
-        timeoutId = setTimeout(tick, 200);
+        // Delay starting typewriter until initial rendering and CPU are idle
+        timeoutId = setTimeout(tick, 2500);
 
         return () => clearTimeout(timeoutId);
     }, [isArabic, query]);
@@ -240,11 +241,11 @@ const HeaderSearch = ({ onSearchSelect, onClose, placeholder, autoFocus = false,
                     {/* Search Icon */}
                     <button 
                         type="submit"
-                        className="absolute flex items-center justify-center text-[22px] text-[#555] dark:text-gray-300 hover:text-[#B8860B] dark:hover:text-[#E5B54A] transition-colors"
+                        className="absolute flex items-center justify-center text-[22px] text-[#555] dark:text-gray-300 hover:text-[#B8860B] dark:hover:text-[#E5B54A] transition-colors min-w-[36px] min-h-[36px]"
                         style={{
-                            [isArabic ? 'left' : 'right']: '16px',
+                            [isArabic ? 'left' : 'right']: '12px',
                         }}
-                        aria-label="Search"
+                        aria-label={isArabic ? "بحث" : "Search"}
                     >
                         <MdSearch />
                     </button>
