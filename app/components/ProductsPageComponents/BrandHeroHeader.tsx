@@ -35,6 +35,7 @@ export default function BrandHeroHeader({ brand, totalProducts }: BrandHeroHeade
                         <ResilientImage
                             src={brandImage}
                             alt={brand.name}
+                            showSkeleton={false}
                             className="w-full h-full object-contain"
                             priority
                         />

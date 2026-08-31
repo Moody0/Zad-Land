@@ -9,6 +9,7 @@ interface ResilientImageProps extends Omit<ImageProps, "src" | "alt"> {
     src: string | null | undefined;
     fallbackSrc?: string;
     skeletonClassName?: string;
+    showSkeleton?: boolean;
     alt?: string;
 }
 
@@ -20,6 +21,7 @@ const ResilientImage = ({
     onLoad,
     className,
     skeletonClassName,
+    showSkeleton = true,
     ...imgProps
 }: ResilientImageProps) => {
     const candidates = useMemo(
@@ -37,6 +39,7 @@ const ResilientImage = ({
             onLoad={onLoad}
             className={className}
             skeletonClassName={skeletonClassName}
+            showSkeleton={showSkeleton}
             imgProps={imgProps}
         />
     );
@@ -50,6 +53,7 @@ interface ResilientImageInnerProps {
     onLoad?: ImageProps["onLoad"];
     className?: string;
     skeletonClassName?: string;
+    showSkeleton?: boolean;
     imgProps: Omit<ImageProps, "src" | "alt">;
 }
 
@@ -61,6 +65,7 @@ const ResilientImageInner = ({
     onLoad,
     className,
     skeletonClassName,
+    showSkeleton = true,
     imgProps,
 }: ResilientImageInnerProps) => {
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -76,14 +81,16 @@ const ResilientImageInner = ({
     return (
         <span className="relative block h-full w-full overflow-hidden">
             {/* Background Skeleton Shimmer */}
-            <span
-                aria-hidden="true"
-                className={`absolute inset-0 overflow-hidden bg-gray-100 dark:bg-zinc-800 transition-opacity duration-300 ${
-                    isLoaded ? "opacity-0 pointer-events-none" : "opacity-100"
-                } ${skeletonClassName || ""}`}
-            >
-                <span className="image-shimmer absolute inset-0" />
-            </span>
+            {showSkeleton && (
+                <span
+                    aria-hidden="true"
+                    className={`absolute inset-0 overflow-hidden bg-gray-100 dark:bg-zinc-800 transition-opacity duration-300 ${
+                        isLoaded ? "opacity-0 pointer-events-none" : "opacity-100"
+                    } ${skeletonClassName || ""}`}
+                >
+                    <span className="image-shimmer absolute inset-0" />
+                </span>
+            )}
 
             <Image
                 {...imgProps}

@@ -52,6 +52,7 @@ export default function BrandsClient({ brands }: BrandsClientProps) {
                     <ResilientImage
                         src={brand.image || fallbackImage}
                         alt={brand.name}
+                        showSkeleton={false}
                         className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-105"
                     />
                     {brand.isFeatured && (

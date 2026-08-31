@@ -77,6 +77,7 @@ export default function BrandsRail({ brands = [] }: BrandsRailProps) {
                     <ResilientImage
                         src={brand.image}
                         alt=""
+                        showSkeleton={false}
                         sizes="(max-width: 768px) 140px, 160px"
                         className="h-full w-full object-contain transition-transform duration-300 group-hover:scale-108"
                     />
