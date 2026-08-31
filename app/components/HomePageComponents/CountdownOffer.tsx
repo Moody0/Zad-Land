@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useLanguage } from '@/app/context/LanguageContext';
+import { MdChevronRight, MdLocalFireDepartment } from 'react-icons/md';
 
 interface TimeLeft {
     days: number;
@@ -13,12 +14,12 @@ interface TimeLeft {
 
 const CountdownOffer = () => {
     const { dir, language } = useLanguage();
-    const [timeLeft, setTimeLeft] = useState<TimeLeft>({ days: 17, hours: 0, minutes: 6, seconds: 46 });
+    const isArabic = language === 'ar';
+    const [timeLeft, setTimeLeft] = useState<TimeLeft>({ days: 16, hours: 23, minutes: 58, seconds: 45 });
 
-    // Target date: 30 days from now for demo, or a fixed date
     useEffect(() => {
         const targetDate = new Date();
-        targetDate.setDate(targetDate.getDate() + 17); // 17 days for matching the provided HTML
+        targetDate.setDate(targetDate.getDate() + 16);
 
         const timer = setInterval(() => {
             const now = new Date().getTime();
@@ -43,53 +44,101 @@ const CountdownOffer = () => {
     const formatNumber = (num: number) => num.toString().padStart(2, '0');
 
     return (
-        <section className="w-full bg-white dark:bg-[#121212]">
-            <div className="container-custom">
-                <div className={`w-full rounded-2xl bg-gradient-to-r from-[#072835] via-[#0a3547] to-[#072835] text-white border border-[#B8860B]/30 h-auto md:h-[155px] py-5 md:py-0 px-5 sm:px-8 md:px-12 flex flex-col md:flex-row items-center justify-between gap-4 ${dir === 'rtl' ? 'md:flex-row' : 'md:flex-row-reverse'} shadow-xs`}>
+        <section className="container-custom">
+            <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#072835] via-[#093344] to-[#072835] border border-[#B8860B]/30 p-5 sm:p-7 lg:p-8 shadow-sm">
+                {/* Ambient Background Glow */}
+                <div className="absolute top-0 end-0 w-80 h-80 bg-[#B8860B]/10 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
+                <div className="absolute bottom-0 start-0 w-60 h-60 bg-[#2E7D32]/10 rounded-full blur-3xl pointer-events-none -ml-16 -mb-16" />
 
-                    {/* 1. Button */}
-                    <div className="flex-shrink-0 order-4 md:order-1">
+                <div className={`relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6 ${dir === 'rtl' ? 'lg:flex-row' : 'lg:flex-row'}`}>
+                    
+                    {/* Left/Right Content: Live Deal Description */}
+                    <div className={`flex flex-col ${isArabic ? 'text-right' : 'text-left'} max-w-xl`}>
+                        {/* Live Campaign Pill */}
+                        <div className="inline-flex items-center gap-1.5 self-start px-3 py-1 rounded-full bg-[#B8860B]/15 border border-[#B8860B]/30 mb-2.5">
+                            <MdLocalFireDepartment className="text-sm text-[#E5B54A] animate-pulse" />
+                            <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#E5B54A]">
+                                {isArabic ? 'حملة التوريد الكبرى للموسم' : 'Seasonal Wholesale Supply Campaign'}
+                            </span>
+                        </div>
+
+                        {/* Main Heading */}
+                        <h2 className="text-lg sm:text-xl md:text-2xl font-extrabold text-white leading-snug tracking-tight mb-1.5">
+                            {isArabic 
+                                ? 'خصومات حصرية تصل إلى 25% على شحنات الجملة' 
+                                : 'Save Up to 25% on Certified Bulk Food Shipments'}
+                        </h2>
+
+                        {/* Subtitle */}
+                        <p className="text-xs sm:text-sm text-gray-300 dark:text-gray-300 leading-relaxed">
+                            {isArabic
+                                ? 'أسعار تفضيلية مخصصة للهايبرماركت، الموزعين، والمطاعم مع ضمان جودة التخزين والشحن المباشر.'
+                                : 'Direct factory pricing for distributors, supermarkets, and catering with guaranteed quality.'}
+                        </p>
+                    </div>
+
+                    {/* Right/Left Action & Timer Block */}
+                    <div className="flex flex-col sm:flex-row items-center gap-4 lg:gap-5 shrink-0 self-stretch lg:self-auto justify-between lg:justify-end">
+                        
+                        {/* Compact Integrated Countdown */}
+                        <div className="w-full sm:w-auto flex items-center justify-center gap-1.5 sm:gap-2 bg-black/35 backdrop-blur-md border border-[#B8860B]/25 rounded-2xl px-4 py-2.5">
+                            {/* Days */}
+                            <div className="flex flex-col items-center min-w-[38px] sm:min-w-[42px]">
+                                <span className="text-base sm:text-lg md:text-xl font-extrabold text-[#E5B54A] tabular-nums leading-tight">
+                                    {formatNumber(timeLeft.days)}
+                                </span>
+                                <span className="text-[9px] font-bold uppercase tracking-wider text-gray-400 mt-0.5">
+                                    {isArabic ? 'يوم' : 'Days'}
+                                </span>
+                            </div>
+
+                            <span className="text-[#B8860B] font-extrabold text-xs -mt-2.5">:</span>
+
+                            {/* Hours */}
+                            <div className="flex flex-col items-center min-w-[38px] sm:min-w-[42px]">
+                                <span className="text-base sm:text-lg md:text-xl font-extrabold text-[#E5B54A] tabular-nums leading-tight">
+                                    {formatNumber(timeLeft.hours)}
+                                </span>
+                                <span className="text-[9px] font-bold uppercase tracking-wider text-gray-400 mt-0.5">
+                                    {isArabic ? 'ساعة' : 'Hrs'}
+                                </span>
+                            </div>
+
+                            <span className="text-[#B8860B] font-extrabold text-xs -mt-2.5">:</span>
+
+                            {/* Minutes */}
+                            <div className="flex flex-col items-center min-w-[38px] sm:min-w-[42px]">
+                                <span className="text-base sm:text-lg md:text-xl font-extrabold text-[#E5B54A] tabular-nums leading-tight">
+                                    {formatNumber(timeLeft.minutes)}
+                                </span>
+                                <span className="text-[9px] font-bold uppercase tracking-wider text-gray-400 mt-0.5">
+                                    {isArabic ? 'دقيقة' : 'Min'}
+                                </span>
+                            </div>
+
+                            <span className="text-[#B8860B] font-extrabold text-xs -mt-2.5">:</span>
+
+                            {/* Seconds */}
+                            <div className="flex flex-col items-center min-w-[38px] sm:min-w-[42px]">
+                                <span className="text-base sm:text-lg md:text-xl font-extrabold text-[#E5B54A] tabular-nums leading-tight">
+                                    {formatNumber(timeLeft.seconds)}
+                                </span>
+                                <span className="text-[9px] font-bold uppercase tracking-wider text-gray-400 mt-0.5">
+                                    {isArabic ? 'ثانية' : 'Sec'}
+                                </span>
+                            </div>
+                        </div>
+
+                        {/* Primary CTA Button */}
                         <Link
                             href="/products"
-                            className="px-7 py-3 bg-[#B8860B] hover:bg-[#9E7309] text-white rounded-full font-bold text-sm md:text-base transition-all active:scale-95 whitespace-nowrap"
+                            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 sm:px-7 py-3 rounded-full bg-[#B8860B] hover:bg-[#9E7309] text-white font-bold text-xs sm:text-sm md:text-base transition-all duration-200 active:scale-95 shadow-sm hover:shadow-md whitespace-nowrap group cursor-pointer"
                         >
-                            {language === 'ar' ? 'تصفح كافة العروض' : 'All Offers'}
+                            <span>{isArabic ? 'استكشف عروض التوريد' : 'Explore Bulk Deals'}</span>
+                            <MdChevronRight className={`text-lg transition-transform group-hover:translate-x-0.5 ${isArabic ? 'rotate-180 group-hover:-translate-x-0.5' : ''}`} />
                         </Link>
                     </div>
 
-                    {/* 2. Timer (Middle) */}
-                    <div className="flex items-center gap-2.5 md:gap-3 text-[20px] md:text-[26px] font-extrabold text-[#F5F0E0] tabular-nums order-2">
-                        <div className="flex flex-col items-center bg-black/25 backdrop-blur-sm border border-[#B8860B]/20 px-3.5 py-1.5 rounded-xl min-w-[56px]">
-                            <span className="text-[#E5B54A]">{formatNumber(timeLeft.days)}</span>
-                            <span className="text-[9px] uppercase tracking-wider text-white/70 mt-0.5">{language === 'ar' ? 'يوم' : 'Day'}</span>
-                        </div>
-                        <span className="text-[#B8860B] font-bold">:</span>
-                        <div className="flex flex-col items-center bg-black/25 backdrop-blur-sm border border-[#B8860B]/20 px-3.5 py-1.5 rounded-xl min-w-[56px]">
-                            <span className="text-[#E5B54A]">{formatNumber(timeLeft.hours)}</span>
-                            <span className="text-[9px] uppercase tracking-wider text-white/70 mt-0.5">{language === 'ar' ? 'ساعة' : 'Hrs'}</span>
-                        </div>
-                        <span className="text-[#B8860B] font-bold">:</span>
-                        <div className="flex flex-col items-center bg-black/25 backdrop-blur-sm border border-[#B8860B]/20 px-3.5 py-1.5 rounded-xl min-w-[56px]">
-                            <span className="text-[#E5B54A]">{formatNumber(timeLeft.minutes)}</span>
-                            <span className="text-[9px] uppercase tracking-wider text-white/70 mt-0.5">{language === 'ar' ? 'دقيقة' : 'Min'}</span>
-                        </div>
-                        <span className="text-[#B8860B] font-bold">:</span>
-                        <div className="flex flex-col items-center bg-black/25 backdrop-blur-sm border border-[#B8860B]/20 px-3.5 py-1.5 rounded-xl min-w-[56px]">
-                            <span className="text-[#E5B54A]">{formatNumber(timeLeft.seconds)}</span>
-                            <span className="text-[9px] uppercase tracking-wider text-white/70 mt-0.5">{language === 'ar' ? 'ثانية' : 'Sec'}</span>
-                        </div>
-                    </div>
-
-                    {/* 3. Heading & Subheading */}
-                    <div className="flex flex-col items-center md:items-start text-center md:text-start order-1 md:order-3">
-                        <span className="text-xs uppercase tracking-widest text-[#E5B54A] font-bold mb-1 flex items-center gap-1.5">
-                            <span className="w-2 h-2 rounded-full bg-[#2E7D32] inline-block animate-pulse"></span>
-                            <span>{language === 'ar' ? 'عروض الجملة الحصرية' : 'Exclusive Wholesale Deals'}</span>
-                        </span>
-                        <h2 className="text-lg md:text-2xl font-bold text-white leading-tight">
-                            {language === 'ar' ? 'أفضل العروض والأسعار التنافسية' : 'Best Offers, All in One Place'}
-                        </h2>
-                    </div>
                 </div>
             </div>
         </section>
