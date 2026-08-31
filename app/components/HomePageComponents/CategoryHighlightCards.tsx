@@ -51,13 +51,13 @@ const CategoryHighlightCards = ({ cards = [], language = 'ar' }: CategoryHighlig
                                 className="group relative flex flex-col h-full bg-[#FAF9F5] dark:bg-[#1E1E16] rounded-2xl overflow-hidden border border-[#B8860B]/15 hover:border-[#B8860B]/50 transition-all duration-300 hover:shadow-md p-2.5 sm:p-3.5"
                             >
                                 {/* Image Container (Structured with inner rounded frame) */}
-                                <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-white dark:bg-zinc-900 border border-gray-100 dark:border-white/5 p-2 mb-2.5 flex items-center justify-center">
+                                <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-gray-50 dark:bg-zinc-900 border border-gray-100 dark:border-white/5 mb-2.5 flex items-center justify-center">
                                     <ResilientImage
                                         src={heroImage}
                                         alt={categoryName}
                                         showSkeleton={false}
                                         sizes="(max-width: 768px) 190px, 300px"
-                                        className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
+                                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                                         loading="lazy"
                                     />
                                 </div>

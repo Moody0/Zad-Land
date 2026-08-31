@@ -133,7 +133,6 @@ const ProductActions = ({ product, stock }: ProductActionsProps) => {
 
                 {displayStock > 0 && (
                     <div className="flex items-center gap-2 text-xs text-slate-700 dark:text-gray-300 font-semibold pt-2 border-t border-[#B8860B]/15 dark:border-white/5">
-                        <span className="text-base">📦</span>
                         <span>
                             {language === 'ar' 
                                 ? `مواصفات التعبئة: ${stock || displayStock} قطعة في الطرد / الكرتونة (البيع بالطرد الكامل)` 

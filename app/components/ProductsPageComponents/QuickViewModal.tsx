@@ -130,7 +130,6 @@ const QuickViewModal = ({ product, isOpen, onClose }: QuickViewModalProps) => {
                     {/* Wholesale Packaging Badge */}
                     {product.stock && product.stock > 0 ? (
                         <div className="flex items-center gap-1.5 text-xs text-slate-700 dark:text-gray-300 font-semibold mb-3 bg-[#FAF6EC] dark:bg-zinc-800 px-3 py-1.5 rounded-lg border border-[#B8860B]/20">
-                            <span>📦</span>
                             <span>{language === 'ar' ? `العبوة: ${product.stock} قطعة في الكرتونة` : `Packaging: ${product.stock} pcs / carton`}</span>
                         </div>
                     ) : null}

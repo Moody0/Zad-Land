@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useLanguage } from '@/app/context/LanguageContext';
-import { MdChevronRight, MdLocalFireDepartment } from 'react-icons/md';
+import { MdChevronRight } from 'react-icons/md';
 
 interface TimeLeft {
     days: number;
@@ -54,14 +54,6 @@ const CountdownOffer = () => {
                     
                     {/* Left/Right Content: Live Deal Description */}
                     <div className={`flex flex-col ${isArabic ? 'text-right' : 'text-left'} max-w-xl`}>
-                        {/* Live Campaign Pill */}
-                        <div className="inline-flex items-center gap-1.5 self-start px-3 py-1 rounded-full bg-[#B8860B]/15 border border-[#B8860B]/30 mb-2.5">
-                            <MdLocalFireDepartment className="text-sm text-[#E5B54A] animate-pulse" />
-                            <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#E5B54A]">
-                                {isArabic ? 'حملة التوريد الكبرى للموسم' : 'Seasonal Wholesale Supply Campaign'}
-                            </span>
-                        </div>
-
                         {/* Main Heading */}
                         <h2 className="text-lg sm:text-xl md:text-2xl font-extrabold text-white leading-snug tracking-tight mb-1.5">
                             {isArabic 
