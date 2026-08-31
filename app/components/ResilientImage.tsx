@@ -75,12 +75,16 @@ const ResilientImageInner = ({
 
     return (
         <span className="relative block h-full w-full overflow-hidden">
+            {/* Background Skeleton Shimmer */}
             <span
                 aria-hidden="true"
-                className={`absolute inset-0 overflow-hidden bg-gray-100 dark:bg-zinc-800 ${skeletonClassName || ""} ${isLoaded ? "opacity-0" : "opacity-100"} transition-opacity duration-300`}
+                className={`absolute inset-0 overflow-hidden bg-gray-100 dark:bg-zinc-800 transition-opacity duration-300 ${
+                    isLoaded ? "opacity-0 pointer-events-none" : "opacity-100"
+                } ${skeletonClassName || ""}`}
             >
                 <span className="image-shimmer absolute inset-0" />
             </span>
+
             <Image
                 {...imgProps}
                 alt={alt || ""}
@@ -88,7 +92,7 @@ const ResilientImageInner = ({
                 fill
                 unoptimized={imgProps.unoptimized ?? isPostImg}
                 sizes={imgProps.sizes || "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"}
-                className={`${className || ""} block transition-opacity duration-300 ${isLoaded ? "opacity-100" : "opacity-0"}`}
+                className={`${className || ""} block relative z-10`}
                 onLoad={(event) => {
                     setIsLoaded(true);
                     onLoad?.(event);
