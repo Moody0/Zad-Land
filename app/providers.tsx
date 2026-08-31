@@ -8,9 +8,19 @@ import { Toaster } from "react-hot-toast";
 import { SessionProvider } from "next-auth/react";
 import CartDrawer from "./components/CartDrawer";
 
-export function Providers({ children, session, initialExchangeRate = 135 }: { children: React.ReactNode, session?: any, initialExchangeRate?: number }) {
+export function Providers({ 
+    children, 
+    session, 
+    initialExchangeRate = 135,
+    initialLanguage = 'ar'
+}: { 
+    children: React.ReactNode, 
+    session?: any, 
+    initialExchangeRate?: number,
+    initialLanguage?: 'en' | 'ar'
+}) {
     const content = (
-        <LanguageProvider>
+        <LanguageProvider initialLanguage={initialLanguage}>
             <CurrencyProvider initialExchangeRate={initialExchangeRate}>
                 <CartProvider>
                     <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>

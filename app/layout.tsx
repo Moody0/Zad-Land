@@ -178,7 +178,7 @@ export default async function RootLayout({
         suppressHydrationWarning
       >
         <div id="app-shell">
-          <Providers session={session} initialExchangeRate={exchangeRate}>
+          <Providers session={session} initialExchangeRate={exchangeRate} initialLanguage={language}>
             {children}
           </Providers>
         </div>

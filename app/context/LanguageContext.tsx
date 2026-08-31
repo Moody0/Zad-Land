@@ -20,17 +20,15 @@ interface LanguageContextType {
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-export function LanguageProvider({ children }: { children: React.ReactNode }) {
-    // Initialize language from document HTML attribute or default to 'ar'
-    const [language, setLanguageState] = useState<Language>(() => {
-        if (typeof document !== 'undefined') {
-            const docLang = document.documentElement.lang as Language;
-            if (docLang === 'en' || docLang === 'ar') return docLang;
-        }
-        return 'ar';
-    });
-
-    const [translations, setTranslations] = useState<TranslationObject>(() => language === 'en' ? en : ar);
+export function LanguageProvider({
+    children,
+    initialLanguage = 'ar'
+}: {
+    children: React.ReactNode;
+    initialLanguage?: Language;
+}) {
+    const [language, setLanguageState] = useState<Language>(initialLanguage);
+    const [translations, setTranslations] = useState<TranslationObject>(() => initialLanguage === 'en' ? en : ar);
     const [mounted, setMounted] = useState(false);
 
     // Sync language on client mount if user had a saved preference that differs from server render
