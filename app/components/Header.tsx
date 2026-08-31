@@ -11,7 +11,6 @@ import MobileMenu from './MobileMenu';
 import CurrencyToggle from './CurrencyToggle';
 import LanguageToggle from './LanguageToggle';
 import MegaMenu, { type NavMainCategory } from './HeaderComponents/MegaMenu';
-import { AnimatePresence, motion } from 'framer-motion';
 import TopBar from './HeaderComponents/TopBar';
 
 interface HeaderCategory {
@@ -40,7 +39,7 @@ const Header = ({ initialCategories = [], initialNavData = [], dir }: HeaderProp
     const isScrolledRef = useRef(false);
 
     // Mega menu state
-    const [navData, setNavData] = useState<NavMainCategory[]>(initialNavData);
+    const navData = initialNavData;
     const [activeMegaMenu, setActiveMegaMenu] = useState<string | null>(null);
     const closeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -86,21 +85,7 @@ const Header = ({ initialCategories = [], initialNavData = [], dir }: HeaderProp
         }, 120);
     };
 
-    // Sync navigation data from server or fetch fresh
-    useEffect(() => {
-        if (initialNavData && initialNavData.length > 0) {
-            setNavData(initialNavData);
-        }
-        fetch('/api/navigation', { cache: 'no-store' })
-            .then((res) => res.json())
-            .then((data) => {
-                if (Array.isArray(data) && data.length > 0) setNavData(data);
-            })
-            .catch(() => {});
-    }, [initialNavData]);
-
     React.useEffect(() => {
-        let lastScrollY = window.scrollY;
         let ticking = false;
 
         const updateScroll = () => {
@@ -125,7 +110,6 @@ const Header = ({ initialCategories = [], initialNavData = [], dir }: HeaderProp
                 }
             }
 
-            lastScrollY = currentScrollY;
             ticking = false;
         };
 
@@ -174,7 +158,7 @@ const Header = ({ initialCategories = [], initialNavData = [], dir }: HeaderProp
     return (
         <>
             {/* Spacer to prevent layout shift when header collapses */}
-            <div className="w-full h-[140px] lg:h-[158px]" aria-hidden="true" />
+            <div className="w-full h-[148px] sm:h-[144px] lg:h-[158px]" aria-hidden="true" />
 
             <header className="fixed top-0 left-0 z-50 w-full bg-white dark:bg-zinc-900 border-b border-gray-100 dark:border-white/10 transition-all duration-300">
                 {/* Disappearing Top Bar */}
@@ -293,6 +277,7 @@ const Header = ({ initialCategories = [], initialNavData = [], dir }: HeaderProp
                         {/* Mobile Overlays Wrapper */}
                         <MobileMenu
                             initialCategories={initialCategories}
+                            navData={navData}
                             isOpen={isMobileMenuOpen}
                             setIsOpen={setIsMobileMenuOpen}
                             isSearchOpen={isMobileSearchOpen}
@@ -359,38 +344,32 @@ const Header = ({ initialCategories = [], initialNavData = [], dir }: HeaderProp
                                         </button>
 
                                         {/* Floating More Dropdown Menu */}
-                                        <AnimatePresence>
-                                            {isMoreOpen && (
-                                                <motion.div
-                                                    initial={{ opacity: 0, y: 8, scale: 0.98 }}
-                                                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                                                    exit={{ opacity: 0, y: 6, scale: 0.98 }}
-                                                    transition={{ duration: 0.15 }}
-                                                    className="absolute top-full ltr:right-0 rtl:left-0 mt-1.5 w-64 bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl border border-gray-200/80 dark:border-white/10 p-2 z-50"
-                                                >
-                                                    <div className="flex flex-col gap-0.5 max-h-[340px] overflow-y-auto scrollbar-hide py-1">
-                                                        {overflowNavItems.map((mc) => {
-                                                            const name = language === 'ar' ? mc.name : (mc.nameEn || mc.name);
-                                                            return (
-                                                                <Link
-                                                                    key={mc.id}
-                                                                    href={`/department/${mc.slug}`}
-                                                                    onClick={() => setIsMoreOpen(false)}
-                                                                    className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-[13px] font-semibold text-zinc-800 dark:text-white/90 hover:bg-[#B8860B]/10 hover:text-[#B8860B] dark:hover:text-[#E5B54A] transition-all"
-                                                                >
-                                                                    <span className="truncate">{name}</span>
-                                                                    {mc.categories?.length > 0 && (
-                                                                        <span className="text-[11px] text-gray-400 font-normal shrink-0 ms-3">
-                                                                            {mc.categories.length} {language === 'ar' ? 'فئات' : 'cats'}
-                                                                        </span>
-                                                                    )}
-                                                                </Link>
-                                                            );
-                                                        })}
-                                                    </div>
-                                                </motion.div>
-                                            )}
-                                        </AnimatePresence>
+                                        {isMoreOpen && (
+                                            <div
+                                                className="absolute top-full ltr:right-0 rtl:left-0 mt-1.5 w-64 bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl border border-gray-200/80 dark:border-white/10 p-2 z-50 animate-mega-menu-enter"
+                                            >
+                                                <div className="flex flex-col gap-0.5 max-h-[340px] overflow-y-auto scrollbar-hide py-1">
+                                                    {overflowNavItems.map((mc) => {
+                                                        const name = language === 'ar' ? mc.name : (mc.nameEn || mc.name);
+                                                        return (
+                                                            <Link
+                                                                key={mc.id}
+                                                                href={`/department/${mc.slug}`}
+                                                                onClick={() => setIsMoreOpen(false)}
+                                                                className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-[13px] font-semibold text-zinc-800 dark:text-white/90 hover:bg-[#B8860B]/10 hover:text-[#B8860B] dark:hover:text-[#E5B54A] transition-all"
+                                                            >
+                                                                <span className="truncate">{name}</span>
+                                                                {mc.categories?.length > 0 && (
+                                                                    <span className="text-[11px] text-gray-400 font-normal shrink-0 ms-3">
+                                                                        {mc.categories.length} {language === 'ar' ? 'فئات' : 'cats'}
+                                                                    </span>
+                                                                )}
+                                                            </Link>
+                                                        );
+                                                    })}
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
                                 )}
                             </div>
@@ -398,22 +377,20 @@ const Header = ({ initialCategories = [], initialNavData = [], dir }: HeaderProp
                     </div>
 
                     {/* Mega Menu Dropdown */}
-                    <AnimatePresence>
-                        {activeMegaMenu && activeNavData && (
-                            <MegaMenu
-                                key={activeMegaMenu}
-                                data={activeNavData}
-                                onClose={handleMegaMenuClose}
-                                onMouseEnter={() => {
-                                    if (closeTimeoutRef.current) {
-                                        clearTimeout(closeTimeoutRef.current);
-                                        closeTimeoutRef.current = null;
-                                    }
-                                }}
-                                onMouseLeave={handleNavLeave}
-                            />
-                        )}
-                    </AnimatePresence>
+                    {activeMegaMenu && activeNavData && (
+                        <MegaMenu
+                            key={activeMegaMenu}
+                            data={activeNavData}
+                            onClose={handleMegaMenuClose}
+                            onMouseEnter={() => {
+                                if (closeTimeoutRef.current) {
+                                    clearTimeout(closeTimeoutRef.current);
+                                    closeTimeoutRef.current = null;
+                                }
+                            }}
+                            onMouseLeave={handleNavLeave}
+                        />
+                    )}
                 </nav>
             </header>
         </>

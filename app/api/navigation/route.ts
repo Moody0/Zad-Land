@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
 import { getNavigationData } from "@/lib/navigation";
 
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
+export const revalidate = 3600;
 
 export async function GET() {
     try {
@@ -10,7 +9,7 @@ export async function GET() {
         const response = NextResponse.json(result);
         response.headers.set(
             "Cache-Control",
-            "no-store, no-cache, must-revalidate, proxy-revalidate"
+            "public, s-maxage=3600, stale-while-revalidate=86400"
         );
         return response;
     } catch (error) {

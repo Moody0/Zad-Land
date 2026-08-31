@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { unstable_cache } from "next/cache";
 
 export interface NavBrand {
     id: string;
@@ -45,7 +46,7 @@ export interface NavMainCategory {
     trendingProducts: NavTrendingProduct[];
 }
 
-export async function getNavigationData(): Promise<NavMainCategory[]> {
+async function fetchNavigationData(): Promise<NavMainCategory[]> {
     try {
         const mainCategories = await prisma.mainCategory.findMany({
             where: { isActive: true, showInNav: true },
@@ -200,3 +201,9 @@ export async function getNavigationData(): Promise<NavMainCategory[]> {
         return [];
     }
 }
+
+export const getNavigationData = unstable_cache(
+    fetchNavigationData,
+    ["navigation-data"],
+    { tags: ["navigation"], revalidate: 3600 }
+);

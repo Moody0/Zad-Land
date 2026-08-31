@@ -101,6 +101,7 @@ const TrendingWeekly = ({ products }: TrendingWeeklyProps) => {
                                     <ResilientImage
                                         src={getFirstImage(product.images)}
                                         alt={product.name}
+                                        sizes="84px"
                                         className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
                                         loading="lazy"
                                     />

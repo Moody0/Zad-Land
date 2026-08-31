@@ -3,6 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { useLanguage } from "@/app/context/LanguageContext";
+import ResilientImage from "@/app/components/ResilientImage";
 
 interface AboutUsSettings {
     aboutHeroTitle: string | null;
@@ -90,11 +91,14 @@ export default function AboutUsClient({ settings }: { settings: AboutUsSettings 
                 <div className="order-2 lg:order-1">
                     <div className="relative group">
                         <div className="absolute -inset-4 bg-primary/10 rounded-3xl transition-all group-hover:bg-primary/15 blur-2xl"></div>
-                        <img
-                            alt="Brand Narrative"
-                            className="relative rounded-3xl w-full object-cover border border-[#B8860B]/15 group-hover:scale-[1.02] transition-transform duration-500"
-                            src={narrativeImage}
-                        />
+                        <div className="relative aspect-[4/3] w-full overflow-hidden rounded-3xl border border-[#B8860B]/15 group-hover:scale-[1.02] transition-transform duration-500">
+                            <ResilientImage
+                                alt="Brand Narrative"
+                                className="w-full h-full object-cover rounded-3xl"
+                                src={narrativeImage}
+                                sizes="(max-width: 1024px) 100vw, 50vw"
+                            />
+                        </div>
                     </div>
                 </div>
                 <div className="order-1 lg:order-2 flex flex-col gap-8">

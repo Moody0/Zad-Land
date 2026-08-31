@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 import { Figtree, Noto_Sans_Arabic } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
-import InitialLoadGate from "./components/InitialLoadGate";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { getI18n } from "@/lib/i18n";
@@ -11,13 +10,13 @@ import { prisma } from "@/lib/prisma";
 const figtree = Figtree({
   variable: "--font-figtree",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800", "900"],
+  display: "swap",
 });
 
 const noto_sans_arabic = Noto_Sans_Arabic({
   variable: "--font-noto-sans-arabic",
   subsets: ["arabic"],
-  weight: ["300", "400", "500", "600", "700", "800", "900"],
+  display: "swap",
 });
 
 const metadataBase =
@@ -167,17 +166,6 @@ export default async function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
         />
-        <script
-          suppressHydrationWarning
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function () {
-                var root = document.documentElement;
-                root.classList.add('app-loading');
-              })();
-            `,
-          }}
-        />
         <link
           rel="preload"
           as="image"
@@ -189,14 +177,7 @@ export default async function RootLayout({
         className={`${figtree.className} ${noto_sans_arabic.className} antialiased`}
         suppressHydrationWarning
       >
-        <div id="initial-page-loader" aria-hidden="true">
-          <div className="initial-page-loader__panel">
-            <div className="initial-page-loader__spinner" />
-            <p className="initial-page-loader__brand">Zad Land</p>
-          </div>
-        </div>
         <div id="app-shell">
-          <InitialLoadGate />
           <Providers session={session} initialExchangeRate={exchangeRate}>
             {children}
           </Providers>

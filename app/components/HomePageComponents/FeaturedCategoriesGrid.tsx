@@ -1,10 +1,7 @@
-'use client';
-
 import React from 'react';
 import Link from 'next/link';
 import { useLanguage } from '@/app/context/LanguageContext';
 import ResilientImage from '@/app/components/ResilientImage';
-import { motion } from 'framer-motion';
 import { MdChevronRight } from 'react-icons/md';
 
 interface Category {
@@ -78,27 +75,13 @@ const FeaturedCategoriesGrid = ({ categories }: FeaturedCategoriesGridProps) => 
             </div>
 
             {/* Symmetrical 5-Column Grid on Desktop, 2-Column on Mobile */}
-            <motion.div 
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, margin: "-50px" }}
-                variants={{
-                    visible: { transition: { staggerChildren: 0.04 } }
-                }}
-                className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4 md:gap-5"
-            >
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4 md:gap-5">
                 {categories.map((category) => {
                     const brandName = getBrandName(category);
                     const displayName = getDisplayName(category);
 
                     return (
-                        <motion.div
-                            key={category.id}
-                            variants={{
-                                hidden: { opacity: 0, scale: 0.95, y: 15 },
-                                visible: { opacity: 1, scale: 1, y: 0, transition: { duration: 0.4, ease: [0.16, 1, 0.3, 1] } }
-                            }}
-                        >
+                        <div key={category.id}>
                             <Link
                                 href={`/categories/${category.slug}`}
                                 className="group relative flex flex-col h-full bg-[#FAF9F5] dark:bg-[#1E1E16] rounded-2xl overflow-hidden border border-[#B8860B]/15 hover:border-[#B8860B]/50 transition-all duration-300 hover:shadow-md p-2.5 sm:p-3.5"
@@ -109,6 +92,7 @@ const FeaturedCategoriesGrid = ({ categories }: FeaturedCategoriesGridProps) => 
                                         <ResilientImage
                                             src={category.image}
                                             alt={displayName}
+                                            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 200px"
                                             className="w-full h-full object-cover rounded-xl transition-transform duration-500 group-hover:scale-105"
                                             loading="lazy"
                                         />
@@ -136,10 +120,10 @@ const FeaturedCategoriesGrid = ({ categories }: FeaturedCategoriesGridProps) => 
                                     </div>
                                 </div>
                             </Link>
-                        </motion.div>
+                        </div>
                     );
                 })}
-            </motion.div>
+            </div>
         </section>
     );
 };

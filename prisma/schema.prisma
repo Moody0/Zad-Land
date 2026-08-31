@@ -45,6 +45,9 @@ model MainCategory {
   categories  Category[]
   products    Product[]
   brands      Brand[]
+
+  @@index([isActive, showInNav, navOrder])
+  @@index([isFeatured])
 }
 
 model Category {
@@ -64,6 +67,8 @@ model Category {
 
   @@unique([brandId, name])
   @@index([brandId])
+  @@index([mainCategoryId])
+  @@index([isFeatured])
 }
 
 model Product {
@@ -97,7 +102,13 @@ model Product {
 
   @@index([brandId])
   @@index([categoryId])
+  @@index([mainCategoryId])
+  @@index([isTrending])
+  @@index([createdAt])
   @@index([name])
+  @@index([categoryId, createdAt])
+  @@index([brandId, createdAt])
+  @@index([mainCategoryId, createdAt])
 }
 
 model Brand {
@@ -119,6 +130,7 @@ model Brand {
   @@index([group])
   @@index([isActive])
   @@index([isFeatured])
+  @@index([mainCategoryId])
 }
 
 model Order {
@@ -135,6 +147,10 @@ model Order {
   promoCodeId   String?
   promoCode     PromoCode?  @relation(fields: [promoCodeId], references: [id])
   items         OrderItem[]
+
+  @@index([status])
+  @@index([createdAt])
+  @@index([promoCodeId])
 }
 
 model Banner {
@@ -328,4 +344,5 @@ model Review {
   product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@index([productId])
+  @@index([productId, isApproved])
 }

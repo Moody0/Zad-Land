@@ -1,17 +1,20 @@
-import React, { Suspense } from "react";
+import React, { Suspense, cache } from "react";
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import ProductsClient from "../../products/ProductsClient";
 import { getCatalogInitialData } from "@/lib/catalog";
 
-export const revalidate = 60; // Cache for 60 seconds
+export const revalidate = 3600; // Cache for 1 hour
+
+const getDepartment = cache(async (slug: string) => {
+    return prisma.mainCategory.findUnique({
+        where: { slug },
+    });
+});
 
 export async function generateMetadata(props: { params: Promise<{ slug: string }> }) {
     const params = await props.params;
-    const department = await prisma.mainCategory.findUnique({
-        where: { slug: params.slug },
-        select: { name: true, description: true, image: true, slug: true },
-    });
+    const department = await getDepartment(params.slug);
 
     if (!department) return { title: "Department Not Found | Zad Land" };
 
@@ -52,9 +55,7 @@ export default async function DepartmentPage(props: { params: Promise<{ slug: st
     const params = await props.params;
     
     // 1. Fetch the main category (department)
-    const department = await prisma.mainCategory.findUnique({
-        where: { slug: params.slug },
-    });
+    const department = await getDepartment(params.slug);
 
     if (!department || !department.isActive) {
         notFound();

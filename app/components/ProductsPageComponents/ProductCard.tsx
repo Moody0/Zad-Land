@@ -2,13 +2,15 @@
 
 import Link from 'next/link';
 import React, { useState } from 'react';
+import dynamic from 'next/dynamic';
 import ResilientImage from '@/app/components/ResilientImage';
 import { useCurrency } from '@/app/context/CurrencyContext';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useCart } from '@/app/context/CartContext';
 import toast from 'react-hot-toast';
 import { MdSearch, MdShoppingBag, MdAdd, MdRemove } from 'react-icons/md';
-import QuickViewModal from './QuickViewModal';
+
+const QuickViewModal = dynamic(() => import('./QuickViewModal'), { ssr: false });
 
 export interface Product {
     id: string;
@@ -48,6 +50,7 @@ const ProductCard = ({ product, badge, showBadge = true }: ProductCardProps) => 
     const { items, addItem, updateQuantity, removeItem } = useCart();
     const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
     const [isSecondaryLoaded, setIsSecondaryLoaded] = useState(false);
+    const [isHovered, setIsHovered] = useState(false);
 
     // Localized title & description
     const displayName = (language === 'ar' ? product.nameAr : product.nameEn) || product.name || product.nameAr || '';
@@ -112,7 +115,10 @@ const ProductCard = ({ product, badge, showBadge = true }: ProductCardProps) => 
 
     return (
         <>
-            <div className="group relative flex flex-col bg-white dark:bg-zinc-900 rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-lg border border-gray-100 dark:border-white/10 p-2.5 sm:p-4 w-full h-full">
+            <div 
+                onMouseEnter={() => setIsHovered(true)}
+                className="group relative flex flex-col bg-white dark:bg-zinc-900 rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-lg border border-gray-100 dark:border-white/10 p-2.5 sm:p-4 w-full h-full"
+            >
                 
                 {/* Badge matching Theme (#B8860B for trending, #2E7D32 for new arrival) */}
                 {showBadge && (product.isTrending || badge) && (
@@ -143,6 +149,7 @@ const ProductCard = ({ product, badge, showBadge = true }: ProductCardProps) => 
                         <div className={`absolute inset-0 transition-all duration-500 z-10 ${hasSecondaryImage && isSecondaryLoaded ? 'group-hover:opacity-0' : ''}`}>
                             <ResilientImage
                                 alt={product.name}
+                                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 240px"
                                 className="w-full h-full object-cover rounded-xl transition-transform duration-500 group-hover:scale-105"
                                 src={primaryImage}
                                 loading="lazy"
@@ -150,10 +157,11 @@ const ProductCard = ({ product, badge, showBadge = true }: ProductCardProps) => 
                         </div>
                         
                         {/* Secondary Image Wrapper */}
-                        {hasSecondaryImage && (
+                        {hasSecondaryImage && isHovered && (
                             <div className="absolute inset-0 transition-all duration-500 opacity-0 group-hover:opacity-100 z-0">
                                 <ResilientImage
                                     alt={product.name}
+                                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 240px"
                                     className="w-full h-full object-cover rounded-xl transition-transform duration-500 scale-100 group-hover:scale-105"
                                     src={secondaryImage}
                                     loading="lazy"
@@ -253,11 +261,13 @@ const ProductCard = ({ product, badge, showBadge = true }: ProductCardProps) => 
                 </div>
             </div>
 
-            <QuickViewModal
-                product={product}
-                isOpen={isQuickViewOpen}
-                onClose={() => setIsQuickViewOpen(false)}
-            />
+            {isQuickViewOpen && (
+                <QuickViewModal
+                    product={product}
+                    isOpen={isQuickViewOpen}
+                    onClose={() => setIsQuickViewOpen(false)}
+                />
+            )}
         </>
     );
 };

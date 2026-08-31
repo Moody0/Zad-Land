@@ -104,6 +104,7 @@ const TestimonialsMasonry = ({ reviews = [], products }: TestimonialsMasonryProp
                                                 <ResilientImage
                                                     src={productImg}
                                                     alt={productName}
+                                                    sizes="48px"
                                                     className="w-full h-full object-contain"
                                                 />
                                             </div>

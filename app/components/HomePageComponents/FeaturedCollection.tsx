@@ -3,7 +3,6 @@
 import React, { useState, useMemo } from 'react';
 import ProductCard from '../ProductsPageComponents/ProductCard';
 import { MdChevronRight, MdChevronLeft } from 'react-icons/md';
-import { motion } from 'framer-motion';
 
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useProductRail } from './useProductRail';

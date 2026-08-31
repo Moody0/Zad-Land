@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { MdStar, MdStarOutline, MdKeyboardArrowDown } from 'react-icons/md';
 import { useLanguage } from '@/app/context/LanguageContext';
 import ReviewModal from './ReviewModal';
+import ResilientImage from '@/app/components/ResilientImage';
 
 interface Review {
     id: string;
@@ -213,8 +214,8 @@ export default function ProductReviews({ productId, productName, productImage }:
 
                                     {/* Review Image */}
                                     {review.image && (
-                                        <div className="mt-3 rounded-[10px] overflow-hidden w-24 h-24 bg-gray-50">
-                                            <img src={review.image} alt="" className="w-full h-full object-cover" />
+                                        <div className="mt-3 relative rounded-[10px] overflow-hidden w-24 h-24 bg-gray-50">
+                                            <ResilientImage src={review.image} alt="" className="w-full h-full object-cover" sizes="96px" />
                                         </div>
                                     )}
                                 </div>

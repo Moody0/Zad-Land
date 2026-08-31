@@ -1,10 +1,7 @@
-'use client';
-
 import React from 'react';
 import Link from 'next/link';
 import { useLanguage } from '@/app/context/LanguageContext';
 import ResilientImage from '@/app/components/ResilientImage';
-import { motion } from 'framer-motion';
 
 export interface HighlightCard {
     id: string;
@@ -41,26 +38,14 @@ const CategoryHighlightCards = ({ cards = [] }: CategoryHighlightCardsProps) => 
                 </h2>
             </div>
 
-            <motion.div 
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, margin: "-50px" }}
-                variants={{
-                    visible: { transition: { staggerChildren: 0.15 } }
-                }}
-                className="flex gap-4 md:gap-5 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-4 -mx-4 px-4 md:mx-0 md:px-0 md:overflow-visible"
-            >
+            <div className="flex gap-4 md:gap-5 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-4 -mx-4 px-4 md:mx-0 md:px-0 md:overflow-visible">
                 {cards.map((card) => {
                     const categoryName = language === 'ar' ? card.subheadingAr : card.subheadingEn;
                     const heroImage = card.heroImage || '/placeholder.svg';
 
                     return (
-                        <motion.div
+                        <div
                             key={card.id || card.slug}
-                            variants={{
-                                hidden: { opacity: 0, y: 40 },
-                                visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } }
-                            }}
                             className="flex-none w-[170px] sm:w-[190px] md:flex-1 min-w-0 snap-start"
                         >
                             <Link
@@ -72,6 +57,7 @@ const CategoryHighlightCards = ({ cards = [] }: CategoryHighlightCardsProps) => 
                                     <ResilientImage
                                         src={heroImage}
                                         alt={categoryName}
+                                        sizes="(max-width: 768px) 190px, 300px"
                                         className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
                                         loading="lazy"
                                     />
@@ -96,10 +82,10 @@ const CategoryHighlightCards = ({ cards = [] }: CategoryHighlightCardsProps) => 
                                     </div>
                                 </div>
                             </Link>
-                        </motion.div>
+                        </div>
                     );
                 })}
-            </motion.div>
+            </div>
         </section>
     );
 };

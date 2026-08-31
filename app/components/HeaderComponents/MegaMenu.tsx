@@ -6,7 +6,6 @@ import { useLanguage } from "@/app/context/LanguageContext";
 import { useCurrency } from "@/app/context/CurrencyContext";
 import { useCart } from "@/app/context/CartContext";
 import ResilientImage from "@/app/components/ResilientImage";
-import { motion } from "framer-motion";
 import { MdSearch } from "react-icons/md";
 import toast from "react-hot-toast";
 
@@ -191,12 +190,8 @@ export default function MegaMenu({ data, onClose, onMouseEnter, onMouseLeave }: 
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}
         >
-            <motion.div
-                className="bg-white dark:bg-[#1a1a1a] border-b border-gray-200 dark:border-white/10 shadow-2xl overflow-hidden origin-top"
-                initial={{ opacity: 0, y: -6 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -6 }}
-                transition={{ duration: 0.16, ease: "easeOut" }}
+            <div
+                className="bg-white dark:bg-[#1a1a1a] border-b border-gray-200 dark:border-white/10 shadow-2xl overflow-hidden origin-top animate-mega-menu-enter"
             >
                 <div className="container-custom py-8">
                     <div
@@ -323,7 +318,7 @@ export default function MegaMenu({ data, onClose, onMouseEnter, onMouseLeave }: 
                         </div>
                     </div>
                 </div>
-            </motion.div>
+            </div>
         </div>
     );
 }

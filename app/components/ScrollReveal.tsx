@@ -1,7 +1,6 @@
 'use client';
 
-import React, { useRef } from 'react';
-import { motion, useInView, Variants } from 'framer-motion';
+import React, { useEffect, useRef, useState } from 'react';
 
 interface ScrollRevealProps {
     children: React.ReactNode;
@@ -18,53 +17,62 @@ export default function ScrollReveal({
     children,
     className = '',
     delay = 0,
-    duration = 0.6,
+    duration = 0.5,
     direction = 'up',
-    distance = 40,
+    distance = 30,
     once = true,
-    margin = '-50px',
 }: ScrollRevealProps) {
-    const ref = useRef(null);
-    const isInView = useInView(ref, { once, margin: margin as any });
+    const ref = useRef<HTMLDivElement>(null);
+    const [isVisible, setIsVisible] = useState(false);
 
-    const getAxisOffset = () => {
+    useEffect(() => {
+        const el = ref.current;
+        if (!el) return;
+
+        if (typeof IntersectionObserver === 'undefined') {
+            setIsVisible(true);
+            return;
+        }
+
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting) {
+                    setIsVisible(true);
+                    if (once) observer.unobserve(el);
+                } else if (!once) {
+                    setIsVisible(false);
+                }
+            },
+            { rootMargin: '50px' }
+        );
+
+        observer.observe(el);
+        return () => observer.disconnect();
+    }, [once]);
+
+    const getTransform = () => {
+        if (isVisible) return 'none';
         switch (direction) {
-            case 'up': return { y: distance };
-            case 'down': return { y: -distance };
-            case 'left': return { x: distance };
-            case 'right': return { x: -distance };
-            case 'none': return {};
+            case 'up': return `translateY(${distance}px)`;
+            case 'down': return `translateY(-${distance}px)`;
+            case 'left': return `translateX(${distance}px)`;
+            case 'right': return `translateX(-${distance}px)`;
+            case 'none': return 'none';
         }
     };
 
-    const initialOffset = getAxisOffset();
-
-    const variants: Variants = {
-        hidden: {
-            opacity: 0,
-            ...initialOffset,
-        },
-        visible: {
-            opacity: 1,
-            x: 0,
-            y: 0,
-            transition: {
-                duration: duration,
-                delay: delay,
-                ease: [0.16, 1, 0.3, 1], // Custom smooth ease-out curve
-            },
-        },
-    };
-
     return (
-        <motion.div
+        <div
             ref={ref}
-            variants={variants}
-            initial="hidden"
-            animate={isInView ? 'visible' : 'hidden'}
             className={className}
+            style={{
+                opacity: isVisible ? 1 : 0,
+                transform: getTransform(),
+                transition: `opacity ${duration}s cubic-bezier(0.16, 1, 0.3, 1) ${delay}s, transform ${duration}s cubic-bezier(0.16, 1, 0.3, 1) ${delay}s`,
+                willChange: isVisible ? 'auto' : 'opacity, transform',
+            }}
         >
             {children}
-        </motion.div>
+        </div>
     );
 }

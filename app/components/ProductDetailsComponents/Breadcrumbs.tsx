@@ -14,27 +14,36 @@ const Breadcrumbs = ({ productName, categoryName, categorySlug }: BreadcrumbsPro
     const { language } = useLanguage();
 
     return (
-        <nav className="flex items-center flex-wrap gap-y-2 text-[11px] md:text-[12px] font-bold text-[#000000]/40 uppercase tracking-[0.1em] mb-6" aria-label="Breadcrumb">
-            <Link href="/" className="text-[#000000] dark:text-white/60 hover-underline-animated">
+        <nav className="relative z-20 flex items-center flex-wrap gap-y-2 text-[11px] md:text-[12px] font-bold text-[#000000]/40 uppercase tracking-[0.1em] mb-6" aria-label="Breadcrumb">
+            <Link 
+                href="/" 
+                className="inline-flex items-center py-1.5 px-1 -my-1.5 text-[#000000] dark:text-white/60 hover:text-[#B8860B] dark:hover:text-[#E5B54A] cursor-pointer touch-manipulation hover-underline-animated transition-colors"
+            >
                 {language === 'ar' ? 'الرئيسية' : 'Home'}
             </Link>
             
-            <span className="mx-2 md:mx-4 text-gray-300">|</span>
+            <span className="mx-2 md:mx-4 text-gray-300 select-none">|</span>
             
-            <Link href="/products" className="text-[#000000] dark:text-white/60 hover-underline-animated">
+            <Link 
+                href="/products" 
+                className="inline-flex items-center py-1.5 px-1 -my-1.5 text-[#000000] dark:text-white/60 hover:text-[#B8860B] dark:hover:text-[#E5B54A] cursor-pointer touch-manipulation hover-underline-animated transition-colors"
+            >
                 {language === 'ar' ? 'جميع المنتجات' : 'All Products'}
             </Link>
 
             {categoryName && categorySlug && (
                 <>
-                    <span className="mx-2 md:mx-4 text-gray-300">|</span>
-                    <Link href={`/categories/${categorySlug}`} className="text-[#000000] dark:text-white/60 hover-underline-animated">
+                    <span className="mx-2 md:mx-4 text-gray-300 select-none">|</span>
+                    <Link 
+                        href={`/categories/${categorySlug}`} 
+                        className="inline-flex items-center py-1.5 px-1 -my-1.5 text-[#000000] dark:text-white/60 hover:text-[#B8860B] dark:hover:text-[#E5B54A] cursor-pointer touch-manipulation hover-underline-animated transition-colors"
+                    >
                         {categoryName}
                     </Link>
                 </>
             )}
 
-            <span className="mx-2 md:mx-4 text-gray-300">|</span>
+            <span className="mx-2 md:mx-4 text-gray-300 select-none">|</span>
             
             <span className="text-[#000000] dark:text-white truncate max-w-[150px] md:max-w-none">
                 {productName}

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { cache } from 'react';
 import { prisma } from "@/lib/prisma";
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
@@ -11,15 +11,12 @@ import ProductShareButtons from '@/app/components/ProductDetailsComponents/Produ
 import RelatedProducts from '@/app/components/ProductDetailsComponents/RelatedProducts';
 import Breadcrumbs from '@/app/components/ProductDetailsComponents/Breadcrumbs';
 import ProductReviews from '@/app/components/ProductDetailsComponents/ProductReviews';
-import { cookies } from 'next/headers';
+import { getI18n } from '@/lib/i18n';
 
-export async function generateMetadata(
-    props: { params: Promise<{ slug: string }> }
-): Promise<Metadata> {
-    const params = await props.params;
-    const product = await prisma.product.findFirst({
+const getProduct = cache(async (slug: string) => {
+    return prisma.product.findFirst({
         where: {
-            slug: params.slug,
+            slug,
             brand: { isActive: true },
         },
         include: {
@@ -27,6 +24,13 @@ export async function generateMetadata(
             category: true,
         },
     });
+});
+
+export async function generateMetadata(
+    props: { params: Promise<{ slug: string }> }
+): Promise<Metadata> {
+    const params = await props.params;
+    const product = await getProduct(params.slug);
 
     if (!product) {
         return {
@@ -73,40 +77,30 @@ export async function generateMetadata(
 
 const ProductPage = async (props: { params: Promise<{ slug: string }> }) => {
     const params = await props.params;
-    const cookieStore = await cookies();
-    const language = cookieStore.get('language')?.value || 'ar';
+    const { language } = await getI18n();
 
-    const product = await prisma.product.findFirst({
-        where: {
-            slug: params.slug,
-            brand: { isActive: true },
-        },
-        include: {
-            brand: true,
-            category: true,
-        },
-    });
+    const product = await getProduct(params.slug);
 
     if (!product) {
         notFound();
     }
 
-    // Fetch related products (same category, exclude current)
-    const relatedProducts = await prisma.product.findMany({
-        where: {
-            categoryId: product.categoryId,
-            id: { not: product.id },
-            brand: { isActive: true },
-        },
-        take: 4,
-    });
-
-    // Fetch review statistics
-    const reviewStats = await prisma.review.aggregate({
-        where: { productId: product.id, isApproved: true },
-        _avg: { rating: true },
-        _count: { id: true },
-    });
+    // Parallel fetch related products and review statistics
+    const [relatedProducts, reviewStats] = await Promise.all([
+        prisma.product.findMany({
+            where: {
+                categoryId: product.categoryId,
+                id: { not: product.id },
+                brand: { isActive: true },
+            },
+            take: 4,
+        }),
+        prisma.review.aggregate({
+            where: { productId: product.id, isApproved: true },
+            _avg: { rating: true },
+            _count: { id: true },
+        }),
+    ]);
     
     const averageRating = reviewStats._avg.rating || 0;
     const totalReviews = reviewStats._count.id || 0;

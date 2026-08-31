@@ -4,6 +4,7 @@ import React from "react";
 import { useLanguage } from "@/app/context/LanguageContext";
 import { MdLocalShipping, MdAssignmentReturn, MdVerifiedUser, MdCheckCircle, MdLock } from "react-icons/md";
 import { Settings } from "@prisma/client";
+import ResilientImage from "@/app/components/ResilientImage";
 
 interface ShippingReturnsContentProps {
     siteSettings: any | null;
@@ -97,12 +98,13 @@ export default function ShippingReturnsContent({ siteSettings }: ShippingReturns
 
                         {/* Shipping Image */}
                         <div className="relative rounded-xl overflow-hidden aspect-[16/9] group">
-                            <img 
+                            <ResilientImage 
                                 alt="Shipping packaging" 
                                 className="w-full h-full object-cover grayscale-[20%] group-hover:scale-105 transition-transform duration-700" 
                                 src={siteSettings?.shippingReturnsImage || "https://lh3.googleusercontent.com/aida-public/AB6AXuC1GmfD6bueEsJqlHNPjDWHMlhsLZSm2Jmp21TUCLKvobkcd7oAPMMdwzfm8BOHC5XtR0EP6tLI7DT5hhyLxuijsbpX2kQf6iNlqROU-8k-DrqZAUqdc7-0lE4nxuCcLaEb0fEaXVBxc_yXkiUlyhfvaYJ1FfHZtngnoJbeanLgsf7rcxqON6rjkoC4BQv6FhlwLNKZrMbxjCugphq-bo5GCqBoLfmjjZSuH0N5eV-Kz33xFQTD5jSYCTsVYAwOkwhLQsQiPD_lnD9U"} 
+                                sizes="(max-width: 1024px) 100vw, 50vw"
                             />
-                            <div className="absolute inset-0 bg-primary/10 mix-blend-multiply"></div>
+                            <div className="absolute inset-0 bg-primary/10 mix-blend-multiply pointer-events-none"></div>
                         </div>
                     </section>
 

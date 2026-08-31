@@ -1,20 +1,17 @@
-'use client';
-
 import React from 'react';
 import Link from 'next/link';
-import { useLanguage } from '@/app/context/LanguageContext';
 
 interface PromoBannerProps {
     settings?: {
         middleBanner1Image?: string | null;
         middleBanner1Link?: string | null;
     };
+    dir?: 'rtl' | 'ltr';
+    language?: 'en' | 'ar';
 }
 
-const PromoBanner = ({ settings }: PromoBannerProps) => {
-    const { dir } = useLanguage();
+const PromoBanner = ({ settings, dir = 'rtl' }: PromoBannerProps) => {
     const isArabic = dir === 'rtl';
-
     const bannerLink = settings?.middleBanner1Link || '/products';
 
     return (

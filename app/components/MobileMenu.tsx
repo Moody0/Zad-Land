@@ -47,6 +47,7 @@ interface NavMainCategory {
 
 interface MobileMenuProps {
     initialCategories: MobileCategory[];
+    navData?: NavMainCategory[];
     isOpen?: boolean;
     setIsOpen?: (open: boolean) => void;
     isSearchOpen?: boolean;
@@ -56,6 +57,7 @@ interface MobileMenuProps {
 
 const MobileMenu = ({
     initialCategories,
+    navData: incomingNavData,
     isOpen: externalIsOpen,
     setIsOpen: externalSetIsOpen,
     hideTriggers = false
@@ -66,21 +68,11 @@ const MobileMenu = ({
     const isMobileMenuOpen = externalIsOpen !== undefined ? externalIsOpen : internalIsOpen;
     const setIsMobileMenuOpen = externalSetIsOpen !== undefined ? externalSetIsOpen : setInternalIsOpen;
 
-    const [navData, setNavData] = useState<NavMainCategory[]>([]);
+    const navData = incomingNavData || [];
     const [activeMainCatSlug, setActiveMainCatSlug] = useState<string | null>(null);
     const [expandedSection, setExpandedSection] = useState<string | null>(null);
     const [shouldRender, setShouldRender] = useState(isMobileMenuOpen);
     const [isAnimating, setIsAnimating] = useState(false);
-
-    // Fetch nav data
-    useEffect(() => {
-        fetch('/api/navigation')
-            .then((res) => res.json())
-            .then((data) => {
-                if (Array.isArray(data)) setNavData(data);
-            })
-            .catch(() => {});
-    }, []);
 
     useEffect(() => {
         if (isMobileMenuOpen) {

@@ -1,4 +1,6 @@
 import { prisma } from "./prisma";
+import { cache } from "react";
+import { unstable_cache } from "next/cache";
 
 export interface CatalogCategory {
     id: string;
@@ -64,42 +66,60 @@ const catalogBrandSelect = {
     isFeatured: true,
 };
 
-export async function getCatalogBrands() {
-    return prisma.brand.findMany({
-        where: { isActive: true },
-        orderBy: [
-            { isFeatured: "desc" },
-            { name: "asc" },
-        ],
-        select: catalogBrandSelect,
-    });
-}
-
-export async function getBrandBySlug(slug: string) {
-    return prisma.brand.findFirst({
-        where: {
-            slug,
-            isActive: true,
+export const getCatalogBrands = cache(
+    unstable_cache(
+        async () => {
+            return prisma.brand.findMany({
+                where: { isActive: true },
+                orderBy: [
+                    { isFeatured: "desc" },
+                    { name: "asc" },
+                ],
+                select: catalogBrandSelect,
+            });
         },
-        select: catalogBrandSelect,
-    });
-}
+        ["catalog-brands"],
+        { tags: ["catalog", "brands"], revalidate: 3600 }
+    )
+);
 
-export async function getCatalogCategories(brandId?: string) {
-    return prisma.category.findMany({
-        where: {
-            brand: { isActive: true },
-            ...(brandId ? { brandId } : {}),
+export const getBrandBySlug = cache(async (slug: string) => {
+    return unstable_cache(
+        async () => {
+            return prisma.brand.findFirst({
+                where: {
+                    slug,
+                    isActive: true,
+                },
+                select: catalogBrandSelect,
+            });
         },
-        orderBy: [
-            { isFeatured: "desc" },
-            { name: "asc" },
-        ],
-        select: catalogCategorySelect,
-    });
-}
+        [`catalog-brand-${slug}`],
+        { tags: ["catalog", "brands"], revalidate: 3600 }
+    )();
+});
 
-export async function getFooterCategories(preferredIds: string[] = []) {
+export const getCatalogCategories = cache(async (brandId?: string) => {
+    return unstable_cache(
+        async () => {
+            return prisma.category.findMany({
+                where: {
+                    brand: { isActive: true },
+                    ...(brandId ? { brandId } : {}),
+                },
+                orderBy: [
+                    { isFeatured: "desc" },
+                    { name: "asc" },
+                ],
+                select: catalogCategorySelect,
+            });
+        },
+        [`catalog-categories-${brandId || "all"}`],
+        { tags: ["catalog", "categories"], revalidate: 3600 }
+    )();
+});
+
+export const getFooterCategories = cache(async (preferredIds: string[] = []) => {
     const sanitizedIds = [...new Set(preferredIds.filter(Boolean))];
 
     if (sanitizedIds.length > 0) {
@@ -141,51 +161,63 @@ export async function getFooterCategories(preferredIds: string[] = []) {
             slug: true,
         },
     });
-}
+});
 
-export async function getCategoryBySlug(slug: string) {
-    return prisma.category.findFirst({
-        where: {
-            slug,
-            brand: { isActive: true },
-        },
-        select: catalogCategorySelect,
-    });
-}
-
-export async function getCatalogMainCategories() {
-    const mainCategories = await prisma.mainCategory.findMany({
-        where: {
-            isActive: true,
-            products: {
-                some: {
-                    stock: { gt: 0 },
+export const getCategoryBySlug = cache(async (slug: string) => {
+    return unstable_cache(
+        async () => {
+            return prisma.category.findFirst({
+                where: {
+                    slug,
                     brand: { isActive: true },
                 },
-            },
+                select: catalogCategorySelect,
+            });
         },
-        orderBy: [
-            { navOrder: "asc" },
-            { name: "asc" },
-        ],
-        select: {
-            id: true,
-            name: true,
-            slug: true,
-            description: true,
-            image: true,
-        },
-    });
+        [`catalog-category-${slug}`],
+        { tags: ["catalog", "categories"], revalidate: 3600 }
+    )();
+});
 
-    return mainCategories.map((mc) => ({
-        id: mc.id,
-        name: mc.name,
-        nameEn: mc.description || mc.name,
-        slug: mc.slug,
-        description: mc.description,
-        image: mc.image,
-    }));
-}
+export const getCatalogMainCategories = cache(
+    unstable_cache(
+        async () => {
+            const mainCategories = await prisma.mainCategory.findMany({
+                where: {
+                    isActive: true,
+                    products: {
+                        some: {
+                            stock: { gt: 0 },
+                            brand: { isActive: true },
+                        },
+                    },
+                },
+                orderBy: [
+                    { navOrder: "asc" },
+                    { name: "asc" },
+                ],
+                select: {
+                    id: true,
+                    name: true,
+                    slug: true,
+                    description: true,
+                    image: true,
+                },
+            });
+
+            return mainCategories.map((mc) => ({
+                id: mc.id,
+                name: mc.name,
+                nameEn: mc.description || mc.name,
+                slug: mc.slug,
+                description: mc.description,
+                image: mc.image,
+            }));
+        },
+        ["catalog-main-categories"],
+        { tags: ["catalog", "main-categories"], revalidate: 3600 }
+    )
+);
 
 export async function getCatalogInitialData(categoryId?: string, brandId?: string, mainCategoryId?: string) {
     const whereClause: {

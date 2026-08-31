@@ -77,11 +77,14 @@ export default function BrandsClient({ brands }: BrandsClientProps) {
     return (
         <main className="container-custom py-6 md:py-10">
             {/* Breadcrumbs Navigation */}
-            <nav className="flex items-center flex-wrap gap-y-2 text-[11px] md:text-[12px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-6" aria-label="Breadcrumb">
-                <Link href="/" className="text-[#072835] dark:text-white/80 hover:text-[#B8860B] transition-colors">
+            <nav className="relative z-20 flex items-center flex-wrap gap-y-2 text-[11px] md:text-[12px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-6" aria-label="Breadcrumb">
+                <Link 
+                    href="/" 
+                    className="inline-flex items-center py-1.5 px-1 -my-1.5 text-[#072835] dark:text-white/80 hover:text-[#B8860B] dark:hover:text-[#E5B54A] cursor-pointer touch-manipulation transition-colors"
+                >
                     {isArabic ? 'الرئيسية' : 'HOME'}
                 </Link>
-                <span className="mx-2 md:mx-3 text-gray-300 dark:text-white/20">/</span>
+                <span className="mx-2 md:mx-3 text-gray-300 dark:text-white/20 select-none">/</span>
                 <span className="text-[#B8860B] dark:text-[#E5B54A]">
                     {isArabic ? 'العلامات التجارية' : 'BRANDS'}
                 </span>

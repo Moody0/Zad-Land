@@ -48,7 +48,12 @@ export async function GET(request: NextRequest) {
             }
         });
 
-        return NextResponse.json(reviews);
+        const response = NextResponse.json(reviews);
+        response.headers.set(
+            "Cache-Control",
+            "public, s-maxage=300, stale-while-revalidate=3600"
+        );
+        return response;
     } catch (error) {
         console.error("Error fetching reviews:", error);
         return NextResponse.json({ error: "Failed to fetch reviews" }, { status: 500 });

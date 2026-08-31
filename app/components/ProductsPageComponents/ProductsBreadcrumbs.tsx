@@ -46,54 +46,72 @@ const ProductsBreadcrumbs = ({
     const mainCategoryName = getMainCategoryName();
 
     return (
-        <nav className="flex items-center flex-wrap gap-y-2 text-[11px] md:text-[12px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-6" aria-label="Breadcrumb">
-            <Link href="/" className="text-[#072835] dark:text-white/80 hover:text-[#B8860B] transition-colors">
+        <nav className="relative z-20 flex items-center flex-wrap gap-y-2 text-[11px] md:text-[12px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-6" aria-label="Breadcrumb">
+            <Link 
+                href="/" 
+                className="inline-flex items-center py-1.5 px-1 -my-1.5 text-[#072835] dark:text-white/80 hover:text-[#B8860B] dark:hover:text-[#E5B54A] cursor-pointer touch-manipulation transition-colors"
+            >
                 {isArabic ? 'الرئيسية' : 'Home'}
             </Link>
             
-            <span className="mx-2 md:mx-3 text-gray-300 dark:text-white/20">/</span>
+            <span className="mx-2 md:mx-3 text-gray-300 dark:text-white/20 select-none">/</span>
 
             {/* If inside both Brand & Category: Home > Brands > Brand > Category */}
             {activeBrand && activeCategory ? (
                 <>
-                    <Link href="/brands" className="text-[#072835] dark:text-white/80 hover:text-[#B8860B] transition-colors">
+                    <Link 
+                        href="/brands" 
+                        className="inline-flex items-center py-1.5 px-1 -my-1.5 text-[#072835] dark:text-white/80 hover:text-[#B8860B] dark:hover:text-[#E5B54A] cursor-pointer touch-manipulation transition-colors"
+                    >
                         {isArabic ? 'العلامات التجارية' : 'Brands'}
                     </Link>
-                    <span className="mx-2 md:mx-3 text-gray-300 dark:text-white/20">/</span>
-                    <Link href={`/brands/${activeBrand.slug}`} className="text-[#072835] dark:text-white/80 hover:text-[#B8860B] transition-colors truncate max-w-[160px] md:max-w-none">
+                    <span className="mx-2 md:mx-3 text-gray-300 dark:text-white/20 select-none">/</span>
+                    <Link 
+                        href={`/brands/${activeBrand.slug}`} 
+                        className="inline-flex items-center py-1.5 px-1 -my-1.5 text-[#072835] dark:text-white/80 hover:text-[#B8860B] dark:hover:text-[#E5B54A] cursor-pointer touch-manipulation transition-colors truncate max-w-[160px] md:max-w-none"
+                    >
                         {activeBrand.name}
                     </Link>
-                    <span className="mx-2 md:mx-3 text-gray-300 dark:text-white/20">/</span>
+                    <span className="mx-2 md:mx-3 text-gray-300 dark:text-white/20 select-none">/</span>
                     <span className="text-[#B8860B] dark:text-[#E5B54A] truncate max-w-[200px] md:max-w-none">
                         {categoryName}
                     </span>
                 </>
             ) : activeBrand ? (
                 <>
-                    <Link href="/brands" className="text-[#072835] dark:text-white/80 hover:text-[#B8860B] transition-colors">
+                    <Link 
+                        href="/brands" 
+                        className="inline-flex items-center py-1.5 px-1 -my-1.5 text-[#072835] dark:text-white/80 hover:text-[#B8860B] dark:hover:text-[#E5B54A] cursor-pointer touch-manipulation transition-colors"
+                    >
                         {isArabic ? 'العلامات التجارية' : 'Brands'}
                     </Link>
-                    <span className="mx-2 md:mx-3 text-gray-300 dark:text-white/20">/</span>
+                    <span className="mx-2 md:mx-3 text-gray-300 dark:text-white/20 select-none">/</span>
                     <span className="text-[#B8860B] dark:text-[#E5B54A] truncate max-w-[200px] md:max-w-none">
                         {activeBrand.name}
                     </span>
                 </>
             ) : activeMainCategory ? (
                 <>
-                    <Link href="/products" className="text-[#072835] dark:text-white/80 hover:text-[#B8860B] transition-colors">
+                    <Link 
+                        href="/products" 
+                        className="inline-flex items-center py-1.5 px-1 -my-1.5 text-[#072835] dark:text-white/80 hover:text-[#B8860B] dark:hover:text-[#E5B54A] cursor-pointer touch-manipulation transition-colors"
+                    >
                         {isArabic ? 'الأقسام الرئيسية' : 'Departments'}
                     </Link>
-                    <span className="mx-2 md:mx-3 text-gray-300 dark:text-white/20">/</span>
+                    <span className="mx-2 md:mx-3 text-gray-300 dark:text-white/20 select-none">/</span>
                     <span className="text-[#B8860B] dark:text-[#E5B54A] truncate max-w-[200px] md:max-w-none">
                         {mainCategoryName}
                     </span>
                 </>
             ) : activeCategory ? (
                 <>
-                    <Link href="/products" className="text-[#072835] dark:text-white/80 hover:text-[#B8860B] transition-colors">
+                    <Link 
+                        href="/products" 
+                        className="inline-flex items-center py-1.5 px-1 -my-1.5 text-[#072835] dark:text-white/80 hover:text-[#B8860B] dark:hover:text-[#E5B54A] cursor-pointer touch-manipulation transition-colors"
+                    >
                         {isArabic ? 'جميع المنتجات' : 'All Products'}
                     </Link>
-                    <span className="mx-2 md:mx-3 text-gray-300 dark:text-white/20">/</span>
+                    <span className="mx-2 md:mx-3 text-gray-300 dark:text-white/20 select-none">/</span>
                     <span className="text-[#B8860B] dark:text-[#E5B54A] truncate max-w-[200px] md:max-w-none">
                         {categoryName}
                     </span>

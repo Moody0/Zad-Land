@@ -11,6 +11,7 @@ import FeaturedCategoriesGrid from './FeaturedCategoriesGrid';
 import CategoryHighlightCards from './CategoryHighlightCards';
 import TestimonialsMasonry from './TestimonialsMasonry';
 import ScrollReveal from '../ScrollReveal';
+import { getI18n } from '@/lib/i18n';
 
 const HeroCarousel = dynamic(() => import('./HeroCarousel'), {
     ssr: true,
@@ -96,6 +97,8 @@ const Main = async ({
     featuredCategories,
     settings,
 }: MainProps) => {
+    const { dir, language } = await getI18n();
+
     return (
         <main className="w-full flex flex-col gap-y-[40px] md:gap-y-[80px] pb-12">
             {/* Group Hero Carousel and Brands Rail close to each other */}
@@ -108,7 +111,7 @@ const Main = async ({
             </div>
 
             {/* 3. First Ad - Placed above CategoryHighlightCards */}
-            <PromoBanner settings={settings} />
+            <PromoBanner settings={settings} dir={dir} language={language} />
 
             {/* 4. Main Categories (Dynamic 4 highlight cards from Database) */}
             <ScrollReveal>
