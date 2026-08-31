@@ -85,9 +85,10 @@ const QuickViewModal = ({ product, isOpen, onClose }: QuickViewModalProps) => {
                 {/* Close Button */}
                 <button 
                     onClick={onClose}
-                    className="absolute top-4 ltr:right-4 rtl:left-4 z-10 text-gray-500 hover:text-black dark:hover:text-white transition-colors cursor-pointer"
+                    className="absolute top-3.5 ltr:right-3.5 rtl:left-3.5 z-50 p-2 rounded-full bg-white/90 dark:bg-zinc-800/90 backdrop-blur-md text-gray-600 hover:text-black dark:text-gray-300 dark:hover:text-white shadow-sm border border-gray-200/60 dark:border-white/10 transition-all hover:scale-105 cursor-pointer"
+                    aria-label="Close"
                 >
-                    <MdClose size={24} />
+                    <MdClose size={20} />
                 </button>
 
                 {/* Left side (Details) */}
@@ -170,11 +171,11 @@ const QuickViewModal = ({ product, isOpen, onClose }: QuickViewModalProps) => {
                 </div>
 
                 {/* Right side (Image) */}
-                <div className="flex-1 bg-gray-50 dark:bg-zinc-800/40 relative min-h-[300px] md:min-h-[400px] flex items-center justify-center p-6">
+                <div className="flex-1 bg-gray-50 dark:bg-zinc-800/40 relative min-h-[300px] md:min-h-[400px] overflow-hidden">
                     <ResilientImage
                         src={primaryImage}
                         alt={displayName}
-                        className="w-full h-full object-contain max-h-[350px]"
+                        className="w-full h-full object-cover"
                     />
                 </div>
             </div>
