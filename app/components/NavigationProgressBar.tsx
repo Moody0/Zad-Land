@@ -6,50 +6,83 @@ import { usePathname, useSearchParams } from 'next/navigation';
 export default function NavigationProgressBar() {
     const pathname = usePathname();
     const searchParams = useSearchParams();
-    const [isNavigating, setIsNavigating] = useState(false);
+    const [status, setStatus] = useState<'idle' | 'loading' | 'completing'>('idle');
     const [progress, setProgress] = useState(0);
-    const timerRef = useRef<NodeJS.Timeout | null>(null);
+    const intervalRef = useRef<NodeJS.Timeout | null>(null);
+    const safetyTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-    // Complete progress bar when pathname or searchParams change (navigation finished)
-    useEffect(() => {
-        if (isNavigating) {
-            setProgress(100);
-            const timeout = setTimeout(() => {
-                setIsNavigating(false);
-                setProgress(0);
-            }, 300);
-            return () => clearTimeout(timeout);
+    const cleanup = () => {
+        if (intervalRef.current) {
+            clearInterval(intervalRef.current);
+            intervalRef.current = null;
         }
+        if (safetyTimeoutRef.current) {
+            clearTimeout(safetyTimeoutRef.current);
+            safetyTimeoutRef.current = null;
+        }
+    };
+
+    const finish = () => {
+        cleanup();
+        setProgress(100);
+        setStatus('completing');
+        safetyTimeoutRef.current = setTimeout(() => {
+            setStatus('idle');
+            setProgress(0);
+        }, 300);
+    };
+
+    const start = () => {
+        cleanup();
+        setStatus('loading');
+        setProgress(30);
+
+        intervalRef.current = setInterval(() => {
+            setProgress((prev) => {
+                if (prev >= 85) return prev;
+                return prev + Math.random() * 12;
+            });
+        }, 200);
+
+        // Fail-safe: Force complete after 2.5 seconds max so it never gets stuck
+        safetyTimeoutRef.current = setTimeout(() => {
+            finish();
+        }, 2500);
+    };
+
+    // When pathname or searchParams change, finish the progress bar
+    useEffect(() => {
+        finish();
     }, [pathname, searchParams]);
 
-    // Intercept link clicks to start progress bar instantly (0ms feedback)
     useEffect(() => {
         const handleClick = (e: MouseEvent) => {
+            // Ignore non-left click or with modifier keys
+            if (e.button !== 0 || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
+
             const target = (e.target as HTMLElement).closest('a');
             if (!target) return;
 
             const href = target.getAttribute('href');
-            if (!href || href.startsWith('#') || href.startsWith('mailto:') || href.startsWith('tel:') || target.target === '_blank') {
+            if (
+                !href ||
+                href.startsWith('#') ||
+                href.startsWith('mailto:') ||
+                href.startsWith('tel:') ||
+                href.startsWith('javascript:') ||
+                target.target === '_blank' ||
+                target.getAttribute('download') !== null
+            ) {
                 return;
             }
 
-            // Check if it is an internal link
             try {
                 const url = new URL(href, window.location.href);
                 if (url.origin === window.location.origin) {
                     const currentUrl = new URL(window.location.href);
-                    // If navigating to a different pathname or search query
+                    // Only start if actually navigating to a different URL
                     if (url.pathname !== currentUrl.pathname || url.search !== currentUrl.search) {
-                        setIsNavigating(true);
-                        setProgress(25);
-
-                        if (timerRef.current) clearInterval(timerRef.current);
-                        timerRef.current = setInterval(() => {
-                            setProgress((prev) => {
-                                if (prev < 80) return prev + Math.random() * 15;
-                                return prev;
-                            });
-                        }, 200);
+                        start();
                     }
                 }
             } catch {
@@ -58,8 +91,7 @@ export default function NavigationProgressBar() {
         };
 
         const handlePopState = () => {
-            setIsNavigating(true);
-            setProgress(40);
+            start();
         };
 
         document.addEventListener('click', handleClick, { capture: true });
@@ -68,11 +100,11 @@ export default function NavigationProgressBar() {
         return () => {
             document.removeEventListener('click', handleClick, { capture: true });
             window.removeEventListener('popstate', handlePopState);
-            if (timerRef.current) clearInterval(timerRef.current);
+            cleanup();
         };
     }, []);
 
-    if (!isNavigating && progress === 0) return null;
+    if (status === 'idle') return null;
 
     return (
         <div 
@@ -80,11 +112,13 @@ export default function NavigationProgressBar() {
             aria-hidden="true"
         >
             <div
-                className="h-full bg-gradient-to-r from-[#B8860B] via-[#E5B54A] to-[#B8860B] shadow-[0_0_8px_rgba(184,134,11,0.6)] transition-all duration-300 ease-out"
+                className="h-full bg-gradient-to-r from-[#B8860B] via-[#E5B54A] to-[#B8860B] shadow-[0_0_8px_rgba(184,134,11,0.6)] ease-out"
                 style={{
                     width: `${progress}%`,
-                    opacity: progress === 100 ? 0 : 1,
-                    transition: progress === 100 ? 'width 150ms ease-out, opacity 250ms ease-in 150ms' : 'width 300ms ease-out',
+                    opacity: status === 'completing' ? 0 : 1,
+                    transition: status === 'completing' 
+                        ? 'width 150ms ease-out, opacity 250ms ease-in 100ms' 
+                        : 'width 250ms ease-out',
                 }}
             />
         </div>

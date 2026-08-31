@@ -6,6 +6,7 @@ import { getI18n } from "@/lib/i18n";
 import { getCatalogCategories } from "@/lib/catalog";
 import { getNavigationData } from "@/lib/navigation";
 
+import React, { Suspense } from "react";
 import NavigationProgressBar from "../components/NavigationProgressBar";
 
 async function getCategories() {
@@ -31,7 +32,9 @@ export default async function SiteLayout({
     return (
         <div className="min-h-screen flex flex-col" dir={dir}>
             {/* Instant Navigation Progress Bar */}
-            <NavigationProgressBar />
+            <Suspense fallback={null}>
+                <NavigationProgressBar />
+            </Suspense>
 
             {/* Header with Server-Side Pre-rendered Navigation Data */}
             <Header
