@@ -1,7 +1,7 @@
 "use server";
 
 import { prisma } from "./prisma";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, unstable_cache } from "next/cache";
 import { BrandGroup, OrderStatus } from "@prisma/client";
 import { generateUniqueCategorySlug } from "./category-utils";
 import { generateUniqueBrandSlug, getZadLandBrandId } from "./brand-utils";
@@ -1403,69 +1403,73 @@ export interface RailBrand {
     productCount?: number;
 }
 
-export async function getHomeRailBrands(): Promise<RailBrand[]> {
-    try {
-        const brands = await prisma.brand.findMany({
-            where: {
-                isActive: true,
-                products: {
-                    some: {
-                        NOT: [
-                            { images: '/placeholder.svg' },
-                            { images: '' }
-                        ]
+export const getHomeRailBrands = unstable_cache(
+    async (): Promise<RailBrand[]> => {
+        try {
+            const brands = await prisma.brand.findMany({
+                where: {
+                    isActive: true,
+                    products: {
+                        some: {
+                            NOT: [
+                                { images: '/placeholder.svg' },
+                                { images: '' }
+                            ]
+                        }
+                    }
+                },
+                orderBy: [
+                    { isFeatured: 'desc' },
+                    { products: { _count: 'desc' } }
+                ],
+                select: {
+                    id: true,
+                    name: true,
+                    slug: true,
+                    image: true,
+                    products: {
+                        where: {
+                            NOT: [
+                                { images: '/placeholder.svg' },
+                                { images: '' }
+                            ]
+                        },
+                        take: 1,
+                        select: { images: true }
+                    },
+                    _count: {
+                        select: { products: true }
                     }
                 }
-            },
-            orderBy: [
-                { isFeatured: 'desc' },
-                { products: { _count: 'desc' } }
-            ],
-            select: {
-                id: true,
-                name: true,
-                slug: true,
-                image: true,
-                products: {
-                    where: {
-                        NOT: [
-                            { images: '/placeholder.svg' },
-                            { images: '' }
-                        ]
-                    },
-                    take: 1,
-                    select: { images: true }
-                },
-                _count: {
-                    select: { products: true }
-                }
-            }
-        });
+            });
 
-        return brands.map(b => {
-            let en = b.name;
-            let ar = b.name;
-            if (b.name.includes(' - ')) {
-                const parts = b.name.split(' - ').map(s => s.trim());
-                en = parts[0] || b.name;
-                ar = parts[1] || parts[0] || b.name;
-            }
-            const productImg = b.products[0]?.images ? b.products[0].images.split(',')[0].trim() : null;
-            return {
-                id: b.id,
-                name: en,
-                nameAr: ar,
-                fullName: b.name,
-                slug: b.slug,
-                image: b.image || productImg || '/logo.png',
-                productCount: b._count.products
-            };
-        }).filter(b => b.image && b.image !== '/placeholder.svg');
-    } catch (error) {
-        console.error("Failed to fetch rail brands:", error);
-        return [];
-    }
-}
+            return brands.map(b => {
+                let en = b.name;
+                let ar = b.name;
+                if (b.name.includes(' - ')) {
+                    const parts = b.name.split(' - ').map(s => s.trim());
+                    en = parts[0] || b.name;
+                    ar = parts[1] || parts[0] || b.name;
+                }
+                const productImg = b.products[0]?.images ? b.products[0].images.split(',')[0].trim() : null;
+                return {
+                    id: b.id,
+                    name: en,
+                    nameAr: ar,
+                    fullName: b.name,
+                    slug: b.slug,
+                    image: b.image || productImg || '/logo.png',
+                    productCount: b._count.products
+                };
+            }).filter(b => b.image && b.image !== '/placeholder.svg');
+        } catch (error) {
+            console.error("Failed to fetch rail brands:", error);
+            return [];
+        }
+    },
+    ["home-rail-brands"],
+    { tags: ["brands", "catalog"], revalidate: 3600 }
+);
 
 export async function getHomeRailCategories() {
     try {
@@ -1509,164 +1513,176 @@ export async function getHomeRailCategories() {
     }
 }
 
-export async function getCategoryHighlightCardsData() {
-    try {
-        const topMainCats = await prisma.mainCategory.findMany({
-            where: {
-                isActive: true,
-                NOT: [
-                    { image: null },
-                    { image: '/placeholder.svg' },
-                    { image: '' }
-                ],
-                products: {
-                    some: {
-                        price: { gt: 0 },
-                        NOT: [
-                            { images: '/placeholder.svg' },
-                            { images: '' }
-                        ]
-                    }
-                }
-            },
-            take: 4,
-            orderBy: [
-                { isFeatured: 'desc' },
-                { navOrder: 'asc' }
-            ],
-            include: {
-                products: {
-                    where: {
-                        price: { gt: 0 },
-                        NOT: [
-                            { images: '/placeholder.svg' },
-                            { images: '' }
-                        ]
-                    },
-                    take: 1,
-                    orderBy: { isTrending: 'desc' },
-                    select: {
-                        id: true,
-                        name: true,
-                        nameAr: true,
-                        nameEn: true,
-                        price: true,
-                        images: true,
-                        slug: true
+export const getCategoryHighlightCardsData = unstable_cache(
+    async () => {
+        try {
+            const topMainCats = await prisma.mainCategory.findMany({
+                where: {
+                    isActive: true,
+                    NOT: [
+                        { image: null },
+                        { image: '/placeholder.svg' },
+                        { image: '' }
+                    ],
+                    products: {
+                        some: {
+                            price: { gt: 0 },
+                            NOT: [
+                                { images: '/placeholder.svg' },
+                                { images: '' }
+                            ]
+                        }
                     }
                 },
-                brands: {
-                    take: 2,
-                    select: { name: true }
-                }
-            }
-        });
-        return topMainCats.map(mc => {
-            const firstProd = mc.products[0];
-            const brandNames = mc.brands.map(b => b.name).join(' & ');
-            const prodImg = firstProd?.images ? firstProd.images.split(',')[0].trim() : (mc.image || '');
-            return {
-                id: mc.id,
-                slug: mc.slug,
-                subheadingAr: mc.name,
-                subheadingEn: mc.description || mc.name,
-                headingAr: brandNames || mc.name,
-                headingEn: brandNames || mc.description || mc.name,
-                productNameAr: firstProd?.nameAr || firstProd?.name || mc.name,
-                productNameEn: firstProd?.nameEn || firstProd?.name || mc.description || mc.name,
-                priceText: firstProd?.price && Number(firstProd.price) > 0 ? `$${Number(firstProd.price).toFixed(2)}` : '',
-                heroImage: mc.image || prodImg,
-                productThumb: prodImg,
-                productSlug: firstProd?.slug || ''
-            };
-        });
-    } catch (error) {
-        console.error("Failed to fetch highlight cards data:", error);
-        return [];
-    }
-}
-
-export async function getApprovedReviews() {
-    try {
-        const reviews = await prisma.review.findMany({
-            where: { isApproved: true },
-            take: 6,
-            orderBy: { createdAt: 'desc' },
-            include: {
-                product: {
-                    select: {
-                        id: true,
-                        name: true,
-                        nameAr: true,
-                        nameEn: true,
-                        images: true,
-                        slug: true
+                take: 4,
+                orderBy: [
+                    { isFeatured: 'desc' },
+                    { navOrder: 'asc' }
+                ],
+                include: {
+                    products: {
+                        where: {
+                            price: { gt: 0 },
+                            NOT: [
+                                { images: '/placeholder.svg' },
+                                { images: '' }
+                            ]
+                        },
+                        take: 1,
+                        orderBy: { isTrending: 'desc' },
+                        select: {
+                            id: true,
+                            name: true,
+                            nameAr: true,
+                            nameEn: true,
+                            price: true,
+                            images: true,
+                            slug: true
+                        }
+                    },
+                    brands: {
+                        take: 2,
+                        select: { name: true }
                     }
                 }
-            }
-        });
-        return reviews.map(r => ({
-            id: r.id,
-            name: r.name,
-            feedback: r.feedback || '',
-            rating: r.rating,
-            image: r.product?.images ? r.product.images.split(',')[0].trim() : '/placeholder.svg',
-            productNameAr: r.product?.nameAr || r.product?.name || '',
-            productNameEn: r.product?.nameEn || r.product?.name || '',
-            productSlug: r.product?.slug || ''
-        }));
-    } catch (error) {
-        console.error("Failed to fetch reviews:", error);
-        return [];
-    }
-}
+            });
+            return topMainCats.map(mc => {
+                const firstProd = mc.products[0];
+                const brandNames = mc.brands.map(b => b.name).join(' & ');
+                const prodImg = firstProd?.images ? firstProd.images.split(',')[0].trim() : (mc.image || '');
+                return {
+                    id: mc.id,
+                    slug: mc.slug,
+                    subheadingAr: mc.name,
+                    subheadingEn: mc.description || mc.name,
+                    headingAr: brandNames || mc.name,
+                    headingEn: brandNames || mc.description || mc.name,
+                    productNameAr: firstProd?.nameAr || firstProd?.name || mc.name,
+                    productNameEn: firstProd?.nameEn || firstProd?.name || mc.description || mc.name,
+                    priceText: firstProd?.price && Number(firstProd.price) > 0 ? `$${Number(firstProd.price).toFixed(2)}` : '',
+                    heroImage: mc.image || prodImg,
+                    productThumb: prodImg,
+                    productSlug: firstProd?.slug || ''
+                };
+            });
+        } catch (error) {
+            console.error("Failed to fetch highlight cards data:", error);
+            return [];
+        }
+    },
+    ["category-highlight-cards"],
+    { tags: ["categories", "catalog"], revalidate: 3600 }
+);
 
-export async function getFeaturedCategories() {
-    try {
-        const categories = await prisma.category.findMany({
-            where: {
-                isFeatured: true,
-                brand: { isActive: true },
-                NOT: [
-                    { image: null },
-                    { image: '/placeholder.svg' },
-                    { image: '' }
-                ]
-            },
-            take: 12,
-            orderBy: { updatedAt: 'desc' },
-            include: {
-                brand: {
-                    select: {
-                        id: true,
-                        name: true,
-                        slug: true,
+export const getApprovedReviews = unstable_cache(
+    async () => {
+        try {
+            const reviews = await prisma.review.findMany({
+                where: { isApproved: true },
+                take: 6,
+                orderBy: { createdAt: 'desc' },
+                include: {
+                    product: {
+                        select: {
+                            id: true,
+                            name: true,
+                            nameAr: true,
+                            nameEn: true,
+                            images: true,
+                            slug: true
+                        }
                     }
                 }
-            }
-        });
-        return categories.map(category => ({
-            id: category.id,
-            name: category.name,
-            nameEn: category.description || category.name,
-            description: category.description,
-            image: category.image,
-            slug: category.slug,
-            brandId: category.brandId,
-            isFeatured: category.isFeatured,
-            brand: category.brand ? {
-                id: category.brand.id,
-                name: category.brand.name.split('-')[0].trim(),
-                slug: category.brand.slug,
-            } : null,
-            createdAt: category.createdAt.toISOString(),
-            updatedAt: category.updatedAt.toISOString(),
-        }));
-    } catch (error) {
-        console.error("Failed to fetch featured categories:", error);
-        return [];
-    }
-}
+            });
+            return reviews.map(r => ({
+                id: r.id,
+                name: r.name,
+                feedback: r.feedback || '',
+                rating: r.rating,
+                image: r.product?.images ? r.product.images.split(',')[0].trim() : '/placeholder.svg',
+                productNameAr: r.product?.nameAr || r.product?.name || '',
+                productNameEn: r.product?.nameEn || r.product?.name || '',
+                productSlug: r.product?.slug || ''
+            }));
+        } catch (error) {
+            console.error("Failed to fetch reviews:", error);
+            return [];
+        }
+    },
+    ["approved-reviews"],
+    { tags: ["reviews"], revalidate: 3600 }
+);
+
+export const getFeaturedCategories = unstable_cache(
+    async () => {
+        try {
+            const categories = await prisma.category.findMany({
+                where: {
+                    isFeatured: true,
+                    brand: { isActive: true },
+                    NOT: [
+                        { image: null },
+                        { image: '/placeholder.svg' },
+                        { image: '' }
+                    ]
+                },
+                take: 12,
+                orderBy: { updatedAt: 'desc' },
+                include: {
+                    brand: {
+                        select: {
+                            id: true,
+                            name: true,
+                            slug: true,
+                        }
+                    }
+                }
+            });
+            return categories.map(category => ({
+                id: category.id,
+                name: category.name,
+                nameEn: category.description || category.name,
+                description: category.description,
+                image: category.image,
+                slug: category.slug,
+                brandId: category.brandId,
+                isFeatured: category.isFeatured,
+                brand: category.brand ? {
+                    id: category.brand.id,
+                    name: category.brand.name.split('-')[0].trim(),
+                    slug: category.brand.slug,
+                } : null,
+                createdAt: category.createdAt.toISOString(),
+                updatedAt: category.updatedAt.toISOString(),
+            }));
+        } catch (error) {
+            console.error("Failed to fetch featured categories:", error);
+            return [];
+        }
+    },
+    ["featured-categories"],
+    { tags: ["categories", "catalog"], revalidate: 3600 }
+);
 
 export async function getFeaturedMainBrands(): Promise<HomeBrand[]> {
     try {
@@ -1868,214 +1884,234 @@ export async function getTrendingProducts() {
     }
 }
 
-export async function getOnSaleProducts() {
-    try {
-        const products = await prisma.product.findMany({
-            where: {
-                brand: { isActive: true },
-                discountPrice: {
-                    not: null
-                }
-            },
-            take: 10,
-            include: { category: true, brand: true },
-            orderBy: { updatedAt: 'desc' }
-        });
+export const getOnSaleProducts = unstable_cache(
+    async () => {
+        try {
+            const products = await prisma.product.findMany({
+                where: {
+                    brand: { isActive: true },
+                    discountPrice: {
+                        not: null
+                    }
+                },
+                take: 10,
+                include: { category: true, brand: true },
+                orderBy: { updatedAt: 'desc' }
+            });
 
-        return products.map(product => ({
-            ...product,
-            price: Number(product.price),
-            discountPrice: product.discountPrice ? Number(product.discountPrice) : null,
-            discountType: product.discountType,
-            discountValue: product.discountValue ? Number(product.discountValue) : null,
-            stock: Number(product.stock),
-            createdAt: product.createdAt.toISOString(),
-            updatedAt: product.updatedAt.toISOString(),
-            category: product.category ? {
-                ...product.category,
-                createdAt: product.category.createdAt.toISOString(),
-                updatedAt: product.category.updatedAt.toISOString(),
-            } : null,
-            brand: product.brand ? {
-                id: product.brand.id,
-                name: product.brand.name,
-                slug: product.brand.slug,
-                group: product.brand.group,
-            } : null,
-        }));
-    } catch (error) {
-        console.error("Failed to fetch on sale products:", error);
-        return [];
-    }
-}
+            return products.map(product => ({
+                ...product,
+                price: Number(product.price),
+                discountPrice: product.discountPrice ? Number(product.discountPrice) : null,
+                discountType: product.discountType,
+                discountValue: product.discountValue ? Number(product.discountValue) : null,
+                stock: Number(product.stock),
+                createdAt: product.createdAt.toISOString(),
+                updatedAt: product.updatedAt.toISOString(),
+                category: product.category ? {
+                    ...product.category,
+                    createdAt: product.category.createdAt.toISOString(),
+                    updatedAt: product.category.updatedAt.toISOString(),
+                } : null,
+                brand: product.brand ? {
+                    id: product.brand.id,
+                    name: product.brand.name,
+                    slug: product.brand.slug,
+                    group: product.brand.group,
+                } : null,
+            }));
+        } catch (error) {
+            console.error("Failed to fetch on sale products:", error);
+            return [];
+        }
+    },
+    ["on-sale-products"],
+    { tags: ["products", "catalog"], revalidate: 3600 }
+);
 
-export async function getMainCategoryBrands(): Promise<HomeBrand[]> {
-    try {
-        return await prisma.brand.findMany({
-            where: {
-                group: BrandGroup.MAIN,
-                isActive: true,
-            },
-            take: 4,
-            orderBy: [
-                { name: 'asc' },
-            ],
-            select: {
-                id: true,
-                name: true,
-                slug: true,
-                description: true,
-                image: true,
-                group: true,
-                _count: {
-                    select: {
-                        products: true,
-                        categories: true,
+export const getMainCategoryBrands = unstable_cache(
+    async (): Promise<HomeBrand[]> => {
+        try {
+            return await prisma.brand.findMany({
+                where: {
+                    group: BrandGroup.MAIN,
+                    isActive: true,
+                },
+                take: 4,
+                orderBy: [
+                    { name: 'asc' },
+                ],
+                select: {
+                    id: true,
+                    name: true,
+                    slug: true,
+                    description: true,
+                    image: true,
+                    group: true,
+                    _count: {
+                        select: {
+                            products: true,
+                            categories: true,
+                        },
                     },
                 },
-            },
-        });
-    } catch (error) {
-        console.error("Failed to fetch main category brands:", error);
-        return [];
-    }
-}
+            });
+        } catch (error) {
+            console.error("Failed to fetch main category brands:", error);
+            return [];
+        }
+    },
+    ["main-category-brands"],
+    { tags: ["brands", "main-categories"], revalidate: 3600 }
+);
 
-export async function getBestSellerProducts() {
-    try {
-        const products = await prisma.product.findMany({
-            where: {
-                isTrending: true,
-                brand: { isActive: true },
-                stock: { gt: 0 },
-                price: { gt: 0 },
-                NOT: [
-                    { images: '/placeholder.svg' },
-                    { images: '' }
-                ],
-            },
-            take: 10,
-            include: { category: true, brand: true },
-            orderBy: { updatedAt: 'desc' }
-        });
+export const getBestSellerProducts = unstable_cache(
+    async () => {
+        try {
+            const products = await prisma.product.findMany({
+                where: {
+                    isTrending: true,
+                    brand: { isActive: true },
+                    stock: { gt: 0 },
+                    price: { gt: 0 },
+                    NOT: [
+                        { images: '/placeholder.svg' },
+                        { images: '' }
+                    ],
+                },
+                take: 10,
+                include: { category: true, brand: true },
+                orderBy: { updatedAt: 'desc' }
+            });
 
-        return products.map(product => ({
-            ...product,
-            price: Number(product.price),
-            discountPrice: product.discountPrice ? Number(product.discountPrice) : null,
-            discountType: product.discountType,
-            discountValue: product.discountValue ? Number(product.discountValue) : null,
-            stock: Number(product.stock),
-            createdAt: product.createdAt.toISOString(),
-            updatedAt: product.updatedAt.toISOString(),
-            category: product.category ? {
-                ...product.category,
-                createdAt: product.category.createdAt.toISOString(),
-                updatedAt: product.category.updatedAt.toISOString(),
-            } : null,
-            brand: product.brand ? {
-                id: product.brand.id,
-                name: product.brand.name,
-                slug: product.brand.slug,
-                group: product.brand.group,
-            } : null,
-        }));
-    } catch (error) {
-        console.error("Failed to fetch best seller products:", error);
-        return [];
-    }
-}
+            return products.map(product => ({
+                ...product,
+                price: Number(product.price),
+                discountPrice: product.discountPrice ? Number(product.discountPrice) : null,
+                discountType: product.discountType,
+                discountValue: product.discountValue ? Number(product.discountValue) : null,
+                stock: Number(product.stock),
+                createdAt: product.createdAt.toISOString(),
+                updatedAt: product.updatedAt.toISOString(),
+                category: product.category ? {
+                    ...product.category,
+                    createdAt: product.category.createdAt.toISOString(),
+                    updatedAt: product.category.updatedAt.toISOString(),
+                } : null,
+                brand: product.brand ? {
+                    id: product.brand.id,
+                    name: product.brand.name,
+                    slug: product.brand.slug,
+                    group: product.brand.group,
+                } : null,
+            }));
+        } catch (error) {
+            console.error("Failed to fetch best seller products:", error);
+            return [];
+        }
+    },
+    ["bestseller-products"],
+    { tags: ["products", "catalog"], revalidate: 3600 }
+);
 
-export async function getNewArrivalProducts() {
-    try {
-        const products = await prisma.product.findMany({
-            where: {
-                brand: { isActive: true },
-                stock: { gt: 0 },
-                price: { gt: 0 },
-                NOT: [
-                    { images: '/placeholder.svg' },
-                    { images: '' }
-                ],
-            },
-            take: 10,
-            include: { category: true, brand: true },
-            orderBy: { createdAt: 'desc' }
-        });
+export const getNewArrivalProducts = unstable_cache(
+    async () => {
+        try {
+            const products = await prisma.product.findMany({
+                where: {
+                    brand: { isActive: true },
+                    stock: { gt: 0 },
+                    price: { gt: 0 },
+                    NOT: [
+                        { images: '/placeholder.svg' },
+                        { images: '' }
+                    ],
+                },
+                take: 10,
+                include: { category: true, brand: true },
+                orderBy: { createdAt: 'desc' }
+            });
 
-        return products.map(product => ({
-            ...product,
-            price: Number(product.price),
-            discountPrice: product.discountPrice ? Number(product.discountPrice) : null,
-            discountType: product.discountType,
-            discountValue: product.discountValue ? Number(product.discountValue) : null,
-            stock: Number(product.stock),
-            createdAt: product.createdAt.toISOString(),
-            updatedAt: product.updatedAt.toISOString(),
-            category: product.category ? {
-                ...product.category,
-                createdAt: product.category.createdAt.toISOString(),
-                updatedAt: product.category.updatedAt.toISOString(),
-            } : null,
-            brand: product.brand ? {
-                id: product.brand.id,
-                name: product.brand.name,
-                slug: product.brand.slug,
-                group: product.brand.group,
-            } : null,
-        }));
-    } catch (error) {
-        console.error("Failed to fetch new arrival products:", error);
-        return [];
-    }
-}
+            return products.map(product => ({
+                ...product,
+                price: Number(product.price),
+                discountPrice: product.discountPrice ? Number(product.discountPrice) : null,
+                discountType: product.discountType,
+                discountValue: product.discountValue ? Number(product.discountValue) : null,
+                stock: Number(product.stock),
+                createdAt: product.createdAt.toISOString(),
+                updatedAt: product.updatedAt.toISOString(),
+                category: product.category ? {
+                    ...product.category,
+                    createdAt: product.category.createdAt.toISOString(),
+                    updatedAt: product.category.updatedAt.toISOString(),
+                } : null,
+                brand: product.brand ? {
+                    id: product.brand.id,
+                    name: product.brand.name,
+                    slug: product.brand.slug,
+                    group: product.brand.group,
+                } : null,
+            }));
+        } catch (error) {
+            console.error("Failed to fetch new arrival products:", error);
+            return [];
+        }
+    },
+    ["new-arrival-products"],
+    { tags: ["products", "catalog"], revalidate: 3600 }
+);
 
-export async function getTrendingWeeklyProducts() {
-    try {
-        const products = await prisma.product.findMany({
-            where: {
-                brand: { isActive: true },
-                stock: { gt: 0 },
-                price: { gt: 0 },
-                NOT: [
-                    { images: '/placeholder.svg' },
-                    { images: '' }
-                ],
-            },
-            take: 9,
-            include: { category: true, brand: true },
-            orderBy: [
-                { isTrending: 'desc' },
-                { updatedAt: 'desc' },
-            ]
-        });
+export const getTrendingWeeklyProducts = unstable_cache(
+    async () => {
+        try {
+            const products = await prisma.product.findMany({
+                where: {
+                    brand: { isActive: true },
+                    stock: { gt: 0 },
+                    price: { gt: 0 },
+                    NOT: [
+                        { images: '/placeholder.svg' },
+                        { images: '' }
+                    ],
+                },
+                take: 9,
+                include: { category: true, brand: true },
+                orderBy: [
+                    { isTrending: 'desc' },
+                    { updatedAt: 'desc' },
+                ]
+            });
 
-        return products.map(product => ({
-            ...product,
-            price: Number(product.price),
-            discountPrice: product.discountPrice ? Number(product.discountPrice) : null,
-            discountType: product.discountType,
-            discountValue: product.discountValue ? Number(product.discountValue) : null,
-            stock: Number(product.stock),
-            createdAt: product.createdAt.toISOString(),
-            updatedAt: product.updatedAt.toISOString(),
-            category: product.category ? {
-                ...product.category,
-                createdAt: product.category.createdAt.toISOString(),
-                updatedAt: product.category.updatedAt.toISOString(),
-            } : null,
-            brand: product.brand ? {
-                id: product.brand.id,
-                name: product.brand.name,
-                slug: product.brand.slug,
-                group: product.brand.group,
-            } : null,
-        }));
-    } catch (error) {
-        console.error("Failed to fetch trending weekly products:", error);
-        return [];
-    }
-}
+            return products.map(product => ({
+                ...product,
+                price: Number(product.price),
+                discountPrice: product.discountPrice ? Number(product.discountPrice) : null,
+                discountType: product.discountType,
+                discountValue: product.discountValue ? Number(product.discountValue) : null,
+                stock: Number(product.stock),
+                createdAt: product.createdAt.toISOString(),
+                updatedAt: product.updatedAt.toISOString(),
+                category: product.category ? {
+                    ...product.category,
+                    createdAt: product.category.createdAt.toISOString(),
+                    updatedAt: product.category.updatedAt.toISOString(),
+                } : null,
+                brand: product.brand ? {
+                    id: product.brand.id,
+                    name: product.brand.name,
+                    slug: product.brand.slug,
+                    group: product.brand.group,
+                } : null,
+            }));
+        } catch (error) {
+            console.error("Failed to fetch trending weekly products:", error);
+            return [];
+        }
+    },
+    ["trending-weekly-products"],
+    { tags: ["products", "catalog"], revalidate: 3600 }
+);
 
 export async function getCategoriesForCleanup() {
     try {
@@ -2377,27 +2413,31 @@ export async function toggleBannerStatus(id: string, isActive: boolean) {
     }
 }
 
-export async function getActiveBanners() {
-    try {
-        const banners = await prisma.banner.findMany({
-            where: {
-                isActive: true
-            },
-            orderBy: {
-                createdAt: 'desc'
-            }
-        });
+export const getActiveBanners = unstable_cache(
+    async () => {
+        try {
+            const banners = await prisma.banner.findMany({
+                where: {
+                    isActive: true
+                },
+                orderBy: {
+                    createdAt: 'desc'
+                }
+            });
 
-        return banners.map(banner => ({
-            ...banner,
-            createdAt: banner.createdAt.toISOString(),
-            updatedAt: banner.updatedAt.toISOString(),
-        }));
-    } catch (error) {
-        console.error("Failed to fetch active banners:", error);
-        return [];
-    }
-}
+            return banners.map(banner => ({
+                ...banner,
+                createdAt: banner.createdAt.toISOString(),
+                updatedAt: banner.updatedAt.toISOString(),
+            }));
+        } catch (error) {
+            console.error("Failed to fetch active banners:", error);
+            return [];
+        }
+    },
+    ["active-banners"],
+    { tags: ["banners"], revalidate: 3600 }
+);
 
 export interface PromoCodeInput {
     code: string;
@@ -2621,144 +2661,148 @@ export async function updateAdminCredentials(data: {
     }
 }
 
-export async function getSiteSettings() {
-    try {
-        const settings = await prisma.settings.findUnique({
-            where: { id: "site-settings" }
-        });
-        
-        if (!settings) {
-            // Return default settings if not found
+export const getSiteSettings = unstable_cache(
+    async () => {
+        try {
+            const settings = await prisma.settings.findUnique({
+                where: { id: "site-settings" }
+            });
+            
+            if (!settings) {
+                // Return default settings if not found
+                return {
+                    id: "site-settings",
+                    categoriesCtaTitle: "Looking for specific wholesale brands?",
+                    categoriesCtaDesc: "Our wholesale team is ready to provide custom pricing and scheduled deliveries for your business.",
+                    categoriesCtaTitleAr: "تبحث عن شركات أو منتجات محددة؟",
+                    categoriesCtaDescAr: "فريق المبيعات لدينا جاهز لتزويدكم بأفضل أسعار الجملة وجداول التوزيع المنتظمة.",
+                    categoriesCtaImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuC-S_GMsoebb73JIEWcxtvH2G-vVgkfypE8ysWpGMNiiiwyTno8rIbMCpHR-fsa76ZQL49aYswb7bGZh-kgwc6z9lv0VwUSUrStxNWz2qU3RuIb75ShOMAKZMRyrOXZHZjEBgtxfW7r97FEEshOkEd2MqgE6FpGYrmKa8msLtMOQxXBsmhr3ZGGEtL7jpzgMYbgrAXhiHcMfCspdvD5FRNuSbgFY9_xGqcJM9KbgG0MoC4Ie4WkkmCR4FsuavfglcnY13G2ADZxlK8F",
+                    footerBrandTitle: "Zad Land",
+                    footerBrandTitleAr: "زاد لاند",
+                    footerBrandDescription: "Your trusted partner in wholesale food and consumer goods distribution from top international brands.",
+                    footerBrandDescriptionAr: "شريككم الموثوق لتوزيع البضائع والمواد الغذائية من أفضل الشركات العالمية.",
+                    footerCopyright: "© 2026 Zad Land. All rights reserved.",
+                    footerCopyrightAr: "© 2026 زاد لاند. جميع الحقوق محفوظة.",
+                    footerInstagramUrl: "#",
+                    footerFacebookUrl: "#",
+                    footerWhatsappUrl: "#",
+                    footerShopTitle: "Shop",
+                    footerShopTitleAr: "المتجر",
+                    footerSupportTitle: "Support",
+                    footerSupportTitleAr: "الدعم",
+                    footerCompanyTitle: "Company",
+                    footerCompanyTitleAr: "الشركة",
+                    footerSupportLink1Label: "Help Center",
+                    footerSupportLink1LabelAr: "مركز المساعدة",
+                    footerSupportLink1Url: "#",
+                    footerSupportLink2Label: "Shipping & Returns",
+                    footerSupportLink2LabelAr: "التوزيع والتسليم",
+                    footerSupportLink2Url: "/shipping-returns",
+                    footerSupportLink3Label: "Contact Us",
+                    footerSupportLink3LabelAr: "اتصل بنا",
+                    footerSupportLink3Url: "#",
+                    footerCompanyLink1Label: "About Us",
+                    footerCompanyLink1LabelAr: "من نحن",
+                    footerCompanyLink1Url: "/about-us",
+                    footerCompanyLink2Label: "",
+                    footerCompanyLink2LabelAr: "",
+                    footerCompanyLink2Url: "",
+                    footerCompanyLink3Label: "",
+                    footerCompanyLink3LabelAr: "",
+                    footerCompanyLink3Url: "",
+                    footerCategory1Id: null,
+                    footerCategory2Id: null,
+                    footerCategory3Id: null,
+                    footerCategory4Id: null,
+                    shippingTitle: "Fast & Reliable Distribution",
+                    shippingDesc: "We ensure wholesale goods reach your business in perfect condition.",
+                    shippingTitleAr: "توزيع سريع وموثوق",
+                    shippingDescAr: "نحن نضمن وصول بضائع الجملة إلى نشاطكم التجاري في أفضل حالة.",
+                    verificationTitle: "Verification Process",
+                    verificationDesc: "Orders are verified and scheduled immediately with our logistics fleet.",
+                    verificationTitleAr: "عملية التحقق",
+                    verificationDescAr: "يتم التحقق من الطلبات وجدولتها فوراً مع أسطولنا اللوجستي.",
+                    standardShippingTime: "1-3 Business Days",
+                    expressShippingTime: "24 Hours",
+                    returnsTitle: "Wholesale Support",
+                    returnsDesc: "We are committed to full satisfaction and verified shipment handling.",
+                    returnsTitleAr: "دعم الجملة",
+                    returnsDescAr: "نحن ملتزمون بالجودة والمطابقة التامة للشحنات.",
+                    finalSaleTitle: "Wholesale Delivery Terms",
+                    finalSaleDesc: "All goods are shipped in factory-sealed cases conforming to international standards.",
+                    finalSaleTitleAr: "شروط تسليم الجملة",
+                    finalSaleDescAr: "يتم تسليم البضائع في كراتين المصنع الأصلية والمطابقة للمواصفات القياسية.",
+                    hygieneTitle: "Safety & Temperature Storage",
+                    hygieneDesc: "Our temperature-controlled warehouses ensure optimal quality preservation.",
+                    hygieneTitleAr: "بروتوكولات السلامة والتخزين",
+                    hygieneDescAr: "تضمن مستودعاتنا وشاحناتنا درجات حرارة وبيئة تخزين مثالية حتى نقطة التسليم.",
+                    shippingReturnsImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuC1GmfD6bueEsJqlHNPjDWHMlhsLZSm2Jmp21TUCLKvobkcd7oAPMMdwzfm8BOHC5XtR0EP6tLI7DT5hhyLxuijsbpX2kQf6iNlqROU-8k-DrqZAUqdc7-0lE4nxuCcLaEb0fEaXVBxc_yXkiUlyhfvaYJ1FfHZtngnoJbeanLgsf7rcxqON6rjkoC4BQv6FhlwLNKZrMbxjCugphq-bo5GCqBoLfmjjZSuH0N5eV-Kz33xFQTD5jSYCTsVYAwOkwhLQsQiPD_lnD9U",
+                    
+                    aboutHeroTitle: "Our Story",
+                    aboutHeroTitleAr: "قصتنا",
+                    aboutHeroSubtitle: "Your trusted partner for distributing top quality global goods and food products.",
+                    aboutHeroSubtitleAr: "شريككم الموثوق لتوزيع البضائع والمواد الغذائية من أفضل الشركات العالمية.",
+                    middleBanner1Image: "https://images.unsplash.com/photo-1621996346565-e3d5d6281290?w=1200",
+                    middleBanner1Link: "/products",
+                    middleBanner2Image: "https://images.unsplash.com/photo-1544025162-d76694265947?w=1200",
+                    middleBanner2Link: "/products",
+                    middleBanner2Title: "Global Brands",
+                    middleBanner2TitleAr: "شركات عالمية",
+                    middleBanner2Subtitle: "Discover the best products from around the world.",
+                    middleBanner2SubtitleAr: "اكتشف أفضل المنتجات من كبرى الشركات العالمية.",
+                    middleBanner2ButtonText: "Explore Catalog",
+                    middleBanner2ButtonTextAr: "تصفح الكتالوج",
+                    exchangeRate: 135,
+                    aboutHeroImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuAz8qN2iAHz-UZeEQfqOY49U5OCZ5z4ejVm7ILFjFSl9S5xg_6UuBa61qOmrkMPrBa4CuXDzHa9EN3-LNyUxi5IDK5A9TvJWkNuG-tt_RRyvJH8LvynO1daOEkTk47KDtkW3Md2ugZYShZJdxolsjiJUtDdOOz4Q7-6TNrexIvyClP0ADf1TWdbCUk1kBn8bfzhTC1cn8s9jG3yt0tDDht7__J5YKKf690SmKN4WIJX_pc2LOj3x1CnYk5JuqEu0Bzp2vGwsrYLaJWb",
+                    
+                    aboutNarrativeTitle: "Our Mission for Quality Distribution",
+                    aboutNarrativeTitleAr: "مهمتنا في التوزيع الموثوق",
+                    aboutNarrativeFounded: "Founded with Trust",
+                    aboutNarrativeFoundedAr: "تأسست على الثقة",
+                    aboutNarrativeDesc1: "At Zad Land, we bridge the gap between world-renowned international brands and local markets. We believe in providing retailers and businesses with seamless access to authentic, top-tier goods at competitive wholesale prices.",
+                    aboutNarrativeDesc1Ar: "في زاد لاند، نعمل كجسر موثوق يربط بين كبرى الشركات والعلامات التجارية العالمية والأسواق المحلية.",
+                    aboutNarrativeDesc2: "With rigorous quality control, modern logistics, and a commitment to reliability, Zad Land has established itself as the trusted partner for food and consumer goods distribution across all governorates.",
+                    aboutNarrativeDesc2Ar: "بفضل أسطول التوزيع المنظم والمستودعات المجهزة، أثبتت زاد لاند مكانتها كشركة رائدة وموثوقة لتوزيع البضائع الغذائية والاستهلاكية في جميع المحافظات.",
+                    aboutNarrativeQuote: "Connecting you with the world's finest brands.",
+                    aboutNarrativeQuoteAr: "جودة مضمونة وخدمة توزيع موثوقة.",
+                    aboutNarrativeImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuC4yp4c_LJLNPwaV2ay8DZ6xRHD0UF1WqXU8eDtrdDoiVjtq9oNRc9Cn6cnbqsNwOLO-y-99jnkiLnCsGLs2rQqthU8TPqhAh2Msisbst1UyfyrILBR5fRO7KYu90u1FEoeRRjGceGVbB5vz2SJAtjzUrLLtA6BmR8VN5a5Seo4MraBJj7i4Gs4QPEZbURtSN-F7wbJsu4WNj3pEaWlye2SuJvokQhYXJ27gnAoabHg5_0_4DZY49qyKnQuMHHL9atOIILRIMD3FkeZ",
+                    
+                    aboutValuesTitle: "Our Core Values",
+                    aboutValuesTitleAr: "قيمنا الجوهرية",
+                    aboutValuesDesc: "We are committed to transparency, sustainability, and ethical practices in everything we do.",
+                    aboutValuesDescAr: "نحن ملتزمون بالشفافية والاستدامة والممارسات الأخلاقية في كل ما نقوم به.",
+                    
+                    aboutValue1Title: "Cruelty-Free",
+                    aboutValue1TitleAr: "خالٍ من القسوة",
+                    aboutValue1Desc: "We never test on animals. Our products are certified cruelty-free by Leaping Bunny.",
+                    aboutValue1DescAr: "نحن لا نختبر أبدًا على الحيوانات. منتجاتنا معتمدة خالية من القسوة من قبل Leaping Bunny.",
+                    
+                    aboutValue2Title: "100% Vegan",
+                    aboutValue2TitleAr: "نباتي 100٪",
+                    aboutValue2Desc: "No animal-derived ingredients. Just pure, potent plant power.",
+                    aboutValue2DescAr: "لا توجد مكونات مشتقة من الحيوانات. فقط قوة نباتية نقية وفعالة.",
+                    
+                    aboutValue3Title: "Sustainable",
+                    aboutValue3TitleAr: "مستدام",
+                    aboutValue3Desc: "Eco-friendly packaging and responsibly sourced ingredients.",
+                    aboutValue3DescAr: "تغليف صديق للبيئة ومكونات من مصادر مسؤولة.",
+                    
+                    updatedAt: new Date(),
+                };
+            }
+            
             return {
-                id: "site-settings",
-                categoriesCtaTitle: "Looking for specific wholesale brands?",
-                categoriesCtaDesc: "Our wholesale team is ready to provide custom pricing and scheduled deliveries for your business.",
-                categoriesCtaTitleAr: "تبحث عن شركات أو منتجات محددة؟",
-                categoriesCtaDescAr: "فريق المبيعات لدينا جاهز لتزويدكم بأفضل أسعار الجملة وجداول التوزيع المنتظمة.",
-                categoriesCtaImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuC-S_GMsoebb73JIEWcxtvH2G-vVgkfypE8ysWpGMNiiiwyTno8rIbMCpHR-fsa76ZQL49aYswb7bGZh-kgwc6z9lv0VwUSUrStxNWz2qU3RuIb75ShOMAKZMRyrOXZHZjEBgtxfW7r97FEEshOkEd2MqgE6FpGYrmKa8msLtMOQxXBsmhr3ZGGEtL7jpzgMYbgrAXhiHcMfCspdvD5FRNuSbgFY9_xGqcJM9KbgG0MoC4Ie4WkkmCR4FsuavfglcnY13G2ADZxlK8F",
-                footerBrandTitle: "Zad Land",
-                footerBrandTitleAr: "زاد لاند",
-                footerBrandDescription: "Your trusted partner in wholesale food and consumer goods distribution from top international brands.",
-                footerBrandDescriptionAr: "شريككم الموثوق لتوزيع البضائع والمواد الغذائية من أفضل الشركات العالمية.",
-                footerCopyright: "© 2026 Zad Land. All rights reserved.",
-                footerCopyrightAr: "© 2026 زاد لاند. جميع الحقوق محفوظة.",
-                footerInstagramUrl: "#",
-                footerFacebookUrl: "#",
-                footerWhatsappUrl: "#",
-                footerShopTitle: "Shop",
-                footerShopTitleAr: "المتجر",
-                footerSupportTitle: "Support",
-                footerSupportTitleAr: "الدعم",
-                footerCompanyTitle: "Company",
-                footerCompanyTitleAr: "الشركة",
-                footerSupportLink1Label: "Help Center",
-                footerSupportLink1LabelAr: "مركز المساعدة",
-                footerSupportLink1Url: "#",
-                footerSupportLink2Label: "Shipping & Returns",
-                footerSupportLink2LabelAr: "التوزيع والتسليم",
-                footerSupportLink2Url: "/shipping-returns",
-                footerSupportLink3Label: "Contact Us",
-                footerSupportLink3LabelAr: "اتصل بنا",
-                footerSupportLink3Url: "#",
-                footerCompanyLink1Label: "About Us",
-                footerCompanyLink1LabelAr: "من نحن",
-                footerCompanyLink1Url: "/about-us",
-                footerCompanyLink2Label: "",
-                footerCompanyLink2LabelAr: "",
-                footerCompanyLink2Url: "",
-                footerCompanyLink3Label: "",
-                footerCompanyLink3LabelAr: "",
-                footerCompanyLink3Url: "",
-                footerCategory1Id: null,
-                footerCategory2Id: null,
-                footerCategory3Id: null,
-                footerCategory4Id: null,
-                shippingTitle: "Fast & Reliable Distribution",
-                shippingDesc: "We ensure wholesale goods reach your business in perfect condition.",
-                shippingTitleAr: "توزيع سريع وموثوق",
-                shippingDescAr: "نحن نضمن وصول بضائع الجملة إلى نشاطكم التجاري في أفضل حالة.",
-                verificationTitle: "Verification Process",
-                verificationDesc: "Orders are verified and scheduled immediately with our logistics fleet.",
-                verificationTitleAr: "عملية التحقق",
-                verificationDescAr: "يتم التحقق من الطلبات وجدولتها فوراً مع أسطولنا اللوجستي.",
-                standardShippingTime: "1-3 Business Days",
-                expressShippingTime: "24 Hours",
-                returnsTitle: "Wholesale Support",
-                returnsDesc: "We are committed to full satisfaction and verified shipment handling.",
-                returnsTitleAr: "دعم الجملة",
-                returnsDescAr: "نحن ملتزمون بالجودة والمطابقة التامة للشحنات.",
-                finalSaleTitle: "Wholesale Delivery Terms",
-                finalSaleDesc: "All goods are shipped in factory-sealed cases conforming to international standards.",
-                finalSaleTitleAr: "شروط تسليم الجملة",
-                finalSaleDescAr: "يتم تسليم البضائع في كراتين المصنع الأصلية والمطابقة للمواصفات القياسية.",
-                hygieneTitle: "Safety & Temperature Storage",
-                hygieneDesc: "Our temperature-controlled warehouses ensure optimal quality preservation.",
-                hygieneTitleAr: "بروتوكولات السلامة والتخزين",
-                hygieneDescAr: "تضمن مستودعاتنا وشاحناتنا درجات حرارة وبيئة تخزين مثالية حتى نقطة التسليم.",
-                shippingReturnsImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuC1GmfD6bueEsJqlHNPjDWHMlhsLZSm2Jmp21TUCLKvobkcd7oAPMMdwzfm8BOHC5XtR0EP6tLI7DT5hhyLxuijsbpX2kQf6iNlqROU-8k-DrqZAUqdc7-0lE4nxuCcLaEb0fEaXVBxc_yXkiUlyhfvaYJ1FfHZtngnoJbeanLgsf7rcxqON6rjkoC4BQv6FhlwLNKZrMbxjCugphq-bo5GCqBoLfmjjZSuH0N5eV-Kz33xFQTD5jSYCTsVYAwOkwhLQsQiPD_lnD9U",
-                
-                aboutHeroTitle: "Our Story",
-                aboutHeroTitleAr: "قصتنا",
-                aboutHeroSubtitle: "Your trusted partner for distributing top quality global goods and food products.",
-                aboutHeroSubtitleAr: "شريككم الموثوق لتوزيع البضائع والمواد الغذائية من أفضل الشركات العالمية.",
-                middleBanner1Image: "https://images.unsplash.com/photo-1621996346565-e3d5d6281290?w=1200",
-                middleBanner1Link: "/products",
-                middleBanner2Image: "https://images.unsplash.com/photo-1544025162-d76694265947?w=1200",
-                middleBanner2Link: "/products",
-                middleBanner2Title: "Global Brands",
-                middleBanner2TitleAr: "شركات عالمية",
-                middleBanner2Subtitle: "Discover the best products from around the world.",
-                middleBanner2SubtitleAr: "اكتشف أفضل المنتجات من كبرى الشركات العالمية.",
-                middleBanner2ButtonText: "Explore Catalog",
-                middleBanner2ButtonTextAr: "تصفح الكتالوج",
-                exchangeRate: 135,
-                aboutHeroImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuAz8qN2iAHz-UZeEQfqOY49U5OCZ5z4ejVm7ILFjFSl9S5xg_6UuBa61qOmrkMPrBa4CuXDzHa9EN3-LNyUxi5IDK5A9TvJWkNuG-tt_RRyvJH8LvynO1daOEkTk47KDtkW3Md2ugZYShZJdxolsjiJUtDdOOz4Q7-6TNrexIvyClP0ADf1TWdbCUk1kBn8bfzhTC1cn8s9jG3yt0tDDht7__J5YKKf690SmKN4WIJX_pc2LOj3x1CnYk5JuqEu0Bzp2vGwsrYLaJWb",
-                
-                aboutNarrativeTitle: "Our Mission for Quality Distribution",
-                aboutNarrativeTitleAr: "مهمتنا في التوزيع الموثوق",
-                aboutNarrativeFounded: "Founded with Trust",
-                aboutNarrativeFoundedAr: "تأسست على الثقة",
-                aboutNarrativeDesc1: "At Zad Land, we bridge the gap between world-renowned international brands and local markets. We believe in providing retailers and businesses with seamless access to authentic, top-tier goods at competitive wholesale prices.",
-                aboutNarrativeDesc1Ar: "في زاد لاند، نعمل كجسر موثوق يربط بين كبرى الشركات والعلامات التجارية العالمية والأسواق المحلية.",
-                aboutNarrativeDesc2: "With rigorous quality control, modern logistics, and a commitment to reliability, Zad Land has established itself as the trusted partner for food and consumer goods distribution across all governorates.",
-                aboutNarrativeDesc2Ar: "بفضل أسطول التوزيع المنظم والمستودعات المجهزة، أثبتت زاد لاند مكانتها كشركة رائدة وموثوقة لتوزيع البضائع الغذائية والاستهلاكية في جميع المحافظات.",
-                aboutNarrativeQuote: "Connecting you with the world's finest brands.",
-                aboutNarrativeQuoteAr: "جودة مضمونة وخدمة توزيع موثوقة.",
-                aboutNarrativeImage: "https://lh3.googleusercontent.com/aida-public/AB6AXuC4yp4c_LJLNPwaV2ay8DZ6xRHD0UF1WqXU8eDtrdDoiVjtq9oNRc9Cn6cnbqsNwOLO-y-99jnkiLnCsGLs2rQqthU8TPqhAh2Msisbst1UyfyrILBR5fRO7KYu90u1FEoeRRjGceGVbB5vz2SJAtjzUrLLtA6BmR8VN5a5Seo4MraBJj7i4Gs4QPEZbURtSN-F7wbJsu4WNj3pEaWlye2SuJvokQhYXJ27gnAoabHg5_0_4DZY49qyKnQuMHHL9atOIILRIMD3FkeZ",
-                
-                aboutValuesTitle: "Our Core Values",
-                aboutValuesTitleAr: "قيمنا الجوهرية",
-                aboutValuesDesc: "We are committed to transparency, sustainability, and ethical practices in everything we do.",
-                aboutValuesDescAr: "نحن ملتزمون بالشفافية والاستدامة والممارسات الأخلاقية في كل ما نقوم به.",
-                
-                aboutValue1Title: "Cruelty-Free",
-                aboutValue1TitleAr: "خالٍ من القسوة",
-                aboutValue1Desc: "We never test on animals. Our products are certified cruelty-free by Leaping Bunny.",
-                aboutValue1DescAr: "نحن لا نختبر أبدًا على الحيوانات. منتجاتنا معتمدة خالية من القسوة من قبل Leaping Bunny.",
-                
-                aboutValue2Title: "100% Vegan",
-                aboutValue2TitleAr: "نباتي 100٪",
-                aboutValue2Desc: "No animal-derived ingredients. Just pure, potent plant power.",
-                aboutValue2DescAr: "لا توجد مكونات مشتقة من الحيوانات. فقط قوة نباتية نقية وفعالة.",
-                
-                aboutValue3Title: "Sustainable",
-                aboutValue3TitleAr: "مستدام",
-                aboutValue3Desc: "Eco-friendly packaging and responsibly sourced ingredients.",
-                aboutValue3DescAr: "تغليف صديق للبيئة ومكونات من مصادر مسؤولة.",
-                
-                updatedAt: new Date(),
+                ...settings,
+                exchangeRate: Number(settings.exchangeRate),
             };
+        } catch (error) {
+            console.error("Failed to fetch site settings:", error);
+            return null;
         }
-        
-        return {
-            ...settings,
-            exchangeRate: Number(settings.exchangeRate),
-        };
-    } catch (error) {
-        console.error("Failed to fetch site settings:", error);
-        return null;
-    }
-}
+    },
+    ["site-settings"],
+    { tags: ["settings"], revalidate: 3600 }
+);
 
 export async function updateSiteSettings(data: {
     categoriesCtaTitle?: string;

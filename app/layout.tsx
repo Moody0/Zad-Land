@@ -2,10 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { Figtree, Noto_Sans_Arabic } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
 import { getI18n } from "@/lib/i18n";
-import { prisma } from "@/lib/prisma";
+import { getSiteSettings } from "@/lib/admin-actions";
 
 const figtree = Figtree({
   variable: "--font-figtree",
@@ -134,12 +132,10 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await getServerSession(authOptions);
-  const { language, dir } = await getI18n();
-  const settings = await prisma.settings.findUnique({
-      where: { id: "site-settings" },
-      select: { exchangeRate: true }
-  });
+  const [{ language, dir }, settings] = await Promise.all([
+    getI18n(),
+    getSiteSettings(),
+  ]);
   const exchangeRate = settings?.exchangeRate ? Number(settings.exchangeRate) : 135;
 
   const organizationSchema = {
@@ -178,7 +174,7 @@ export default async function RootLayout({
         suppressHydrationWarning
       >
         <div id="app-shell">
-          <Providers session={session} initialExchangeRate={exchangeRate} initialLanguage={language}>
+          <Providers initialExchangeRate={exchangeRate} initialLanguage={language}>
             {children}
           </Providers>
         </div>
