@@ -115,7 +115,7 @@ const Main = async ({
 
             {/* 4. Main Categories (Dynamic 4 highlight cards from Database) */}
             <ScrollReveal>
-                <CategoryHighlightCards cards={highlightCards} />
+                <CategoryHighlightCards cards={highlightCards} language={language} />
             </ScrollReveal>
 
             {/* 5. Countdown Offer Section - Placed directly below CategoryHighlightCards */}
@@ -134,7 +134,7 @@ const Main = async ({
 
             {/* Featured Categories Grid (Top Categories. Best Sellers) */}
             <ScrollReveal>
-                <FeaturedCategoriesGrid categories={featuredCategories} />
+                <FeaturedCategoriesGrid categories={featuredCategories} language={language} dir={dir} />
             </ScrollReveal>
 
             {/* 7. Trending This Week - Horizontal Product Cards */}

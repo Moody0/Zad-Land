@@ -1,6 +1,5 @@
 import React from 'react';
 import Link from 'next/link';
-import { useLanguage } from '@/app/context/LanguageContext';
 import ResilientImage from '@/app/components/ResilientImage';
 import { MdChevronRight } from 'react-icons/md';
 
@@ -22,10 +21,11 @@ interface Category {
 
 interface FeaturedCategoriesGridProps {
     categories: Category[];
+    language?: 'en' | 'ar';
+    dir?: 'rtl' | 'ltr';
 }
 
-const FeaturedCategoriesGrid = ({ categories }: FeaturedCategoriesGridProps) => {
-    const { language, dir } = useLanguage();
+const FeaturedCategoriesGrid = ({ categories, language = 'ar', dir = 'rtl' }: FeaturedCategoriesGridProps) => {
     const isArabic = language === 'ar';
 
     if (!categories || categories.length === 0) {

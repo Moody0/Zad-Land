@@ -1,6 +1,5 @@
 import React from 'react';
 import Link from 'next/link';
-import { useLanguage } from '@/app/context/LanguageContext';
 import ResilientImage from '@/app/components/ResilientImage';
 
 export interface HighlightCard {
@@ -20,11 +19,10 @@ export interface HighlightCard {
 
 interface CategoryHighlightCardsProps {
     cards?: HighlightCard[];
+    language?: 'en' | 'ar';
 }
 
-const CategoryHighlightCards = ({ cards = [] }: CategoryHighlightCardsProps) => {
-    const { language } = useLanguage();
-
+const CategoryHighlightCards = ({ cards = [], language = 'ar' }: CategoryHighlightCardsProps) => {
     if (!cards || cards.length === 0) {
         return null;
     }
