@@ -6,6 +6,8 @@ import { getI18n } from "@/lib/i18n";
 import { getCatalogCategories } from "@/lib/catalog";
 import { getNavigationData } from "@/lib/navigation";
 
+import NavigationProgressBar from "../components/NavigationProgressBar";
+
 async function getCategories() {
     try {
         return await getCatalogCategories();
@@ -28,6 +30,9 @@ export default async function SiteLayout({
 
     return (
         <div className="min-h-screen flex flex-col" dir={dir}>
+            {/* Instant Navigation Progress Bar */}
+            <NavigationProgressBar />
+
             {/* Header with Server-Side Pre-rendered Navigation Data */}
             <Header
                 initialCategories={categories}

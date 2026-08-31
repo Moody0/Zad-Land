@@ -13,6 +13,8 @@ import Breadcrumbs from '@/app/components/ProductDetailsComponents/Breadcrumbs';
 import ProductReviews from '@/app/components/ProductDetailsComponents/ProductReviews';
 import { getI18n } from '@/lib/i18n';
 
+export const revalidate = 60; // Revalidate cache every 60 seconds
+
 const getProduct = cache(async (slug: string) => {
     return prisma.product.findFirst({
         where: {

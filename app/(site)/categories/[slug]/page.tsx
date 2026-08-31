@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import ProductsClient from "../../products/ProductsClient";
 import { getCatalogInitialData, getCategoryBySlug } from "@/lib/catalog";
 
+export const revalidate = 60; // Revalidate cache every 60 seconds
+
 export async function generateMetadata(
     props: { params: Promise<{ slug: string }> }
 ): Promise<Metadata> {

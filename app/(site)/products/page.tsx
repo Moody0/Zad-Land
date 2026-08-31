@@ -6,6 +6,8 @@ import { findCategoryByIdentifier } from "@/lib/category-utils";
 
 import { Metadata } from "next";
 
+export const revalidate = 60; // Revalidate cache every 60 seconds
+
 export const metadata: Metadata = {
     title: "كتالوج المنتجات وعروض الجملة | Products Catalog - Zad Land",
     description: "تصفح كافة منتجات المواد الغذائية، المعلبات، اللحوم، الباستا، الحلويات، والمشروبات بأسعار الجملة المعتمدة لدى شركة زاد لاند.",
