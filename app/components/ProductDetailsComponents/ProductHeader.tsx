@@ -60,15 +60,15 @@ const ProductHeader = ({ name, nameAr, nameEn, brandName, categoryName, averageR
             </div>
 
             {/* Brand and Category Badges */}
-            <div className="flex items-center gap-3 text-xs font-semibold">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 text-xs font-semibold">
                 {brandName && (
-                    <div className="flex items-center gap-1.5 bg-gray-100 dark:bg-zinc-800/60 px-3 py-1 rounded-full text-zinc-900 dark:text-gray-200">
+                    <div className="inline-flex items-center gap-1.5 bg-gray-100 dark:bg-zinc-800/60 px-3 py-1.5 rounded-full text-zinc-900 dark:text-gray-200 w-fit">
                         <span className="text-gray-400 font-normal">{language === 'ar' ? 'البراند:' : 'Brand:'}</span>
                         <span>{brandName}</span>
                     </div>
                 )}
                 {categoryName && (
-                    <div className="flex items-center gap-1.5 bg-gray-100 dark:bg-zinc-800/60 px-3 py-1 rounded-full text-zinc-900 dark:text-gray-200">
+                    <div className="inline-flex items-center gap-1.5 bg-gray-100 dark:bg-zinc-800/60 px-3 py-1.5 rounded-full text-zinc-900 dark:text-gray-200 w-fit">
                         <span className="text-gray-400 font-normal">{language === 'ar' ? 'القسم:' : 'Category:'}</span>
                         <span>{categoryName}</span>
                     </div>
