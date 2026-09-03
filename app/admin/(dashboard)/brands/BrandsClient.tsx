@@ -49,7 +49,7 @@ interface Brand {
 
 export default function BrandsClient({ brands: initialBrands }: { brands: Brand[] }) {
     const { openSidebar } = useAdminSidebar();
-    const { data: session } = useSession();
+    const { data: session } = useSession() || {};
     const { t, language } = useLanguage();
     const isArabic = language === 'ar';
     const canManage = session?.user?.role === "SUPER_ADMIN" || session?.user?.canManageBrands;

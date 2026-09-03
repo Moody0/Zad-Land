@@ -35,7 +35,7 @@ interface Order {
 }
 
 export default function OrdersClient({ orders }: { orders: Order[] }) {
-    const { data: session } = useSession();
+    const { data: session } = useSession() || {};
     const router = useRouter();
     const canManage = session?.user?.role === 'SUPER_ADMIN' || session?.user?.canManageOrders;
     const canDelete = session?.user?.role === 'SUPER_ADMIN' || session?.user?.canDeleteOrders;

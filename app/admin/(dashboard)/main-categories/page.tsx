@@ -1,7 +1,7 @@
 import { getAdminMainCategories } from "../../../../lib/admin-actions";
 import MainCategoriesClient from "./MainCategoriesClient";
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 export default async function AdminMainCategoriesPage() {
     const mainCategories = await getAdminMainCategories();

@@ -1,7 +1,7 @@
 import { getAdminBrands, getAdminCategories } from "../../../../lib/admin-actions";
 import CategoriesClient from "./CategoriesClient";
 
-export const revalidate = 60; // Revalidate every minute for admin
+export const dynamic = "force-dynamic";
 
 export default async function AdminCategoriesPage() {
     const [data, brands] = await Promise.all([

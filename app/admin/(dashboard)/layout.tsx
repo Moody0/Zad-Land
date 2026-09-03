@@ -3,6 +3,8 @@ import { redirect } from "next/navigation";
 import { authOptions } from "@/lib/auth";
 import DashboardLayoutClient from "./DashboardLayoutClient";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminLayout({
     children,
 }: {
@@ -16,5 +18,5 @@ export default async function AdminLayout({
         redirect("/admin/login");
     }
 
-    return <DashboardLayoutClient>{children}</DashboardLayoutClient>;
+    return <DashboardLayoutClient session={session}>{children}</DashboardLayoutClient>;
 }

@@ -51,7 +51,7 @@ interface NavSection {
 
 export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
     const pathname = usePathname();
-    const { data: session } = useSession();
+    const { data: session } = useSession() || {};
     const { t, dir, language } = useLanguage();
     const isSuperAdmin = session?.user?.role === 'SUPER_ADMIN';
 

@@ -32,7 +32,8 @@ export default function AdminLoginPage() {
             if (result?.error) {
                 setError(t("admin.login.invalidCredentials"));
             } else {
-                router.push("/admin/dashboard");
+                const destination = new URLSearchParams(window.location.search).get("callbackUrl") || "/admin/dashboard";
+                router.push(destination);
             }
         } catch (err) {
             setError(t("admin.login.errorGeneric"));

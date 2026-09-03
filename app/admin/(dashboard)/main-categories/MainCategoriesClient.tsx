@@ -45,7 +45,7 @@ interface MainCategory {
 
 export default function MainCategoriesClient({ mainCategories: initialMainCategories }: { mainCategories: MainCategory[] }) {
     const { openSidebar } = useAdminSidebar();
-    const { data: session } = useSession();
+    const { data: session } = useSession() || {};
     const { t, dir, language } = useLanguage();
     const isArabic = language === 'ar';
     const isSuperAdmin = session?.user?.role === "SUPER_ADMIN";

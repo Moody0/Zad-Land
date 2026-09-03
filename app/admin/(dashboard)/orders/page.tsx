@@ -1,7 +1,7 @@
 import { getAdminOrders } from "../../../../lib/admin-actions";
 import OrdersClient from "./OrdersClient";
 
-export const revalidate = 60; // Revalidate every minute for admin
+export const dynamic = "force-dynamic";
 
 export default async function AdminOrdersPage() {
     const data = await getAdminOrders(1, 50);

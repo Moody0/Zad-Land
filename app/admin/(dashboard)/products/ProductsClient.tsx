@@ -105,7 +105,7 @@ export default function ProductsClient({
     brands: Brand[],
     mainCategories?: MainCategory[]
 }) {
-    const { data: session } = useSession();
+    const { data: session } = useSession() || {};
     const { t, dir, language } = useLanguage();
     const isArabic = language === 'ar';
     const canDelete = session?.user?.role === 'SUPER_ADMIN' || session?.user?.canDeleteProducts;

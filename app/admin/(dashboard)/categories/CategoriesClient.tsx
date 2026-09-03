@@ -56,7 +56,7 @@ interface Brand {
 }
 
 export default function CategoriesClient({ categories: initialCategories, brands }: { categories: Category[], brands: Brand[] }) {
-    const { data: session } = useSession();
+    const { data: session } = useSession() || {};
     const { t, dir, language } = useLanguage();
     const isArabic = language === 'ar';
     const canManage = session?.user?.role === 'SUPER_ADMIN' || session?.user?.canManageCategories;

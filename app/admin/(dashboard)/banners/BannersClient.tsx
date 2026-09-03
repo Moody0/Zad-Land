@@ -36,7 +36,7 @@ interface Banner {
 }
 
 export default function BannersClient({ banners }: { banners: Banner[] }) {
-    const { data: session } = useSession();
+    const { data: session } = useSession() || {};
     const { t, dir, language } = useLanguage();
     const isArabic = language === 'ar';
     const canManage = session?.user?.role === 'SUPER_ADMIN' || session?.user?.canManageBanners;
