@@ -31,14 +31,20 @@ export default function AdminLoginPage() {
 
             if (result?.error) {
                 setError(t("admin.login.invalidCredentials"));
+                setLoading(false);
+            } else if (result?.ok) {
+                const rawCallback = new URLSearchParams(window.location.search).get("callbackUrl");
+                const destination = (rawCallback && !rawCallback.startsWith("/admin/login")) 
+                    ? rawCallback 
+                    : "/admin/dashboard";
+                window.location.href = destination;
             } else {
-                const destination = new URLSearchParams(window.location.search).get("callbackUrl") || "/admin/dashboard";
-                router.push(destination);
+                setError(t("admin.login.errorGeneric"));
+                setLoading(false);
             }
         } catch (err) {
             setError(t("admin.login.errorGeneric"));
             console.error(err);
-        } finally {
             setLoading(false);
         }
     };
