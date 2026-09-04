@@ -52,10 +52,6 @@ export default function BrandHeroHeader({ brand, totalProducts }: BrandHeroHeade
                 {/* Brand Details */}
                 <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-center sm:justify-start flex-wrap gap-2 mb-1.5">
-                        <span className="inline-flex items-center gap-1 bg-[#FAF6EC] dark:bg-[#B8860B]/15 text-[#8D6504] dark:text-[#E5B54A] text-[11px] font-bold px-2.5 py-0.5 rounded-md border border-[#B8860B]/20">
-                            <MdVerified className="text-xs" />
-                            <span>{isArabic ? 'شريك وموزع معتمد' : 'Verified Brand Partner'}</span>
-                        </span>
                         <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">
                             {totalProducts} {isArabic ? 'منتج جملة متاح' : 'Wholesale Products'}
                         </span>

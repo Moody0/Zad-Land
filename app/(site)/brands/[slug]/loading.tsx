@@ -26,12 +26,6 @@ export default function BrandLoadingSkeleton() {
                     </div>
                 </div>
 
-                {/* Specs Row Skeleton */}
-                <div className="mt-6 pt-5 border-t border-slate-100 dark:border-white/5 grid grid-cols-2 lg:grid-cols-4 gap-3">
-                    {[1, 2, 3, 4].map((i) => (
-                        <div key={i} className="h-12 rounded-xl bg-slate-50 dark:bg-white/5 animate-pulse" />
-                    ))}
-                </div>
             </div>
 
             {/* Toolbar Skeleton */}
