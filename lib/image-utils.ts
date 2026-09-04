@@ -26,7 +26,7 @@ export const isValidImageSrc = (url: string | null | undefined): boolean => {
 
 const isRemoteImageUrl = (url: string) => /^https?:\/\//i.test(url);
 
-const getProxyImageUrl = (url: string) => `/_next/image?url=${encodeURIComponent(url)}&w=1080&q=75`;
+export const getProxyImageUrl = (url: string) => `/api/image-proxy?url=${encodeURIComponent(url)}`;
 
 const appendRetryParam = (url: string, attempt: number) =>
     `${url}${url.includes("?") ? "&" : "?"}retry=${attempt}`;
@@ -45,15 +45,21 @@ const cleanUrl = (url: string): string => {
 };
 
 /**
- * Checks if an image URL needs to be proxied to bypass regional blocks (e.g., Shopify CDN in Syria).
+ * Returns a safe image URL, proxying remote images (e.g. i.postimg.cc, Shopify CDN)
+ * through /api/image-proxy to bypass sanctions and regional blocks (e.g., Syria).
  */
 export const getSafeImageUrl = (url: string | null | undefined): string => {
     if (!url || !isValidImageSrc(url)) return IMAGE_PLACEHOLDER_SRC;
 
     const trimmedUrl = cleanUrl(url);
 
-    // Shopify CDN is blocked in some regions (e.g., Syria)
-    if (trimmedUrl.includes("cdn.shopify.com")) {
+    // Local paths and data URIs are already on the domain
+    if (trimmedUrl.startsWith('/') || trimmedUrl.startsWith('data:')) {
+        return trimmedUrl;
+    }
+
+    // Remote images: route through /api/image-proxy to guarantee delivery across all regions
+    if (isRemoteImageUrl(trimmedUrl)) {
         return getProxyImageUrl(trimmedUrl);
     }
 
@@ -74,6 +80,12 @@ export const parseImageList = (images: string | null | undefined): string[] => {
 export const getPrimaryImage = (images: string | null | undefined): string =>
     parseImageList(images)[0] || IMAGE_PLACEHOLDER_SRC;
 
+/**
+ * Generates an ordered list of fallback candidates:
+ * 1. Proxied URL via Zad Land's server (guaranteed to load in Syria, Egypt, etc.)
+ * 2. Direct remote URL (in case proxy has issues)
+ * 3. Fallback placeholder SVG
+ */
 export const getImageSourceCandidates = (
     url: string | null | undefined,
     fallbackSrc: string = IMAGE_PLACEHOLDER_SRC
@@ -88,14 +100,18 @@ export const getImageSourceCandidates = (
         return [fallbackSrc];
     }
 
-    const candidates = [trimmedUrl];
-    const isRemote = isRemoteImageUrl(trimmedUrl);
-
-    if (isRemote) {
-        candidates.push(appendRetryParam(trimmedUrl, 1));
+    // If local or data URI, direct load is optimal
+    if (trimmedUrl.startsWith('/') || trimmedUrl.startsWith('data:')) {
+        return [trimmedUrl, fallbackSrc];
     }
 
-    candidates.push(fallbackSrc);
+    const proxied = getProxyImageUrl(trimmedUrl);
+    const candidates = [
+        proxied,
+        trimmedUrl,
+        appendRetryParam(trimmedUrl, 1),
+        fallbackSrc,
+    ];
 
     return [...new Set(candidates.filter(isValidImageSrc))];
 };

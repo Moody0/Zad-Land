@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useLanguage } from "@/app/context/LanguageContext";
 import BrandMasthead from "./BrandMasthead";
 import BrandCatalogToolbar, { CategoryItem } from "./BrandCatalogToolbar";
-import BrandProductCard, { BrandProductItem } from "./BrandProductCard";
+import EditorialProductCard, { Product as BrandProductItem } from "@/app/components/ProductsPageComponents/EditorialProductCard";
 import { MdSearchOff, MdRefresh } from "react-icons/md";
 
 interface BrandShowcaseClientProps {
@@ -189,7 +189,7 @@ export default function BrandShowcaseClient({
             {products.length > 0 && (
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
                     {products.map((product) => (
-                        <BrandProductCard 
+                        <EditorialProductCard 
                             key={product.id} 
                             product={product} 
                         />
