@@ -5,7 +5,6 @@ import { useLanguage } from "@/app/context/LanguageContext";
 import BrandMasthead from "./BrandMasthead";
 import BrandCatalogToolbar, { CategoryItem } from "./BrandCatalogToolbar";
 import BrandProductCard, { BrandProductItem } from "./BrandProductCard";
-import BrandWholesaleInquiry from "./BrandWholesaleInquiry";
 import { MdSearchOff, MdRefresh } from "react-icons/md";
 
 interface BrandShowcaseClientProps {
@@ -207,9 +206,6 @@ export default function BrandShowcaseClient({
                     </div>
                 </div>
             )}
-
-            {/* Wholesale Pallet & Commercial Supply Callout */}
-            <BrandWholesaleInquiry brandName={brand.name} />
         </main>
     );
 }
