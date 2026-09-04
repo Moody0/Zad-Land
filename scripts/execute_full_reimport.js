@@ -25,6 +25,12 @@ function parsePrice(rawVal) {
         const num = parseFloat(cleaned.replace(/[^0-9.]/g, ''));
         return !isNaN(num) ? num : 0;
     }
+    if (typeof rawVal === 'number' && rawVal >= 44000 && rawVal <= 48000) {
+        const date = new Date(Math.round((rawVal - 25569) * 86400 * 1000));
+        const month = date.getUTCMonth() + 1;
+        const day = date.getUTCDate();
+        return parseFloat(`${month}.${day}`);
+    }
     if (typeof rawVal === 'number' && !isNaN(rawVal)) {
         return Number(rawVal);
     }
