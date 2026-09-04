@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
-import ProductsClient from "../../products/ProductsClient";
+import BrandShowcaseClient from "@/app/components/BrandPageComponents/BrandShowcaseClient";
 import { getBrandBySlug, getCatalogInitialData } from "@/lib/catalog";
 
 export const revalidate = 60; // Revalidate cache every 60 seconds
@@ -63,12 +63,12 @@ export default async function BrandPage(
     const { categories, products, totalProducts } = await getCatalogInitialData(undefined, brand.id);
 
     return (
-        <ProductsClient
+        <BrandShowcaseClient
             key={brand.slug}
-            initialCategories={categories}
+            brand={brand}
+            categories={categories}
             initialProducts={products}
             initialTotal={totalProducts}
-            activeBrand={brand}
         />
     );
 }

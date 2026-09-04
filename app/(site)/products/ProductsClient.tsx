@@ -204,9 +204,11 @@ const ProductsClient = ({
                 {/* Title & Sort Bar */}
                 <div className="flex items-center justify-between gap-4 mb-6 pb-3 border-b border-gray-100 dark:border-white/10">
                     <div>
-                        <h1 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
-                            {getHeadingTitle()}
-                        </h1>
+                        {!(activeBrand && !activeCategory && !activeMainCategory) && (
+                            <h1 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white tracking-tight">
+                                {getHeadingTitle()}
+                            </h1>
+                        )}
                         <p className="text-xs text-gray-500 dark:text-gray-400 font-medium mt-0.5">
                             {products.length} / {totalProducts} {t("products.results")}
                         </p>

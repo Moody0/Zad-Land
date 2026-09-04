@@ -35,6 +35,12 @@ export interface CatalogBrand {
     image: string | null;
     group: "MAIN" | "DIFFERENT";
     isFeatured?: boolean;
+    mainCategory?: {
+        id: string;
+        name: string;
+        slug: string;
+        description: string | null;
+    } | null;
 }
 
 const catalogCategorySelect = {
@@ -64,6 +70,14 @@ const catalogBrandSelect = {
     image: true,
     group: true,
     isFeatured: true,
+    mainCategory: {
+        select: {
+            id: true,
+            name: true,
+            slug: true,
+            description: true,
+        },
+    },
 };
 
 export const getCatalogBrands = cache(
@@ -266,6 +280,13 @@ export async function getCatalogInitialData(categoryId?: string, brandId?: strin
                         group: true,
                     },
                 },
+                category: {
+                    select: {
+                        id: true,
+                        name: true,
+                        slug: true,
+                    },
+                },
             },
         }),
         prisma.product.count({
@@ -294,6 +315,11 @@ export async function getCatalogInitialData(categoryId?: string, brandId?: strin
             mainCategoryId: product.mainCategoryId,
             stock: product.stock,
             isTrending: product.isTrending,
+            category: product.category ? {
+                id: product.category.id,
+                name: product.category.name,
+                slug: product.category.slug,
+            } : null,
             brand: product.brand ? {
                 id: product.brand.id,
                 name: product.brand.name,
