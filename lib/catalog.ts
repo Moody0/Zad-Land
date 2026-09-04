@@ -233,102 +233,111 @@ export const getCatalogMainCategories = cache(
     )
 );
 
-export async function getCatalogInitialData(categoryId?: string, brandId?: string, mainCategoryId?: string) {
-    const whereClause: {
-        stock: { gt: number };
-        categoryId?: string;
-        brandId?: string;
-        mainCategoryId?: string;
-        brand: { isActive: boolean };
-    } = {
-        stock: { gt: 0 },
-        brand: { isActive: true },
-    };
+export const getCatalogInitialData = cache(
+    async (categoryId?: string, brandId?: string, mainCategoryId?: string) => {
+        const cacheKey = `catalog-initial-${categoryId || 'none'}-${brandId || 'none'}-${mainCategoryId || 'none'}`;
+        return unstable_cache(
+            async () => {
+                const whereClause: {
+                    stock: { gt: number };
+                    categoryId?: string;
+                    brandId?: string;
+                    mainCategoryId?: string;
+                    brand: { isActive: boolean };
+                } = {
+                    stock: { gt: 0 },
+                    brand: { isActive: true },
+                };
 
-    if (categoryId) {
-        whereClause.categoryId = categoryId;
-    }
+                if (categoryId) {
+                    whereClause.categoryId = categoryId;
+                }
 
-    if (brandId) {
-        whereClause.brandId = brandId;
-    }
+                if (brandId) {
+                    whereClause.brandId = brandId;
+                }
 
-    if (mainCategoryId) {
-        whereClause.mainCategoryId = mainCategoryId;
-    }
+                if (mainCategoryId) {
+                    whereClause.mainCategoryId = mainCategoryId;
+                }
 
-    const categoriesPromise = brandId 
-        ? getCatalogCategories(brandId) 
-        : getCatalogMainCategories();
+                const categoriesPromise = brandId 
+                    ? getCatalogCategories(brandId) 
+                    : getCatalogMainCategories();
 
-    const [categories, products, totalProducts] = await Promise.all([
-        categoriesPromise,
-        prisma.product.findMany({
-            where: whereClause,
-            take: 12,
-            orderBy: {
-                createdAt: "desc",
+                const [categories, products, totalProducts] = await Promise.all([
+                    categoriesPromise,
+                    prisma.product.findMany({
+                        where: whereClause,
+                        take: 12,
+                        orderBy: {
+                            createdAt: "desc",
+                        },
+                        include: {
+                            brand: {
+                                select: {
+                                    id: true,
+                                    name: true,
+                                    slug: true,
+                                    description: true,
+                                    image: true,
+                                    group: true,
+                                },
+                            },
+                            category: {
+                                select: {
+                                    id: true,
+                                    name: true,
+                                    slug: true,
+                                },
+                            },
+                        },
+                    }),
+                    prisma.product.count({
+                        where: whereClause,
+                    }),
+                ]);
+
+                return {
+                    categories,
+                    products: products.map((product) => ({
+                        id: product.id,
+                        slug: product.slug,
+                        name: product.name,
+                        nameAr: product.nameAr,
+                        nameEn: product.nameEn,
+                        description: product.description,
+                        descriptionAr: product.descriptionAr,
+                        descriptionEn: product.descriptionEn,
+                        price: product.price.toString(),
+                        discountPrice: product.discountPrice ? product.discountPrice.toString() : null,
+                        discountType: product.discountType,
+                        discountValue: product.discountValue ? product.discountValue.toString() : null,
+                        images: product.images,
+                        brandId: product.brandId,
+                        categoryId: product.categoryId,
+                        mainCategoryId: product.mainCategoryId,
+                        stock: product.stock,
+                        isTrending: product.isTrending,
+                        category: product.category ? {
+                            id: product.category.id,
+                            name: product.category.name,
+                            slug: product.category.slug,
+                        } : null,
+                        brand: product.brand ? {
+                            id: product.brand.id,
+                            name: product.brand.name,
+                            slug: product.brand.slug,
+                            description: product.brand.description,
+                            image: product.brand.image,
+                            group: product.brand.group,
+                        } : null,
+                    })),
+                    totalProducts,
+                };
             },
-            include: {
-                brand: {
-                    select: {
-                        id: true,
-                        name: true,
-                        slug: true,
-                        description: true,
-                        image: true,
-                        group: true,
-                    },
-                },
-                category: {
-                    select: {
-                        id: true,
-                        name: true,
-                        slug: true,
-                    },
-                },
-            },
-        }),
-        prisma.product.count({
-            where: whereClause,
-        }),
-    ]);
-
-    return {
-        categories,
-        products: products.map((product) => ({
-            id: product.id,
-            slug: product.slug,
-            name: product.name,
-            nameAr: product.nameAr,
-            nameEn: product.nameEn,
-            description: product.description,
-            descriptionAr: product.descriptionAr,
-            descriptionEn: product.descriptionEn,
-            price: product.price.toString(),
-            discountPrice: product.discountPrice ? product.discountPrice.toString() : null,
-            discountType: product.discountType,
-            discountValue: product.discountValue ? product.discountValue.toString() : null,
-            images: product.images,
-            brandId: product.brandId,
-            categoryId: product.categoryId,
-            mainCategoryId: product.mainCategoryId,
-            stock: product.stock,
-            isTrending: product.isTrending,
-            category: product.category ? {
-                id: product.category.id,
-                name: product.category.name,
-                slug: product.category.slug,
-            } : null,
-            brand: product.brand ? {
-                id: product.brand.id,
-                name: product.brand.name,
-                slug: product.brand.slug,
-                description: product.brand.description,
-                image: product.brand.image,
-                group: product.brand.group,
-            } : null,
-        })),
-        totalProducts,
-    };
-}
+            [cacheKey],
+            { tags: ["catalog", "products"], revalidate: 60 }
+        )();
+    }
+);

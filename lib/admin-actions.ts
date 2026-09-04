@@ -6,6 +6,17 @@ import { BrandGroup, OrderStatus } from "@prisma/client";
 import { generateUniqueCategorySlug } from "./category-utils";
 import { generateUniqueBrandSlug, getZadLandBrandId } from "./brand-utils";
 
+function revalidateCatalogCache() {
+    try {
+        revalidatePath('/products');
+        revalidatePath('/categories');
+        revalidatePath('/brands');
+        revalidatePath('/');
+    } catch {
+        // Safe fallback
+    }
+}
+
 interface ProductInput {
     name: string;
     nameAr?: string | null;
@@ -1081,6 +1092,7 @@ export async function createProduct(data: ProductInput) {
         revalidatePath('/admin/products');
         revalidatePath('/products');
         revalidatePath('/');
+        revalidateCatalogCache();
 
         return {
             success: true,
@@ -1155,6 +1167,7 @@ export async function updateProduct(id: string, data: ProductInput & { isTrendin
         revalidatePath('/admin/products');
         revalidatePath('/products');
         revalidatePath('/');
+        revalidateCatalogCache();
 
         return {
             success: true,
@@ -1196,6 +1209,9 @@ export async function deleteProduct(id: string) {
         });
 
         revalidatePath('/admin/products');
+        revalidatePath('/products');
+        revalidatePath('/');
+        revalidateCatalogCache();
         return { success: true };
     } catch (error: unknown) {
         console.error("Failed to delete product:", error);

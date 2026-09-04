@@ -109,6 +109,10 @@ model Product {
   @@index([categoryId, createdAt])
   @@index([brandId, createdAt])
   @@index([mainCategoryId, createdAt])
+  @@index([price])
+  @@index([stock])
+  @@index([categoryId, price])
+  @@index([brandId, price])
 }
 
 model Brand {

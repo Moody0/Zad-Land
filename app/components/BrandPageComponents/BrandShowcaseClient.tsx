@@ -78,6 +78,10 @@ export default function BrandShowcaseClient({
             if (sort === "price_asc") params.set("sort", "price_asc");
             else if (sort === "price_desc") params.set("sort", "price_desc");
             else if (sort === "newest") params.set("sort", "newest");
+            if (!reset && targetPage > 1) {
+                params.set("knownTotal", totalProducts.toString());
+                params.set("skipCount", "true");
+            }
 
             const res = await fetch(`/api/products?${params.toString()}`);
             if (res.ok) {
@@ -87,14 +91,16 @@ export default function BrandShowcaseClient({
                 } else {
                     setProducts((prev) => [...prev, ...data.products]);
                 }
-                setTotalProducts(data.pagination.total);
+                if (data.pagination?.total !== undefined) {
+                    setTotalProducts(data.pagination.total);
+                }
             }
         } catch (err) {
             console.error("Failed to load brand products", err);
         } finally {
             setLoading(false);
         }
-    }, [brand.id, activeCategoryId, debouncedSearch, sort]);
+    }, [brand.id, activeCategoryId, debouncedSearch, sort, totalProducts]);
 
     // React to filter, sort, or search changes
     useEffect(() => {
@@ -124,7 +130,7 @@ export default function BrandShowcaseClient({
                     setPage((p) => p + 1);
                 }
             },
-            { rootMargin: "300px" }
+            { rootMargin: "1000px" } // Early trigger 1000px before end
         );
 
         const current = observerRef.current;

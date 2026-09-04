@@ -311,6 +311,7 @@ const Header = ({ initialCategories = [], initialNavData = [], dir }: HeaderProp
                                         >
                                             <Link
                                                 href={`/department/${mc.slug}`}
+                                                prefetch={true}
                                                 className={`text-[14px] xl:text-[15px] font-medium relative flex items-center gap-1 transition-colors whitespace-nowrap py-1 ${
                                                     activeMegaMenu === mc.slug
                                                         ? 'text-[#B8860B] dark:text-[#E5B54A]'

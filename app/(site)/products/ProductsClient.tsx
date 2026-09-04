@@ -90,7 +90,8 @@ const ProductsClient = ({
             else if (sort === "price_desc") sortQuery = "&sort=price_desc";
             else if (sort === "newest") sortQuery = "&sort=newest";
 
-            const response = await fetch(`/api/products?page=${currentPage}&limit=12${categoryQuery}${brandQuery}${mainCategoryQuery}${sortQuery}`);
+            const countParams = (!reset && currentPage > 1) ? `&knownTotal=${totalProducts}&skipCount=true` : "";
+            const response = await fetch(`/api/products?page=${currentPage}&limit=12${categoryQuery}${brandQuery}${mainCategoryQuery}${sortQuery}${countParams}`);
 
             if (response.ok) {
                 const data = await response.json();
@@ -99,7 +100,9 @@ const ProductsClient = ({
                 } else {
                     setProducts((previousProducts) => [...previousProducts, ...data.products]);
                 }
-                setTotalProducts(data.pagination.total);
+                if (data.pagination?.total !== undefined) {
+                    setTotalProducts(data.pagination.total);
+                }
             }
         } catch (error) {
             console.error("Failed to fetch products", error);
@@ -140,7 +143,7 @@ const ProductsClient = ({
                     setPage((prevPage) => prevPage + 1);
                 }
             },
-            { rootMargin: "350px" } // Automatically trigger 350px before reaching the end
+            { rootMargin: "1000px" } // Early trigger 1000px before reaching the end for seamless loading
         );
 
         const currentRef = observerRef.current;

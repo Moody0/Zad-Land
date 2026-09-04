@@ -1,8 +1,16 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
+import { unstable_cache } from "next/cache";
 
 export const dynamic = "force-dynamic";
+
+const getCachedProductCount = (where: Prisma.ProductWhereInput, key: string) =>
+    unstable_cache(
+        async () => prisma.product.count({ where }),
+        [`product-count-${key}`],
+        { tags: ["catalog", "products"], revalidate: 120 }
+    )();
 
 export async function GET(request: Request) {
     try {
@@ -15,6 +23,9 @@ export async function GET(request: Request) {
         const brandIdsParam = searchParams.get("brandIds");
         const mainCategoryIdParam = searchParams.get("mainCategoryId");
         const search = searchParams.get("search");
+        const skipCount = searchParams.get("skipCount") === "true";
+        const knownTotalParam = searchParams.get("knownTotal");
+        const knownTotal = knownTotalParam !== null ? parseInt(knownTotalParam) : undefined;
 
         const skip = (page - 1) * limit;
 
@@ -61,6 +72,12 @@ export async function GET(request: Request) {
             orderBy = { createdAt: "desc" };
         }
 
+        const countKey = `${categoryIdsParam || 'all'}_${brandIdsParam || 'all'}_${mainCategoryIdParam || 'all'}_${search || 'none'}`;
+
+        const totalPromise = (skipCount || (page > 1 && knownTotal !== undefined))
+            ? Promise.resolve(knownTotal ?? 0)
+            : getCachedProductCount(where, countKey);
+
         const [products, total] = await Promise.all([
             prisma.product.findMany({
                 where,
@@ -103,7 +120,7 @@ export async function GET(request: Request) {
                     }
                 }
             }),
-            prisma.product.count({ where }),
+            totalPromise,
         ]);
 
         const response = NextResponse.json({
@@ -122,8 +139,8 @@ export async function GET(request: Request) {
             },
         });
         
-        // Add cache headers
-        response.headers.set('Cache-Control', 'private, max-age=60, stale-while-revalidate=300');
+        // Add public edge cache headers: 60s fresh at CDN, up to 600s stale while revalidating
+        response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=600');
         return response;
     } catch (error) {
         console.error("Error fetching products:", error);
