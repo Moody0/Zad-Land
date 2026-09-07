@@ -7,7 +7,6 @@ import ResilientImage from '@/app/components/ResilientImage';
 import { useCurrency } from '@/app/context/CurrencyContext';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useCart } from '@/app/context/CartContext';
-import toast from 'react-hot-toast';
 import { MdSearch, MdShoppingBag, MdAdd, MdRemove } from 'react-icons/md';
 
 const QuickViewModal = dynamic(() => import('./QuickViewModal'), { ssr: false });
@@ -90,7 +89,6 @@ const ProductCard = ({ product, badge, showBadge = true }: ProductCardProps) => 
             description: displayDesc || undefined,
             selectedOption: defaultOption,
         });
-        toast.success(language === 'ar' ? `تمت إضافة ${displayName} إلى السلة` : `Added ${displayName} to cart`);
     };
 
     const handleIncrease = (e: React.MouseEvent) => {

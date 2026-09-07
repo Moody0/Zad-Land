@@ -7,7 +7,6 @@ import { useCurrency } from "@/app/context/CurrencyContext";
 import { useCart } from "@/app/context/CartContext";
 import ResilientImage from "@/app/components/ResilientImage";
 import { MdSearch } from "react-icons/md";
-import toast from "react-hot-toast";
 
 interface Brand {
     id: string;
@@ -90,7 +89,6 @@ function MiniProductCard({ product, onClose }: { product: TrendingProduct; onClo
             slug: product.slug,
             quantity: 1,
         });
-        toast.success(language === "ar" ? `تمت إضافة ${displayName} إلى السلة` : `Added ${displayName} to cart`);
     };
 
     return (

@@ -2,14 +2,13 @@
 
 import React from 'react';
 import { useCart } from '@/app/context/CartContext';
-import { MdAddShoppingCart, MdAdd } from 'react-icons/md';
-import toast from 'react-hot-toast';
+import { MdAdd, MdAddShoppingCart } from 'react-icons/md';
 
 interface Product {
     id: string;
-    slug: string;
     name: string;
-    description: string | null;
+    slug: string;
+    description?: string | null;
     price: string | number;
     discountPrice?: string | number | null;
     images: string;
@@ -38,8 +37,6 @@ const AddToCartButton = ({ product, label, language, variant = 'desktop' }: AddT
             quantity: 1,
             description: product.description || undefined
         });
-
-        toast.success(language === 'ar' ? `تمت إضافة ${product.name} إلى السلة` : `Added ${product.name} to cart`);
     };
 
     if (variant === 'mobile') {

@@ -5,7 +5,6 @@ import { useCart } from "@/app/context/CartContext";
 import { useLanguage } from "@/app/context/LanguageContext";
 import { MdRemove, MdAdd, MdShoppingBag } from "react-icons/md";
 import { useRouter } from "next/navigation";
-import toast from 'react-hot-toast';
 
 interface ProductActionsProps {
     product: {
@@ -64,7 +63,6 @@ const ProductActions = ({ product, stock }: ProductActionsProps) => {
             description: displayDesc || undefined,
             selectedOption: selectedOption || undefined,
         });
-        toast.success(language === 'ar' ? 'تمت إضافة المنتج إلى السلة' : 'Added to cart');
     };
 
     const handleBuyNow = () => {

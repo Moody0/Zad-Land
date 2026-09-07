@@ -6,7 +6,6 @@ import ResilientImage from '@/app/components/ResilientImage';
 import { useCurrency } from '@/app/context/CurrencyContext';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useCart } from '@/app/context/CartContext';
-import toast from 'react-hot-toast';
 import { MdClose } from 'react-icons/md';
 
 interface Product {
@@ -71,7 +70,6 @@ const QuickViewModal = ({ product, isOpen, onClose }: QuickViewModalProps) => {
             description: displayDesc || undefined,
             selectedOption: selectedOption || undefined,
         });
-        toast.success(language === 'ar' ? `تمت إضافة ${displayName} إلى السلة` : `Added ${displayName} to cart`);
         onClose();
     };
 
