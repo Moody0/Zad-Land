@@ -93,6 +93,7 @@ const ResilientImageInner = ({
             )}
 
             <Image
+                key={safeSrc}
                 {...imgProps}
                 alt={alt || ""}
                 src={safeSrc}

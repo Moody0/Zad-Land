@@ -1,3 +1,7 @@
+import rawImageMap from "./image-map.json";
+
+const imageMap: Record<string, string> = rawImageMap as Record<string, string>;
+
 export const IMAGE_PLACEHOLDER_SRC = "/placeholder.svg";
 
 export const isValidImageSrc = (url: string | null | undefined): boolean => {
@@ -45,8 +49,37 @@ const cleanUrl = (url: string): string => {
 };
 
 /**
- * Returns a safe image URL, proxying remote images (e.g. i.postimg.cc, Shopify CDN)
- * through /api/image-proxy to bypass sanctions and regional blocks (e.g., Syria).
+ * Resolves a remote image URL to its local pre-optimized WebP asset on the server/CDN.
+ * This guarantees images load in Syria and other regions where remote hosts (e.g. postimg.cc) are blocked.
+ */
+export const resolveLocalImage = (url: string | null | undefined): string | null => {
+    if (!url || typeof url !== 'string') return null;
+    const trimmed = cleanUrl(url);
+    if (!trimmed) return null;
+
+    if (trimmed.startsWith('/') || trimmed.startsWith('data:')) {
+        return trimmed;
+    }
+
+    if (imageMap[trimmed]) {
+        return imageMap[trimmed];
+    }
+
+    try {
+        const decoded = decodeURI(trimmed);
+        if (imageMap[decoded]) return imageMap[decoded];
+        const encoded = encodeURI(trimmed);
+        if (imageMap[encoded]) return imageMap[encoded];
+    } catch {
+        // ignore
+    }
+
+    return null;
+};
+
+/**
+ * Returns a safe image URL. Prioritizes local pre-optimized WebP assets,
+ * falling back to /api/image-proxy for unmapped remote images.
  */
 export const getSafeImageUrl = (url: string | null | undefined): string => {
     if (!url || !isValidImageSrc(url)) return IMAGE_PLACEHOLDER_SRC;
@@ -56,6 +89,12 @@ export const getSafeImageUrl = (url: string | null | undefined): string => {
     // Local paths and data URIs are already on the domain
     if (trimmedUrl.startsWith('/') || trimmedUrl.startsWith('data:')) {
         return trimmedUrl;
+    }
+
+    // Check pre-optimized local asset map
+    const localMatch = resolveLocalImage(trimmedUrl);
+    if (localMatch) {
+        return localMatch;
     }
 
     // Remote images: route through /api/image-proxy to guarantee delivery across all regions
@@ -77,13 +116,16 @@ export const parseImageList = (images: string | null | undefined): string[] => {
         .filter(isValidImageSrc);
 };
 
-export const getPrimaryImage = (images: string | null | undefined): string =>
-    parseImageList(images)[0] || IMAGE_PLACEHOLDER_SRC;
+export const getPrimaryImage = (images: string | null | undefined): string => {
+    const first = parseImageList(images)[0];
+    if (!first) return IMAGE_PLACEHOLDER_SRC;
+    return getSafeImageUrl(first);
+};
 
 /**
  * Generates an ordered list of fallback candidates:
- * 1. Proxied URL via Zad Land's server (guaranteed to load in Syria, Egypt, etc.)
- * 2. Direct remote URL (in case proxy has issues)
+ * 1. Local pre-optimized WebP asset (zero-latency, instant load, works 100% in Syria)
+ * 2. Proxied URL via Zad Land's server
  * 3. Fallback placeholder SVG
  */
 export const getImageSourceCandidates = (
@@ -100,9 +142,15 @@ export const getImageSourceCandidates = (
         return [fallbackSrc];
     }
 
-    // If local or data URI, direct load is optimal
+    // If already local or data URI, direct load is optimal
     if (trimmedUrl.startsWith('/') || trimmedUrl.startsWith('data:')) {
         return [trimmedUrl, fallbackSrc];
+    }
+
+    // Check if we have a pre-optimized local asset
+    const localMatch = resolveLocalImage(trimmedUrl);
+    if (localMatch) {
+        return [localMatch, getProxyImageUrl(trimmedUrl), fallbackSrc];
     }
 
     const proxied = getProxyImageUrl(trimmedUrl);

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { resolveLocalImage } from '@/lib/image-utils';
 
 export const dynamic = 'force-dynamic';
 
@@ -17,15 +18,26 @@ export async function GET(req: NextRequest) {
         return new NextResponse('Invalid image URL', { status: 400 });
     }
 
+    // 1. Instant local asset redirect if we have a pre-optimized WebP on disk
+    const localMatch = resolveLocalImage(imageUrl);
+    if (localMatch) {
+        return NextResponse.redirect(new URL(localMatch, req.url), 307);
+    }
+
     try {
         const parsedUrl = new URL(imageUrl);
         if (parsedUrl.protocol !== 'http:' && parsedUrl.protocol !== 'https:') {
             return new NextResponse('Invalid protocol', { status: 400 });
         }
 
+        const referer = parsedUrl.hostname.includes('postimg') 
+            ? 'https://postimages.org/' 
+            : `${parsedUrl.protocol}//${parsedUrl.hostname}/`;
+
         const response = await fetch(imageUrl, {
             headers: {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+                'Referer': referer,
                 'Accept': 'image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8',
             },
             signal: AbortSignal.timeout(15000),
