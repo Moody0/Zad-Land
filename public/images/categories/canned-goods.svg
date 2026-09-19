@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 280" width="100%" height="100%">
+  <defs>
+    <linearGradient id="canBg1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFF3D6"/>
+      <stop offset="100%" stop-color="#F3E5BE"/>
+    </linearGradient>
+    <linearGradient id="canGold" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#E5B54A"/>
+      <stop offset="50%" stop-color="#FCD34D"/>
+      <stop offset="100%" stop-color="#B8860B"/>
+    </linearGradient>
+    <linearGradient id="canRed" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#DC2626"/>
+      <stop offset="100%" stop-color="#991B1B"/>
+    </linearGradient>
+    <linearGradient id="canBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E40AF"/>
+      <stop offset="100%" stop-color="#072835"/>
+    </linearGradient>
+    <filter id="canShadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+
+  <!-- Background Glow -->
+  <ellipse cx="200" cy="240" rx="140" ry="24" fill="#000000" opacity="0.08"/>
+
+  <g filter="url(#canShadow)">
+    <!-- Big Yellow Center Can -->
+    <rect x="155" y="55" width="90" height="150" rx="14" fill="url(#canGold)"/>
+    <ellipse cx="200" cy="55" rx="45" ry="14" fill="#FEF08A"/>
+    <ellipse cx="200" cy="55" rx="38" ry="10" fill="#EAB308"/>
+    <!-- Yellow Can Label -->
+    <rect x="155" y="85" width="90" height="90" fill="#CA8A04"/>
+    <rect x="163" y="105" width="74" height="48" rx="6" fill="#FFFFFF" opacity="0.95"/>
+    <path d="M180 125 Q200 112 220 125" stroke="#B8860B" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <circle cx="200" cy="133" r="5" fill="#DC2626"/>
+
+    <!-- Left Small Red Tomato Can -->
+    <rect x="85" y="110" width="70" height="95" rx="10" fill="url(#canRed)"/>
+    <ellipse cx="120" cy="110" rx="35" ry="10" fill="#FCA5A5"/>
+    <ellipse cx="120" cy="110" rx="28" ry="7" fill="#DC2626"/>
+    <rect x="85" y="130" width="70" height="55" fill="#B91C1C"/>
+    <circle cx="120" cy="158" r="14" fill="#FFFFFF"/>
+    <circle cx="120" cy="158" r="10" fill="#EF4444"/>
+    <!-- Green Leaf -->
+    <path d="M120 148 Q125 142 130 148 Q125 154 120 148 Z" fill="#22C55E"/>
+
+    <!-- Right Blue Tuna Can -->
+    <rect x="245" y="125" width="72" height="80" rx="10" fill="url(#canBlue)"/>
+    <ellipse cx="281" cy="125" rx="36" ry="10" fill="#93C5FD"/>
+    <ellipse cx="281" cy="125" rx="29" ry="7" fill="#1D4ED8"/>
+    <rect x="245" y="142" width="72" height="48" fill="#1E3A8A"/>
+    <!-- Fish Silhouette -->
+    <path d="M265 166 Q280 156 295 166 Q288 172 295 178 Q280 176 265 166 Z" fill="#FCD34D"/>
+
+    <!-- Foreground Fresh Tomatoes -->
+    <circle cx="148" cy="215" r="14" fill="#EF4444"/>
+    <circle cx="144" cy="210" r="4" fill="#FCA5A5" opacity="0.6"/>
+    <path d="M148 202 L146 198 L151 200 Z" fill="#15803D"/>
+
+    <circle cx="250" cy="216" r="12" fill="#DC2626"/>
+    <circle cx="247" cy="212" r="3.5" fill="#FCA5A5" opacity="0.6"/>
+  </g>
+</svg>

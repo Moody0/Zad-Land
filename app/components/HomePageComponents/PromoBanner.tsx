@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 interface PromoBannerProps {
     settings?: {
@@ -10,39 +11,46 @@ interface PromoBannerProps {
     language?: 'en' | 'ar';
 }
 
-const PromoBanner = ({ settings, dir = 'rtl' }: PromoBannerProps) => {
-    const isArabic = dir === 'rtl';
-    const bannerLink = settings?.middleBanner1Link || '/products';
+const PromoBanner = ({ settings, dir = 'rtl', language = 'ar' }: PromoBannerProps) => {
+    const isArabic = language === 'ar' || dir === 'rtl';
+    const bannerLink = settings?.middleBanner1Link || '/categories';
 
     return (
-        <section className="container-custom">
-            <div className="relative w-full rounded-2xl overflow-hidden py-5 md:py-0 md:h-[140px] flex items-center px-5 sm:px-8 md:px-12 bg-[#FAF6EC] dark:bg-[#1A1A14] border border-[#B8860B]/30 shadow-xs">
-                {/* Content Container: Text on top, Button below on mobile; side-by-side on desktop */}
-                <div className={`w-full flex flex-col md:flex-row items-center justify-between gap-4 z-10 ${isArabic ? 'md:flex-row' : 'md:flex-row'}`}>
-                    {/* 1. Text Content (First on mobile) */}
-                    <div className={`flex flex-col text-center md:text-start flex-grow ${isArabic ? 'md:text-right' : 'md:text-left'}`}>
-                        <div className="flex items-center justify-center md:justify-start gap-2 mb-1">
-                            <span className="w-2 h-2 rounded-full bg-[#B8860B]"></span>
-                            <span className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-[#876004] dark:text-[#E5B54A]">
-                                {isArabic ? 'عروض التوريد والكميات' : 'Commercial Volume Supply'}
-                            </span>
-                        </div>
-                        <h2 className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-[#072835] dark:text-white leading-snug">
-                            {isArabic ? 'توريد مباشر بأسعار الجملة المعتمدة' : 'Direct Supply from Certified Global Food Importers'}
-                        </h2>
-                    </div>
+        <section className="container-custom px-3 sm:px-4">
+            <Link
+                href={bannerLink}
+                className="group relative block w-full aspect-[492/125] sm:aspect-[2097/650] md:h-[160px] lg:h-[185px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-xs hover:shadow-md transition-all duration-300"
+            >
+                {/* 2097x750 Ultra High-Definition Background Image */}
+                <Image
+                    src="/images/redesign/ad-banner-bg.png"
+                    alt="منتجات عالمية لجودة حياة أفضل"
+                    fill
+                    priority
+                    sizes="(max-width: 768px) 100vw, 1400px"
+                    className="object-cover object-[25%_center] sm:object-center transition-transform duration-700 group-hover:scale-[1.02]"
+                />
 
-                    {/* 2. CTA Button (Below text on mobile) */}
-                    <div className="w-full md:w-auto flex justify-center md:justify-end shrink-0">
-                        <Link
-                            href={bannerLink}
-                            className="w-full md:w-auto text-center px-6 sm:px-8 py-2.5 sm:py-3 bg-[#2E7D32] hover:bg-[#256629] text-white rounded-full font-bold text-xs sm:text-sm md:text-base transition-all active:scale-95 whitespace-nowrap shadow-xs"
-                        >
-                            {isArabic ? 'استعراض عروض التوريد' : 'Explore Supply Deals'}
-                        </Link>
+                {/* Ambient Depth Gradient on mobile to ensure supreme readability */}
+                <div className="absolute inset-0 bg-gradient-to-l rtl:bg-gradient-to-r from-black/40 via-transparent to-transparent pointer-events-none md:hidden" />
+
+                {/* Right Side: Headline, Subtitle & Gold CTA Button */}
+                <div className="absolute inset-y-0 right-0 w-[52%] sm:w-[48%] md:w-[44%] flex flex-col justify-center items-start rtl:items-start text-start rtl:text-right px-3 sm:px-6 md:px-8 z-10">
+                    <h3 className="text-[13px] sm:text-[17px] md:text-2xl lg:text-[28px] font-black text-white leading-tight drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] tracking-tight">
+                        {isArabic ? 'منتجات عالمية' : 'Global Products'}
+                    </h3>
+                    <p className="text-[9.5px] sm:text-[12px] md:text-sm lg:text-base font-bold text-[#E5B54A] leading-tight mt-0.5 sm:mt-1 mb-1.5 sm:mb-3 drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]">
+                        {isArabic ? 'لجودة حياة أفضل' : 'For Better Quality Living'}
+                    </p>
+
+                    <div className="inline-flex items-center gap-1 sm:gap-2 text-[8.5px] sm:text-[11px] md:text-xs lg:text-sm font-extrabold text-white/95 group-hover:text-white transition-colors">
+                        <span>{isArabic ? 'تسوق حسب الفئات' : 'Shop by Categories'}</span>
+                        <span className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 rounded-full bg-[#B8860B] group-hover:bg-[#E5B54A] text-white flex items-center justify-center text-[10px] sm:text-xs transition-colors shadow-xs">
+                            <span className="leading-none">{isArabic ? '‹' : '›'}</span>
+                        </span>
                     </div>
                 </div>
-            </div>
+            </Link>
         </section>
     );
 };

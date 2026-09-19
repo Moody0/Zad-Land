@@ -1,6 +1,8 @@
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
-import ResilientImage from '@/app/components/ResilientImage';
+import Image from 'next/image';
 
 export interface HighlightCard {
     id: string;
@@ -22,68 +24,86 @@ interface CategoryHighlightCardsProps {
     language?: 'en' | 'ar';
 }
 
+interface CategoryCardItem {
+    id: string;
+    slug: string;
+    titleAr: string;
+    titleEn: string;
+    // File paths ready for user to replace with high-resolution assets
+    image: string;
+    link: string;
+}
+
+// 4 Signature categories matching reference design exactly
+const CATEGORIES: CategoryCardItem[] = [
+    {
+        id: 'canned-goods',
+        slug: 'canned-goods',
+        titleAr: 'المعلبات\nوالمواد الغذائية',
+        titleEn: 'Canned Goods\n& Foodstuffs',
+        image: '/images/categories/canned-goods.png',
+        link: '/department/canned-goods',
+    },
+    {
+        id: 'pasta-grains',
+        slug: 'pasta-grains',
+        titleAr: 'الزيوت والأرز\nوالمعكرونة',
+        titleEn: 'Oils, Rice\n& Pasta',
+        image: '/images/categories/pasta-grains.png',
+        link: '/department/pasta-grains',
+    },
+    {
+        id: 'personal-care-hygiene',
+        slug: 'personal-care-hygiene',
+        titleAr: 'المنظفات\nومستلزمات المنزل',
+        titleEn: 'Detergents\n& Home Care',
+        image: '/images/categories/cleaning-supplies.png',
+        link: '/department/personal-care-hygiene',
+    },
+    {
+        id: 'snacks-sweets',
+        slug: 'snacks-sweets',
+        titleAr: 'الوجبات الخفيفة\nوالمكسرات',
+        titleEn: 'Snacks\n& Nuts',
+        image: '/images/categories/snacks-nuts.png',
+        link: '/department/snacks-sweets',
+    },
+];
+
 const CategoryHighlightCards = ({ cards = [], language = 'ar' }: CategoryHighlightCardsProps) => {
-    if (!cards || cards.length === 0) {
-        return null;
-    }
+    const isArabic = language === 'ar';
 
     return (
-        <section className="container-custom">
-            {/* Section Title */}
-            <div className="flex justify-center mb-6 md:mb-8 animate-fadeInUp" style={{ animationDelay: '0.2s' }}>
-                <h2 className="text-xl md:text-2xl lg:text-[28px] font-bold text-[rgb(46,46,46)] dark:text-white tracking-tight">
-                    {language === 'ar' ? 'تسوق حسب الفئة' : 'Shop By Category'}
-                </h2>
-            </div>
-
-            <div className="flex gap-4 md:gap-5 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-4 -mx-4 px-4 md:mx-0 md:px-0 md:overflow-visible">
-                {cards.map((card) => {
-                    const categoryName = language === 'ar' ? card.subheadingAr : card.subheadingEn;
-                    const heroImage = card.heroImage || '/placeholder.svg';
-
+        <section className="container-custom px-2.5 sm:px-3.5 md:px-4 py-1 sm:py-2 md:py-4">
+            {/* 4 Cards Grid - Fits 4-in-a-row matching Reference Screenshot UI */}
+            <div className="grid grid-cols-4 gap-2.5 sm:gap-3 md:gap-5 lg:gap-6 [direction:ltr]">
+                {CATEGORIES.map((cat) => {
+                    const title = isArabic ? cat.titleAr : cat.titleEn;
                     return (
-                        <div
-                            key={card.id || card.slug}
-                            className="flex-none w-[170px] sm:w-[190px] md:flex-1 min-w-0 snap-start"
+                        <Link
+                            key={cat.id}
+                            href={cat.link}
+                            className="group relative flex flex-col w-full aspect-[100/136] sm:aspect-[100/132] md:aspect-[1/1.22] lg:aspect-[1/1.18] md:min-h-[250px] lg:min-h-[300px] xl:min-h-[340px] bg-[#FAF6ED] dark:bg-[#1E1E16] rounded-2xl sm:rounded-[22px] md:rounded-3xl lg:rounded-[32px] overflow-hidden border border-[#B8860B]/20 hover:border-[#B8860B]/60 shadow-[0_4px_16px_rgba(0,0,0,0.06)] hover:shadow-xl transition-all duration-300 hover:-translate-y-1.5 active:scale-98 text-center [direction:rtl]"
                         >
-                            <Link
-                                href={`/department/${card.slug}`}
-                                className="group relative flex flex-col h-full bg-[#FAF9F5] dark:bg-[#1E1E16] rounded-2xl overflow-hidden border border-[#B8860B]/15 hover:border-[#B8860B]/50 transition-all duration-300 hover:shadow-md p-2.5 sm:p-3.5"
-                            >
-                                {/* Image Container (Structured with inner rounded frame) */}
-                                <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-gray-50 dark:bg-zinc-900 border border-gray-100 dark:border-white/5 mb-2.5 flex items-center justify-center">
-                                    <ResilientImage
-                                        src={heroImage}
-                                        alt={categoryName}
-                                        showSkeleton={false}
-                                        sizes="(max-width: 768px) 190px, 300px"
-                                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                                        loading="lazy"
-                                    />
-                                </div>
+                            {/* Top Image: Full-bleed top portion with increased height */}
+                            <div className="relative w-full h-[68%] sm:h-[70%] overflow-hidden rounded-t-2xl sm:rounded-t-[22px] md:rounded-t-3xl lg:rounded-t-[32px] bg-[#FAF6ED] dark:bg-[#1E1E16]">
+                                <Image
+                                    src={cat.image}
+                                    alt={title.replace('\n', ' ')}
+                                    fill
+                                    priority
+                                    sizes="(max-width: 768px) 25vw, 350px"
+                                    className="object-cover object-center transition-transform duration-500 group-hover:scale-105"
+                                />
+                            </div>
 
-                                {/* Text Content */}
-                                <div className="flex flex-col flex-1 justify-between px-1 pb-1">
-                                    <div className="flex items-center justify-between gap-2">
-                                        <div className="flex flex-col min-w-0">
-                                            <h3 className="text-[13px] sm:text-[14px] md:text-[16px] font-bold text-[#072835] dark:text-white leading-tight group-hover:text-[#B8860B] transition-colors truncate">
-                                                {categoryName}
-                                            </h3>
-                                            <p className="text-[10px] md:text-xs text-[#2E7D32] dark:text-[#4ade80] font-semibold mt-0.5">
-                                                {language === 'ar' ? 'تسوق الآن' : 'Shop Now'}
-                                            </p>
-                                        </div>
-
-                                        {/* Outline Icon */}
-                                        <div className="shrink-0 w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white dark:bg-zinc-800 border border-gray-200/80 dark:border-white/10 flex items-center justify-center text-gray-500 dark:text-gray-300 transition-all duration-300 group-hover:border-[#B8860B] group-hover:bg-[#B8860B] group-hover:text-white shadow-2xs">
-                                            <svg className={`w-3 h-3 sm:w-3.5 sm:h-3.5 ${language === 'ar' ? 'rotate-180' : ''}`} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-                                            </svg>
-                                        </div>
-                                    </div>
-                                </div>
-                            </Link>
-                        </div>
+                            {/* Bottom Text: Pure cream background with 2 lines of bold, larger Arabic typography */}
+                            <div className="w-full h-[32%] sm:h-[30%] flex items-center justify-center px-1 sm:px-2 md:px-4 pb-1 sm:pb-2 text-center bg-[#FAF6ED] dark:bg-[#1E1E16]">
+                                <h3 className="text-[11.5px] sm:text-[13.5px] md:text-base lg:text-lg xl:text-xl font-black text-[#072835] dark:text-gray-100 text-center leading-[1.25] sm:leading-[1.3] md:leading-[1.35] whitespace-pre-line group-hover:text-[#B8860B] transition-colors">
+                                    {title}
+                                </h3>
+                            </div>
+                        </Link>
                     );
                 })}
             </div>

@@ -2,6 +2,7 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import FooterInfoBar from "../components/FooterInfoBar";
 import AnnouncementBar from "../components/AnnouncementBar";
+import BottomNav from "../components/BottomNav";
 import { getI18n } from "@/lib/i18n";
 import { getCatalogCategories } from "@/lib/catalog";
 import { getNavigationData } from "@/lib/navigation";
@@ -45,12 +46,15 @@ export default async function SiteLayout({
             />
 
             {/* Main Content */}
-            <main className="flex-1">
+            <main className="flex-1 pb-16 md:pb-0">
                 {children}
             </main>
 
             {/* Footer */}
             <Footer t={t} language={language} />
+
+            {/* Mobile Bottom Navigation Bar */}
+            <BottomNav />
         </div>
     );
 }

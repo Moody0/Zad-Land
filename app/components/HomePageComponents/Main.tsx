@@ -5,7 +5,6 @@ import BrandsRail from './BrandsRail';
 
 import FeaturedCollection from './FeaturedCollection';
 import PromoBanner from './PromoBanner';
-import CountdownOffer from './CountdownOffer';
 import TrendingWeekly from './TrendingWeekly';
 import FeaturedCategoriesGrid from './FeaturedCategoriesGrid';
 import CategoryHighlightCards from './CategoryHighlightCards';
@@ -98,30 +97,23 @@ const Main = async ({
     const { dir, language } = await getI18n();
 
     return (
-        <main className="w-full flex flex-col gap-y-[40px] md:gap-y-[80px] pb-12">
-            {/* Group Hero Carousel and Brands Rail close to each other */}
-            <div className="flex flex-col gap-y-0">
-                {/* 1. Hero Carousel Section */}
-                <HeroCarousel banners={banners} />
+        <main className="w-full flex flex-col gap-y-6 md:gap-y-[80px] pb-12">
+            {/* Redesigned Showcase Zone matching Target Design */}
+            <div className="flex flex-col gap-y-3 sm:gap-y-4 md:gap-y-6">
+                {/* 1 & 2. Hero Carousel + Overlapping Brands Rail */}
+                <div className="relative w-full">
+                    <HeroCarousel banners={banners} />
+                    <BrandsRail brands={railBrands} />
+                </div>
 
-                {/* 2. Brands Rail (Dynamic from Database) */}
-                <BrandsRail brands={railBrands} />
+                {/* 3. Global Products Banner */}
+                <PromoBanner settings={settings} dir={dir} language={language} />
+
+                {/* 4. Category Highlight Cards */}
+                <CategoryHighlightCards cards={highlightCards} language={language} />
             </div>
 
-            {/* 3. First Ad - Placed above CategoryHighlightCards */}
-            <PromoBanner settings={settings} dir={dir} language={language} />
-
-            {/* 4. Main Categories (Dynamic 4 highlight cards from Database) */}
-            <ScrollReveal>
-                <CategoryHighlightCards cards={highlightCards} language={language} />
-            </ScrollReveal>
-
-            {/* 5. Countdown Offer Section - Placed directly below CategoryHighlightCards */}
-            <ScrollReveal>
-                <CountdownOffer />
-            </ScrollReveal>
-
-            {/* 6. الجديد والمحبوب (New Arrivals & Best Sellers) */}
+            {/* 5. الجديد والمحبوب (New Arrivals & Best Sellers) */}
             <ScrollReveal>
                 <FeaturedCollection
                     newArrivals={featuredNewArrivals}

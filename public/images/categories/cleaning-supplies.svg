@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 280" width="100%" height="100%">
+  <defs>
+    <linearGradient id="cleanBlue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38BDF8"/>
+      <stop offset="50%" stop-color="#0284C7"/>
+      <stop offset="100%" stop-color="#0369A1"/>
+    </linearGradient>
+    <linearGradient id="cleanWhite" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="60%" stop-color="#F1F5F9"/>
+      <stop offset="100%" stop-color="#CBD5E1"/>
+    </linearGradient>
+    <linearGradient id="cleanRed" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#EF4444"/>
+      <stop offset="100%" stop-color="#B91C1C"/>
+    </linearGradient>
+    <linearGradient id="cleanTeal" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2DD4BF"/>
+      <stop offset="100%" stop-color="#0F766E"/>
+    </linearGradient>
+    <filter id="cleanShadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+
+  <!-- Ground Shadow -->
+  <ellipse cx="200" cy="242" rx="140" ry="24" fill="#000000" opacity="0.08"/>
+
+  <g filter="url(#cleanShadow)">
+    <!-- Big Center Laundry Detergent Jug (White with Handle) -->
+    <path d="M165 95 Q165 75 190 70 L210 70 Q235 75 235 95 L245 150 Q245 220 200 220 Q155 220 155 150 Z" fill="url(#cleanWhite)"/>
+    <!-- Handle Hole in Jug -->
+    <path d="M208 105 Q225 110 225 140 Q225 160 210 165 Q205 130 208 105 Z" fill="#FAF6EC"/>
+    <!-- Red Measurement Cap -->
+    <rect x="188" y="48" width="24" height="24" rx="4" fill="url(#cleanRed)"/>
+    <rect x="185" y="45" width="30" height="6" rx="2" fill="#DC2626"/>
+    <!-- Blue Floral Wave Label -->
+    <rect x="162" y="130" width="46" height="50" rx="6" fill="#0284C7"/>
+    <circle cx="185" cy="150" r="10" fill="#FFFFFF"/>
+    <circle cx="185" cy="150" r="6" fill="#38BDF8"/>
+    <rect x="170" y="166" width="30" height="3" rx="1.5" fill="#FFFFFF"/>
+
+    <!-- Left Hand-Wash Pump Bottle (Cyan/Blue) -->
+    <rect x="95" y="115" width="60" height="100" rx="18" fill="url(#cleanBlue)"/>
+    <rect x="115" y="98" width="20" height="18" fill="#CBD5E1"/>
+    <!-- Pump Mechanism -->
+    <path d="M125 98 L125 78 L105 78 Q98 78 100 85 L108 85" stroke="#FFFFFF" stroke-width="6" fill="none" stroke-linecap="round"/>
+    <rect x="100" y="140" width="50" height="45" rx="6" fill="#FFFFFF" opacity="0.95"/>
+    <!-- Droplet on label -->
+    <path d="M125 150 C125 150 118 160 118 165 C118 169 121 172 125 172 C129 172 132 169 132 165 C132 160 125 150 125 150 Z" fill="#0284C7"/>
+
+    <!-- Right Fabric Softener Bottle (Blue/Red Top) -->
+    <rect x="245" y="110" width="60" height="105" rx="14" fill="url(#cleanWhite)"/>
+    <!-- Blue Cap -->
+    <rect x="260" y="78" width="30" height="32" rx="6" fill="#1D4ED8"/>
+    <rect x="252" y="135" width="46" height="52" rx="4" fill="#60A5FA"/>
+    <circle cx="275" cy="155" r="8" fill="#FFFFFF"/>
+
+    <!-- Sparkle Stars -->
+    <path d="M105 60 Q105 70 115 70 Q105 70 105 80 Q105 70 95 70 Q105 70 105 60 Z" fill="#FACC15"/>
+    <path d="M295 65 Q295 72 302 72 Q295 72 295 79 Q295 72 288 72 Q295 72 295 65 Z" fill="#38BDF8"/>
+    <circle cx="160" cy="55" r="4" fill="#67E8F9" opacity="0.8"/>
+    <circle cx="150" cy="45" r="2.5" fill="#38BDF8" opacity="0.6"/>
+  </g>
+</svg>

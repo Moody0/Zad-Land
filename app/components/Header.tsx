@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import React, { useRef, useState, useEffect } from 'react';
-import { MdOutlineShoppingBag, MdMenu, MdClose, MdKeyboardArrowDown } from 'react-icons/md';
+import { MdOutlineShoppingBag, MdMenu, MdClose, MdKeyboardArrowDown, MdSearch } from 'react-icons/md';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { useCart } from '@/app/context/CartContext';
 import HeaderSearch from './HeaderSearch';
@@ -158,7 +158,7 @@ const Header = ({ initialCategories = [], initialNavData = [], dir }: HeaderProp
     return (
         <>
             {/* Spacer to prevent layout shift when header collapses */}
-            <div className="w-full h-[148px] sm:h-[144px] lg:h-[158px]" aria-hidden="true" />
+            <div className={`w-full transition-all duration-300 ${isMobileSearchOpen ? 'h-[116px]' : 'h-[54px] sm:h-[60px]'} lg:h-[158px]`} aria-hidden="true" />
 
             <header className="fixed top-0 left-0 z-50 w-full bg-white dark:bg-zinc-900 border-b border-gray-100 dark:border-white/10 transition-all duration-300">
                 {/* Disappearing Top Bar */}
@@ -166,7 +166,7 @@ const Header = ({ initialCategories = [], initialNavData = [], dir }: HeaderProp
                 
                 <div className="container-custom">
                     {/* Main Header Row */}
-                    <div className="py-3 lg:py-[11px] h-auto lg:h-[70px] flex flex-col lg:flex-row lg:items-center relative">
+                    <div className="py-2 lg:py-[11px] h-auto lg:h-[70px] flex flex-col lg:flex-row lg:items-center relative">
                         {/* Desktop Version (lg and up) */}
                         <div className="hidden lg:flex items-center justify-between gap-6 w-full">
                             {/* Left: Logo and Menu Toggle Group */}
@@ -222,56 +222,64 @@ const Header = ({ initialCategories = [], initialNavData = [], dir }: HeaderProp
                             </div>
                         </div>
 
-                        {/* Mobile & Tablet Version (below lg) */}
-                        <div className="flex lg:hidden flex-col gap-3">
-                            {/* Top Row: Menu, Logo, Controls, Cart Drawer Trigger */}
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-3">
-                                    <button
-                                        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                                        className="p-1.5 text-zinc-900 dark:text-white rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors"
-                                        aria-label="Toggle Menu"
-                                    >
-                                        {isMobileMenuOpen ? (
-                                            <MdClose className="text-2xl" />
-                                        ) : (
-                                            <MdMenu className="text-2xl" />
-                                        )}
-                                    </button>
-                                    <Link href="/" className="flex items-center group">
-                                        <Image
-                                            src="/logo.png"
-                                            alt="ZAD LAND - زاد لاند"
-                                            width={140}
-                                            height={50}
-                                            priority
-                                            className="h-[36px] sm:h-[40px] w-auto object-contain transition-transform duration-300 group-hover:scale-105"
-                                        />
-                                    </Link>
-                                </div>
+                        {/* Mobile & Tablet Version (below lg) - Exact Target Design: Hamburger Left, Logo Center, AR + Search Right */}
+                        <div className="flex lg:hidden flex-col w-full">
+                            <div className="flex items-center justify-between h-[48px] sm:h-[54px] px-1">
+                                {/* Left: Hamburger Menu */}
+                                <button
+                                    onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                                    className="p-1.5 text-zinc-900 dark:text-white rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors"
+                                    aria-label="Toggle Menu"
+                                >
+                                    {isMobileMenuOpen ? (
+                                        <MdClose className="text-2xl" />
+                                    ) : (
+                                        <MdMenu className="text-2xl" />
+                                    )}
+                                </button>
 
-                                <div className="flex items-center gap-2">
+                                {/* Center: Circular Zad Land Logo */}
+                                <Link href="/" className="flex items-center justify-center">
+                                    <Image
+                                        src="/logo.png"
+                                        alt="ZAD LAND - زاد لاند"
+                                        width={52}
+                                        height={52}
+                                        priority
+                                        className="h-[40px] sm:h-[46px] w-auto object-contain transition-transform duration-300 active:scale-95"
+                                    />
+                                </Link>
+
+                                {/* Right: Language Toggle (AR ⌵) + Search Icon (🔍) */}
+                                <div className="flex items-center gap-1 sm:gap-2">
                                     <LanguageToggle />
-                                    <CurrencyToggle />
                                     <button
-                                        onClick={openDrawer}
-                                        className="w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-gray-200 dark:border-white/10 flex items-center justify-center text-lg text-zinc-900 dark:text-white relative"
-                                        aria-label="Open Shopping Cart"
+                                        onClick={() => setIsMobileSearchOpen(!isMobileSearchOpen)}
+                                        className="p-1.5 text-zinc-900 dark:text-white rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors"
+                                        aria-label="Toggle Search"
                                     >
-                                        <MdOutlineShoppingBag />
-                                        {totalItems > 0 && (
-                                            <span className="absolute -top-1 -right-1 bg-[#2E7D32] text-white text-[10px] font-extrabold w-4 h-4 flex items-center justify-center rounded-full">
-                                                {totalItems}
-                                            </span>
-                                        )}
+                                        <MdSearch className="text-2xl" />
                                     </button>
                                 </div>
                             </div>
 
-                            {/* Bottom Row: Search Bar */}
-                            <div className="w-full">
-                                <HeaderSearch autoFocus={false} />
-                            </div>
+                            {/* Expandable Search Drawer on Mobile (when search icon is tapped) */}
+                            {isMobileSearchOpen && (
+                                <div className="w-full pt-2 pb-3 px-1 border-t border-gray-100 dark:border-white/10 animate-fadeInDown">
+                                    <div className="relative flex items-center gap-2">
+                                        <div className="flex-1">
+                                            <HeaderSearch autoFocus={true} onClose={() => setIsMobileSearchOpen(false)} />
+                                        </div>
+                                        <button
+                                            onClick={() => setIsMobileSearchOpen(false)}
+                                            className="p-2 text-gray-500 hover:text-black dark:text-gray-400 dark:hover:text-white text-lg shrink-0"
+                                            aria-label="Close search"
+                                        >
+                                            <MdClose />
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
                         </div>
 
                         {/* Mobile Overlays Wrapper */}

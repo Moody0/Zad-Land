@@ -10,20 +10,7 @@ export async function getI18n() {
     if (cookieLang === 'en' || cookieLang === 'ar') {
         language = cookieLang;
     } else {
-        // Fallback: check accept-language header for first-time visitors
-        try {
-            const headersList = await headers();
-            const acceptLang = headersList.get('accept-language')?.toLowerCase() || '';
-            if (acceptLang.startsWith('en')) {
-                language = 'en';
-            } else if (acceptLang.startsWith('ar')) {
-                language = 'ar';
-            } else {
-                language = 'ar';
-            }
-        } catch {
-            language = 'ar';
-        }
+        language = 'ar';
     }
 
     const translations = language === 'ar' ? ar : en;

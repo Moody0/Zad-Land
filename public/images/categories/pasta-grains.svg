@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 280" width="100%" height="100%">
+  <defs>
+    <linearGradient id="oilGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FDE047"/>
+      <stop offset="50%" stop-color="#EAB308"/>
+      <stop offset="100%" stop-color="#CA8A04"/>
+    </linearGradient>
+    <linearGradient id="glassOlive" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#14532D"/>
+      <stop offset="40%" stop-color="#166534"/>
+      <stop offset="70%" stop-color="#15803D"/>
+      <stop offset="100%" stop-color="#052E16"/>
+    </linearGradient>
+    <linearGradient id="pastaBag" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E3A8A"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <filter id="oilShadow" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+
+  <!-- Ground Shadow -->
+  <ellipse cx="200" cy="242" rx="140" ry="24" fill="#000000" opacity="0.08"/>
+
+  <g filter="url(#oilShadow)">
+    <!-- Extra Virgin Olive Oil Bottle (Center-Right) -->
+    <path d="M225 90 L225 60 L245 60 L245 90 L265 115 L265 210 Q265 222 235 222 Q205 222 205 210 L205 115 Z" fill="url(#glassOlive)"/>
+    <!-- Gold Cap -->
+    <rect x="223" y="45" width="24" height="18" rx="3" fill="#EAB308"/>
+    <rect x="221" y="42" width="28" height="5" rx="2" fill="#CA8A04"/>
+    <!-- Bottle Label -->
+    <rect x="212" y="125" width="46" height="65" rx="4" fill="#FAF5E8"/>
+    <circle cx="235" cy="145" r="10" fill="#15803D"/>
+    <path d="M232 142 Q235 138 238 142 Q235 146 232 142 Z" fill="#FACC15"/>
+    <rect x="220" y="162" width="30" height="3" rx="1.5" fill="#14532D"/>
+    <rect x="224" y="169" width="22" height="2" rx="1" fill="#CA8A04"/>
+
+    <!-- Sunflower / Cooking Oil Jug (Left) -->
+    <rect x="120" y="80" width="70" height="135" rx="16" fill="url(#oilGold)"/>
+    <path d="M142 80 L142 58 L168 58 L168 80 Z" fill="url(#oilGold)"/>
+    <!-- Green Cap & Handle -->
+    <rect x="140" y="48" width="30" height="12" rx="3" fill="#15803D"/>
+    <path d="M120 100 Q100 120 100 150 Q100 180 120 190" stroke="#EAB308" stroke-width="12" fill="none" stroke-linecap="round"/>
+    <rect x="130" y="115" width="50" height="65" rx="6" fill="#FFFFFF" opacity="0.9"/>
+    <circle cx="155" cy="140" r="12" fill="#F59E0B"/>
+    <circle cx="155" cy="140" r="6" fill="#78350F"/>
+
+    <!-- Pasta / Grains Wheat Sheaves (Right) -->
+    <g transform="translate(265, 80) rotate(15)">
+      <!-- Wheat stalk 1 -->
+      <line x1="20" y1="20" x2="20" y2="140" stroke="#D97706" stroke-width="3"/>
+      <ellipse cx="14" cy="40" rx="8" ry="4" transform="rotate(-30 14 40)" fill="#FCD34D"/>
+      <ellipse cx="26" cy="40" rx="8" ry="4" transform="rotate(30 26 40)" fill="#FCD34D"/>
+      <ellipse cx="14" cy="60" rx="8" ry="4" transform="rotate(-30 14 60)" fill="#FCD34D"/>
+      <ellipse cx="26" cy="60" rx="8" ry="4" transform="rotate(30 26 60)" fill="#FCD34D"/>
+      <ellipse cx="14" cy="80" rx="8" ry="4" transform="rotate(-30 14 80)" fill="#FCD34D"/>
+      <ellipse cx="26" cy="80" rx="8" ry="4" transform="rotate(30 26 80)" fill="#FCD34D"/>
+      <ellipse cx="20" cy="20" rx="6" ry="10" fill="#F59E0B"/>
+    </g>
+
+    <!-- Olive branch foreground -->
+    <ellipse cx="190" cy="225" rx="7" ry="9" transform="rotate(-20 190 225)" fill="#14532D"/>
+    <ellipse cx="205" cy="228" rx="6" ry="8" transform="rotate(15 205 228)" fill="#166534"/>
+  </g>
+</svg>

@@ -39,13 +39,13 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
     
     const DEFAULT_BANNER: Banner = {
         id: 'default',
-        title: 'Wholesale Global Food Brands',
-        subtitle: 'Your trusted partner for top-tier international food distribution with reliable logistics.',
-        titleAr: 'توزيع بضائع من كبرى الشركات العالمية',
-        subtitleAr: 'شريككم المعتمد لأجود المنتجات والمواد الغذائية مع أسرع خدمات الشحن والتوزيع.',
-        image: "https://lh3.googleusercontent.com/aida-public/AB6AXuB8pRgU38opDPgidWmDRVHh18-R0XsEouLP3xdxsGLZz4BX3nQjc-9PXhgFNDVECMvP80S7ZtFmpA-QwwrnKgOR8B7WY0FlM3qJCAf1J8cxpwvyt6V15oxTZz-uhtroLEp-87KWQzsp-6-2mVURrFG_Q6mWjJ5YGqT0gqwmcLOPMK6pDk77rqmdXEvvM82qGkXdLNmSeXBPXY9j9zwnT_PjJ5YAOzWa2PqrFvo1SOjMCtz71ZHQraBSPlt7TKx00ccpwm4TTWoB6b0y",
-        buttonText: 'Explore Products',
-        buttonTextAr: 'تصفح المنتجات',
+        title: 'Connecting Global Brands to Every Market',
+        subtitle: 'Zad Land leading wholesale distribution\nOfficial partner for global products in Syria - Homs',
+        titleAr: 'نصل بالعلامات العالمية إلى كل سوق',
+        subtitleAr: 'زاد لاند شركة توزيع رائدة\nالوكيل الرسمي لمنتجات عالمية\nوطنية في سوريا - حمص',
+        image: "/images/redesign/hero-bg.png",
+        buttonText: 'Discover More',
+        buttonTextAr: 'اكتشف المزيد',
         link: "/products",
         badge: 'Certified Wholesale',
         badgeAr: 'توزيع جملة معتمد',
@@ -53,18 +53,18 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
     };
 
     const getBannerTitle = (banner: Banner): string => {
-        return isArabic ? (banner.titleAr || banner.title || '') : (banner.title || banner.titleAr || '');
+        return isArabic ? (banner.titleAr || banner.title || 'نصل بالعلامات العالمية إلى كل سوق') : (banner.title || banner.titleAr || 'Connecting Global Brands to Every Market');
     };
 
     const getBannerSubtitle = (banner: Banner): string => {
-        return isArabic ? (banner.subtitleAr || banner.subtitle || '') : (banner.subtitle || banner.subtitleAr || '');
+        return isArabic ? (banner.subtitleAr || banner.subtitle || 'زاد لاند شركة توزيع رائدة\nالوكيل الرسمي لمنتجات عالمية\nوطنية في سوريا - حمص') : (banner.subtitle || banner.subtitleAr || '');
     };
 
     const getBannerButtonText = (banner: Banner): string => {
         if (isArabic) {
-            return banner.buttonTextAr || banner.buttonText || 'تصفح المنتجات';
+            return banner.buttonTextAr || banner.buttonText || 'اكتشف المزيد';
         }
-        return banner.buttonText || banner.buttonTextAr || 'Explore Products';
+        return banner.buttonText || banner.buttonTextAr || 'Discover More';
     };
 
     const getBannerBadge = (banner: Banner): string => {
@@ -74,13 +74,132 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
         return banner.badge || banner.badgeAr || 'Certified Wholesale';
     };
 
-    const displayBanners = banners && banners.length > 0 ? banners : [DEFAULT_BANNER];
+    const sortedBanners = React.useMemo(() => {
+        if (!banners || banners.length === 0) return [DEFAULT_BANNER];
+        const hero = banners.find(b => b.image === '/images/redesign/hero-bg.png');
+        if (hero) {
+            return [hero, ...banners.filter(b => b.id !== hero.id)];
+        }
+        return banners;
+    }, [banners]);
+
+    const displayBanners = sortedBanners;
 
     return (
-        <section ref={wrapperRef} className="container-custom pt-3 md:pt-6 pb-3 md:pb-6 group hero-carousel">
-            <div className="w-full relative">
-                {/* Responsive Height: Rich banner with overlay on mobile, split-banner on desktop */}
-                <div className="relative overflow-hidden rounded-2xl bg-[#FAF6EC] dark:bg-[#1a1a1a] h-[210px] sm:h-[260px] md:h-[400px] lg:h-[480px] shadow-xs">
+        <section ref={wrapperRef} className="w-full pt-0 md:pt-6 pb-0 md:pb-6 group hero-carousel">
+            {/* Mobile View (< md): High-Definition Swiper Hero with Dynamic Content */}
+            <div className="block md:hidden w-full relative aspect-[390/345] sm:aspect-[420/350] overflow-hidden">
+                <Swiper
+                    modules={[Autoplay, Pagination]}
+                    spaceBetween={0}
+                    slidesPerView={1}
+                    loop={displayBanners.length > 1}
+                    speed={800}
+                    autoplay={{
+                        delay: 6000,
+                        disableOnInteraction: false,
+                    }}
+                    pagination={{
+                        el: '.mobile-hero-pagination',
+                        clickable: true,
+                    }}
+                    className="h-full w-full"
+                >
+                    {displayBanners.map((banner, index) => {
+                        const isHeroBg = banner.image === '/images/redesign/hero-bg.png';
+                        return (
+                            <SwiperSlide key={`mob-${banner.id}`} className="h-full w-full relative">
+                                {/* Slide Image */}
+                                <Image
+                                    src={banner.image}
+                                    alt={getBannerTitle(banner)}
+                                    fill
+                                    priority={index === 0}
+                                    loading={index === 0 ? "eager" : "lazy"}
+                                    sizes="100vw"
+                                    className={`object-cover ${isHeroBg ? 'object-[72%_center]' : 'object-center'}`}
+                                />
+
+                                {/* Gradient Scrim for Contrast - Reduced width localized strictly behind text */}
+                                <div
+                                    className={`absolute inset-y-0 pointer-events-none transition-all duration-300 ${
+                                        isArabic
+                                            ? 'right-0 w-[55%] sm:w-[50%] max-w-[280px] bg-gradient-to-l from-black/75 via-black/35 to-transparent'
+                                            : 'left-0 w-[55%] sm:w-[50%] max-w-[280px] bg-gradient-to-r from-black/75 via-black/35 to-transparent'
+                                    }`}
+                                />
+
+                                {/* Text & CTA Overlay - Middle Right in AR mode, Middle Left in EN mode */}
+                                <div
+                                    dir={isArabic ? 'rtl' : 'ltr'}
+                                    className={`absolute top-1/2 -translate-y-1/2 z-10 w-[70%] sm:w-[64%] max-w-[280px] sm:max-w-[320px] flex flex-col ${
+                                        isArabic
+                                            ? 'right-4 sm:right-6 items-start text-right'
+                                            : 'left-4 sm:left-6 items-start text-left'
+                                    }`}
+                                >
+                                    {/* Show Wholesale Badge only on non-hero-bg slides */}
+                                    {!isHeroBg && (
+                                        <div className="mb-2.5">
+                                            <span className="inline-flex items-center px-3 py-1 rounded-full text-[11px] sm:text-xs font-black tracking-wider bg-[#B8860B] text-white shadow-xs">
+                                                {getBannerBadge(banner)}
+                                            </span>
+                                        </div>
+                                    )}
+
+                                    {/* Main Headline */}
+                                    {isHeroBg ? (
+                                        <h1 className="text-[27px] sm:text-[32px] font-black text-white leading-[1.12] tracking-tight drop-shadow-[0_2px_8px_rgba(0,0,0,0.95)]">
+                                            {isArabic ? (
+                                                <>
+                                                    <span className="block">نصل بالعلامات</span>
+                                                    <span className="block">العالمية</span>
+                                                    <span className="block text-[#E5B54A]">إلى كل سوق</span>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <span className="block">Connecting Global</span>
+                                                    <span className="block">Brands to</span>
+                                                    <span className="block text-[#E5B54A]">Every Market</span>
+                                                </>
+                                            )}
+                                        </h1>
+                                    ) : (
+                                        <h1 className="text-[24px] sm:text-[28px] font-black text-white leading-[1.14] tracking-tight drop-shadow-[0_2px_8px_rgba(0,0,0,0.95)] line-clamp-2">
+                                            {getBannerTitle(banner)}
+                                        </h1>
+                                    )}
+
+                                    {/* Subtitle */}
+                                    <p className="text-[13px] sm:text-[14.5px] text-white/95 font-semibold leading-[1.38] mt-2.5 sm:mt-3 drop-shadow-[0_2px_5px_rgba(0,0,0,0.9)] max-w-[260px] sm:max-w-[300px] line-clamp-3">
+                                        {getBannerSubtitle(banner)}
+                                    </p>
+
+                                    {/* CTA Button */}
+                                    <Link
+                                        href={banner.link || "/products"}
+                                        className="inline-flex items-center gap-2.5 mt-3.5 sm:mt-4 px-6 sm:px-7 py-2.5 sm:py-3 rounded-full bg-gradient-to-r from-[#C59B27] via-[#B8860B] to-[#9E7309] hover:brightness-110 text-white text-[13.5px] sm:text-[15px] font-black shadow-[0_5px_15px_rgba(0,0,0,0.45)] transition-all active:scale-95 border border-white/30 group/btn"
+                                    >
+                                        <span>{getBannerButtonText(banner)}</span>
+                                        <span className="text-base sm:text-lg font-black leading-none transition-transform duration-200 group-hover/btn:translate-x-0.5 rtl:group-hover/btn:-translate-x-0.5">
+                                            {isArabic ? '‹' : '›'}
+                                        </span>
+                                    </Link>
+                                </div>
+                            </SwiperSlide>
+                        );
+                    })}
+                </Swiper>
+
+                {/* Mobile Pagination Dots */}
+                {displayBanners.length > 1 && (
+                    <div className="mobile-hero-pagination absolute bottom-2.5 left-1/2 -translate-x-1/2 z-20 flex items-center justify-center pointer-events-none" />
+                )}
+            </div>
+
+            {/* Desktop View (>= md): Interactive Swiper Hero */}
+            <div className="hidden md:block container-custom">
+                <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-[#FAF6EC] dark:bg-[#1a1a1a] h-[400px] lg:h-[480px] shadow-xs">
                     <Swiper
                         modules={[Autoplay, Navigation, Pagination]}
                         spaceBetween={0}
@@ -113,7 +232,7 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                             <SwiperSlide key={banner.id} className="h-full w-full">
                                 <div className="flex flex-col md:flex-row rtl:md:flex-row-reverse h-full w-full relative">
                                     
-                                    {/* Image Container - Full width/height on mobile, left side on desktop */}
+                                    {/* Image Container - Left side on desktop */}
                                     <div className="w-full h-full md:w-1/2 relative shrink-0 block overflow-hidden">
                                         <Image
                                             src={banner.image}
@@ -122,61 +241,36 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                                             priority={index === 0}
                                             loading={index === 0 ? "eager" : "lazy"}
                                             fetchPriority={index === 0 ? "high" : "low"}
-                                            sizes="(max-width: 768px) 100vw, 50vw"
+                                            sizes="50vw"
                                             className="object-cover object-center transition-transform duration-700 md:group-hover:scale-105"
                                         />
-                                        
-                                        {/* Mobile Visual Overlay: Clean & Bright (only 10% subtle bottom gradient) */}
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-black/5 to-transparent md:hidden flex flex-col justify-end p-4 pb-6">
-                                            <div className="flex items-center gap-1.5 mb-1.5">
-                                                <span className="bg-[#B8860B] text-white px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide shadow-sm">
-                                                    {getBannerBadge(banner)}
-                                                </span>
-                                            </div>
-                                            
-                                            <h2 className="text-white text-base sm:text-lg font-bold leading-tight mb-2.5 drop-shadow-[0_2px_4px_rgba(0,0,0,0.7)] line-clamp-2">
-                                                {getBannerTitle(banner)}
-                                            </h2>
-
-                                            <div className="flex items-center gap-2">
-                                                <Link 
-                                                    href={banner.link || "/products"} 
-                                                    className="inline-flex items-center gap-1.5 bg-white text-[#072835] hover:bg-[#FAF6EC] px-3.5 py-1.5 rounded-full text-[11px] font-bold transition-all active:scale-95 shadow-md"
-                                                >
-                                                    <span>{getBannerButtonText(banner)}</span>
-                                                    <svg className={`w-3 h-3 ${isArabic ? 'rotate-180' : ''}`} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                        <path d="M7.5 3.75L13.75 10L7.5 16.25" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-                                                    </svg>
-                                                </Link>
-                                            </div>
-                                        </div>
                                     </div>
 
                                     {/* Desktop Content Container - Hidden on mobile, Right side on desktop */}
                                     <div className="relative z-10 hidden md:flex w-full md:h-full md:w-1/2 flex-col items-center justify-center text-center md:px-10 lg:px-16 bg-[#FAF6EC] dark:bg-[#1A1A14]">
-                                        <div className="animate-fadeInUp w-full max-w-[340px] md:max-w-md flex flex-col items-center text-center">
+                                        <div className="animate-fadeInUp w-full max-w-[360px] md:max-w-lg flex flex-col items-center text-center">
                                             
                                             {/* Badge */}
                                             <div className="mb-3">
-                                                <span className="bg-amber-100/80 text-[#B8860B] dark:bg-amber-950/40 dark:text-[#E5B54A] px-3.5 py-1 rounded-full text-xs font-bold tracking-wider">
+                                                <span className="bg-amber-100/80 text-[#B8860B] dark:bg-amber-950/40 dark:text-[#E5B54A] px-4 py-1 rounded-full text-xs font-bold tracking-wider">
                                                     {getBannerBadge(banner)}
                                                 </span>
                                             </div>
 
                                             {/* Title */}
-                                            <h2 className="text-[28px] md:text-[34px] lg:text-[40px] font-bold leading-[1.2] mb-3 md:mb-4 text-[#072835] dark:text-[#F5F0E0]">
+                                            <h2 className="text-[30px] md:text-[36px] lg:text-[44px] font-black leading-[1.18] mb-3 md:mb-4 text-[#072835] dark:text-[#F5F0E0]">
                                                 {getBannerTitle(banner)}
                                             </h2>
                                             
                                             {/* Description */}
-                                            <p className="text-[13px] md:text-sm lg:text-[15px] text-[#5A5A48] dark:text-[#C4B89A] mb-5 md:mb-7 leading-relaxed font-medium line-clamp-2">
+                                            <p className="text-[14px] md:text-[15.5px] lg:text-[16.5px] text-[#5A5A48] dark:text-[#C4B89A] mb-5 md:mb-7 leading-relaxed font-medium line-clamp-2">
                                                 {getBannerSubtitle(banner)}
                                             </p>
                                             
                                             {/* Button */}
                                             <Link
                                                 href={banner.link || "/products"}
-                                                className="px-7 py-2.5 bg-[#B8860B] hover:bg-[#9E7309] text-white rounded-full font-bold text-sm transition-all flex items-center justify-center gap-2 w-fit group/btn active:scale-95 shadow-xs"
+                                                className="px-8 py-3 bg-[#B8860B] hover:bg-[#9E7309] text-white rounded-full font-extrabold text-base transition-all flex items-center justify-center gap-2 w-fit group/btn active:scale-95 shadow-md"
                                             >
                                                 <span>{getBannerButtonText(banner)}</span>
                                             </Link>
@@ -236,6 +330,20 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                 [dir="rtl"] .hero-carousel .swiper-pagination-bullet-active::after {
                     left: auto;
                     right: 0;
+                }
+                .hero-carousel .mobile-hero-pagination .swiper-pagination-bullet {
+                    width: 6px;
+                    height: 6px;
+                    background: rgba(255, 255, 255, 0.55);
+                    opacity: 1;
+                    transition: all 0.3s;
+                    border-radius: 99px;
+                    margin: 0 3px !important;
+                }
+                .hero-carousel .mobile-hero-pagination .swiper-pagination-bullet-active {
+                    width: 20px;
+                    background: #B8860B !important;
+                    border-radius: 99px;
                 }
             `}</style>
         </section>
