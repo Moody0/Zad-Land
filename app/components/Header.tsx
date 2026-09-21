@@ -36,6 +36,11 @@ const Header = ({ initialCategories = [], initialNavData = [], dir }: HeaderProp
     const [isScrolled, setIsScrolled] = useState(false);
     const [manualToggle, setManualToggle] = useState(false);
     const isNavVisible = !isScrolled || manualToggle;
+    const desktopSpacerHeight = !isScrolled
+        ? 'lg:h-[150px]'
+        : isNavVisible
+            ? 'lg:h-[118px]'
+            : 'lg:h-[70px]';
     const isScrolledRef = useRef(false);
 
     // Mega menu state
@@ -158,7 +163,7 @@ const Header = ({ initialCategories = [], initialNavData = [], dir }: HeaderProp
     return (
         <>
             {/* Spacer to prevent layout shift when header collapses */}
-            <div className={`w-full transition-all duration-300 ${isMobileSearchOpen ? 'h-[116px]' : 'h-[54px] sm:h-[60px]'} lg:h-[158px]`} aria-hidden="true" />
+            <div className={`w-full transition-all duration-300 ${isMobileSearchOpen ? 'h-[116px]' : 'h-[54px] sm:h-[60px]'} ${desktopSpacerHeight}`} aria-hidden="true" />
 
             <header className="fixed top-0 left-0 z-50 w-full bg-white dark:bg-zinc-900 border-b border-gray-100 dark:border-white/10 transition-all duration-300">
                 {/* Disappearing Top Bar */}

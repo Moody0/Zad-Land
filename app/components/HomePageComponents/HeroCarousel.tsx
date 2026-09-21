@@ -2,7 +2,6 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { MdChevronLeft, MdChevronRight } from 'react-icons/md';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation, Pagination } from 'swiper/modules';
@@ -33,7 +32,7 @@ interface HeroCarouselProps {
 }
 
 const HeroCarousel = ({ banners }: HeroCarouselProps) => {
-    const { dir, language } = useLanguage();
+    const { dir } = useLanguage();
     const isArabic = dir === 'rtl';
     const wrapperRef = React.useRef<HTMLElement>(null);
     
@@ -86,7 +85,7 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
     const displayBanners = sortedBanners;
 
     return (
-        <section ref={wrapperRef} className="w-full pt-0 md:pt-6 pb-0 md:pb-6 group hero-carousel">
+        <section ref={wrapperRef} className="w-full pt-0 pb-0 md:pb-6 group hero-carousel">
             {/* Mobile View (< md): High-Definition Swiper Hero with Dynamic Content */}
             <div className="block md:hidden w-full relative aspect-[390/345] sm:aspect-[420/350] overflow-hidden">
                 <Swiper
@@ -198,8 +197,8 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
             </div>
 
             {/* Desktop View (>= md): Interactive Swiper Hero */}
-            <div className="hidden md:block container-custom">
-                <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl bg-[#FAF6EC] dark:bg-[#1a1a1a] h-[400px] lg:h-[480px] shadow-xs">
+            <div className="hidden md:block w-full">
+                <div className="relative h-[420px] w-full overflow-hidden bg-[#FAF6EC] shadow-xs dark:bg-[#1a1a1a] md:h-[460px] lg:h-[520px] xl:h-[560px] 2xl:h-[600px]">
                     <Swiper
                         modules={[Autoplay, Navigation, Pagination]}
                         spaceBetween={0}
@@ -230,49 +229,47 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                     >
                         {displayBanners.map((banner, index) => (
                             <SwiperSlide key={banner.id} className="h-full w-full">
-                                <div className="flex flex-col md:flex-row rtl:md:flex-row-reverse h-full w-full relative">
-                                    
-                                    {/* Image Container - Left side on desktop */}
-                                    <div className="w-full h-full md:w-1/2 relative shrink-0 block overflow-hidden">
-                                        <Image
-                                            src={banner.image}
-                                            alt={getBannerTitle(banner)}
-                                            fill
-                                            priority={index === 0}
-                                            loading={index === 0 ? "eager" : "lazy"}
-                                            fetchPriority={index === 0 ? "high" : "low"}
-                                            sizes="50vw"
-                                            className="object-cover object-center transition-transform duration-700 md:group-hover:scale-105"
-                                        />
-                                    </div>
+                                <div className="relative h-full w-full overflow-hidden">
+                                    <Image
+                                        src={banner.image}
+                                        alt={getBannerTitle(banner)}
+                                        fill
+                                        priority={index === 0}
+                                        loading={index === 0 ? "eager" : "lazy"}
+                                        fetchPriority={index === 0 ? "high" : "low"}
+                                        sizes="100vw"
+                                        className="object-cover object-center"
+                                    />
 
-                                    {/* Desktop Content Container - Hidden on mobile, Right side on desktop */}
-                                    <div className="relative z-10 hidden md:flex w-full md:h-full md:w-1/2 flex-col items-center justify-center text-center md:px-10 lg:px-16 bg-[#FAF6EC] dark:bg-[#1A1A14]">
-                                        <div className="animate-fadeInUp w-full max-w-[360px] md:max-w-lg flex flex-col items-center text-center">
-                                            
-                                            {/* Badge */}
-                                            <div className="mb-3">
-                                                <span className="bg-amber-100/80 text-[#B8860B] dark:bg-amber-950/40 dark:text-[#E5B54A] px-4 py-1 rounded-full text-xs font-bold tracking-wider">
+                                    {/* Darkened copy area while keeping the artwork visible edge-to-edge */}
+                                    <div className="pointer-events-none absolute inset-y-0 right-0 w-[58%] bg-gradient-to-l from-[#002d24]/90 via-[#002d24]/55 to-transparent" />
+
+                                    {/* Desktop content layered over the image */}
+                                    <div
+                                        dir={isArabic ? 'rtl' : 'ltr'}
+                                        className={`absolute inset-y-0 right-0 z-10 hidden w-[48%] flex-col justify-center px-8 text-white md:flex lg:px-16 ${isArabic ? 'items-start text-right' : 'items-start text-left'}`}
+                                    >
+                                        <div className="animate-fadeInUp flex w-full max-w-xl flex-col items-start">
+                                            <div className="mb-4">
+                                                <span className="inline-flex rounded-full bg-[#F4D36A] px-4 py-1 text-xs font-bold tracking-wider text-[#072835] shadow-sm">
                                                     {getBannerBadge(banner)}
                                                 </span>
                                             </div>
 
-                                            {/* Title */}
-                                            <h2 className="text-[30px] md:text-[36px] lg:text-[44px] font-black leading-[1.18] mb-3 md:mb-4 text-[#072835] dark:text-[#F5F0E0]">
+                                            <h2 className="mb-4 text-4xl font-black leading-[1.15] tracking-tight drop-shadow-[0_3px_8px_rgba(0,0,0,0.7)] lg:text-6xl">
                                                 {getBannerTitle(banner)}
                                             </h2>
-                                            
-                                            {/* Description */}
-                                            <p className="text-[14px] md:text-[15.5px] lg:text-[16.5px] text-[#5A5A48] dark:text-[#C4B89A] mb-5 md:mb-7 leading-relaxed font-medium line-clamp-2">
+
+                                            <p className="mb-7 line-clamp-3 max-w-lg whitespace-pre-line text-base font-medium leading-relaxed text-white/90 drop-shadow-[0_2px_5px_rgba(0,0,0,0.7)] lg:text-lg">
                                                 {getBannerSubtitle(banner)}
                                             </p>
-                                            
-                                            {/* Button */}
+
                                             <Link
                                                 href={banner.link || "/products"}
-                                                className="px-8 py-3 bg-[#B8860B] hover:bg-[#9E7309] text-white rounded-full font-extrabold text-base transition-all flex items-center justify-center gap-2 w-fit group/btn active:scale-95 shadow-md"
+                                                className="inline-flex w-fit items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[#C59B27] via-[#B8860B] to-[#9E7309] px-8 py-3 text-base font-extrabold text-white shadow-[0_5px_15px_rgba(0,0,0,0.4)] transition-all hover:brightness-110 active:scale-95"
                                             >
                                                 <span>{getBannerButtonText(banner)}</span>
+                                                <span className="text-lg font-black leading-none">{isArabic ? '‹' : '›'}</span>
                                             </Link>
                                         </div>
                                     </div>
@@ -281,23 +278,24 @@ const HeroCarousel = ({ banners }: HeroCarouselProps) => {
                         ))}
                     </Swiper>
 
-                    {/* Navigation and Pagination Group - Centered on Mobile, Bottom Right on Desktop */}
-                    <div className="absolute bottom-2 left-1/2 -translate-x-1/2 md:translate-x-0 md:left-auto md:bottom-5 md:right-6 z-20 flex items-center pointer-events-none">
-                        
-                        <button className="swiper-button-prev-hero pointer-events-auto hidden md:flex items-center justify-center text-[#4A4A4A] hover:text-black transition-colors mr-2">
+                    {/* Navigation and pagination stay centered on desktop for a predictable scan path. */}
+                    {displayBanners.length > 1 && (
+                        <div className="absolute bottom-4 left-1/2 z-20 flex -translate-x-1/2 items-center gap-1 rounded-full border border-white/20 bg-black/25 px-2 py-1.5 shadow-lg backdrop-blur-sm">
+                        <button aria-label={isArabic ? 'الشريحة السابقة' : 'Previous slide'} title={isArabic ? 'الشريحة السابقة' : 'Previous slide'} className="swiper-button-prev-hero pointer-events-auto hidden items-center justify-center rounded-full p-1.5 text-white transition-colors hover:bg-white/15 md:flex">
                             <svg className="w-4 h-4 rtl:scale-x-[-1]" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M12.5 16.25L6.25 10L12.5 3.75" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"></path>
                             </svg>
                         </button>
 
-                        <div className="hero-swiper-pagination pointer-events-auto flex items-center justify-center" />
+                        <div className="hero-swiper-pagination pointer-events-auto flex min-w-[76px] items-center justify-center" />
 
-                        <button className="swiper-button-next-hero pointer-events-auto hidden md:flex items-center justify-center text-[#4A4A4A] hover:text-black transition-colors ml-2">
+                        <button aria-label={isArabic ? 'الشريحة التالية' : 'Next slide'} title={isArabic ? 'الشريحة التالية' : 'Next slide'} className="swiper-button-next-hero pointer-events-auto hidden items-center justify-center rounded-full p-1.5 text-white transition-colors hover:bg-white/15 md:flex">
                             <svg className="w-4 h-4 rtl:scale-x-[-1]" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M7.5 3.75L13.75 10L7.5 16.25" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"></path>
                             </svg>
                         </button>
-                    </div>
+                        </div>
+                    )}
                 </div>
             </div>
 

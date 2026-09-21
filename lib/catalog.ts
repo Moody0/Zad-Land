@@ -201,7 +201,6 @@ export const getCatalogMainCategories = cache(
                     isActive: true,
                     products: {
                         some: {
-                            stock: { gt: 0 },
                             brand: { isActive: true },
                         },
                     },
@@ -239,13 +238,11 @@ export const getCatalogInitialData = cache(
         return unstable_cache(
             async () => {
                 const whereClause: {
-                    stock: { gt: number };
                     categoryId?: string;
                     brandId?: string;
                     mainCategoryId?: string;
                     brand: { isActive: boolean };
                 } = {
-                    stock: { gt: 0 },
                     brand: { isActive: true },
                 };
 

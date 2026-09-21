@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
+import Link from 'next/link';
 import ProductCard from '../ProductsPageComponents/ProductCard';
 import { MdChevronRight, MdChevronLeft } from 'react-icons/md';
 
@@ -71,35 +72,54 @@ const FeaturedCollection = ({ newArrivals, bundles, bestSellers }: FeaturedColle
 
     return (
         <section className="container-custom">
-            <div 
-                className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-6 px-2"
-            >
-                <div className="flex-1">
-                    <h2 className="text-lg sm:text-xl md:text-[32px] font-semibold text-[rgb(46,46,46)] dark:text-text-main-dark">
+            <div className="mb-6 px-2">
+                <div className="mb-3 flex items-center justify-center gap-3 text-[#B8860B] sm:gap-4 md:mb-5 md:gap-6">
+                    <div className="h-[1.5px] flex-1 max-w-[36px] bg-gradient-to-r from-transparent via-[#C5A059]/40 to-[#B8860B] sm:max-w-[90px] md:max-w-[200px] dark:to-[#E5B54A]" />
+                    <svg className="h-4 w-4 shrink-0 sm:h-5 sm:w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <path d="M12 2C11.5 4 10.5 6 9 7.5C10.5 9 11.5 11 12 13C12.5 11 13.5 9 15 7.5C13.5 6 12.5 4 12 2Z" opacity="0.9" />
+                        <path d="M7 6C6.5 8 5.5 10 4 11.5C5.5 13 6.5 15 7 17C7.5 15 8.5 13 10 11.5C8.5 10 7.5 8 7 6Z" />
+                        <path d="M17 6C16.5 8 15.5 10 14 11.5C15.5 13 16.5 15 17 17C17.5 15 18.5 13 20 11.5C18.5 10 17.5 8 17 6Z" />
+                        <path d="M12 11V22" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                    </svg>
+                    <h2 id="featured-collection-title" className="whitespace-nowrap px-1 text-base font-extrabold tracking-tight text-[#072835] sm:text-2xl md:text-[28px] dark:text-white">
                         {t('home.featuredCollection')}
                     </h2>
-                    <p className="text-[15px] text-[rgb(46,46,46)] mt-1">
-                        {t('home.featuredCollectionSubtitle')}
-                    </p>
+                    <svg className="h-4 w-4 shrink-0 scale-x-[-1] sm:h-5 sm:w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <path d="M12 2C11.5 4 10.5 6 9 7.5C10.5 9 11.5 11 12 13C12.5 11 13.5 9 15 7.5C13.5 6 12.5 4 12 2Z" opacity="0.9" />
+                        <path d="M7 6C6.5 8 5.5 10 4 11.5C5.5 13 6.5 15 7 17C7.5 15 8.5 13 10 11.5C8.5 10 7.5 8 7 6Z" />
+                        <path d="M17 6C16.5 8 15.5 10 14 11.5C15.5 13 16.5 15 17 17C17.5 15 18.5 13 20 11.5C18.5 10 17.5 8 17 6Z" />
+                        <path d="M12 11V22" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                    </svg>
+                    <div className="h-[1.5px] flex-1 max-w-[36px] bg-gradient-to-l from-transparent via-[#C5A059]/40 to-[#B8860B] sm:max-w-[90px] md:max-w-[200px] dark:to-[#E5B54A]" />
                 </div>
 
-                <div className="tabs-nav overflow-x-auto scrollbar-hide" role="tablist">
-                    <div className="flex md:justify-end gap-4 md:gap-2">
-                        {tabs.map((tab, index) => (
-                            <button
-                                key={tab.key}
-                                role="tab"
-                                aria-selected={activeTab === index}
-                                onClick={() => setActiveTab(index)}
-                                className={`tabs__btn whitespace-nowrap px-6 py-2.5 text-[15px] transition-all border-b-2 ${activeTab === index
-                                    ? 'border-[#B8860B] text-[#B8860B] dark:text-[#E5B54A] font-bold'
-                                    : 'border-transparent text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 font-medium'
-                                    }`}
-                            >
-                                {t(tab.labelKey)}
-                            </button>
-                        ))}
+                <div className="flex items-center justify-between gap-3">
+                    <div className="tabs-nav min-w-0 flex-1 overflow-x-auto scrollbar-hide" role="tablist">
+                        <div className="flex gap-4 md:gap-2">
+                            {tabs.map((tab, index) => (
+                                <button
+                                    key={tab.key}
+                                    role="tab"
+                                    aria-selected={activeTab === index}
+                                    onClick={() => setActiveTab(index)}
+                                    className={`tabs__btn whitespace-nowrap px-6 py-2.5 text-[15px] transition-all border-b-2 ${activeTab === index
+                                        ? 'border-[#B8860B] text-[#B8860B] dark:text-[#E5B54A] font-bold'
+                                        : 'border-transparent text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-200 font-medium'
+                                        }`}
+                                >
+                                    {t(tab.labelKey)}
+                                </button>
+                            ))}
+                        </div>
                     </div>
+
+                    <Link
+                        href="/products"
+                        className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-full border border-[#B8860B]/30 bg-[#FAF6ED] px-4 py-2 text-xs font-bold text-[#072835] transition-colors hover:border-[#B8860B] hover:text-[#B8860B] dark:bg-white/5 dark:text-[#E5B54A]"
+                    >
+                        <span>{t('products.allProducts')}</span>
+                        <MdChevronRight className={`text-base ${dir === 'rtl' ? 'rotate-180' : ''}`} />
+                    </Link>
                 </div>
             </div>
 

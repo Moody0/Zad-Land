@@ -9,6 +9,7 @@ import TrendingWeekly from './TrendingWeekly';
 import FeaturedCategoriesGrid from './FeaturedCategoriesGrid';
 import CategoryHighlightCards from './CategoryHighlightCards';
 import TestimonialsMasonry from './TestimonialsMasonry';
+import AboutSupplyBanner from './AboutSupplyBanner';
 import ScrollReveal from '../ScrollReveal';
 import { getI18n } from '@/lib/i18n';
 
@@ -120,6 +121,11 @@ const Main = async ({
                     bundles={featuredBundles}
                     bestSellers={featuredBestSellers}
                 />
+            </ScrollReveal>
+
+            {/* About Zad Land banner */}
+            <ScrollReveal className="relative z-20">
+                <AboutSupplyBanner language={language} dir={dir} />
             </ScrollReveal>
 
             {/* Featured Categories Grid (Top Categories. Best Sellers) */}

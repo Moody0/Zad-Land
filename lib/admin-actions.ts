@@ -1762,7 +1762,6 @@ export async function getHomeCollectionSections(): Promise<HomeCollectionSection
             by: ["categoryId"],
             where: {
                 categoryId: { in: featuredCategoryIds },
-                stock: { gt: 0 },
                 brand: { isActive: true },
             },
             _count: {
@@ -1792,7 +1791,6 @@ export async function getHomeCollectionSections(): Promise<HomeCollectionSection
                 const products = await prisma.product.findMany({
                     where: {
                         categoryId: category.id,
-                        stock: { gt: 0 },
                         brand: { isActive: true },
                     },
                     include: {

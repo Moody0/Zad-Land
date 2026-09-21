@@ -34,14 +34,14 @@ interface CategoryCardItem {
     link: string;
 }
 
-// 4 Signature categories matching reference design exactly
+// Signature categories matching the reference design
 const CATEGORIES: CategoryCardItem[] = [
     {
         id: 'canned-goods',
         slug: 'canned-goods',
         titleAr: 'المعلبات\nوالمواد الغذائية',
         titleEn: 'Canned Goods\n& Foodstuffs',
-        image: '/images/categories/canned-goods.png',
+        image: '/images/categories/canned-goods.webp',
         link: '/department/canned-goods',
     },
     {
@@ -49,7 +49,7 @@ const CATEGORIES: CategoryCardItem[] = [
         slug: 'pasta-grains',
         titleAr: 'الزيوت والأرز\nوالمعكرونة',
         titleEn: 'Oils, Rice\n& Pasta',
-        image: '/images/categories/pasta-grains.png',
+        image: '/images/categories/pasta-grains.webp',
         link: '/department/pasta-grains',
     },
     {
@@ -57,7 +57,7 @@ const CATEGORIES: CategoryCardItem[] = [
         slug: 'personal-care-hygiene',
         titleAr: 'المنظفات\nومستلزمات المنزل',
         titleEn: 'Detergents\n& Home Care',
-        image: '/images/categories/cleaning-supplies.png',
+        image: '/images/categories/cleaning-supplies.webp',
         link: '/department/personal-care-hygiene',
     },
     {
@@ -65,25 +65,68 @@ const CATEGORIES: CategoryCardItem[] = [
         slug: 'snacks-sweets',
         titleAr: 'الوجبات الخفيفة\nوالمكسرات',
         titleEn: 'Snacks\n& Nuts',
-        image: '/images/categories/snacks-nuts.png',
+        image: '/images/categories/snacks-nuts.webp',
         link: '/department/snacks-sweets',
+    },
+    {
+        id: 'beverages-coffee',
+        slug: 'beverages-coffee',
+        titleAr: 'المشروبات\nوالقهوة',
+        titleEn: 'Beverages\n& Coffee',
+        image: '/images/categories/beverages-coffee.webp',
+        link: '/department/beverages-coffee',
     },
 ];
 
 const CategoryHighlightCards = ({ cards = [], language = 'ar' }: CategoryHighlightCardsProps) => {
     const isArabic = language === 'ar';
+    const hasDesktopOverflow = CATEGORIES.length > 5;
+    const categoriesRailRef = React.useRef<HTMLDivElement>(null);
+
+    const scrollCategories = (direction: 'left' | 'right') => {
+        categoriesRailRef.current?.scrollBy({
+            left: direction === 'left' ? -320 : 320,
+            behavior: 'smooth',
+        });
+    };
 
     return (
-        <section className="container-custom px-2.5 sm:px-3.5 md:px-4 py-1 sm:py-2 md:py-4">
-            {/* 4 Cards Grid - Fits 4-in-a-row matching Reference Screenshot UI */}
-            <div className="grid grid-cols-4 gap-2.5 sm:gap-3 md:gap-5 lg:gap-6 [direction:ltr]">
+        <section className="container-custom px-2.5 py-1 sm:px-3.5 sm:py-2 md:px-4 md:py-4" dir={isArabic ? 'rtl' : 'ltr'}>
+            <div className="mb-5 px-2">
+                <div className="mb-3 flex items-center justify-center gap-3 text-[#B8860B] sm:gap-4 md:mb-5 md:gap-6">
+                    <div className="h-[1.5px] flex-1 max-w-[36px] bg-gradient-to-r from-transparent via-[#C5A059]/40 to-[#B8860B] sm:max-w-[90px] md:max-w-[200px] dark:to-[#E5B54A]" />
+                    <svg className="h-4 w-4 shrink-0 sm:h-5 sm:w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <path d="M12 2C11.5 4 10.5 6 9 7.5C10.5 9 11.5 11 12 13C12.5 11 13.5 9 15 7.5C13.5 6 12.5 4 12 2Z" opacity="0.9" />
+                        <path d="M7 6C6.5 8 5.5 10 4 11.5C5.5 13 6.5 15 7 17C7.5 15 8.5 13 10 11.5C8.5 10 7.5 8 7 6Z" />
+                        <path d="M17 6C16.5 8 15.5 10 14 11.5C15.5 13 16.5 15 17 17C17.5 15 18.5 13 20 11.5C18.5 10 17.5 8 17 6Z" />
+                        <path d="M12 11V22" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                    </svg>
+                    <h2 className="whitespace-nowrap px-1 text-base font-extrabold tracking-tight text-[#072835] sm:text-2xl md:text-[28px] dark:text-white">
+                        {isArabic ? 'أقسامنا الرئيسية' : 'Our Main Categories'}
+                    </h2>
+                    <svg className="h-4 w-4 shrink-0 scale-x-[-1] sm:h-5 sm:w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <path d="M12 2C11.5 4 10.5 6 9 7.5C10.5 9 11.5 11 12 13C12.5 11 13.5 9 15 7.5C13.5 6 12.5 4 12 2Z" opacity="0.9" />
+                        <path d="M7 6C6.5 8 5.5 10 4 11.5C5.5 13 6.5 15 7 17C7.5 15 8.5 13 10 11.5C8.5 10 7.5 8 7 6Z" />
+                        <path d="M17 6C16.5 8 15.5 10 14 11.5C15.5 13 16.5 15 17 17C17.5 15 18.5 13 20 11.5C18.5 10 17.5 8 17 6Z" />
+                        <path d="M12 11V22" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                    </svg>
+                    <div className="h-[1.5px] flex-1 max-w-[36px] bg-gradient-to-l from-transparent via-[#C5A059]/40 to-[#B8860B] sm:max-w-[90px] md:max-w-[200px] dark:to-[#E5B54A]" />
+                </div>
+            </div>
+
+            {/* Category rail: touch-scrollable on mobile, button-controlled on larger screens */}
+            <div className="relative">
+                <div
+                    ref={categoriesRailRef}
+                    className={`-mx-2.5 flex snap-x snap-mandatory gap-2.5 overflow-x-auto px-2.5 scrollbar-hide sm:-mx-3.5 sm:gap-3 sm:px-3.5 md:mx-0 md:gap-5 lg:gap-6 [direction:ltr] ${hasDesktopOverflow ? 'md:overflow-x-auto md:px-8 md:scroll-smooth' : 'md:grid md:grid-cols-5 md:overflow-visible md:px-0'}`}
+                >
                 {CATEGORIES.map((cat) => {
                     const title = isArabic ? cat.titleAr : cat.titleEn;
                     return (
                         <Link
                             key={cat.id}
                             href={cat.link}
-                            className="group relative flex flex-col w-full aspect-[100/136] sm:aspect-[100/132] md:aspect-[1/1.22] lg:aspect-[1/1.18] md:min-h-[250px] lg:min-h-[300px] xl:min-h-[340px] bg-[#FAF6ED] dark:bg-[#1E1E16] rounded-2xl sm:rounded-[22px] md:rounded-3xl lg:rounded-[32px] overflow-hidden border border-[#B8860B]/20 hover:border-[#B8860B]/60 shadow-[0_4px_16px_rgba(0,0,0,0.06)] hover:shadow-xl transition-all duration-300 hover:-translate-y-1.5 active:scale-98 text-center [direction:rtl]"
+                            className={`group relative flex w-[140px] shrink-0 snap-start flex-col aspect-[100/136] sm:w-[160px] sm:aspect-[100/132] ${hasDesktopOverflow ? 'md:w-[240px] md:aspect-[1/1.22]' : 'md:w-full md:shrink md:aspect-[1/1.22]'} lg:aspect-[1/1.18] bg-[#FAF6ED] dark:bg-[#1E1E16] rounded-2xl sm:rounded-[22px] md:rounded-3xl lg:rounded-[32px] overflow-hidden border border-[#B8860B]/20 hover:border-[#B8860B]/60 shadow-[0_4px_16px_rgba(0,0,0,0.06)] hover:shadow-xl transition-all duration-300 hover:-translate-y-1.5 active:scale-98 text-center [direction:rtl]`}
                         >
                             {/* Top Image: Full-bleed top portion with increased height */}
                             <div className="relative w-full h-[68%] sm:h-[70%] overflow-hidden rounded-t-2xl sm:rounded-t-[22px] md:rounded-t-3xl lg:rounded-t-[32px] bg-[#FAF6ED] dark:bg-[#1E1E16]">
@@ -106,6 +149,28 @@ const CategoryHighlightCards = ({ cards = [], language = 'ar' }: CategoryHighlig
                         </Link>
                     );
                 })}
+                </div>
+
+                {hasDesktopOverflow && (
+                    <>
+                        <button
+                            type="button"
+                            onClick={() => scrollCategories('left')}
+                            aria-label={isArabic ? 'الفئات السابقة' : 'Previous categories'}
+                            className="absolute left-0 top-1/2 z-10 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-[#B8860B]/25 bg-white/95 text-2xl leading-none text-[#B8860B] shadow-md transition-colors hover:bg-[#FAF6ED] md:flex"
+                        >
+                            ‹
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => scrollCategories('right')}
+                            aria-label={isArabic ? 'الفئات التالية' : 'Next categories'}
+                            className="absolute right-0 top-1/2 z-10 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-[#B8860B]/25 bg-white/95 text-2xl leading-none text-[#B8860B] shadow-md transition-colors hover:bg-[#FAF6ED] md:flex"
+                        >
+                            ›
+                        </button>
+                    </>
+                )}
             </div>
         </section>
     );

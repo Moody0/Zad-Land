@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import ResilientImage from '@/app/components/ResilientImage';
-import { MdChevronRight } from 'react-icons/md';
+import { MdChevronLeft, MdChevronRight } from 'react-icons/md';
 
 interface Category {
     id: string;
@@ -48,75 +48,89 @@ const FeaturedCategoriesGrid = ({ categories, language = 'ar', dir = 'rtl' }: Fe
     };
 
     return (
-        <section className="container-custom py-6 md:py-12">
-            {/* Section Header */}
-            <div className="flex flex-col md:flex-row md:items-end justify-between mb-6 md:mb-8 gap-4 px-1">
-                <div>
-                    <span className="text-[11px] sm:text-xs font-bold uppercase tracking-widest text-[#B8860B] dark:text-[#E5B54A] block mb-1">
-                        {isArabic ? 'كتالوج التوريد والمنتجات المعتمدة' : 'Verified Wholesale Catalog'}
-                    </span>
-                    <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-[#072835] dark:text-white leading-tight">
+        <section className="container-custom pb-5 pt-6 md:pb-8 md:pt-10" dir={dir}>
+            {/* Shared ornamental section header */}
+            <div className="mb-6 px-2">
+                <div className="mb-3 flex items-center justify-center gap-3 text-[#B8860B] sm:gap-4 md:mb-5 md:gap-6">
+                    <div className="h-[1.5px] flex-1 max-w-[36px] bg-gradient-to-r from-transparent via-[#C5A059]/40 to-[#B8860B] sm:max-w-[90px] md:max-w-[200px] dark:to-[#E5B54A]" />
+                    <svg className="h-4 w-4 shrink-0 sm:h-5 sm:w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <path d="M12 2C11.5 4 10.5 6 9 7.5C10.5 9 11.5 11 12 13C12.5 11 13.5 9 15 7.5C13.5 6 12.5 4 12 2Z" opacity="0.9" />
+                        <path d="M7 6C6.5 8 5.5 10 4 11.5C5.5 13 6.5 15 7 17C7.5 15 8.5 13 10 11.5C8.5 10 7.5 8 7 6Z" />
+                        <path d="M17 6C16.5 8 15.5 10 14 11.5C15.5 13 16.5 15 17 17C17.5 15 18.5 13 20 11.5C18.5 10 17.5 8 17 6Z" />
+                        <path d="M12 11V22" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                    </svg>
+                    <h2 id="featured-categories-title" className="whitespace-nowrap px-1 text-base font-extrabold tracking-tight text-[#072835] sm:text-2xl md:text-[28px] dark:text-white">
                         {isArabic ? 'أهم الفئات والأكثر طلباً' : 'Top Categories & Best Sellers'}
                     </h2>
-                    <p className="text-xs sm:text-sm text-slate-500 dark:text-gray-400 mt-1 max-w-xl">
-                        {isArabic
-                            ? 'مستوردة وموزعة مباشرة من كبرى المصانع العالمية مع أفضل خصومات الجملة.'
-                            : 'Sourced directly from certified global food manufacturers with bulk wholesale pricing.'}
-                    </p>
+                    <svg className="h-4 w-4 shrink-0 scale-x-[-1] sm:h-5 sm:w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <path d="M12 2C11.5 4 10.5 6 9 7.5C10.5 9 11.5 11 12 13C12.5 11 13.5 9 15 7.5C13.5 6 12.5 4 12 2Z" opacity="0.9" />
+                        <path d="M7 6C6.5 8 5.5 10 4 11.5C5.5 13 6.5 15 7 17C7.5 15 8.5 13 10 11.5C8.5 10 7.5 8 7 6Z" />
+                        <path d="M17 6C16.5 8 15.5 10 14 11.5C15.5 13 16.5 15 17 17C17.5 15 18.5 13 20 11.5C18.5 10 17.5 8 17 6Z" />
+                        <path d="M12 11V22" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                    </svg>
+                    <div className="h-[1.5px] flex-1 max-w-[36px] bg-gradient-to-l from-transparent via-[#C5A059]/40 to-[#B8860B] sm:max-w-[90px] md:max-w-[200px] dark:to-[#E5B54A]" />
                 </div>
 
-                <Link
-                    href="/products"
-                    className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-[#072835] dark:text-[#E5B54A] hover:text-[#B8860B] transition-colors whitespace-nowrap self-start md:self-end"
-                >
-                    <span>{isArabic ? 'تصفح كافة الأقسام' : 'View All Categories'}</span>
-                    <MdChevronRight className={`text-lg transition-transform ${isArabic ? 'rotate-180' : ''}`} />
-                </Link>
+                <div className="flex items-center justify-center text-center">
+                    <Link
+                        href="/products"
+                        className="inline-flex shrink-0 items-center gap-1 rounded-full border border-[#B8860B]/25 bg-[#FAF6ED] px-3 py-1 text-xs font-bold text-[#072835] transition-colors hover:border-[#B8860B]/60 hover:text-[#B8860B] dark:bg-white/5 dark:text-[#E5B54A]"
+                    >
+                        <span>{isArabic ? 'تصفح كافة الأقسام' : 'View All Categories'}</span>
+                        <MdChevronRight className={`text-base transition-transform ${isArabic ? 'rotate-180' : ''}`} />
+                    </Link>
+                </div>
             </div>
 
-            {/* Symmetrical 5-Column Grid on Desktop, 2-Column on Mobile */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4 md:gap-5">
+            {/* Swipeable category carousel on mobile, multi-column grid on larger screens */}
+            <div className="-mx-2.5 flex snap-x snap-mandatory gap-3 overflow-x-auto px-2.5 scrollbar-hide sm:-mx-3.5 sm:gap-4 sm:px-3.5 md:mx-0 md:grid md:grid-cols-4 md:gap-5 md:overflow-visible md:px-0 lg:grid-cols-5 xl:grid-cols-6">
                 {categories.map((category) => {
                     const brandName = getBrandName(category);
                     const displayName = getDisplayName(category);
 
                     return (
-                        <div key={category.id}>
+                        <div key={category.id} className="w-[218px] shrink-0 snap-start sm:w-[240px] md:w-auto">
                             <Link
                                 href={`/categories/${category.slug}`}
-                                className="group relative flex flex-col h-full bg-[#FAF9F5] dark:bg-[#1E1E16] rounded-2xl overflow-hidden border border-[#B8860B]/15 hover:border-[#B8860B]/50 transition-all duration-300 hover:shadow-md p-2.5 sm:p-3.5"
+                                className="group flex h-full flex-col overflow-hidden rounded-[22px] border border-[#B8860B]/20 bg-[#FFFFFE] shadow-[0_6px_20px_rgba(7,40,53,0.07)] transition-all duration-300 hover:border-[#B8860B]/55 hover:shadow-[0_12px_28px_rgba(7,40,53,0.14)] dark:bg-[#1E1E16] md:hover:-translate-y-1"
                             >
-                                {/* Category Image Container (fills container with rounded border radius) */}
-                                <div className="relative w-full aspect-square rounded-xl overflow-hidden bg-white dark:bg-zinc-900 border border-gray-100 dark:border-white/5 mb-2.5">
+                                {/* Product/category image */}
+                                <div className="relative aspect-[1.15] w-full overflow-hidden bg-[#F8F7F2] dark:bg-zinc-900">
                                     {category.image ? (
                                         <ResilientImage
                                             src={category.image}
                                             alt={displayName}
-                                            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 200px"
-                                            className="w-full h-full object-cover rounded-xl transition-transform duration-500 group-hover:scale-105"
+                                            sizes="(max-width: 640px) 218px, (max-width: 1024px) 25vw, 240px"
+                                            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                                             loading="lazy"
                                         />
                                     ) : (
-                                        <div className="w-full h-full bg-gray-100 dark:bg-zinc-800 rounded-lg" />
+                                        <div className="h-full w-full bg-[#F8F7F2] dark:bg-zinc-800" />
                                     )}
                                 </div>
 
-                                {/* Content Details */}
-                                <div className="flex flex-col flex-1 justify-between text-center px-1 pb-1">
-                                    <div>
+                                {/* Clear catalog details */}
+                                <div className="flex flex-1 flex-col justify-between gap-3 p-3.5 text-start sm:p-4">
+                                    <div className="min-w-0">
                                         {brandName && (
-                                            <span className="text-[10px] font-bold uppercase tracking-wider text-[#B8860B] dark:text-[#E5B54A] block mb-0.5 truncate">
+                                            <span className="mb-1 block truncate text-[9px] font-bold uppercase tracking-[0.16em] text-[#B8860B] dark:text-[#E5B54A] sm:text-[10px]">
                                                 {brandName}
                                             </span>
                                         )}
-                                        <h3 className="text-xs sm:text-sm font-bold text-[#072835] dark:text-white leading-snug group-hover:text-[#B8860B] transition-colors line-clamp-2">
+                                        <h3 className="line-clamp-2 text-sm font-extrabold leading-snug text-[#072835] transition-colors group-hover:text-[#B8860B] dark:text-white sm:text-base">
                                             {displayName}
                                         </h3>
                                     </div>
 
-                                    <div className="mt-2 pt-2 border-t border-gray-200/50 dark:border-white/5 flex items-center justify-center gap-1 text-[11px] font-semibold text-[#2E7D32] dark:text-[#4ade80] opacity-90 group-hover:opacity-100">
+                                    <div className="flex items-center justify-between gap-2 border-t border-[#B8860B]/15 pt-2.5 text-[10px] font-bold text-[#B8860B] dark:border-white/10 dark:text-[#E5B54A] sm:text-[11px]">
                                         <span>{isArabic ? 'تسوق القسم' : 'Shop Category'}</span>
-                                        <span className={`transition-transform duration-300 group-hover:translate-x-1 ${isArabic ? 'rotate-180 group-hover:-translate-x-1' : ''}`}>➔</span>
+                                        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#FAF6ED] transition-colors group-hover:bg-[#B8860B] group-hover:text-white dark:bg-white/5">
+                                            {isArabic ? (
+                                                <MdChevronLeft className="text-base" />
+                                            ) : (
+                                                <MdChevronRight className="text-base" />
+                                            )}
+                                        </span>
                                     </div>
                                 </div>
                             </Link>
