@@ -42,6 +42,19 @@ const Header = ({ initialCategories = [], initialNavData = [], dir }: HeaderProp
             ? 'lg:h-[118px]'
             : 'lg:h-[70px]';
     const isScrolledRef = useRef(false);
+    const headerRef = useRef<HTMLElement>(null);
+    const [headerHeight, setHeaderHeight] = useState(64);
+
+    useEffect(() => {
+        const updateHeight = () => {
+            if (headerRef.current) {
+                setHeaderHeight(headerRef.current.offsetHeight);
+            }
+        };
+        updateHeight();
+        window.addEventListener('resize', updateHeight);
+        return () => window.removeEventListener('resize', updateHeight);
+    }, [isMobileSearchOpen, isScrolled, isMobileMenuOpen]);
 
     // Mega menu state
     const navData = initialNavData;
@@ -165,7 +178,7 @@ const Header = ({ initialCategories = [], initialNavData = [], dir }: HeaderProp
             {/* Spacer to prevent layout shift when header collapses */}
             <div className={`w-full transition-all duration-300 ${isMobileSearchOpen ? 'h-[116px]' : 'h-[54px] sm:h-[60px]'} ${desktopSpacerHeight}`} aria-hidden="true" />
 
-            <header className="fixed top-0 left-0 z-50 w-full bg-white dark:bg-zinc-900 border-b border-gray-100 dark:border-white/10 transition-all duration-300">
+            <header ref={headerRef} className="fixed top-0 left-0 z-50 w-full bg-white dark:bg-zinc-900 border-b border-gray-100 dark:border-white/10 transition-all duration-300">
                 {/* Disappearing Top Bar */}
                 <TopBar isVisible={!isScrolled} />
                 
@@ -232,7 +245,10 @@ const Header = ({ initialCategories = [], initialNavData = [], dir }: HeaderProp
                             <div className="flex items-center justify-between h-[48px] sm:h-[54px] px-1">
                                 {/* Left: Hamburger Menu */}
                                 <button
-                                    onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                                    onClick={() => {
+                                        setIsMobileSearchOpen(false);
+                                        setIsMobileMenuOpen((prev) => !prev);
+                                    }}
                                     className="p-1.5 text-zinc-900 dark:text-white rounded-lg hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors"
                                     aria-label="Toggle Menu"
                                 >
@@ -259,7 +275,10 @@ const Header = ({ initialCategories = [], initialNavData = [], dir }: HeaderProp
                                 <div className="flex items-center gap-1 sm:gap-2">
                                     <LanguageToggle />
                                     <button
-                                        onClick={() => setIsMobileSearchOpen(!isMobileSearchOpen)}
+                                        onClick={() => {
+                                            setIsMobileMenuOpen(false);
+                                            setIsMobileSearchOpen((prev) => !prev);
+                                        }}
                                         className="p-1.5 text-zinc-900 dark:text-white rounded-full hover:bg-gray-100 dark:hover:bg-zinc-800 transition-colors"
                                         aria-label="Toggle Search"
                                     >
@@ -296,6 +315,7 @@ const Header = ({ initialCategories = [], initialNavData = [], dir }: HeaderProp
                             isSearchOpen={isMobileSearchOpen}
                             setIsSearchOpen={setIsMobileSearchOpen}
                             hideTriggers={true}
+                            headerHeight={headerHeight}
                         />
                     </div>
                 </div>
