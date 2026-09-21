@@ -6,7 +6,6 @@ import { usePathname } from 'next/navigation';
 import { useLanguage } from '@/app/context/LanguageContext';
 import { MdHome } from 'react-icons/md';
 import { LuLayoutGrid, LuHandshake, LuPhone } from 'react-icons/lu';
-import { IoNewspaperOutline } from 'react-icons/io5';
 
 const BottomNav = () => {
     const { language } = useLanguage();
@@ -36,13 +35,6 @@ const BottomNav = () => {
             isActive: pathname === '/brands' || pathname.startsWith('/brands/'),
         },
         {
-            href: '/news',
-            label: isAr ? 'الأخبار' : 'News',
-            icon: IoNewspaperOutline,
-            iconClass: 'text-[22px]',
-            isActive: pathname === '/news' || pathname.startsWith('/news/'),
-        },
-        {
             href: '/contact',
             label: isAr ? 'تواصل معنا' : 'Contact Us',
             icon: LuPhone,
@@ -58,7 +50,7 @@ const BottomNav = () => {
         >
             <div
                 dir="ltr"
-                className="grid grid-cols-5 w-full pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] px-1"
+                className="grid grid-cols-4 w-full pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] px-1"
             >
                 {navItems.map((item) => {
                     const Icon = item.icon;
